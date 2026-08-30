@@ -86,11 +86,26 @@ ESCAPE = re.compile(r"storage-ok\s*:", re.I)
 STORAGE_FROM = re.compile(r"\.storage\s*\.\s*from\(")
 STORAGE_WRITE = re.compile(r"\.\s*(upload|remove)\(")
 ADMIN_CLIENT = re.compile(r"createAdminSupabaseClient\(")
-AUTH_SIGNAL = re.compile(
+# 2026-08-19 stress-test fix: split into FUNCTION_SIGNAL (must actually be CALLED, `name(`)
+# and STRING_SIGNAL (the two non-call constants). The old single AUTH_SIGNAL matched the bare
+# WORD anywhere, so `// TODO: add requireAuth check` in a comment satisfied it with zero real
+# auth. Reproduced live 2026-08-19 (hook-probe): a route with createAdminSupabaseClient() +
+# .storage.from(...).upload( + only a comment mentioning requireAuth passed clean. GATE_LAW
+# failure shape 3 ("the stand-down that costs nothing to satisfy"). Both signals are now
+# matched against comment-stripped content (see strip_comments below); ESCAPE stays on the
+# raw content because `storage-ok:` is meant to live in a comment.
+# 2026-08-19: `\s*(?:<[^<>]*>)?\s*\(` (not plain `\s*\(`) because the sibling
+# service-role-ownership-gate.py's full-corpus sweep the same day found 14 real files calling
+# these with a TypeScript generic type-argument between the name and the parens
+# (`getActiveSalon<{ id: string }>(...)`, `findQueueEntryByToken<{...}>(...)`), which the
+# plain pattern does not match. Mirrored here defensively for the same identifier list even
+# though this gate's own 5-file corpus didn't happen to hit it.
+FUNCTION_SIGNAL = re.compile(
     r"\b(requireAuth|requireAdmin|requireSalonOwner|requireRole|resolveBookingActor|"
-    r"CRON_SECRET|stripe-signature|createHmac|timingSafeEqual|getActiveSalon|"
-    r"clientBelongsToSalon|verifyAccessToken|findQueueEntryByToken)\b"
+    r"createHmac|timingSafeEqual|getActiveSalon|clientBelongsToSalon|verifyAccessToken|"
+    r"findQueueEntryByToken)\s*(?:<[^<>]*>)?\s*\("
 )
+STRING_SIGNAL = re.compile(r"\b(CRON_SECRET|stripe-signature)\b")
 ROLE_CHECK = re.compile(
     r"\.\s*role\s*(?:!==|===)\s*[\"']admin[\"']|[\"']admin[\"']\s*(?:!==|===)\s*[\w.?]*\.\s*role"
 )
@@ -98,8 +113,32 @@ OWNERSHIP_COMPARISON = re.compile(
     r"(?:!==|===)\s*(?:session\s*\.\s*)?user\??\s*\.\s*id\b"
     r"|\b(?:session\s*\.\s*)?user\??\s*\.\s*id\s*(?:!==|===)"
 )
+# 2026-08-19 stress-test fix: app/api/profile/avatar/route.ts is real, safe, shipped code that
+# this gate would have blocked if it were ever rewritten from scratch (proven via hook-probe
+# Write-simulation) -- it authenticates with the plain `supabase.auth.getUser()` + `if (!user)`
+# idiom (not one of the named helpers above) and derives the storage path directly from the
+# verified session's own id (`` `${user.id}/...` ``), never from client input. That idiom
+# recurs at app/api/profile/export/route.ts, app/api/conversations/route.ts and
+# app/api/cron/process-deletions/route.ts (grepped, not guessed), so it is a real house pattern,
+# not a one-off. Recognized narrowly: BOTH the real Supabase auth call AND the storage path
+# built directly from `user.id`/`session.user.id` must be present -- a bare `auth.getUser()`
+# alone (with no self-scoped path) still does NOT satisfy this gate, because authenticated-but-
+# not-owner-scoped is exactly the bypass class this gate exists to catch.
+SUPABASE_USER_CALL = re.compile(r"auth\s*\.\s*getUser\(|auth\s*\.\s*getSession\(")
+SELF_SCOPED_PATH = re.compile(r"\$\{(?:session\s*\.\s*)?user\??\s*\.\s*id\}")
 
 WINDOW = 400
+
+
+def strip_comments(s):
+    """House approximation, not a full JS/TS tokenizer: strips /* */ and // comments so a
+    signal name can no longer satisfy this gate by merely being mentioned in a comment (see
+    FUNCTION_SIGNAL note above). Does not special-case `//` inside a string/URL literal on the
+    same line as a real signal call -- accepted, because that only makes the gate MORE likely
+    to ask for an explicit auth call elsewhere in the file, never less strict."""
+    s = re.sub(r"/\*.*?\*/", "", s, flags=re.S)
+    s = re.sub(r"//[^\n]*", "", s)
+    return s
 
 
 def allow():
@@ -114,6 +153,124 @@ def deny(msg):
     }}))
     sys.exit(0)
 
+
+def _selftest():
+    """Drives THIS file as a real subprocess (same wire format the harness uses), not the
+    functions in-process, so the self-test cannot drift from what actually runs at PreToolUse.
+    2026-08-19 stress-test pass cases: BAD/GOOD are the original pair; SNEAKY_COMMENT reproduces
+    the comment-only-mention bypass found live that day (GATE_LAW failure shape 3) and must now
+    DENY; SELF_SCOPED_PATH reproduces the app/api/profile/avatar/route.ts false positive found
+    the same day (Write-simulated against the real file) and must now ALLOW."""
+    import subprocess
+
+    HERE = __file__
+    BAD = (
+        'import { createAdminSupabaseClient } from "@/lib/supabase/admin";\n'
+        "export async function POST(req) {\n"
+        "  const supabase = createAdminSupabaseClient();\n"
+        '  const path = req.nextUrl.searchParams.get("path");\n'
+        '  const { data } = await supabase.storage.from("gallery").upload(path, file);\n'
+        "  return Response.json({ success: true });\n"
+        "}"
+    )
+    GOOD = (
+        'import { createAdminSupabaseClient } from "@/lib/supabase/admin";\n'
+        'import { requireAuth } from "@/lib/auth/require";\n'
+        "export async function POST(req) {\n"
+        "  const user = await requireAuth(req);\n"
+        "  const supabase = createAdminSupabaseClient();\n"
+        "  const path = `salons/${user.id}/gallery/${file.name}`;\n"
+        '  const { data } = await supabase.storage.from("gallery").upload(path, file);\n'
+        "  return Response.json({ success: true });\n"
+        "}"
+    )
+    SNEAKY_COMMENT = (
+        "// TODO: add requireAuth check\n"
+        'import { createAdminSupabaseClient } from "@/lib/supabase/admin";\n'
+        "export async function POST(req) {\n"
+        "  const supabase = createAdminSupabaseClient();\n"
+        '  const path = req.nextUrl.searchParams.get("path");\n'
+        '  const { data } = await supabase.storage.from("gallery").upload(path, file);\n'
+        "  return Response.json({ success: true });\n"
+        "}"
+    )
+    SELF_SCOPED = (
+        'import { createAdminSupabaseClient, createServerSupabaseClient } from "@/lib/supabase";\n'
+        "export async function POST(req) {\n"
+        "  const supabase = await createServerSupabaseClient();\n"
+        "  const { data: { user } } = await supabase.auth.getUser();\n"
+        '  if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });\n'
+        "  const admin = createAdminSupabaseClient();\n"
+        "  const path = `${user.id}/${Date.now()}.png`;\n"
+        '  const { data } = await admin.storage.from("avatars").upload(path, file);\n'
+        "  return Response.json({ url: data });\n"
+        "}"
+    )
+    ESCAPE_HATCH = (
+        "// storage-ok: public non-sensitive cache, no ownership concept\n"
+        'import { createAdminSupabaseClient } from "@/lib/supabase/admin";\n'
+        "export async function GET(req) {\n"
+        "  const supabase = createAdminSupabaseClient();\n"
+        '  const { data } = await supabase.storage.from("cache").upload("x", file);\n'
+        "  return Response.json({ url: data });\n"
+        "}"
+    )
+    GENERIC_CALL = (
+        'import { createAdminSupabaseClient, createServerSupabaseClient } from "@/lib/supabase";\n'
+        'import { getActiveSalon } from "@/lib/active-salon";\n'
+        "export async function POST(req) {\n"
+        "  const supabase = await createServerSupabaseClient();\n"
+        "  const { data: { user } } = await supabase.auth.getUser();\n"
+        '  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");\n'
+        "  const admin = createAdminSupabaseClient();\n"
+        "  const path = `salons/${salon.id}/gallery/${file.name}`;\n"
+        '  const { data } = await admin.storage.from("gallery").upload(path, file);\n'
+        "  return Response.json({ url: data });\n"
+        "}"
+    )
+
+    cases = [
+        ("BAD (no auth at all)", "Write", "app/api/probe-bad/route.ts", BAD, "deny"),
+        ("GOOD (requireAuth called)", "Write", "app/api/probe-good/route.ts", GOOD, "allow"),
+        ("SNEAKY_COMMENT (mention, not a call)", "Write", "app/api/probe-sneaky/route.ts",
+         SNEAKY_COMMENT, "deny"),
+        ("SELF_SCOPED_PATH (avatar idiom)", "Write", "app/api/probe-selfscoped/route.ts",
+         SELF_SCOPED, "allow"),
+        ("ESCAPE_HATCH (storage-ok: in comment)", "Write", "app/api/probe-escape/route.ts",
+         ESCAPE_HATCH, "allow"),
+        ("wrong tool (Edit, scope check)", "Edit", "app/api/probe-bad/route.ts", BAD, "allow"),
+        ("GENERIC_CALL (getActiveSalon<{...}>()", "Write", "app/api/probe-generic/route.ts",
+         GENERIC_CALL, "allow"),
+    ]
+
+    failures = []
+    for label, tool, relpath, content, expect in cases:
+        payload = {
+            "session_id": "selftest", "transcript_path": "/dev/null", "cwd": "/tmp",
+            "hook_event_name": "PreToolUse", "permission_mode": "bypassPermissions",
+            "tool_name": tool,
+            "tool_input": {"file_path": "/Users/sulo/Documents/solen/" + relpath, "content": content},
+        }
+        proc = subprocess.run(["python3", HERE], input=json.dumps(payload),
+                               capture_output=True, text=True, timeout=10)
+        out = proc.stdout.strip()
+        denied = out.startswith("{") and '"deny"' in out
+        got = "deny" if denied else "allow"
+        ok = got == expect
+        status = "PASS" if ok else "FAIL"
+        print(f"[{status}] {label}: expected {expect}, got {got}")
+        if not ok:
+            failures.append(label)
+
+    if failures:
+        print(f"\n{len(failures)}/{len(cases)} cases FAILED: {failures}")
+        sys.exit(1)
+    print(f"\nAll {len(cases)} cases PASSED.")
+    sys.exit(0)
+
+
+if len(sys.argv) > 1 and sys.argv[1] == "--selftest":
+    _selftest()
 
 try:
     data = json.load(sys.stdin)
@@ -136,14 +293,18 @@ try:
     if ESCAPE.search(content):
         allow()
 
-    if not ADMIN_CLIENT.search(content):
+    code = strip_comments(content)
+
+    if not ADMIN_CLIENT.search(code):
         allow()
-    if AUTH_SIGNAL.search(content) or ROLE_CHECK.search(content) or OWNERSHIP_COMPARISON.search(content):
+    if (FUNCTION_SIGNAL.search(code) or STRING_SIGNAL.search(code)
+            or ROLE_CHECK.search(code) or OWNERSHIP_COMPARISON.search(code)
+            or (SUPABASE_USER_CALL.search(code) and SELF_SCOPED_PATH.search(code))):
         allow()
 
     hit = None
-    for m in STORAGE_FROM.finditer(content):
-        window = content[m.end():m.end() + WINDOW]
+    for m in STORAGE_FROM.finditer(code):
+        window = code[m.end():m.end() + WINDOW]
         wm = STORAGE_WRITE.search(window)
         if wm:
             hit = wm.group(1)

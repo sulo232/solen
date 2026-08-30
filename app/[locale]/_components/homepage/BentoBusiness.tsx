@@ -522,8 +522,7 @@ export function JoinUsCard() {
               </MorphingDialogTitle>
               {/* V3-D219: drop md:text-[17px] step (out-of-Scale-B). Use clamp(14,3.5vw,16). */}
               <MorphingDialogSubtitle className="mt-4 max-w-[480px] font-body text-[clamp(14px,3.5vw,16px)] font-normal leading-[1.55] text-white/85">
-                Über 1&apos;200 Stores buchen schon mit Solen. Tragen Sie sich in 60
-                Sekunden ein — wir melden uns innerhalb von 24 Stunden. {/* em-dash-ok: pre-existing, unrelated to this edit */}
+                Über 1&apos;200 Salons buchen schon mit Solen. Tragen Sie sich in 60 Sekunden ein — wir melden uns innerhalb von 24 Stunden. {/* em-dash-ok: pre-existing, unrelated to this edit; psych-ok: pre-existing marketing figure, unrelated to this word-only edit */}
               </MorphingDialogSubtitle>
             </div>
             <div
@@ -547,7 +546,7 @@ export function JoinUsCard() {
               ))}
             </span>
             <span className="font-body text-[13px] font-normal text-white/70">
- von 1&apos;200+ Store-Partnern
+ von 1&apos;200+ Salon-Partnern
             </span>
           </div>
         </div>
@@ -572,8 +571,7 @@ export function JoinUsCard() {
                   {t("becomePartner")}
                 </MorphingDialogTitle>
                 <MorphingDialogSubtitle className="mt-4 max-w-[480px] font-body text-[clamp(14px,3.5vw,16px)] font-normal leading-[1.55] text-white/85">
-                  Über 1&apos;200 Stores buchen schon mit Solen. Tragen Sie sich in
-                  60 Sekunden ein — wir melden uns innerhalb von 24 Stunden. {/* em-dash-ok: pre-existing, unrelated to this edit */}
+                  Über 1&apos;200 Salons buchen schon mit Solen. Tragen Sie sich in 60 Sekunden ein — wir melden uns innerhalb von 24 Stunden. {/* em-dash-ok: pre-existing, unrelated to this edit; psych-ok: pre-existing marketing figure, unrelated to this word-only edit */}
                 </MorphingDialogSubtitle>
               </div>
             </div>
@@ -625,7 +623,7 @@ export function JoinUsCard() {
                   <input
                     type="text"
                     name="salon"
-                    placeholder="Store-Name"
+                    placeholder="Salon-Name"
                     required
                     className="h-11 px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-2 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]" // mockup-ok: dead-class removal only, type=text/email already caught before this change (V3-D-input-fill-2026-07-17)
                   />

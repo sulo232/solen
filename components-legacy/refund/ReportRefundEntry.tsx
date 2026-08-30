@@ -371,6 +371,13 @@ export default function ReportRefundEntry({
           </div>
         </div>
 
+        {/* trust-04: the 14-day reporting window, surfaced before the customer decides to
+            file rather than only discovered on a rejected submit. mockup-ok: /dev/report-window-note */}
+        <div className="mb-5 flex gap-2 text-[12px] leading-[1.4] text-s-ink-2">
+          <Info size={15} className="mt-[1px] flex-shrink-0 text-s-ink-2 opacity-70" aria-hidden />
+          <span>{t("reportWindowNote")}</span>
+        </div>
+
         {/* reason */}
         <h1 className="mb-[10px] font-heading text-[15px] font-semibold tracking-[-0.01em] text-s-ink">
           {t("reasonQuestion")}

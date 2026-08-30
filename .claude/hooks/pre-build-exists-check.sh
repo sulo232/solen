@@ -33,6 +33,85 @@
 
 set -uo pipefail
 
+# 2026-08-19 stress-test pass: drives THIS script as a real subprocess (same stdin-JSON wire
+# format the harness uses, with a real transcript JSONL file), not the underlying logic in
+# isolation. Verified live: a new route.ts BLOCKs with no `npm run exists` in the transcript
+# and ALLOWs once it's there, an EXISTING file never gates regardless, an out-of-scope
+# extension (.test.ts) never gates, and a new mockup BLOCKs without an `Exists-check:` line
+# and ALLOWs with one (given exists also ran). DOCUMENTED RESIDUAL, deliberately left as a
+# known gap and not fixed this pass: `false && npm run exists "x"` satisfies the transcript
+# string-match (the literal text "npm run exists" is present right after a `&&`) even though
+# bash's short-circuit evaluation means the right-hand side never actually executes. This
+# requires deliberately adversarial command construction, not something an agent organically
+# writes while doing the check for real, and no real incident of it firing was found this
+# pass (GATE_LAW step 1: no incident, no gate). Closing it would mean parsing shell
+# conditional structure or cross-referencing the matching tool_result, real complexity for a
+# theoretical case; left open rather than guessed shut.
+if [[ "${1:-}" == "--selftest" ]]; then
+  SELF="${BASH_SOURCE[0]}"
+  export CLAUDE_PROJECT_DIR="$(cd "$(dirname "$SELF")/../.." && pwd)"
+  # A bare `mktemp -d` resolves against the OS default tmp root, which is not always writable
+  # under this harness's sandbox (a known trap: "a .sh check needs a writable TMPDIR set
+  # before you judge it"). Honor $TMPDIR when set, same as every other scratch file in this
+  # pass, so the self-test doesn't fail on a sandbox permission wall that has nothing to do
+  # with the gate's own logic.
+  SELFTEST_DIR="$(mktemp -d "${TMPDIR:-/tmp}/exists-selftest.XXXXXX")"
+  trap 'rm -rf "$SELFTEST_DIR"' EXIT
+  PASS=0; FAIL=0
+
+  # Two real transcript fixtures: one where `npm run exists` never appears, one where it does
+  # as a genuine standalone Bash call (the shape the harness actually produces).
+  NO_EXISTS_TR="$SELFTEST_DIR/no_exists.jsonl"
+  WITH_EXISTS_TR="$SELFTEST_DIR/with_exists.jsonl"
+  printf '%s\n' '{"type":"user","message":{"role":"user","content":[{"type":"text","text":"build the new endpoint"}]}}' > "$NO_EXISTS_TR"
+  printf '%s\n' '{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Bash","input":{"command":"ls app/api"}}]}}' >> "$NO_EXISTS_TR"
+  printf '%s\n' '{"type":"user","message":{"role":"user","content":[{"type":"text","text":"build the new endpoint"}]}}' > "$WITH_EXISTS_TR"
+  printf '%s\n' '{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Bash","input":{"command":"npm run exists \"probe thing\""}}]}}' >> "$WITH_EXISTS_TR"
+
+  run_case() {
+    local label="$1" expect="$2" json="$3"
+    local out rc got
+    out=$(printf '%s' "$json" | "$SELF" 2>&1)
+    rc=$?
+    got="allow"; [[ $rc -eq 2 ]] && got="deny"
+    if [[ "$got" == "$expect" ]]; then
+      echo "[PASS] $label: expected $expect, got $got"
+      PASS=$((PASS+1))
+    else
+      echo "[FAIL] $label: expected $expect, got $got"
+      echo "       output: $out"
+      FAIL=$((FAIL+1))
+    fi
+  }
+
+  BASE="/Users/sulo/Documents/solen"
+  run_case "BAD1 (new route.ts, no exists run)" "deny" \
+    "$(jq -nc --arg fp "$BASE/app/api/probe-newthing/route.ts" --arg tp "$NO_EXISTS_TR" \
+      '{tool_name:"Write", tool_input:{file_path:$fp, content:"export async function GET(){}"}, transcript_path:$tp}')"
+  run_case "GOOD1 (new route.ts, exists WAS run)" "allow" \
+    "$(jq -nc --arg fp "$BASE/app/api/probe-newthing2/route.ts" --arg tp "$WITH_EXISTS_TR" \
+      '{tool_name:"Write", tool_input:{file_path:$fp, content:"export async function GET(){}"}, transcript_path:$tp}')"
+  run_case "GOOD2 (existing file, no exists run)" "allow" \
+    "$(jq -nc --arg fp "$BASE/app/api/profile/avatar/route.ts" --arg tp "$NO_EXISTS_TR" \
+      '{tool_name:"Write", tool_input:{file_path:$fp, content:"x"}, transcript_path:$tp}')"
+  run_case "GOOD3 (out-of-scope extension, .test.ts)" "allow" \
+    "$(jq -nc --arg fp "$BASE/app/api/probe-newthing3/route.test.ts" --arg tp "$NO_EXISTS_TR" \
+      '{tool_name:"Write", tool_input:{file_path:$fp, content:"export const x = 1;"}, transcript_path:$tp}')"
+  run_case "BAD2 (new mockup, no Exists-check line)" "deny" \
+    "$(jq -nc --arg fp "$BASE/public/_mockups/probe-mockup.html" --arg tp "$WITH_EXISTS_TR" \
+      '{tool_name:"Write", tool_input:{file_path:$fp, content:"<html><body>hi</body></html>"}, transcript_path:$tp}')"
+  run_case "GOOD4 (new mockup, WITH Exists-check line + exists ran)" "allow" \
+    "$(jq -nc --arg fp "$BASE/public/_mockups/probe-mockup2.html" --arg tp "$WITH_EXISTS_TR" \
+      '{tool_name:"Write", tool_input:{file_path:$fp, content:"<!-- Exists-check: /probe already has X; REMOVED: none. NEW: only Y. -->\n<html></html>"}, transcript_path:$tp}')"
+  echo ""
+  if [[ $FAIL -gt 0 ]]; then
+    echo "$FAIL/$((PASS+FAIL)) cases FAILED."
+    exit 1
+  fi
+  echo "All $PASS cases PASSED."
+  exit 0
+fi
+
 INPUT=$(cat)
 TOOL=$(echo "$INPUT" | jq -r '.tool_name // empty')
 FILE=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')

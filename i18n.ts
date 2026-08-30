@@ -6,7 +6,18 @@ import { getRequestConfig } from "next-intl/server";
 // unchanged so every existing `from "./i18n"` import (middleware.ts included) keeps working.
 export { locales, defaultLocale } from "./lib/locale-constants";
 export type { Locale } from "./lib/locale-constants";
-import { defaultLocale } from "./lib/locale-constants";
+import { defaultLocale, locales, type Locale } from "./lib/locale-constants";
+
+// A request's first URL segment can be anything a visitor's browser or address bar
+// sends, not only one of the four real locales. A browser's automatic /favicon.ico
+// request (and, the same way, any other unknown segment, e.g. /abc) arrived here as
+// requestLocale and was passed straight into the dynamic import below, throwing
+// "Cannot find module './favicon.ico.json'" on every single page load. Narrow the
+// awaited value against the real list first and fall back to defaultLocale for
+// anything that is not one of the four.
+function isSupportedLocale(value: string | undefined): value is Locale {
+  return typeof value === "string" && (locales as readonly string[]).includes(value);
+}
 
 // copy-i18n-07: next-intl's un-configured default is to console.error and render
 // the bare "namespace.key" dotted path as the visible fallback text for a missing
@@ -27,7 +38,8 @@ function getNestedString(messages: unknown, path: string): string | undefined {
 }
 
 export default getRequestConfig(async ({ requestLocale }) => {
-  const locale = (await requestLocale) ?? defaultLocale;
+  const requested = await requestLocale;
+  const locale = isSupportedLocale(requested) ? requested : defaultLocale;
   const messages = (await import(`./messages/${locale}.json`)).default;
   const deMessages = locale === "de" ? messages : (await import("./messages/de.json")).default;
 

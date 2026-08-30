@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
   // touching the database. A bare, unauthenticated email would otherwise let anyone
   // null out any of the 48 salon_directory rows' email column, which is that
   // listing's only way to ever be claimed again (see claim/route.ts:138).
-  if (!verifyUnsubscribeToken(body.email, body.token)) {
+  if (!(await verifyUnsubscribeToken(body.email, body.token))) {
     return NextResponse.json({ error: "Invalid or expired unsubscribe link" }, { status: 400 });
   }
 

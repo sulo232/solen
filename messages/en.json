@@ -1426,6 +1426,8 @@
       "refundRequested": "Refund requested",
       "fullAmount": "Full amount",
       "customerStatement": "Customer statement",
+      "respondBy": "Respond by {date}",
+      "respondByOverdue": "Overdue, was due {date}",
       "escalatedNote": "Escalated to Solen. Solen will decide.",
       "notePlaceholder": "Reply to the customer (required, min. 10 characters)",
       "noteRequired": "Please write a reply of at least 10 characters.",
@@ -4002,7 +4004,8 @@
       "hours": "Hours",
       "extras": "Extras",
       "review": "Review",
-      "photos": "Photos"
+      "photos": "Photos",
+      "about": "About you"
     },
     "nav": {
       "back": "Back",
@@ -4126,6 +4129,34 @@
       "hint": "Recommended: 5+ photos",
       "hintDesc": "Salons with photos receive up to 3× more bookings. You can add photos anytime in the dashboard.",
       "skip": "Skip"
+    },
+    "stepAbout": {
+      "title": "A few questions about your salon",
+      "subtitle": "Optional · you can skip this",
+      "acquisitionLabel": "How did you hear about Solen?",
+      "acquisitionOptions": {
+        "instagram": "Instagram",
+        "google": "Google search",
+        "referral": "Personal recommendation",
+        "event": "Event or trade fair",
+        "other": "Other"
+      },
+      "acquisitionOtherPlaceholder": "Please specify…",
+      "teamSizeLabel": "How big is your team?",
+      "teamSizeOptions": {
+        "solo": "Just me",
+        "small": "2 to 5",
+        "medium": "6 to 15",
+        "large": "More than 15"
+      },
+      "goalsLabel": "What do you want to get out of Solen?",
+      "goalsOptions": {
+        "more_bookings": "More bookings",
+        "save_time": "Save time on admin",
+        "fewer_no_shows": "Fewer no-shows",
+        "marketing": "Reach new customers",
+        "payments": "Digitize payments"
+      }
     },
     "done": {
       "title": "Salon created!",
@@ -5831,7 +5862,6 @@
     "description_vouchers": "Gift vouchers are coming soon. Give the gift of beauty.",
     "description_loyalty": "Our stamp card loyalty program is launching soon. Earn rewards with every visit.",
     "description_referral": "Refer friends and earn credit. Our referral program is starting soon.",
-    "description_behandlungen": "Discover all treatments and find the perfect salon. Coming soon.",
     "emailPlaceholder": "your@email.ch",
     "notify": "Notify Me",
     "notifySuccess": "We'll notify you when it's ready!",
@@ -6167,6 +6197,7 @@
     "ledeRefunded": "This case is resolved. The refund is on its way to your card.",
     "ledeClosed": "This case is now closed. No further action is needed.",
     "respondsBy": "Salon responds by {date}",
+    "respondsByOverdue": "Salon's response was due {date}",
     "decisionExpectedBy": "Decision expected by {date}",
     "rowService": "Service",
     "rowAppointment": "Appointment",
@@ -6192,6 +6223,7 @@
     "tlSalonApprovedFull": "Salon approved: full refund",
     "tlEscalated": "Escalated to Solen",
     "tlEscalatedByYou": "By you",
+    "tlEscalatedAuto": "Automatically, no response from the salon",
     "tlSolenReview": "Solen review",
     "tlSolenReviewNotStarted": "Available if you escalate below",
     "tlSolenReviewing": "Solen reviewing",
@@ -6236,6 +6268,7 @@
     "escWindowOpen": "You can escalate for {days} more days",
     "escWindowToday": "You can still escalate today",
     "escFree": "Escalation is free. A Solen specialist reviews independently.",
+    "escWindowClosedNote": "The window to escalate this case to Solen has closed. You can still reach Solen support, and your bank's dispute process also remains available.",
     "askSolenReview": "Ask Solen to review",
     "escWhatHappensTitle": "What happens if you escalate?",
     "escWhatHappensBody": "A Solen specialist reviews the booking, the salon's reason, and any details you add, then makes a final decision. Usually within 3 business days.",
@@ -6265,6 +6298,7 @@
     "toastAccepted": "Case closed",
     "toastEscalated": "Sent to Solen",
     "toastEscalateError": "Couldn't escalate. Please try again",
+    "toastEscalateWindowClosed": "The window to escalate this case has closed.",
     "toastSendError": "Couldn't send. Please try again",
     "upTitle": "Approve an extra charge",
     "upFromSalon": "From {salon}",

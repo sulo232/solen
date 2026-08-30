@@ -82,15 +82,15 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/user-prompt-binary-triggers.sh"
+            "command": "f=\"$CLAUDE_PROJECT_DIR/.claude/hooks/user-prompt-binary-triggers.sh\"; [ -x \"$f\" ] || exit 0; \"$f\""
           },
           {
             "type": "command",
-            "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/backend-doc-pointer.py"
+            "command": "f=\"$CLAUDE_PROJECT_DIR/.claude/hooks/backend-doc-pointer.py\"; [ -r \"$f\" ] || exit 0; python3 \"$f\""
           },
           {
             "type": "command",
-            "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/frontend-doc-pointer.py"
+            "command": "f=\"$CLAUDE_PROJECT_DIR/.claude/hooks/frontend-doc-pointer.py\"; [ -r \"$f\" ] || exit 0; python3 \"$f\""
           }
         ]
       }
@@ -107,6 +107,15 @@
       }
     ],
     "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/migration-fabrication-gate.py"
+          }
+        ]
+      },
       {
         "matcher": "Edit",
         "hooks": [
@@ -140,11 +149,11 @@
           },
           {
             "type": "command",
-            "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/backend-doc-pointer.py"
+            "command": "f=\"$CLAUDE_PROJECT_DIR/.claude/hooks/backend-doc-pointer.py\"; [ -r \"$f\" ] || exit 0; python3 \"$f\""
           },
           {
             "type": "command",
-            "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/frontend-doc-pointer.py"
+            "command": "f=\"$CLAUDE_PROJECT_DIR/.claude/hooks/frontend-doc-pointer.py\"; [ -r \"$f\" ] || exit 0; python3 \"$f\""
           },
           {
             "type": "command",
@@ -229,11 +238,11 @@
           },
           {
             "type": "command",
-            "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/backend-doc-pointer.py"
+            "command": "f=\"$CLAUDE_PROJECT_DIR/.claude/hooks/backend-doc-pointer.py\"; [ -r \"$f\" ] || exit 0; python3 \"$f\""
           },
           {
             "type": "command",
-            "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/frontend-doc-pointer.py"
+            "command": "f=\"$CLAUDE_PROJECT_DIR/.claude/hooks/frontend-doc-pointer.py\"; [ -r \"$f\" ] || exit 0; python3 \"$f\""
           },
           {
             "type": "command",
@@ -302,11 +311,11 @@
           },
           {
             "type": "command",
-            "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/backend-doc-pointer.py"
+            "command": "f=\"$CLAUDE_PROJECT_DIR/.claude/hooks/backend-doc-pointer.py\"; [ -r \"$f\" ] || exit 0; python3 \"$f\""
           },
           {
             "type": "command",
-            "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/frontend-doc-pointer.py"
+            "command": "f=\"$CLAUDE_PROJECT_DIR/.claude/hooks/frontend-doc-pointer.py\"; [ -r \"$f\" ] || exit 0; python3 \"$f\""
           },
           {
             "type": "command",

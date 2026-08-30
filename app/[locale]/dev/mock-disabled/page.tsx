@@ -147,6 +147,10 @@ export default async function MockDisabledPage({
                 serviceAddons={serviceAddons ?? []}
                 serviceOptions={serviceOptions ?? []}
                 isLoggedIn={false}
+                // Owner 2026-08-21: this dev route previews the disabled-CTA state, not the
+                // voucher variant, so it passes false. The real booking page computes this
+                // value from the salon's own redeemable vouchers.
+                salonHasRedeemableVoucher={false}
               />
             </JumpToBookingStep>
           </BookingProvider>

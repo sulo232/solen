@@ -21,7 +21,7 @@ interface SalonLite {
 }
 
 const catLabel = (c: string[] | null) =>
-  c?.[0] ? c[0][0].toUpperCase() + c[0].slice(1) : "Store";
+  c?.[0] ? c[0][0].toUpperCase() + c[0].slice(1) : "Salon";
 
 export default function SalonSwitcher({
   fallbackName,
@@ -49,7 +49,7 @@ export default function SalonSwitcher({
   }, []);
 
   const active = salons.find((s) => s.id === activeId) ?? null;
-  const activeName = active?.name ?? fallbackName ?? "Ihr Store";
+  const activeName = active?.name ?? fallbackName ?? "Ihr Salon";
   const multi = salons.length > 1;
 
   const pick = async (id: string) => {
@@ -85,7 +85,7 @@ export default function SalonSwitcher({
       <button
         onClick={() => multi && setOpen(true)}
         className="flex-1 min-w-0 flex items-center gap-3 text-left"
-        aria-label={multi ? "Store wechseln" : undefined}
+        aria-label={multi ? "Salon wechseln" : undefined}
       >
         <div className="w-10 h-10 rounded-full bg-s-ink text-white grid place-items-center text-[15px] font-semibold shrink-0">
           {activeName.trim()[0]?.toUpperCase() ?? "S"}
@@ -94,7 +94,7 @@ export default function SalonSwitcher({
           <span className="block font-heading font-semibold text-[15px] tracking-[-0.01em] text-s-ink truncate">
             {activeName}
           </span>
-          {multi && <span className="block text-[12px] text-s-ink-2">Store wechseln</span>}
+          {multi && <span className="block text-[12px] text-s-ink-2">Salon wechseln</span>}
         </span>
         {multi && <ChevronsUpDown size={16} strokeWidth={1.9} className="text-s-ink-2 shrink-0" />}
       </button>
@@ -102,7 +102,7 @@ export default function SalonSwitcher({
       <button
         onClick={() => multi && setOpen(true)}
         className="flex items-center gap-1.5 min-w-0"
-        aria-label={multi ? "Store wechseln" : undefined}
+        aria-label={multi ? "Salon wechseln" : undefined}
       >
         <span className="font-heading text-base truncate text-s-ink">{activeName}</span>
         {multi && <ChevronsUpDown size={15} strokeWidth={1.9} className="text-s-ink-2 shrink-0" />}
@@ -131,7 +131,7 @@ export default function SalonSwitcher({
             >
               <div className="flex items-center justify-between px-4 pt-4 pb-2">
                 <span className="text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink-2">
-                  Ihre Stores {salons.length}
+                  Ihre Salons {salons.length}
                 </span>
                 <button
                   onClick={() => setOpen(false)}
@@ -154,7 +154,7 @@ export default function SalonSwitcher({
                     <input
                       value={q}
                       onChange={(e) => setQ(e.target.value)}
-                      placeholder="Store suchen…"
+                      placeholder="Salon suchen…"
                       className="flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-[14px] outline-none placeholder:text-s-ink-2"
                     />
                   </div>

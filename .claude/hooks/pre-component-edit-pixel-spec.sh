@@ -26,8 +26,54 @@
 # heavily compressed JPEGs, etc.), the spec is unreliable and editing against
 # it produces wrong code that the agent then claims is "exact." This hook
 # moves the verification step to a place the agent literally cannot bypass.
+#
+# 2026-08-18 stress-test fix: MEASURED the block path exiting 1. A PreToolUse
+# hook only stops the tool call on exit code 2 (exit 1 is a non-blocking
+# error), so this gate has never once blocked a component edit and the
+# "BLOCKED" message on stderr was never acted on. Changed the block path to
+# exit 2; every pass path was already exit 0 and is unchanged.
 
 set -uo pipefail
+
+if [[ "${1:-}" == "--selftest" ]]; then
+  # 2026-08-18: this gate never had a self-test. Minimal harness, added with the exit-1->exit-2
+  # fix: fabricate a pending pixel-spec pointer + review flag, drive the hook exactly the way
+  # PreToolUse would (JSON on stdin), and check the real exit code, since exit code IS the defect.
+  POINTER_FILE="/tmp/pixel-spec-current.json"
+  POINTER_BACKUP=""
+  [[ -f "$POINTER_FILE" ]] && POINTER_BACKUP=$(cat "$POINTER_FILE")
+  TDIR="${TMPDIR:-/tmp}/pcps-selftest-$$"
+  OUT_DIR="$TDIR/out"
+  mkdir -p "$OUT_DIR"
+  touch "$OUT_DIR/.review-needed"
+  NOW=$(date -u +"%Y-%m-%dT%H:%M:%S")
+  cat > "$POINTER_FILE" <<PTR
+{"output_dir":"$OUT_DIR","annotated_png":"$OUT_DIR/annotated.png","spec_md":"$OUT_DIR/spec.md","timestamp":"$NOW","slug":"selftest"}
+PTR
+  PASS=0; TOTAL=2
+  PAYLOAD='{"tool_name":"Edit","tool_input":{"file_path":"/Users/sulo/Documents/solen/components/Foo.tsx"}}'
+
+  echo "$PAYLOAD" | bash "$0" >/dev/null 2>&1; RC1=$?
+  if [[ "$RC1" == "2" ]]; then
+    echo "  PASS  pending review + UI component edit must block (exit=$RC1, expected=2)"; PASS=$((PASS+1))
+  else
+    echo "  FAIL  pending review + UI component edit must block (exit=$RC1, expected=2)"
+  fi
+
+  rm -f "$OUT_DIR/.review-needed"
+  echo "$PAYLOAD" | bash "$0" >/dev/null 2>&1; RC2=$?
+  if [[ "$RC2" == "0" ]]; then
+    echo "  PASS  review cleared, same edit must pass (exit=$RC2, expected=0)"; PASS=$((PASS+1))
+  else
+    echo "  FAIL  review cleared, same edit must pass (exit=$RC2, expected=0)"
+  fi
+
+  rm -rf "$TDIR"
+  if [[ -n "$POINTER_BACKUP" ]]; then printf '%s' "$POINTER_BACKUP" > "$POINTER_FILE"; else rm -f "$POINTER_FILE"; fi
+  echo ""
+  echo "$PASS/$TOTAL passed"
+  [[ "$PASS" == "$TOTAL" ]] && exit 0 || exit 1
+fi
 
 INPUT=$(cat)
 TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name // empty')
@@ -127,4 +173,4 @@ Override (user explicit skip):
   (auto-expires in 30 minutes)
 EOF
 
-exit 1
+exit 2

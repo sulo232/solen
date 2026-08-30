@@ -39,13 +39,22 @@ price number). Confirmed verbatim: **"all ur count correct"** (all 4 "my read" p
 - **Coherent emphasis** (-> CLAUDE.md taste rule #5): weight or colour maps to a
   WHOLE meaningful unit, never an orphan sub-token. The rejected version coloured
   only the "65" but not "from / CHF", which reads as a glitch, not a decision.
-- **Semantic availability = green pill** (-> universal-color convention): an
+- ~~**Semantic availability = green pill** (-> universal-color convention): an
   "open / free / available / next-slot" signal uses the green pastel pill
-  (`text-s-success` on a green-pale bg), not ink text, not a dot.
+  (`text-s-success` on a green-pale bg), not ink text, not a dot.~~
+  **REVERSED , struck 2026-08-17 by the weekly law pass, using the supersession that was already
+  written into the table twelve lines above this one (V3-D443, CONSISTENCY_AUDIT.md:8): the owner
+  rejected the green pill and card availability is plain ink text with no pill. The row was struck;
+  this bullet, which promoted the same dead rule to a UNIVERSAL convention, was not, so the reversal
+  was only half-applied inside one file. `CLAUDE.md`'s availability row ("plain ink text , NO green
+  pill, owner call, do not re-add") is canonical. `REJECTED_TREATMENTS.json` goes further still and
+  deletes the next-slot row from the card entirely (`card-next-slot-row`, 2026-07-15); which of those
+  two is live is a question for him, and it is in the 2026-08-17 report.**
 
 ### Applied in code?
-- ✅ **Green availability pill** applied in `SalonResultCard` (grid + list nextSlot),
-  verified on the real grid results (V3-D442). tsc clean.
+- ~~✅ **Green availability pill** applied in `SalonResultCard` (grid + list nextSlot),
+  verified on the real grid results (V3-D442). tsc clean.~~ Struck by the same reversal; kept so the
+  history stays legible.
 - Pending: card shadow `0_20px_40px_rgba(0,0,0,0.04)` -> `shadow-elevation-2`
   (deferred to the shadow sweep so all card families change together, no divergence).
 
@@ -615,6 +624,31 @@ and product decisions, `REMOVED.md` for things he has killed, `LOCKFILE.md` for 
 `PREFERENCES.md` for how he wants work done.
 
 
+## 2026-08-21, login screen: he approved the stripped version (variant B)
+
+He shared a Quizlet login and asked: *"make the login uncluttered n like ths no blue but yk simple
+and shapes n colors yk"*. Then, on the mockup: *"B but the apple google sh not monochrome and also
+more up bro"* and *"and what abt create account"*. Approved with **"approved"**.
+
+| axis | decision |
+|---|---|
+| login inputs | **grey fill `#F4F4F5`, NO border.** SUPERSEDES the 2026-08-09 white-fill-plus-hairline decision FOR THIS SCREEN. The no-focus-treatment half of 08-09 STANDS: tapping a field still changes nothing visible, no ring, no halo, no colour change. |
+| forgot password | ink `#0A0A0A`, underlined. No longer blue `#276EF1`. |
+| the two ways in | **must not match.** Apple = ink fill, white label. Google = `bg-s-bg-sunken`, ink label, no border. Measured cause: they matched on all 5 properties compared (342x56, radius 99, white, same 1px hairline), so they read as one button printed twice. |
+| brand marks | the REAL svgs already in `SignIn.tsx`. He rejected hand-drawn stand-ins by name: *"fk are those colors"*, after I drew a blue letter G in a circle and a white disc behind the Apple glyph. Real icons only, never approximations. |
+| the divider | **the "oder" rule is dead.** The empty gap between the two groups does that job, which is what the reference does. |
+| the terms line | off the login screen. It belongs where an account is created. |
+| the subtitle | off. It explains what signing in is, to someone who already tapped sign in. |
+| the two ways in, position | pushed down but NOT pinned to the floor. A fixed 120px gap above them, never flex-grow. |
+| create account | stays, below the two buttons. It was never missing, it was buried under the fold with the cookie banner over it. |
+
+**What the reference actually contributed, measured rather than eyeballed.** PIL-sampled his
+screenshot (881x1999) after pixel-spec-auto failed on it: side margin 56px scales to 25 at our 390
+(ours is 24), field width 768 scales to 340 (ours is 342), field height scales to 56 (ours is 56).
+So the sizes were ALREADY the same. The only real difference was an empty band of 548px, 27% of the
+screen, between the forgot link and the first social button. The gap was the whole effect.
+
+
 ## 2026-08-10, the three top-bar controls, settled by him after I guessed wrong
 
 His words: *"the back button maybe, like, a circle, or the x button, that, like, the circle too and
@@ -803,6 +837,194 @@ plain icon pass.
 `/de/dev/mock/versions/business-teaser` (three stops).
 ---
 
+## 2026-08-09 to 2026-08-16 , the home / search-panel / chrome weeks, ON `main` and unrecorded
+
+Recorded 2026-08-17 by the weekly law pass. **extends** the 2026-08-09, 08-12 and 08-14 blocks above,
+which already hold six of this window's decisions; supersedes nothing in any of them.
+
+**These ARE live.** Unlike the branch block below, every row here is on `main` and is what the site
+does today. `main` took 306 commits in this window (383 including the merge of
+`agent-flow-design-overhaul-2af2c2`), and this log had recorded six of them.
+
+Rows marked approved-but-unquoted carry no verbatim from him; the commit records a pick, an approval or
+a rejection without quoting him. Labelled, not dressed up as his words.
+
+### Home feed and its sections (2026-08-14 to 08-16)
+
+| # | Decision | Owner, verbatim | Record |
+|---|---|---|---|
+| M1 | Popular looks ships as **variant B**: the look name sits on the photo in a solid white pill, no blur, no border. The TikTok credit badge comes off the photo; the creator's name stays beside the price. | *"Remove the TikTok part thingy"* | `041c09674`, 08-16 |
+| M2 | **All 26 stacked section versions rejected**, then one design named per section: Looks takes the Inspo card anatomy at 9:16 (not a 150 square), no TikTok badge, no black gradient, elevation-3 instead; Walk-in leads with the waiting count at 30px with colour-coded marks and `walkin.png` back; Reviews go 260x147 with the read-more inline in the quote. | approved-but-unquoted | `2ceddbd91`, 08-16 |
+| M4 | **Popular looks and Find your inspiration merge into one looks section.** Measured: same query, same eight image ids, two headings. | *"doesn't make any sense"* | `e848dd9c7`, 08-15 |
+| M5 | The Recently-viewed row renders through the page's own `SalonCard`, not a smaller bespoke card. Measured: his card 242x194 against mine at 112x90 on the same screen. Confirms FLOORS LAW 8 and 9. | *"make it like this"* · *"a normal section of the page"* | `87cf6e193`, 08-15 |
+| M6 | **The square 86x86 tile row (`RecentlyViewedTiles`) is deleted from the homepage**, said twice: hiding it inside a mockup was not what remove meant. Square photo tiles rejected by name again; every direction uses our 5:4. | approved-but-unquoted | `f614fa3e9`, `721b25f77`, 08-15 |
+| M7 | **Continue card = direction A**, reading as a sentence over two lines ("Continue searching for skin fades in Basel") with service and place in ink and a quiet lead-in. The grey page band under it is removed: on our white page it reads as a divider. | approved-but-unquoted | `20c3f0683`, `1a63b0dff`, 08-15 |
+| M8 | **Every block sits on the page's own 16px left line**, not Airbnb's 23.6pt gutter. The card keeps its shadow and drops its border. The category-pill LABEL goes 14 -> 13 while the icons stay 28. | approved-but-unquoted (he drew a red line down the left of the screenshot) | `fa5039d79`, 08-15 |
+| M9 | Continue-card corrections: not that tall (104px), no square photo (our 5/4), no dates or weekdays, no head count, no stacked photos (one photo), A shows the search itself and not a category, C uses fewer words, and the see-all is the circular Lucide arrow button this page already uses , a text link there was the inconsistency. | approved-but-unquoted | `588c1bb90`, 08-15 |
+| M10 | The city line comes OFF the continue card (all 20 salons are in one city, so it says nothing). The card gets TALLER, explicitly not wider. Category-pill icons shrink: 28px inside a 40px pill was 55% bigger than the reference's 18.4pt. | approved-but-unquoted | `150ac548e`, 08-15 |
+| M11 | The stylist row moves to the BOTTOM of the home feed, and the top card's photo becomes three fanned photos. **The stacked photos were reversed by him the next round (M9).** | approved-but-unquoted | `5dd12e4c8`, 08-15 |
+| M12 | The recent-search **icon stands alone at 26px with no container** , the 87x70 sunken rectangle standing in for a photo is gone, because a search is not a place. And the salon card's price goes 12/400 grey to **12/600 ink**, so the card carries two ink anchors again. | *"not balanced ... it looks empty"* | `d89dafdee`, 08-15 |
+| M13 | For a card on white with no photo: the sunken tray is rejected by name, the hairline is rejected, and elevation-2 is invisible to him, so the card steps to **elevation-3** as a documented deviation from FLOORS LAW 4. Whether the surface table gains a "card on white with no photo" row is his call, not mine. | approved-but-unquoted | `0762366f0`, 08-15 |
+| M15 | The "Solen for your business" block does not belong on the mobile home , desktop only. Measured 0 height on a phone against 401pt on desktop. | approved-but-unquoted | `77b268979`, 08-14 |
+| M14 | Delete the `/business` and `/fuer-salons` page files, keep the redirects. (Decision dated 08-14 in the body.) | approved-but-unquoted | `58db2c974`, 08-15 |
+
+### Category icons (2026-08-10 to 08-14) , still OPEN
+
+| # | Decision | Owner, verbatim | Record |
+|---|---|---|---|
+| M16 | **Five proposed icon styles rejected in a row:** 3D in colour, gloss on the circle, gloss on the glyph, a generated coral set, and the generated BLACK set. The family is back to the two sets already in the repo and the question is still open. | approved-but-unquoted | `77b268979`, 08-14 |
+| M22 | Category icons: black, flat, normal. One row, four solid black silhouettes, no colour, no shine, no gradient, no options; the coral set and the three gloss versions deleted. **Later rejected, see M16.** | approved-but-unquoted | `e68db7b84`, 08-12 |
+| M23 | Gloss belongs on the ICON, never on the pill or container; the container stays plain in every variant. | approved-but-unquoted | `fcbff0e92`, 08-12 |
+| M24 | Every category icon must mean its own category: a diamond is not a nail, and hair salon and barbershop may not share one scissors. | approved-but-unquoted | `d2ffb8db6`, 08-12 |
+| M25 | 2D, not 3D: the 3D renders come out of the search panel. Colour is sampled off the 2D set we own, which is monochrome coral, so per-category colour contradicts that set. | approved-but-unquoted | `1a49c87b9`, 08-12 |
+| M26 | The category rows use the drawn icon set already in the repo, and each tile's colour is READ OFF its own drawing rather than chosen (dryer hue 90, chair 50, polish 20, leaf 120; one lightness and one chroma across the set). | approved-but-unquoted | `6b71e5e73`, 08-12 |
+| M47 | **His own icon artwork is what ships** , barber chair, hair dryer, nail polish, spa stones, extracted from `solen-icon-motion.html` , not the old 1254px PNGs. | approved-but-unquoted (he named the branch) | `24927506e`, 08-10 |
+
+### Search panel and search field (2026-08-11 to 08-12)
+
+| # | Decision | Owner, verbatim | Record |
+|---|---|---|---|
+| M27 | Search-panel batch approved: salon rows carry the cover photo, gold star and rating value and **no review count**; category tiles take the computed tint system; the look card takes Inspo's own 9:16 (not squeezed to 3:4) with a two-line title; the section heading becomes the way into the Inspo feed (ink + chevron). | approved-but-unquoted | `d97bb4d4e`, `7ec174f8b`, `3992908f2`, 08-12 |
+| M32 | **The search field is variant B** , a white box with the back arrow INSIDE it on the left , with our own grey hairline instead of the reference's near-black (56 tall, radius 15). Settles the service field and the `Wo?` field as one control. | *"B but not black like gray sh yk."* | `a4e2cde2f`, 08-11 |
+| M33 | Earlier the same day he picked variant A: filled grey capsule, back chevron OUTSIDE the field, clear on a soft disc inside. **Superseded by M32 the same evening.** | approved-but-unquoted (one letter) | `f4905a364`, 08-11 |
+| M34 | **Revert the search-panel body**: recents, popular stores with live addresses, categories, then the "Für dich" look grid. A live rejection outranks the earlier one-list approval. What stays killed: the loading dots, the old no-result state, keyboard-on-open, and the hardcoded eight-city list. | *"Revert whats inside of the search search bar i had like inspo n allat u replaced w ass categorys."* | `85ae2d218`, 08-11 |
+| M35 | Picked off `/dev/search-states`: 1b one list on tap, 2b no loading dots (the clear X owns the field's right edge), 3b a no-result state with a way out and category rows under it. **1b was reversed hours later by M34.** | *"1b 2b 3 b"* | `a5b177c7d`, 08-11 |
+| M36 | Tapping the home search bar opens the sheet **unfocused with no keyboard**; tapping the FIELD is a separate second step. | *"i dont like when u click once yk from home search bar yk once u click its alrdy keyboard mode."* | `edcf44fe3`, 08-11 |
+| M37 | The collapsed row above the open step shows an ANSWER, never the field's placeholder: it reads "Alle Services", matching "Keine Präferenz" and "Jederzeit". | *"the on top of the wo yk once its expanded there is residue of search thats whats fucked."* | `d606fca3c`, 08-11 |
+| M53 | The category pill row renders on the home page with the current category selected (All pill + Inspo pill), and the home search bar opens the overlay **in place** rather than navigating to `/search`. His branch's `Header.tsx` and `HomeSearchPill.tsx` are canonical. The 2x3 tile grid restore is reverted. | *"look like there being on a category"* · *"it jumps me into another version"* | `f5ed1d9de`, `66217cdc4`, 08-10 |
+
+### Calendar , and the one that collides with a LOCKFILE row
+
+| # | Decision | Owner, verbatim | Record |
+|---|---|---|---|
+| M30 | **The tapped calendar day is INK (`rgb(10,10,10)`) with white numerals, not accent blue**, and the home search bar keeps its height on scroll (the 64 -> 44 shrink-and-swap is gone). **COLLIDES with the design-contract line that keeps blue for the calendar date/slot fill , flagged, not resolved, because this row carries no verbatim.** | approved-but-unquoted | `0cb12ca7e`, 08-12 |
+| M31 | Today's date in the calendar is NOT blue: it takes the calm grey sunken fill with bold ink. Blue is only the fill of the date you actually picked. | *"in wann why is it blue."* | `b6c20d937`, 08-11 |
+
+### Chrome: top bar, bottom bar, control shape (2026-08-09 to 08-11)
+
+| # | Decision | Owner, verbatim | Record |
+|---|---|---|---|
+| M38 | The bottom nav bar yields while a full-screen sheet is up; it was crossing the panel's own Suchen commit button by 12px. | *"bottom nav bar is everywhere."* | `0ba846668`, 08-11 |
+| M39 | The collapsed bottom bar keeps its WIDTH , it loses labels and height only (Instagram's is full-bleed and never narrows). Home search bar height goes 59 -> **64** on his call. | approved-but-unquoted (he named Instagram) | `7bc5c23ee`, 08-11 |
+| M40 | The gap between the search bar and the category-pill row is **20px** (was 36 from three stacked spacings); the row's own padding is the entire gap. | approved-but-unquoted (he drew a box around the band) | `f66ce5c0b`, 08-11 |
+| M41 | Home search bar holds Airbnb's aspect at OUR width (358/6.11 = 59 tall), label back to 14px/**500**, pill row to 80 tall so the 40px pill stops dominating. **Names a floor broken on his live instruction: three font weights (400/500/600) against the two-weight ceiling.** | approved-but-unquoted | `144167ab1`, 08-11 |
+| M42 | Everything at the top of the home page sits on one left edge, **16** , our own gutter beats copying Airbnb's absolute 342px pill width. | approved-but-unquoted | `ba47eebc4`, 08-10 |
+| M43 | **The bottom bar CONDENSES on scroll and never leaves** (labels go, glass stays, reachable throughout). Hide-on-scroll is a web pattern and is out. **Reverses `beae3e770` the same day.** | *"the bottom bar not being removed and get smaller, i told you go research w mobbin why did u not do it."* | `84a835b2f`, 08-10 |
+| M44 | The home search bar's outline is a light grey hairline `#E4E4E7`, not black. | *"when you scroll down and up on the phones"* | `beae3e770`, 08-10 |
+| M45 | The home search-bar ring goes from ink `#0A0A0A` to `s-ink-2` `#6B6B6B`: at 19.8:1 it was the heaviest mark on the page. | *"why is it black outline bro just make it gray or something."* | `d4ee7af12`, 08-10 |
+| M46 | His "c" meant BOTH: the search bar settles as one control (54 tall with the ring at rest, 44 with the hairline once scrolled), and the bottom bar is **frosted glass, floating** (12px inset, 12 off the bottom, fully rounded), variant B. **The height swap was later removed by M30.** | approved-but-unquoted | `d65674315`, 08-10 |
+| M48 | His locked home search-bar values are restored verbatim and outrank Airbnb's measurements: `py-2.5` (a pinned bar does not shrink, V3-D421d), the 1:1 copied `0 2px 8px 0 rgba(0,0,0,0.07)` shadow, 16px/500 label. | approved-but-unquoted | `110a31fac`, 08-10 |
+| M49 | **No hamburger in the bottom bar or the search bar**; the fourth item is a profile/User item; saved uses a **heart**, not a bookmark. | approved-but-unquoted | `56de9e3f8`, `3e7c7a4cc`, 08-10 |
+| M50 | **Mobile web ships a bottom nav bar** (four items), reversing two `REMOVED.md` rows that had banned a second nav. | approved-but-unquoted (the commit says a verbatim yes was filed in the graveyard, but does not quote it here) | `bae83e692`, 08-10 |
+| M51 | Sizes: home search bar 55 tall at top 12 with elevation-3; category pills 40 tall, 14px side padding, 28px icon; the 79px dead gap between the pill row and the first heading goes to 0 on mobile. The first bottom-bar item is **not "Home"**, and the replacement word never arrived. | *"I wanted the icons like this, the sizes"* | `ffb5eec8b`, 08-10 |
+| M52 | Five of his fifteen: the divider under the hero is deleted; the "In der Nähe" map block has no heading and no arrow and its chip leads with the city; the see-all arrow becomes a **circle in the right-hand slot** (36px in a 44px cell) instead of inline after the title; the pill row moves under the search bar on home, category and Inspo; pills shrink so the row visibly crops. The pill TREATMENT is untouched by name. | *"not on a category, it's already good."* | `d0979aeed`, 08-10 |
+| M54 | **No boxing:** review cards lose their per-card 1px border, 16px radius and 14px padding , the section container already draws that edge. A container edge PLUS per-row dividers is doubled chrome; pick one. Already LOCKFILE §17.2 law; this is the week it was enforced. | approved-but-unquoted (*"the boxing is the problem"*, twice this week) | `42ee4f35c`, `3f774b17d`, 08-10 |
+| M55 | **Round is the house control shape.** Measured: 890 round controls against 36 boxed in customer code. The system had no rule at all, which is why both shipped. | approved-but-unquoted | `fac03788e`, 08-10 |
+| M57 | **Every task screen keeps a way out.** Seven screens (walk-in join, both tipping screens, confirmation, staff invite, voucher and gift-card purchase) had been left with zero back or close controls; the back control goes back. **Corrects M58.** | approved-but-unquoted | `3107da56d`, 08-10 |
+| M58 | Top bars split three ways: browse keeps the full bar, detail gets a back arrow and the name only (never a notification count), task screens strip everything and put the action at the bottom, legal and marketing pages keep a menu for a cold landing. | approved-but-unquoted | `9300abfbd`, `c72e06527`, 08-09 |
+
+### The mockup format, corrected twice in four days
+
+| # | Decision | Owner, verbatim | Record |
+|---|---|---|---|
+| M29 | **What a mockup IS, said four times:** ONE real screen, full-bleed, silent, viewed on his phone, with before and after on a toggle. Not a comparison page with paragraphs, not a list, not a document, not two phone panes on a desktop page. | approved-but-unquoted | `5fa047bb4`, 08-12 |
+| M3 | **Amends M29 on SCOPE:** the mockup's scope matches the ask. One section or element under discussion means show THAT, at real width, with the variants STACKED , no top bar, no Before/After toggle, no iframe. The whole-page switcher template is banned for single-section work. Already applied to the CLAUDE.md mockup block. | *"remove the gate or anything that's making you do this shit so annoying"* · *"I can't even see a difference"* | `ca4b6b324`, `68d7804b9`, 08-15 |
+| M17 | The eleven-version comparison page is dropped and graveyarded: from v2 on the versions are indistinguishable on screen, so there was no choice in it. | approved-but-unquoted (*"nothing changes after v2"*) | `a91ed19b9`, 08-14 |
+| M18 | **Standing rule: anything he would SEE is never applied on a sensible default.** It is shown, and it waits for him. Both coming-soon icons were reverted to sparkles until he picked. | approved-but-unquoted | `fea79295c`, `1816db14f`, 08-14 |
+
+**Two collisions this block exposes, stated rather than resolved** (they are in the report's owner-
+decision section):
+
+1. **M30 against the design-contract date/slot row.** The contract keeps blue as the calendar's selected
+   fill; the shipped calendar has been ink since 08-12. M30 carries no verbatim, so the newest-owner-
+   decision rule cannot be applied to it safely.
+2. **M41 against the two-weight ceiling.** Three weights (400/500/600) ship on the home first viewport
+   on his live instruction, and the ceiling is not a taste axis he waived by name.
+
+---
+
+## 2026-08-14 to 2026-08-16 , the PDP / terminal / iOS week, recorded off UNMERGED branches
+
+Recorded 2026-08-17 by the weekly law pass. **extends** the "2026-08-03 to 2026-08-10, the account-hub
+week" block above, which is the same shape of record; supersedes nothing in it.
+
+**Read the caveat before the table.** Every decision below sits on a branch that is NOT merged into
+`main`, so this is a record of what he DECIDED, not a description of what the live site does. The three
+branches, measured 2026-08-17: `claude/pdp-styling-updates-b2582b` (56 commits ahead, tip 08-16),
+`claude/offline-booking-device-266b10` (36, tip 08-17), `claude/airbnb-animated-icons-ee4329` (24, tip
+08-15). Anyone building on `main` today will find the old treatment still there and must not read that
+as permission to keep it. This is the fourth consecutive pass to flag stranded branch work (07-27 D5,
+08-03 D5, 08-10 D5), though the pile did shrink this week: `agent-flow-design-overhaul-2af2c2` merged,
+carrying 383 commits onto `main`.
+
+**Rows marked approved-but-unquoted carry no verbatim quote from him.** The commit records an approval,
+a pick or a rejection without quoting him. They are labelled rather than dressed up as his words; if one
+of them was never actually approved, say so and the row comes out.
+
+### Salon PDP (`claude/pdp-styling-updates-b2582b`)
+
+| # | Decision | Owner, verbatim | Record |
+|---|---|---|---|
+| B1 | PDP round 2: the report control comes off every placement (header circle, hero frost, per-review flag, per-photo); rating + count + open status share one line; open status names the hour again ("Geöffnet bis 17:00"); services split one card each; About moves under the address; reviews get a 28px star row with the count in accent; discover-more becomes area pills over a two-column list. Open-green corrected `#22C55E` -> `#1F8900` (2.32:1 -> 4.53:1). | approved-but-unquoted | `1e855dfb7`, 08-15 |
+| B2 | Services group by CATEGORY, one card per category, inline cap 5 -> 6, copied from the booking service step. About collapses to a clamp with an inline toggle. Review rows lose the card AND the per-row hairline, gap -> 28px. The neighbourhood pill is gone from Discover more. | *"separate it"* | `26dc0fa18`, 08-15 |
+| B3 | "Small selection" on Zusatzinformationen was the LIST, not the type: 9 null amenity flags filled, 3 items -> 7. Type unchanged. | *"So small the selection"* | `7ea26870c`, 08-15 |
+| B4 | Review stars measured off his Fresha capture: summary row 26px, per-review row stars stay 13px (a 16px bump reverted). **Superseded one day later by B21.** | *"Make the stars bigger"* | `bcd84d4b0`, `fa0ab16e7`, 08-15 |
+| B5 | Gallery rebalanced to his Bildergalerie reference: venue tab = one column of full-bleed 16/9 photos (358x201), stylist tab = one full-width square plus two half-width. | *"not balance at all, it's just all weird"* | `498d55161`, 08-15 |
+| B6 | Soft black `#1C1C1F` selected state on salon filter pills, review tier pills and booking category pills. **Overruled by B19 the next day. Do not build from this row.** | approved-but-unquoted | `edc5a19a9`, 08-15 |
+| B7 | The About clamp is the documented copy-economy limit (~150 chars / 3 lines); the 4-line / 170-char variant was invented, not law. Collapsed block 91px -> 68px. | approved-but-unquoted | `edc5a19a9`, 08-15 |
+| B8 | Staff gallery switches by avatar disc: 75px discs, 12px spacing, count badge on the disc, name beneath. Measured off his screenshot. | approved-but-unquoted | `edc5a19a9`, 08-15 |
+| B9 | Every already-black FILL becomes soft black `#1C1C1F`; ink TEXT stays `#0A0A0A` by his carve-out; borders, glyphs and alpha scrims untouched. | approved-but-unquoted | `de4dac2ac`, 08-15 |
+| B10 | He picked C: TWO font weights on customer screens (semibold/bold demote to medium), dashboard exempt by name. Accepted cost: the salon name leads by size alone, not weight. | approved-but-unquoted | `66b2a52cc`, `3511941fb`, 08-15 |
+| B11 | "Pakete" is renamed **Combos** in all four locales plus dashboard nav and icon. The retail products section comes off the salon page (component, API and Stripe path kept). | approved-but-unquoted | `b0b5b836e`, 08-15 |
+| B12 | Combo icon = the two-merging-into-one glyph. Same turn: the multi-decision mockup page was rejected as unreadable, so it is one question at a time, one preview, options restyling it in place. | *"the combined two drilling into one"* | `b7b927ca6`, 08-15 |
+| B13 | Green A for the opening-hours dots; the word beside it takes the AA-legible `.text` variant of the same green (4.53:1), because A alone is 2.68:1. Combo card takes "One font". | approved-but-unquoted | `eedd98083`, 08-15 |
+| B14 | His nearby-rail ask ships as TWO rails: "Zuletzt angesehen" (history, hides when empty) and "Ähnliche Stores" (same category, renamed from the old rail). | approved-but-unquoted | `21a9655ff`, `2d6ab4b7f`, 08-15 |
+| B15 | Reviews section rejected as out of place: 8 type sizes -> 4, initials disc 56 -> 44px with the name the heaviest thing in its row, owner-reply tray becomes a left rule instead of a filled box. The big star row was checked and deliberately kept. | *"Looks weird"* | `f052c6e7d`, 08-15 |
+| B16 | Stop producing mockups this round and apply what he had already picked. | approved-but-unquoted | `70ab64cff`, 08-15 |
+| B17 | Review filter pills drop the brackets around the count, on both copies of the reviews list and on the Alle pill in all four locales. | the pill read *"5 star (10)"*; he wants the count with no brackets | `b5a191eb2`, `2a95b7b7d`, 08-15 |
+| B18 | Counts come OFF the star filter pills entirely (asked twice); the total stays on the Alle pill; the star glyph inside the pill gets bigger. **Reverses the counts half of the 2026-07-24 F2 pick (`REMOVED.md`).** | approved-but-unquoted | `d194a86f6`, 08-16 |
+| B19 | The selected pill reverts from black to the calm grey: the black is too harsh and does not match. **Restores the locked design-contract row and `REMOVED.md:41` (owner 2026-06-29); overrules B6.** | approved-but-unquoted | `d194a86f6`, 08-16 |
+| B20 | Chips beat a rating bar chart on the reviews screen, and that stands even though Airbnb uses a chart, because 16 reviews is not a distribution. Only the counts half of the 07-24 pick reverses. | approved-but-unquoted | `ba248514b`, 08-16 |
+| B21 | He tapped the option carrying four changes, now on the real screens: reviewer photo 44 -> 62px; filter pills stop being stretched capsules and take a deliberate 16px corner (this edits the every-button-is-a-capsule rule and a shared control 29 files import); row stars 13 -> 18px, past both references, his taste; the review score becomes the page anchor at 44px, above the "Reviews" heading. **Supersedes B4 on row-star size.** | approved-but-unquoted | `f0ab90328`, `41174f1b9`, `ac1ec574c`, 08-16 |
+| B22 | Preview and mockup pages carry none of the app's furniture (no header, no bottom bar, no cookie strip), and the comparison numbers sit UNDER the thing being judged, never between the controls and it. | approved-but-unquoted | `16c8c6e2c`, `59fcc5ac4`, 08-16 |
+| B23 | The body typeface was never loading on any screen (zero body font files, an empty variable killing the whole stack); he had said repeatedly he kept seeing a font he did not want. Confirms the locked font row, changes nothing in it. | approved-but-unquoted | `cf20e6f52`, 08-16 |
+| B37 | **Left OPEN on purpose:** our own written rules contradict each other on type sizes (one demands 6-7, another caps at 4), named as the third cause of the clutter he complained about. Reconciling it rewrites a locked row across every screen, so it waits on him. | approved-but-unquoted (a question, not an answer) | `2b4f75120`, `cf69073dd`, 08-16 |
+
+### Merchant terminal (`claude/offline-booking-device-266b10`)
+
+| # | Decision | Owner, verbatim | Record |
+|---|---|---|---|
+| B24 | The merchant terminal is the Uber Eats merchant screen MINUS the physical device he explicitly does not want; auto-accept stays the default, so it is a live board and not an approval gate. | approved-but-unquoted | `f94c485be`, 08-15 |
+| B25 | A mockup is composed from the shipping components (Avatar, TabPill, the PDP's grouped-list-card, row and button class strings), never hand-written Tailwind. Confirms FLOORS LAW 9 in his own words. | *"this mockup doesn't reflect our design system ... you're just using inconsistent everything"* | `85f03144a`, 08-15 |
+| B26 | The seven-tab operator screen is rejected: ONE bar of chrome (116px of stacked chrome was measured), it must hold high volume and several people at once, and its rows must be clickable and actionable. | *"why are you making me such a sloppy fucking shit"* · *"what if there is a lot and multiple people"* · *"why don't you make it clickable, for example new booking, how are we gonna do that"* | `50203db09`, 08-15 |
+| B27 | A prototype must DO something on tap: state changes, arrivals, undo, sound. Rendering the data is not a prototype. | *"you just made setup and didn't change the design or nothing ... make actual, like, a fucking prototype"* | `3f8919113`, 08-15 |
+| B28 | A mockup must be in the server HTML from the first byte, not client-only after hydration. | *"The mockup isn't working at all."* | `2d0eb6e2a`, 08-15 |
+| B29 | The operator canvas is WHITE, not grey, and 14 is the workhorse text size, both matching the salon PDP. Measured: the PDP uses 14 forty-five times and 13 thirty-two times; the terminal was 13 forty-nine times and 14 zero times. | *"i dont like ths gray backrgrounf evrth container sh bro and the fonts arent it too bro look how we do it in pdp page of a salon"* | `e31a1b8a8`, 08-16 |
+| B30 | The beige sticky bar is rejected. `#FDF6E7` (`s-warning.bg`) is a legal token in an illegal ROLE: a pastel `.bg` lives on an inline chip or badge, and a bar is white. Third case of the same disease. | *"You made up a random fucking collar that's beige. I don't fucking know it."* | `367442f04`, 08-16 |
+| B31 | Colour means state and nothing else: Accept goes green `#16A34A`, "New" carries no colour because new is an AGE not a state, the black dot and black count are deleted (black is for words), a fact appears once, and a control is named after what you will SEE ("Show the whole day", the whole bar is the button). | approved-but-unquoted (his selections reported, not quoted) | `11d255b31`, 08-16 |
+| B32 | The sixth rejection settles the Screen Principle: a screen is NAMED operator or customer before it is built, and the customer FLOORS LAW is scoped so it stops demanding the sunken grey tray (floor 4) and a semantic-colour moment (floor 1d) on photo-less operator screens. A list of people is ROWS, not a card each. | approved-but-unquoted (expressed by rejection) | `5aa1e12da`, `9ca5063b3`, 08-16 |
+
+### iOS app (`claude/airbnb-animated-icons-ee4329`)
+
+| # | Decision | Owner, verbatim | Record |
+|---|---|---|---|
+| B33 | The whole iOS app is overhauled to match the web's look but with liquid glass and real native motion. **Superseded the same day by B34.** | approved-but-unquoted | `bcbf8c0bd`, 08-14 |
+| B34 | iOS canon = the main web. Light only (his 2026-07-15 rule), and glass kept ONLY in the three placements `THEMING.md` already names. | approved-but-unquoted | `b774dc86c`, 08-14 |
+| B35 | The app must be one to one with the web: every customer web route gets an app equivalent (34 gaps -> 0), with killed features excluded from the denominator by name (chat/messages, vouchers/gift cards). | approved-but-unquoted | `9f6f7ac0d`, `81f88e872`, 08-14 |
+| B36 | The booking time step's SAMPLE slots are fabrication and come out; real availability and a real confirmation screen replace them. Confirms taste rule 1. | approved-but-unquoted | `06255bb23`, `252060ce0`, 08-14 |
+
+**Three collisions this harvest exposes, stated rather than resolved:**
+
+1. **B6 against B19, one day apart.** He picked soft-black selected pills on 08-15, overruling the locked
+   calm-grey row and `REMOVED.md:41` by name, then on 08-16 called the black too harsh and sent it back to
+   calm grey , the same objection he made in June. The newer call wins and `main` was right all along.
+2. **B18 against the 2026-07-24 F2 pick.** He chose chips-with-counts then and killed the counts now.
+   Chips-over-bars survives (B20), so only half of that pick reverses.
+3. **B21 against B4, one day apart.** Row stars measured to 13 on 08-15 off his own Fresha capture, then
+   raised to 18 on 08-16 as his taste deliberately going past both references.
+
+---
+
 ## Locked-rule keyword index (governance backfill, 2026-07-10)
 
 These are LOCKFILE-locked calls that never ran through the Rounds 1-4 mockup-elicitation
@@ -843,3 +1065,89 @@ Card/block = 16 (`rounded-card`); button/chip = pill; input = 16; sheet = 28; im
 (0), with the SalonResultCard photo exception (`rounded-card`, V3-D350). CLAUDE.md design
 contract "radius" row.
 - keywords: radius, border radius, rounded, rounded card, rounded pill, rounded input, rounded sheet, corner radius
+
+## 2026-08-21, the six-decisions page, and why four of the six should never have reached him
+
+He answered a page of six decisions with one message. Four of his six answers were a version of
+"why are you asking me this at all", so the answers and the reason each question was wrong are both
+recorded here, because the reason is the reusable part.
+
+Verbatim: *"I like these dumb stupid shit. I told you to use some agents counsel, you know, for
+these small stuff. Like, why would you need my opinion for these small stuff? ... I'm seeing, like,
+a core pattern of you not actually firing the fucking gates. The gate is not flagging and stuff.
+Right? These are obvious fucking questions."*
+
+| # | the question | his answer | should it have been asked |
+|---|---|---|---|
+| 1 | the code box on the payment screen shows for salons with no vouchers | **A: hide the box unless that salon has a voucher with money on it** | yes, a real product fork |
+| 2 | can someone rate a salon they never booked | **already answered, stop asking** | NO. He settled it on 2026-08-09 in the ten-decisions message: *"4B like google maps"*. The answer is quoted in `app/api/reviews/route.ts` at the top of the eligibility branch. I asked him to re-decide something the code cites him deciding. |
+| 3 | what I do when context runs out mid-job | **already solved, we have a system** | NO. `_plans/ACTIVE.md` auto-injects and survives compaction, and a SessionStart hook re-verifies after one. The machinery he is describing already runs. |
+| 4 | 13px or 14px on one button | **cannot judge it, use a council, what is the core cause** | NO. See below. |
+| 5 | the German word for "Salon" | **research it with a sub-council, look at other platforms** | the question was fair, the FORM was not: it was a menu, not a researched recommendation |
+| 6 | switch on the new reply rules | **I do not understand it and should not have to approve it** | NO. Nothing about it is his taste. |
+
+**The core cause of number 4, which is the one he asked for by name.** This system has ceilings
+(at most 4 sizes, at most 2 weights) and floors (a button is never below 13px, a display anchor is
+at least 28px). It has no rule for the case where BOTH candidate values are legal. 13 and 14 both
+clear the floor and both sit on the scale, so nothing in 80KB of design law says who picks, and the
+default with no rule is to ask him. That is the whole mechanism. It is not forgetfulness and it is
+not laziness, it is a missing tier: the system says what is ALLOWED and never says what is MINE.
+
+**The fix, same day:** `_design-system/TASTE_AUTHORITY.md`, which grants a subagent the authority
+to decide inside a stated indifference band and names what still needs him.
+
+**On his "the gates are not firing", measured rather than agreed with, and the FIRST count was
+wrong.** 287 hook files sit on disk. The first pass called a gate live only if its filename appears
+in a settings file, and reported 209 live with 50 tested-but-dead. That method is wrong twice over,
+and a known-answer control caught it: `measurement-needs-scope-gate.py` fired on a real reply the
+same hour while the method called it dead. Three ARMED aggregators (`evidence-family`, `link-family`,
+`reply-family`) dispatch member gates that never appear in settings by name. Counting those as live
+went too far in the other direction and resurrected `concise-response-gate.py`, which he killed on
+2026-08-08, because another hook's DOCSTRING mentions it by name. Corrected method: a gate is live
+when settings names it, or when a live hook EXECUTES it, docstring prose excluded. Corrected
+numbers: **231 live, 11 shelved helpers, 41 running nowhere, 28 of those with a passing suite.**
+
+The one gate that refuses the exact message that produced this complaint,
+`no-permission-question-gate.py`, was among the unwired. Built, tested, never armed. Armed
+2026-08-21 along with `measure-dont-ask-gate.py` and `mockup-already-answered-gate.py`, each driven
+first over 198 real closing messages from this session to confirm it does not refuse ordinary work.
+The remaining 25 were NOT mass-armed: the standing wiring tool would have re-armed
+`concise-response-gate.py` and `reply-length-gate.py`, which he killed by name on 2026-08-08.
+
+
+## 2026-08-21, the 20 dead gates audited, and the arm list came out EMPTY
+
+After correcting the count (231 live, 41 running nowhere, 28 of those tested), 20 of the dead ones
+that are not reply-shape gates were driven with real input, then handed to an adversary who had not
+audited them and was told to break them.
+
+**Eight were recommended for arming. All eight broke.** Seven of the eight breaks were re-checked
+against the real files by the arbiter rather than taken on report. Examples, so the shape is clear:
+
+- `touch-action-scroll-gate.py` would refuse a carousel written the same way as one already
+  shipping in this repo (`components/ui/animated-testimonials.tsx:139` carries `touchAction:
+  "pan-y"` as a committed, deliberate fix, and the gate refuses exactly that value).
+- `repeat-fix-simplify-gate.py` matches the bare nouns check/gate/hook/rule, so three DIFFERENT
+  gates each fixed once in one session trips its "you fixed the same defect three times" accusation.
+  That is the exact shape of a hardening session.
+- `halved-is-not-fixed-gate.py` defines `REDUCTION_IS_THE_GOAL` at line 71 and references it
+  nowhere, so the performance exemption its own docstring promises is dead code and an honest
+  "800ms to 320ms" is refused.
+- `brand-claim-needs-capture-gate.py` fails BOTH ways: it blocks "Stripe uses idempotency keys"
+  and lets through "Airbnb fades the fields in", which is the founding sin it was built for.
+
+**Two are DELETE, not LEAVE.** `loop-does-not-report-gate.py` is beaten by the live
+`unfinished-batch-gate.py`. `repeat-claim-needs-repro-gate.py` was already live once and HE ordered
+it off on 2026-08-09 for causing repeated messages; re-arming it would repeat the mistake the audit
+exists to catch. Re-measured today at 22% of real closing messages.
+
+**THE FINDING THAT ACTUALLY ANSWERS HIS COMPLAINT, and it reframes it.** Seven of the eight had
+never been shown to catch a single real thing before any attacker touched them. The dead pile is
+therefore not a pile of missed protection. If checks are not flagging obvious things, the cause is
+in the 231 that ARE running, not in the 41 that are not, and that is a different job from this one.
+
+**Honest limit, stated because the measuring tool has real blind spots.** The shared driver feeds
+closing-message text only, so a "0 of 200, therefore safe" number is guaranteed zero for any gate
+that inspects a tool call before it runs, needs several turns of history, or scans project files
+instead of messages. Three of the eight fall in those categories and their safety numbers were not
+evidence.

@@ -1,0 +1,189 @@
+<!--
+Base: capture live
+Scale: full-page
+Mockup-scope: section
+Grounded-in: components-legacy/auth/SignIn.tsx
+Reference-checked: _design-system/references/quizlet--login.md
+
+measure-ok: the proposals are NOT derived from the reference's dimensions, so there is nothing of
+its to match. Every size below comes from OUR OWN live page, measured this session with
+getBoundingClientRect and getComputedStyle at 390x844, plus the locked contract. What was taken from
+the Quizlet capture is STRUCTURE (one chrome control, no subtitle, no divider, the ways in pushed to
+the bottom, the ways in differentiated), not one pixel value. The reference arrived inline rather
+than as a file, so pixel-spec-auto could not be pointed at it, and claiming a measured number off it
+would be inventing one.
+
+BEFORE is a LIVE iframe of the real /de/auth/login route, not a hand redraw. The two proposals sit
+BESIDE it at the same 390 size rather than behind a Before/After toggle, because the owner banned
+that template by name on 2026-08-15 ("stop using templates ... that weird top bar ... I cannot even
+see a difference"), and CLAUDE.md records the ban.
+
+Exists-check: `npm run exists login` -> the surface already exists at app/[locale]/auth/login/page.tsx
+(route /[locale]/auth/login) plus /api/auth/login. Nothing net-new is proposed; the only new thing
+is the TREATMENT of an existing screen. REMOVED.md hit: the /dev/audit-fixes per-finding
+before/after PANEL model was rejected 2026-07-08, and this is not that.
+
+Every element drawn is traced to a real file BEFORE drawing it. Nothing is invented:
+
+Depicts: page title and subtitle -> app/[locale]/auth/login/page.tsx:12-17 (h1 text-[28px] font-semibold, p text-[15px] text-s-ink-2)
+Depicts: email field -> components-legacy/auth/SignIn.tsx (19 email references)
+Depicts: password field with reveal toggle -> components-legacy/auth/SignIn.tsx (20 password references)
+Depicts: the sign-in commit button -> components-legacy/auth/SignIn.tsx (8 submit references)
+Depicts: forgot-password link -> components-legacy/auth/SignIn.tsx:248 ("Passwort vergessen?")
+Depicts: Continue with Apple -> components-legacy/auth/SignIn.tsx (5 apple references)
+Depicts: Continue with Google -> components-legacy/auth/SignIn.tsx (5 google references)
+Depicts: the "or" divider -> components-legacy/auth/SignIn.tsx (2 divider references)
+Depicts: the terms line -> components-legacy/auth/SignIn.tsx (1 terms reference)
+Depicts: back arrow and hamburger -> app/[locale]/layout.tsx:13, the global Header renders on this route
+NET-NEW: nothing. Both proposals only REMOVE elements and restyle survivors.
+
+Diagnosis: too many type sizes on one screen | measured 5 distinct sizes across 14 text elements in the first viewport at 390x844 (28px x1, 15px x5, 14px x2, 13px x4, 12px x2) | violates CLAUDE.md NEVER-AGAIN floor 2, "4 distinct font sizes AND <= 2 distinct weights on one screen" | target 4 sizes or fewer
+Diagnosis: too many type weights on one screen | measured 3 distinct weights in that same viewport (400 x5, 500 x4, 600 x5) | violates the weight half of that same floor 2 | target 2 weights or fewer
+Diagnosis: two chrome controls on a focused flow | measured 2 controls both 44x44 at top 20, a back button and a hamburger, on a screen whose only job is signing in | violates the design contract nav row, "sub-page nav is single ... No stacked home+back (V3-D449)" | target 1 control
+Diagnosis: the two ways in are visually identical | measured 0 differing properties between the Apple and Google buttons across 5 compared (width 342 vs 342, height 56 vs 56, radius 99 vs 99, background rgb(255,255,255) vs rgb(255,255,255), border 1px rgb(228,228,231) vs 1px rgb(228,228,231)) | violates FLOORS LAW 6, whose two-anchor rule needs one element to lead a group | target 1 differing property or more, of those 5
+
+measured: our live page at 390x844, this session, not recalled.
+  title              28px / 600, box 342x31
+  inputs             342x56, radius 12px, background rgb(255,255,255), border 1px rgb(228,228,231)
+  commit CTA         342x56, radius 99px, background rgb(10,10,10)
+  forgot-password    13px / 500, colour rgb(39,110,241)
+  Apple and Google   both 342x56, radius 99px, white, same hairline
+
+floors: (a) no photographic focal, and none is wanted, this is a form, which FLOORS LAW 2 exempts
+by name; (b) the title is the single biggest element at 28px; (c) no fabricated number anywhere,
+every string is real UI copy; (d) semantic colour is deliberately absent, so the one thing to press
+is the ink commit CTA; (e) no dead grey zone, the empty band is the reference's own device for
+separating the two groups; (f) worst case holds, the longest German label "Mit Google anmelden"
+fits the 342 width at 15px with room to spare.
+-->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Login, uncluttered</title>
+<style>
+  :root{ --ink:#0A0A0A; --ink2:#6B6B6B; --line:#E4E4E7; --sunken:#F4F4F5; --white:#fff; --page:#F4F4F5; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--page);color:var(--ink);
+    font:15px/1.5 Inter,-apple-system,system-ui,sans-serif;-webkit-text-size-adjust:100%;
+    padding:28px 16px 64px}
+  .head{max-width:1280px;margin:0 auto 26px}
+  h1{font-family:"Inter Tight",Inter,sans-serif;font-size:30px;font-weight:600;letter-spacing:-.02em;margin-bottom:8px}
+  .head p{color:var(--ink2);max-width:62ch}
+  .rail{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;max-width:1280px;margin:0 auto}
+  /* 2026-08-20: without a viewport tag this rendered at 980 wide on his phone, so the
+     two 390 panels sat side by side and both came out shrunk. Caught by the mobile-view
+     gate, which is the case it exists for. On a phone they stack at full width. */
+  @media (max-width:860px){ .rail{flex-direction:column;align-items:center}
+    .col,.screen,.live,.live iframe{width:100%;max-width:390px} }
+  .col{width:390px;max-width:100%}
+  .cap{margin:0 0 10px 2px}
+  .cap b{font-weight:600;display:block}
+  .cap span{color:var(--ink2);font-size:13px}
+  .screen{width:390px;max-width:100%;height:844px;background:var(--white);border:1px solid var(--line);
+    border-radius:24px;overflow:hidden;display:flex;flex-direction:column;padding:20px 24px 28px}
+  .live{width:390px;max-width:100%;height:844px;border:1px solid var(--line);border-radius:24px;
+    overflow:hidden;background:var(--white)}
+  .live iframe{width:390px;height:844px;border:0;display:block;transform-origin:top left}
+  /* 2026-08-20, caught on the phone pass: at 390 the column is 358 wide, so a fixed 390 iframe
+     was clipping its own right edge (the hamburger was sliced in half). Scale to fit instead. */
+  @media (max-width:860px){
+    .live{height:calc(844px * 358 / 390)}
+    .live iframe{transform:scale(calc(358 / 390))}
+    .screen{height:calc(844px * 358 / 390);padding:18px 22px 24px}
+  }
+  .icon{width:44px;height:44px;border-radius:9999px;display:grid;place-items:center;
+    border:1px solid var(--line);background:var(--white);font-size:15px;color:var(--ink)}
+  .title{font-family:"Inter Tight",Inter,sans-serif;font-size:28px;font-weight:600;letter-spacing:-.02em;line-height:1.15}
+  .field{height:56px;border-radius:12px;display:flex;align-items:center;padding:0 16px}
+  .field.line{background:var(--white);border:1px solid var(--line)}
+  .field.fill{background:var(--sunken);border:1px solid transparent}
+  .ph{color:var(--ink2)}
+  .cta{height:56px;border-radius:99px;display:grid;place-items:center;font-weight:500}
+  .cta.ink{background:var(--ink);color:#fff}
+  .cta.line{background:var(--white);border:1px solid var(--line);color:var(--ink)}
+  .cta.soft{background:var(--sunken);color:var(--ink)}
+  .link{font-weight:500;text-align:center}
+  .inklink{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+  .stack{display:flex;flex-direction:column}
+  .grow{flex:1}
+  .legal2{text-align:center;font-size:13px;color:var(--ink2)}
+  .legal2 b{color:var(--ink);font-weight:600}
+  .g{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:9999px;font-weight:600}
+  .row{display:flex;align-items:center;justify-content:center;gap:10px}
+  .row svg{display:block;flex:none}
+  .note{max-width:1280px;margin:30px auto 0;color:var(--ink2);line-height:1.6}
+  .note b{color:var(--ink)}
+  .note ul{margin:8px 0 0 18px}
+  .note li{margin-bottom:6px}
+  .warn{border-left:3px solid var(--ink);padding-left:14px;margin-top:22px}
+</style>
+
+<div class="head">
+  <h1>Login, uncluttered</h1>
+  <p>Your real screen first, then the version you picked, both at real phone size. Logos in
+     colour, the two ways in moved up off the floor, create account kept. No blue.</p>
+</div>
+
+<div class="rail">
+
+  <div class="col">
+    <div class="cap"><b>Now, live</b><span>The real page. 5 text sizes, 3 weights, 2 chrome buttons.</span></div>
+    <div class="live"><iframe src="/de/auth/login" title="the real login page" loading="lazy"></iframe></div>
+  </div>
+
+  <div class="col">
+    <div class="cap"><b>B, with your three changes</b><span>Logos in colour, the ways in moved up, and create account kept.</span></div>
+    <div class="screen">
+      <div class="stack">
+        <div class="icon">&larr;</div>
+        <div style="height:40px"></div>
+        <div class="title">Sign in</div>
+        <div style="height:28px"></div>
+        <div class="field fill"><span class="ph">Email address</span></div>
+        <div style="height:12px"></div>
+        <div class="field fill"><span class="ph">Password</span><span style="margin-left:auto;color:var(--ink2)">&#9673;</span></div>
+        <div style="height:16px"></div>
+        <div class="cta ink">Sign in</div>
+        <div style="height:18px"></div>
+        <div class="link inklink">Forgot password?</div>
+      </div>
+      <div style="height:120px"></div>
+      <div class="stack" style="gap:12px">
+        <div class="cta ink"><span class="row"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.05 12.04c-.03-2.6 2.12-3.85 2.22-3.91-1.21-1.77-3.09-2.01-3.76-2.04-1.6-.16-3.12.94-3.93.94-.81 0-2.06-.92-3.39-.89-1.74.03-3.35 1.01-4.25 2.57-1.81 3.14-.46 7.79 1.3 10.34.86 1.25 1.88 2.65 3.22 2.6 1.29-.05 1.78-.83 3.34-.83 1.56 0 2 .83 3.37.81 1.39-.03 2.27-1.27 3.12-2.53.98-1.45 1.39-2.85 1.41-2.92-.03-.01-2.71-1.04-2.74-4.13zM14.69 4.5c.71-.86 1.19-2.06 1.06-3.25-1.02.04-2.26.68-2.99 1.54-.66.76-1.23 1.98-1.08 3.15 1.14.09 2.3-.58 3.01-1.44z"/></svg> Continue with Apple</span></div>
+        <div class="cta soft"><span class="row"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Continue with Google</span></div>
+        <div style="height:20px"></div>
+        <div class="legal2">No account yet? <b>Create one</b></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="note">
+  <b>What came off, and why each one counted as clutter</b>
+  <ul>
+    <li><b>The menu button.</b> A second way out of a screen whose only job is getting you in. Your own nav rule says one control per sub-page.</li>
+    <li><b>The subtitle.</b> It explains what signing in is, to someone who already tapped sign in.</li>
+    <li><b>The word "or" with two rules through it.</b> The empty gap already says it, which is exactly what the reference does.</li>
+    <li><b>The legal line.</b> That belongs where an account gets created, not on a return visit.</li>
+    <li><b>The blue.</b> Forgot password becomes an underlined ink link, so the one strong thing on the screen is the button you actually want pressed.</li>
+  </ul>
+
+  <div class="warn">
+    <b>Removing those is not only taste. It fixes two things your own rules already forbid.</b>
+    Measured on the live screen: 5 different text sizes and 3 different weights in one view, where
+    your floor is 4 and 2. Both proposals come in at 2 and 2.
+  </div>
+
+  <div class="warn">
+    <b>One thing in the reference collides with a decision you made, so I did not just apply it.</b>
+    Quizlet's fields are grey filled with no outline. On 2026-08-09 you said inputs are white with a
+    thin line, and that tapping one should change nothing visible. B uses the grey fill so you can
+    see it against A. If you prefer B, that is you changing that call, not me quietly dropping it.
+  </div>
+
+  <div class="warn">
+    <b>The other thing I did not copy.</b> The reference has three ways in, so its bottom block reads
+    as a set of choices. You have two, and right now they match on all five things I compared: width,
+    height, corner radius, fill and border. They read as one button repeated. B gives them different
+    fills. A keeps them identical and just moves them down.
+  </div>
+</div>

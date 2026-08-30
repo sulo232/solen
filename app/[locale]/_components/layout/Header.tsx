@@ -27,6 +27,7 @@ import { getCityName, type CitySlug } from "@/lib/cities";
 import { getPersistedCity, setPersistedCity } from "@/lib/city-cookie";
 import { useActiveCities } from "@/hooks/useActiveCities";
 import { strokeForSize } from "@/lib/icon-stroke";
+import { ownsItsOwnBack } from "./FooterGate";
 
 /**
  * V3 Header, V2-D46 (2026-05-09).
@@ -385,6 +386,21 @@ export default function Header({ locale }: { locale: string }) {
     return false;
   }, [pathname]);
 
+  // Routes that render their OWN local back control (ownsItsOwnBack, IMPORTED from
+  // FooterGate.tsx, not copied). This is deliberately a DIFFERENT classifier than isTaskStep:
+  // isTaskStep answers "hide the footer", ownsItsOwnBack answers "does the page already have a
+  // back button". Reusing isTaskStep here once broke /salon/[slug]/reviews (zero back controls,
+  // confirmed live 2026-08-23), because that route is task-step (hides the footer) but gave up
+  // its own local back on 2026-08-09 and relies on this header. ownsItsOwnBack's own list in
+  // FooterGate.tsx is the single source of truth; nothing is duplicated here. On a route this
+  // returns true for, the header renders neither the home tile nor its own back in the
+  // far-left slot, since the page below already has one.
+  const routeOwnsItsOwnBack = React.useMemo(() => {
+    if (!pathname) return false;
+    const seg = pathname.replace(/^\/[a-z]{2}/, "").replace(/\/$/, "") || "/";
+    return ownsItsOwnBack(seg);
+  }, [pathname]);
+
   // V3-D349 (2026-05-28): detect a category/search route so the fused compact
   // search pill only ever appears there. Matches /{locale}/{segment} exactly
   // (trailing slash tolerated); query string is irrelevant to pathname.
@@ -404,6 +420,15 @@ export default function Header({ locale }: { locale: string }) {
   // Owner 2026-06-29 (council-confirmed): on the HOMEPAGE the far-left slot shows the Solen logo (the
   // home icon is redundant on home). Other top-level pages keep the Home icon as a go-home affordance.
   const isHome = !!pathname && /^\/[a-z]{2}\/?$/.test(pathname);
+  // 2026-08-21 (owner, measured live at 390x844, not eyeballed: 2 chrome controls on
+  // /auth/login top row against the approved login mockup's 1). The four auth screens
+  // (login/register/signup/reset-password) are a single focused flow with nothing the
+  // hamburger menu needs to reach, same reasoning the salon-detail / dashboard branches
+  // already use elsewhere in this file to drop chrome that doesn't belong on a narrow
+  // task. Scoped narrowly: this only feeds the hamburger button's own className below
+  // (the far-left back-arrow tile from isTopLevel stays, desktop nav is untouched since
+  // the hamburger is already md:hidden there).
+  const isFocusedAuthFlow = !!pathname && /^\/[a-z]{2}\/auth\/(login|register|signup|reset-password)(\/|$)/.test(pathname);
   // V3-D (2026-08-01, owner "why is homepage still that bro"): the home route now renders the
   // SAME mobile category-chrome as the category/search routes (the All pill selected via
   // HEADER_CATEGORIES' `home` entry above), so it opts into every MOBILE-ONLY categorySegment
@@ -741,6 +766,13 @@ export default function Header({ locale }: { locale: string }) {
           >
             <Home size={22} strokeWidth={2.2} aria-hidden />
           </Link>
+        ) : routeOwnsItsOwnBack ? (
+          // The page below owns its own back (ownsItsOwnBack, imported from FooterGate.tsx), so
+          // this slot renders neither home nor back. Same h-11 w-11 footprint as the tile it
+          // replaces, kept in the layout (not unmounted) via the same opacity-0
+          // pointer-events-none technique this file already uses on the logo/home tile above to
+          // hold space while menuOpen, so the hamburger slot never shifts.
+          <div className="h-11 w-11 shrink-0 opacity-0 pointer-events-none" aria-hidden />
         ) : (
           // V3-D461: deep page → BACK (router.back with a home fallback for direct loads). Same tile.
           <button
@@ -945,6 +977,11 @@ export default function Header({ locale }: { locale: string }) {
               // target 40px; folds with the header on category-route scroll.
               "md:hidden relative grid h-11 w-11 place-items-center rounded-input shadow-elevation-2 transition-[transform,background-color,border-color] duration-200 ease-glide active:scale-[0.94] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               isDark ? "border-white/30 bg-white/10 text-white" : "border-s-border bg-white text-s-ink",
+              // 2026-08-21: the auth screens are a single focused flow (login/register/signup/
+              // reset-password), so the menu control is dropped there. The back arrow above
+              // (isTopLevel branch) is untouched, this hides only the hamburger, and only on
+              // those four routes; every other route keeps it exactly as before.
+              isFocusedAuthFlow && "hidden",
             )}
           >
             <span

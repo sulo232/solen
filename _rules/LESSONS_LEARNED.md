@@ -465,11 +465,21 @@ Copying UI from a component file into a mockup reproduced a discount badge that 
 - **Fix / What to do instead**: Before handing over any localhost / 127.0.0.1 / trycloudflare URL,
   OPEN that exact URL in the same turn (browser navigate + get_page_text or a screenshot, or curl)
   and confirm it returns the page you mean. If it does not resolve, say so instead of shipping the
-  link. Enforced by `~/.claude/pending-hooks/link-verified-gate.py` (Stop hook, self-tested 11/11:
+  link. ~~Enforced by `~/.claude/pending-hooks/link-verified-gate.py` (Stop hook, self-tested 11/11:
   4 block cases, 7 pass cases incl. backticked and fenced URLs and public https as out of scope).
   ARM IT WITH: `bash ~/.claude/pending-hooks/arm-link-verified-gate.sh` from a non-sandboxed shell.
   It is NOT armed yet: `~/.claude/settings.json` and the whole `~/.claude/hooks` directory are
-  read-only under SANDBOX_RUNTIME=1 (`open(path,"r+")` -> PermissionError Errno 1, measured).
+  read-only under SANDBOX_RUNTIME=1 (`open(path,"r+")` -> PermissionError Errno 1, measured).~~
+  **CORRECTED 2026-08-18, stale in three ways, and the one that matters is that this rule IS
+  enforced.** (a) **The gate is LIVE.** `link-verified-gate.py` appears in no settings file, but
+  that is not the test here: it is a MEMBER of `~/.claude/hooks/link-family-aggregator.py`, which IS
+  wired in `~/.claude/settings.json` and runs each member as a subprocess. Verified today by reading
+  that aggregator's `MEMBERS` list, where it sits with the comment "the link must have been OPENED
+  this turn". (b) **The path is wrong.** The file lives at `~/.claude/hooks/link-verified-gate.py`.
+  `~/.claude/pending-hooks/` does exist as a directory, but it holds nothing except a stray
+  `.claude` subfolder, so nothing is pending there. (c) **The arming script does not exist.** There
+  is no `arm-link-verified-gate.sh` anywhere under `~/.claude`, so that instruction was never
+  runnable. Nothing needs arming: open the URL in the same turn before handing it over.
 - **Trap for the next session**: to test write permission here use `open(p,"r+")` or
   `os.access(p, os.W_OK)`. Append mode `open(p,"a")` returns a FALSE POSITIVE and reports
   read-only paths as writable; that mistake cost a wrong claim in this session's own report.
@@ -489,11 +499,17 @@ Copying UI from a component file into a mockup reproduced a discount badge that 
   it is not a preview link. If the tunnel genuinely cannot connect, say so in the same message with
   cloudflared's own evidence next to the link (its connectivity pre-check, blocked port 7844, or
   hard_fail=true), because that evidence only exists if you actually ran it. Enforced by
-  `~/.claude/pending-hooks/cloudflare-link-gate.py` (Stop hook, self-tested 12/12: 4 block cases
+  ~~`~/.claude/pending-hooks/cloudflare-link-gate.py` (Stop hook, self-tested 12/12: 4 block cases
   including a vague "the tunnel did not work" excuse and evidence placed too far from the link, 8
   pass cases including backticked and fenced URLs). ARM IT WITH:
   `bash ~/.claude/pending-hooks/arm-link-verified-gate.sh` from a non-sandboxed shell; the same
-  script also arms link-verified-gate.py.
+  script also arms link-verified-gate.py.~~
+  **CORRECTED 2026-08-18, the same three staleness points as the entry above, and the same
+  conclusion: this rule IS enforced.** `cloudflare-link-gate.py` lives at
+  `~/.claude/hooks/cloudflare-link-gate.py`, not in `pending-hooks/` (that directory exists but is
+  empty), and it is a MEMBER of the armed `~/.claude/hooks/link-family-aggregator.py`, so it runs on
+  every closing message alongside nine sibling link checks. The `arm-link-verified-gate.sh` script
+  named here does not exist anywhere under `~/.claude` and never did. Nothing to arm.
 
 ### A "cosmetic facet" seed migration fabricated accessibility and identity data
 - **Date**: 2026-07-26
@@ -518,12 +534,36 @@ Copying UI from a component file into a mockup reproduced a discount badge that 
   migration's-effect rule. Before writing any new seed migration that touches a boolean/enum flag,
   check by name whether that flag is a decorative facet or an accessibility/identity/eligibility
   claim, only decorative facets may be hash-seeded.
-- **Enforcement (2026-07-27)**: `.claude/hooks/migration-fabrication-gate.py` blocks a new/edited
+- **Enforcement (2026-07-27)**: ~~`.claude/hooks/migration-fabrication-gate.py` blocks a new/edited
   `supabase/migrations/*.sql` file that writes to a non-test-scoped table using `hashtext(`,
   `random()`, or `md5(...) %`, unless a `fabricated-data-ok: <owner, date, plan>` comment is
-  present. Self-tested 8/8. Built in a sandboxed worktree session where `.claude/settings.json`
-  is not writable, so it is NOT YET ARMED as a live PreToolUse hook, wire it from a
-  non-sandboxed session before it actually blocks anything.
+  present. **CORRECTED 2026-08-26, and both earlier corrections on this line are themselves
+  stale, so this is what is true today, measured rather than carried across.** The original
+  2026-07-27 "Self-tested 8/8" was false when it was written; the 2026-08-21 correction that
+  replaced it said the file was 103 lines with no test cases and wired nowhere, and that has
+  since been overtaken. `migration-fabrication-gate.py` is now 275 lines, carries a
+  `--selftest`, and IS registered in `.claude/settings.json` on `Write|Edit|MultiEdit`.~~
+- **Enforcement, NAME CORRECTED 2026-08-18. This rule IS armed, under a different filename.** Two
+  near-identical gates sit in `.claude/hooks/`. The one named in the struck line above,
+  `migration-fabrication-gate.py`, is in no settings file and has never run, so its "NOT YET ARMED"
+  sentence was true about that file. But **`.claude/hooks/migration-fabricated-data-gate.py` IS
+  armed**, wired at three separate places in `/Users/sulo/Documents/solen/.claude/settings.json` on
+  PreToolUse `Edit|Write|MultiEdit`, and it enforces the identical rule off the identical incident
+  (the same `20260530_seed_salon_amenities.sql` hash-seeded amenity booleans). It denies a
+  `supabase/migrations/**/*.sql` write whose added content pairs an INSERT/UPDATE with a value
+  built from `hashtext(` / `random()` / `md5(` through a modulo. **The escape hatch differs, and
+  that is the practical trap:** the armed gate looks for `seed-ok:` in the added content, NOT the
+  `fabricated-data-ok:` string named above. Use `seed-ok:`.
+- **THE WARNING ABOVE CAME TRUE, found 2026-08-26 while merging these two histories together.**
+  That bullet ended "the unarmed twin is a duplicate to leave alone or delete, never to wire,
+  since running both would double every deny". It got wired anyway. Measured in
+  `.claude/settings.json` today, BOTH twins are registered on PreToolUse: the fabricated-data one
+  at three entries (Edit, Write, MultiEdit) and the fabrication one at a single combined
+  `Write|Edit|MultiEdit`. So one seed migration is now refused twice by two different files that
+  want two different escape strings, and satisfying one still leaves the other refusing. Nothing
+  is broken until someone writes such a migration, which is why it went unnoticed. Open decision:
+  which twin to keep. Do not simply unregister one without checking which escape string the rest
+  of this file and the migration docs tell people to use.
 
 ### `touch-action: pan-x` on a horizontal scroller BLOCKS vertical page scroll (I shipped it to 6 elements)
 - **Date**: 2026-07-31

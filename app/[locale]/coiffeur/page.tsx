@@ -25,7 +25,7 @@ export async function generateMetadata({
     it: "Migliori parrucchieri a Basilea — Prenota online | Solen",
   };
   const descriptions: Record<string, string> = {
-    de: `${count > 0 ? `${count} ` : ""}Coiffeur-Stores in Basel. Vergleiche Preise, lies ★ Bewertungen und buche online. Sofort bestätigt.`,
+    de: `${count > 0 ? `${count} ` : ""}Coiffeur-Salons in Basel. Vergleiche Preise, lies ★ Bewertungen und buche online. Sofort bestätigt.`,
     en: `${count > 0 ? `${count} ` : ""}hair salons in Basel. Compare prices, read ★ reviews and book online. Instant confirmation.`,
     fr: `${count > 0 ? `${count} ` : ""}stores de coiffure à Bâle. Comparez les prix, lisez les ★ avis et réservez en ligne.`,
     it: `${count > 0 ? `${count} ` : ""}store di parrucchiere a Basilea. Confronta prezzi, leggi ★ recensioni e prenota online.`,

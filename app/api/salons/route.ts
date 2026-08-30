@@ -690,6 +690,7 @@ export async function POST(request: NextRequest) {
       last_minute_discount_percent, last_minute_window_hours,
       latitude, longitude, google_place_id,
       website_url, tiktok_url, phone_verified, cancellation_policy,
+      acquisition_source, team_size, onboarding_goals,
     } = validated;
 
     const admin = createAdminSupabaseClient();
@@ -751,6 +752,12 @@ export async function POST(request: NextRequest) {
           // else from Places is written here.
           google_place_id: google_place_id || null,
           // cancellation_policy: cancellation_policy || null, // [FIX] Field not in public.salons schema
+          // The three extra onboarding questions (owner 2026-08-23). Columns already existed and
+          // were empty before this route wrote them; empty string / no picks stay null so an
+          // owner who skipped the step leaves no fabricated value behind.
+          acquisition_source: acquisition_source || null,
+          team_size: team_size || null,
+          onboarding_goals: onboarding_goals && onboarding_goals.length > 0 ? onboarding_goals : null,
         })
         .select("id")
         .single();

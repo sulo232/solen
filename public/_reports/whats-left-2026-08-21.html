@@ -1,0 +1,102 @@
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What is left</title>
+<style>
+ :root{--bg:#fff;--ink:#0A0A0A;--ink2:#6B6B6B;--line:#E4E4E7;--sunken:#F4F4F5;--bad:#DC2626}
+ @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#fff;--ink:#0A0A0A}}
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{background:var(--bg);color:var(--ink);padding:22px 18px 60px;
+   font:16px/1.55 Inter,-apple-system,system-ui,sans-serif;-webkit-text-size-adjust:100%}
+ .wrap{max-width:760px;margin:0 auto}
+ h1{font-size:30px;line-height:1.12;letter-spacing:-.02em;font-weight:600;margin-bottom:8px}
+ .sub{color:var(--ink2);font-size:15px;margin-bottom:26px}
+ h2{font-size:20px;font-weight:600;letter-spacing:-.01em;margin:34px 0 10px}
+ .rec{border:1px solid var(--line);border-radius:16px;padding:16px;background:var(--sunken)}
+ .rec b{display:block;font-size:17px;margin-bottom:6px}
+ .rec p{font-size:15px;color:var(--ink2)}
+ .rec .tag{display:inline-block;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;
+   background:#FEE2E2;color:#7F1D1D;margin-bottom:9px}
+ table{width:100%;border-collapse:collapse;font-size:15px}
+ td,th{text-align:left;padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+ th{font-size:12px;color:var(--ink2);font-weight:500}
+ td.n{font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--ink2);width:82px}
+ .area{border:1px solid var(--line);border-radius:16px;padding:14px 15px;margin-bottom:10px}
+ .ah{display:flex;align-items:baseline;justify-content:space-between}
+ .ah h3{font-size:16px;font-weight:600}
+ .ah .n{font-variant-numeric:tabular-nums;font-size:15px;color:var(--ink2)}
+ .w{font-size:14px;color:var(--ink2);margin:5px 0 9px}
+ .area ul{list-style:none;font-size:14px}
+ .area li{display:flex;gap:8px;padding:3px 0;border-top:1px solid var(--line)}
+ .area li b{font-variant-numeric:tabular-nums;min-width:26px}
+ .area li .d{margin-left:auto;color:var(--ink2);font-size:13px}
+ .foot{margin-top:32px;padding-top:16px;border-top:1px solid var(--line);color:var(--ink2);font-size:14px}
+</style>
+<div class="wrap">
+<h1>What is left</h1>
+<p class="sub">359 open items across 52 plan files, grouped by what part of Solen they touch. Counted today, not remembered.</p>
+
+<h2>What I would do next</h2>
+<div class="rec">
+  <span class="tag">BROKEN, NOT POLISH</span>
+  <b>The refunds dashboard does not load</b>
+  <p>Every filter returns an error, so the screen where a salon reviews a customer's refund request never opens. It is the only thing I found that is actually broken rather than imperfect, and it predates yesterday's work. Everything else on this page is refinement.</p>
+</div>
+
+<h2>Waiting on you</h2>
+<p class="sub" style="margin-bottom:10px">Nothing moves on these until you answer. The top three have been sitting since the 9th.</p>
+<table><tr><th>waiting</th><th>the question</th></tr><tr><td class="n">12 days</td><td>When the context fills mid-batch, should I compact with a focus hint and keep going on my own, or stop and hand back to you?</td></tr><tr><td class="n">12 days</td><td>The discount code box on the payment step: gate the existing gift-voucher box on that salon having a voucher with balance, or build a real salon promo-code input and wire it?</td></tr><tr><td class="n">12 days</td><td>One person currently gets one no-appointment rating per salon, which you did not ask for. Keep it, or let one account rate the same salon repeatedly like Google Maps does not?</td></tr><tr><td class="n">2 days</td><td>Swap in the new reply rules at _plans/REPLY_FIX_PROPOSAL.md, replacing ~/.claude/REPLY_TEMPLATES.md? He asked to see the proposal first and it was delivered as a page he can open (artifact 695f7458). Waiting on</td></tr><tr><td class="n">undated</td><td>owner call (mockup delivered, decision #4): SalonServices.tsx:215 Buchen CTA 13px mobile -&gt; 14px? Below the locked CTA floor but may be intentional secondary sizing on a rebuilt surface. Owner reacts to mockup-</td></tr><tr><td class="n">undated</td><td>owner call (mockup delivered, decision #4): SalonBuy.tsx:48 Kaufen CTA 13px -&gt; 14px? SalonBuy = killed gift-card feature; verify it renders before touching.</td></tr></table>
+
+<h2>Everything else, by area</h2>
+
+    <div class="area">
+      <div class="ah"><h3>Search + map</h3><span class="n">73</span></div>
+      <p class="w">The search panel, the sheet sizes, the map overlap. Mostly your annotated screenshots from 08-11 and 08-12.</p>
+      <ul><li><b>56</b> MAP_SEARCH_REFINE<span class='d'>2026-07-03</span></li><li><b>17</b> SEARCH_MAP_OVERHAUL<span class='d'>2026-07-05</span></li></ul>
+    </div>
+    <div class="area">
+      <div class="ah"><h3>Home</h3><span class="n">53</span></div>
+      <p class="w">Section by section polish. The continue-search card, recently viewed, the category row, Popular.</p>
+      <ul><li><b>40</b> HOME_V3<span class='d'>2026-07-31</span></li><li><b>10</b> HOME_OVERHAUL<span class='d'>2026-07-26</span></li><li><b>2</b> HOME_REGRESSIONS_2026-08-10<span class='d'>2026-08-10</span></li></ul>
+    </div>
+    <div class="area">
+      <div class="ah"><h3>Bugs + sweeps</h3><span class="n">48</span></div>
+      <p class="w">Things found by sweeping rather than by you reporting them. Dead chevrons, gaps, frontend audit.</p>
+      <ul><li><b>17</b> FRONTEND_SWEEP<span class='d'>2026-07-19</span></li><li><b>9</b> BUG_HUNT<span class='d'>2026-07-01</span></li><li><b>7</b> BACKEND_SWEEP_2026-07-10<span class='d'>2026-07-11</span></li></ul>
+    </div>
+    <div class="area">
+      <div class="ah"><h3>My own tooling</h3><span class="n">46</span></div>
+      <p class="w">Gates, plans, folder cleanup, branch reconciliation. None of this is your product.</p>
+      <ul><li><b>9</b> FOLDER_CLEANUP_HANDOFF<span class='d'>2026-07-24</span></li><li><b>9</b> STAFF_LANGUAGES_2026-07-24<span class='d'>2026-07-24</span></li><li><b>7</b> DRIFT_GATE_PATCH_2026-07-11<span class='d'>2026-07-13</span></li></ul>
+    </div>
+    <div class="area">
+      <div class="ah"><h3>Design system</h3><span class="n">40</span></div>
+      <p class="w">Tokens, ranges, borderless rollout, copy voice. Rules, not screens.</p>
+      <ul><li><b>8</b> DESIGN_LIFTUP<span class='d'>2026-07-18</span></li><li><b>8</b> IG_DESIGN_PRINCIPLES<span class='d'>2026-07-16</span></li><li><b>8</b> MOBILE_DESIGN_SYSTEM<span class='d'>2026-07-16</span></li></ul>
+    </div>
+    <div class="area">
+      <div class="ah"><h3>Booking + pay</h3><span class="n">38</span></div>
+      <p class="w">The walk-in restructure is most of it, plus bundles and products.</p>
+      <ul><li><b>20</b> WALKIN_RESTRUCTURE_2026-07-24<span class='d'>2026-07-24</span></li><li><b>10</b> BOOKING_POLISH<span class='d'>2026-07-10</span></li><li><b>8</b> BUNDLES_PRODUCTS<span class='d'>2026-07-03</span></li></ul>
+    </div>
+    <div class="area">
+      <div class="ah"><h3>Account + auth</h3><span class="n">24</span></div>
+      <p class="w">The account build and the auth overhaul. The login you just approved came out of here.</p>
+      <ul><li><b>15</b> ACCOUNT_BUILD<span class='d'>2026-07-28</span></li><li><b>9</b> AUTH_OVERHAUL_2026-08-10<span class='d'>2026-08-10</span></li></ul>
+    </div>
+    <div class="area">
+      <div class="ah"><h3>Mockup process</h3><span class="n">20</span></div>
+      <p class="w">How mockups get made, not a screen. The queue and the quality system.</p>
+      <ul><li><b>10</b> MOCKUP_QUEUE<span class='d'>2026-08-10</span></li><li><b>6</b> MOCKUP_ROOTCAUSE<span class='d'>2026-07-24</span></li><li><b>2</b> MOCKUP_FORMAT_CORRECTION<span class='d'>2026-07-19</span></li></ul>
+    </div>
+    <div class="area">
+      <div class="ah"><h3>Salon page</h3><span class="n">13</span></div>
+      <p class="w">Consistency between the salon page and everything else.</p>
+      <ul><li><b>8</b> PDP_CONSISTENCY<span class='d'>2026-07-25</span></li><li><b>2</b> SITE_RENEWAL_PUNCHLIST<span class='d'>2026-08-14</span></li><li><b>2</b> PDP_MAP_STAFF<span class='d'>2026-07-19</span></li></ul>
+    </div>
+    <div class="area">
+      <div class="ah"><h3>Dashboard</h3><span class="n">4</span></div>
+      <p class="w">Small. Suspend user, and the refine loop queue.</p>
+      <ul><li><b>3</b> DASH_REFINE_BATCH2<span class='d'>2026-08-14</span></li><li><b>1</b> DASH_REFINE_LOOP<span class='d'>2026-08-14</span></li></ul>
+    </div>
+
+<p class="foot">Counts are open checkboxes in <b>_plans</b>. A high number is not urgency: Search and Home are large because they are being polished section by section, and My own tooling is not your product at all.</p>
+</div>

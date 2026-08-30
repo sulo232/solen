@@ -1,0 +1,146 @@
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Taste authority</title>
+<style>
+ :root{--bg:#fff;--ink:#0A0A0A;--ink2:#6B6B6B;--line:#E4E4E7;--sunken:#F4F4F5}
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{background:var(--bg);color:var(--ink);padding:22px 16px 70px;
+  font:16px/1.62 Inter,-apple-system,system-ui,sans-serif;-webkit-text-size-adjust:100%}
+ .wrap{max-width:720px;margin:0 auto}
+ h2{font-size:26px;line-height:1.14;letter-spacing:-.02em;font-weight:600;margin:34px 0 10px}
+ h2:first-of-type{margin-top:0}
+ h3{font-size:19px;font-weight:600;margin:28px 0 8px;letter-spacing:-.01em}
+ h4{font-size:16px;font-weight:600;margin:18px 0 6px}
+ p{margin:0 0 11px;font-size:15px}
+ ul{margin:0 0 13px;padding-left:19px}
+ li{margin:0 0 9px;font-size:15px}
+ blockquote{margin:0 0 13px;padding:11px 14px;background:var(--sunken);border-radius:12px;
+  font-size:15px}
+ code{background:var(--sunken);border-radius:6px;padding:1px 5px;font-size:13px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;word-break:break-word}
+ b{font-weight:600}
+ hr{border:0;border-top:1px solid var(--line);margin:28px 0}
+ .lede{color:var(--ink2);font-size:15px;margin-bottom:24px}
+</style>
+<div class="wrap">
+<p class="lede">This is the file itself, the one that lets an agent decide a small design question in your place instead of asking you. Nothing here is rewritten for you: it is exactly what they read.</p>
+<h2>TASTE_AUTHORITY.md</h2>
+<p><b>This file exists so you can decide a small taste question in his place, correctly, without asking him.</b> It is not a reference document. This repo already has four of those (SOURCE.md, LOCKFILE.md, RATIONALE.md, TASTE_LOG.md) and none of them ever says <i>you may decide</i>. That was the gap.</p>
+<p>Written 2026-08-21, on his instruction. Verbatim:</p>
+<blockquote>&quot;I like these dumb stupid shit. I told you to use some agents counsel, you know, for these small stuff. Like, why would you need my opinion for these small stuff? ... I cannot fucking understand with thirteen pixel, fourteen pixel ... Is this such a small fucking difference even if it&#x27;s visual? How the fuck would anyone see that? ... we need to have like a file actually do you know what I want? My taste is right to like actually make decisions.&quot;</blockquote>
+<p>He is the founder. He is not an engineer. He reads on a phone. A question that costs him a turn and returns him nothing is a real cost, and he has now named it twice.</p>
+<p><b>What this file may contain, and the limit on it:</b> only decisions that trace to a dated thing he said or to a value already locked in LOCKFILE.md / CLAUDE.md. It invents no taste positions. Where it is silent, THE TEST below still applies, but a silent gap is never filled with a guess.</p>
+<hr>
+<h3>1. THE TEST</h3>
+<p>Run it top to bottom on any visual or numeric question. Stop at the first line that fires. You get one of three answers: <b>DECIDE</b>, <b>SHOW</b>, or <b>ASK</b>.</p>
+<p><b>Step 1. Does a dated decision of his already answer it?</b> Search TASTE_LOG.md, LOCKFILE.md, REMOVED.md. If yes: <b>DECIDE</b>, apply the recorded value, and do not surface it. Re-asking a settled axis is the same failure as asking about 13px, just delayed. His words, 2026-08-09: <i>&quot;you actually, like, remember my preferences? It seems like you estimate every time, like, it becomes, like, a big exhausting.&quot;</i></p>
+<p><b>Step 2. Is it on the open list in section 5 of this file?</b> Three things are open on purpose and one is a live collision. If it touches one: <b>ASK</b>. Do not resolve it quietly in either direction.</p>
+<p><b>Step 3. Does it change what a customer is told, what they pay, or what we are called?</b> Copy, naming, a price, a promise, a deadline, a policy, a legal or accessibility floor. <b>ASK</b>. See section 4. There is no small version of this category.</p>
+<p><b>Step 4. Does the change touch a component that more than one file imports?</b> Run the grep. If more than one file imports it, the change is not small no matter how small the number is: <b>SHOW</b>. This is mechanical, not judgement. Precedent: the filter-pill corner radius went through him precisely because it edits a control 29 files import (B21, 2026-08-16).</p>
+<p><b>Step 5. Is it a new pattern, section, route, component, colour meaning, or direction?</b> <b>SHOW.</b> Mockup first, always, and the mockup&#x27;s scope matches the ask: one section at real width, variants stacked, no switcher, no iframe. His words, 2026-08-15: <i>&quot;I can&#x27;t even see a difference&quot;</i> and <i>&quot;remove the gate or anything that&#x27;s making you do this shit so annoying.&quot;</i></p>
+<p><b>Step 6. Is every candidate value already legal, on one existing approved screen, and inside the indifference band in section 2?</b> <b>DECIDE.</b> Ship it. Say nothing. This is the 13px versus 14px case and it is the whole reason this file exists.</p>
+<p><b>Step 7. Anything left over.</b> It is real but it does not block the next step. <b>PARK</b> it: keep working, and surface it once in the closing report. Do not stop mid-task to ask. His words, 2026-08-19: <i>&quot;i want clear distinction between loops and normal yk ... i accept nagging but elaborate more.&quot;</i></p>
+<h4>Why SHOW and DECIDE do not contradict each other</h4>
+<p>TASTE_LOG M18 (2026-08-14) is a standing rule: <i>&quot;anything he would SEE is never applied on a sensible default. It is shown, and it waits for him.&quot;</i> Read literally, that would send 13px versus 14px to him forever.</p>
+<p><b>The 2026-08-21 instruction narrows M18, it does not cancel it.</b> M18 still governs anything he would see AND could tell apart: a new pattern, a new direction, a new colour meaning, a changed shape. It stops covering a value that is already legal, on one already-approved screen, where the alternatives sit inside the band. He had already drawn this same line himself on 2026-08-14 (M17), killing an eleven-version comparison page with <i>&quot;nothing changes after v2&quot;</i>, because versions nobody can tell apart contain no choice to make.</p>
+<p><b>The honest cost of this file, stated once so nobody pretends it is free.</b> Handing a subagent decide-authority means some small choices will ship wrong. That is paid for by his live correction, which is cheap and already how this works: review stars shipped at 13px on 08-15 and he raised them to 18px the next day (B4 to B21). One turn spent, once, on the one thing he actually noticed. The alternative was a question on every micro-choice, and he has now told us what that costs.</p>
+<p><b>The failure mode of step 6, named so you catch yourself.</b> Under task pressure everyone reads their own change as sub-perceptual. The tie-breaker is not your confidence, it is this: <b>if you needed a ruler, getBoundingClientRect, or a pixel diff to see the difference in the first place, it is inside the band. If you could see it in a screenshot, it is not.</b> When you are unsure, step 4&#x27;s grep usually decides it for you, and step 7 (park it) is always available and always legal.</p>
+<hr>
+<h3>2. THE INDIFFERENCE BAND</h3>
+<p><b>The rule: one adjacent step on the locked ramp is not a decision. Skipping a step is.</b></p>
+<h4>Type</h4>
+<p>The locked ramp (LOCKFILE.md §12 Scale table): <b>11, 12, 13, 14, 15, 16, 18, 20, 22, 26, 30, 34, 40, 64.</b></p>
+<p>One step, in absolute pixels, by where you are on it:</p>
+<p>| where on the ramp | one step is | example | |---|---|---| | 11 to 16 | <b>1px</b> | 13 to 14, 14 to 15, 11 to 12 | | 16 to 22 | <b>2px</b> | 18 to 20, 20 to 22 | | 22 to 34 | <b>4px</b> | 22 to 26, 26 to 30 | | above 34 | no band | anchors and hero carry the hierarchy; a change there is visible by design |</p>
+<p><b>Where this number came from, exactly.</b> Not from perception research. From his own locked scale. The LOCKFILE Scale table gives every text role a mobile value and a desktop value, and for the body-weight roles those two values are one step apart: Body 14/15, Body small 13/14, Caption 11/12, Eyebrow 11/12, CTA 14/15, Service-row name 15/16, Service-row duration 13/14, Service-row price 14/15, Team-card name 14/15, Team-card role 12/13. (The one exception is Body large, 14/16, which is two steps.) The headings do the same thing: Section H2 18/20, Page H2 22/26, PDP H1 30/34.</p>
+<p>So <b>his own system already ships both sides of these pairs to real customers</b>, on the same screen, at two widths. A choice between 13 and 14 for a meta row is not a taste decision that was never made. It is a decision already made, twice, and the breakpoint picks which one renders.</p>
+<p><b>This band has no external source and does not claim one.</b> It is derived from values locked in this repo plus two dated things he said (M17, 2026-08-14; the 2026-08-21 brief above). This matters because this estate has minted unsourced thresholds before and then cited them as evidence: the &quot;~30% of text may be weight 600&quot; ceiling in CLAUDE.md is a house number, corrected on 2026-07-28 to say so. Widening this band later needs him, not a rounder number.</p>
+<p><b>What the band does NOT license.</b> A single step is still illegal if it crosses a named floor:</p>
+<ul>
+<li>a button label at 13px or smaller (CLAUDE.md design contract: CTA is <i>&quot;never &lt;= 13 on a button&quot;</i>, and 14 is the locked mobile value, 15 the desktop one)</li>
+<li>a display anchor below 28px, or below 1.8x the screen&#x27;s body size</li>
+<li>a fifth distinct size or a third distinct weight on one customer screen (gate-enforced ceiling; the /profile screen shipped at 6 sizes and read busy)</li>
+<li>tertiary grey #9CA3AF used as text at any size (2.54:1 on white, below the WCAG floor)</li>
+</ul>
+<h4>Spacing</h4>
+<p>4-point scale. One step is <b>4px</b>, and the band is one step. <b>Dashboard has no band:</b> the rhythm is binary, 16px inside a group and 32px between sections (dashboard D1, 2026-07-15). The gap is derived from whether two things are in the same group, never chosen by eye.</p>
+<h4>Motion</h4>
+<p>Locked ladder (LOCKFILE §4): <b>80 / 100 / 150 / 200 / 250 / 300 / 500ms.</b> One rung is the band, on an existing component, with a locked easing. <b>Never ask about speed in words, ever.</b> His words, 2026-07-25: <i>&quot;I&#x27;m not really sure about the speed because I&#x27;m not used to that, and I don&#x27;t really know. So don&#x27;t ask me about that one. SHOW ME A VISUAL so I can visualize.&quot;</i> A speed question that is bigger than one rung is a SHOW, never an ASK.</p>
+<h4>Things with NO band at all</h4>
+<ul>
+<li><b>Colour.</b> Nearness to an existing hex is not a licence. Inventing a shade, tint or hue outside the closed token set is the exact failure he named on 2026-08-16 (B30, a beige sticky bar): <i>&quot;You made up a random fucking collar that&#x27;s beige. I don&#x27;t fucking know it.&quot;</i></li>
+<li><b>Radius.</b> Radius is picked by component role, not by nearness: input 12, form/summary card 16, grouped list card 24, sheet 28, pill 99. He personally chose 16 for the filter pill (B21).</li>
+<li><b>Weight.</b> Customer screens have exactly two weights (B10, 2026-08-15, he picked option C: semibold and bold both demote to medium; dashboard exempt by name). Two values is not a band, it is a role lookup.</li>
+<li><b>Words.</b> See section 4.</li>
+</ul>
+<hr>
+<h3>3. THE DEFAULTS</h3>
+<p>A new case arrives and there is no dated decision for it. Pick with these. Do not list options.</p>
+<h4>Type and size</h4>
+<ul>
+<li><b>Workhorse body text on a dense screen: 14px.</b> Not 13. Settled by direct comparison, B29, 2026-08-16: the salon PDP renders 14px forty-five times and 13px thirty-two times; the rejected terminal mockup rendered 13px forty-nine times and 14px zero times. His words: <i>&quot;look how we do it in pdp page of a salon.&quot;</i></li>
+<li><b>A new text role takes the nearest existing role&#x27;s locked pair</b>, mobile and desktop both. Do not invent a value between two ramp steps.</li>
+<li><b>Font family is closed.</b> Inter Tight for display and codes, Inter for body. Never Geist. A question here is a bug report, not a taste question: on 2026-08-16 the body typeface was not loading at all on any screen (B23), which was the whole complaint behind months of &quot;the font is different.&quot;</li>
+<li><b>Stars are his, and bigger is the established direction.</b> Row stars went 13 to 18px on 08-16, <i>&quot;past both references, his taste&quot;</i>, and the review score is a 44px page anchor (B21). A request to enlarge stars continues a stated preference. It is not a fresh question.</li>
+</ul>
+<h4>Colour and fill</h4>
+<ul>
+<li><b>A new small text link: blue #276EF1.</b> Blue is the hyperlink colour, not the clickability colour (LOCKFILE, v3 2026-06-11). Legal on inline links, &quot;Mehr lesen&quot;, small tappable counts, and the locked system states (focus, spinner, stepper discs, calendar slot fill).</li>
+<li><b>A new button, CTA, chip, pill, badge or arrow: never blue.</b> Ink or neutral. There is no precedent in the record for a new kind of blue button.</li>
+<li><b>A new pill, chip, tab, filter, menu option or radio, selected state: the calm grey recipe</b> (bg-s-bg-sunken + text-s-ink + semibold, over white unselected). Owner 2026-06-29, restored again on 2026-08-16 when a soft-black version shipped and he called it too harsh (B19 overruling B6). Both alternatives, blue border and ink fill, are dead by name.</li>
+<li><b>Four exceptions exist and they are not extendable by resemblance:</b> the one commit button (ink), the booking date and time slot (blue), the avatar SelectedCheckBadge (ink), the booking-flow category pills (ink, his override 2026-07-19). A fifth element that merely resembles one of these is not an exception. Each of the four exists because he overruled the default by name.</li>
+<li><b>A semantic hue is legal in four roles only:</b> literal text or icon meaning, a filled focal disc, a pastel background chip or badge, or a locked component&#x27;s documented fill. Never a bar, banner, solid block, decorative accent, or card edge stripe. B31, 2026-08-16: <i>colour means state and nothing else.</i> A new element that wants colour but fits none of the four roles gets no colour.</li>
+<li><b>No coloured left or right edge bar on a card, ever.</b> His words: <i>&quot;i hate that ... this left side green thingy. never do this ever.&quot;</i></li>
+<li><b>No dark mode on web, in any file, at any scope, forever.</b> Rejected 2026-07-15, 07-16, 07-21 (<i>&quot;only white for web&quot;</i>). iOS keeps dark mode and sets no precedent for web.</li>
+<li><b>Check contrast against the surface the element actually sits on</b>, not against white by habit. Four of six measured tokens fail on the sunken tray #F4F4F5, which is the default list surface. WCAG AA is a statutory floor and outranks taste in the precedence chain.</li>
+</ul>
+<h4>Structure and chrome</h4>
+<ul>
+<li><b>One navigation surface per screen.</b> Dashboard: sidebar only. Customer mobile web: header plus the one bottom bar. A hub or destination page: its own rows are the navigation, no bell, no hamburger (2026-08-03, <i>&quot;why is the notification inside and the hamburger menu inside a fucking profile page? I told you like ten fucking times&quot;</i>). A task flow: its own single back or close.</li>
+<li><b>One back control per screen.</b> The global Header owns it, except on the named routes where the Header is hidden. Never two (V3-D461, <i>&quot;alot of duplicate back buttons&quot;</i>).</li>
+<li><b>Card grammar is a semantic test, not a look.</b> Peers inside one category go in a group card (radius 24, whisper shadow, hairline-divided rows). A distinct entity, a person or a business, gets its own card (radius 16, border, flat, gap-separated). Owner 2026-07-19: <i>&quot;stylists are individual not groups.&quot;</i></li>
+<li><b>Draw a boundary once.</b> If the section container already draws the edge, the rows inside do not also get borders. Owner, twice in the week of 2026-08-10: <i>&quot;the boxing is the problem.&quot;</i></li>
+<li><b>Clutter is equal weight, not element count.</b> Every block wearing the same card costume with no dominant object is what reads cluttered. The fix is one focal element and everything else demoted to bare text, never deleting content. Owner 2026-07-15: <i>&quot;we need breathing space not just everywhere cards or boxes or pill.&quot;</i></li>
+<li><b>A fact, person or event renders in exactly one place per screen.</b> Anything that would repeat it becomes a link to the one rendering.</li>
+<li><b>Icon buttons and controls are round by default.</b> Measured 890 round against 36 boxed. The hamburger is square, by name, and it is the only one (2026-08-10).</li>
+<li><b>A sticky bottom bar separates by gradient fade.</b> Frost is only for controls over photography. Flat on a calm surface.</li>
+<li><b>Name the screen operator or customer before building it</b> (B32, 2026-08-16). The customer FLOORS LAW does not demand a sunken tray or a semantic-colour moment on a photo-less operator screen. A list of people on an operator screen is rows, not a card each.</li>
+</ul>
+<hr>
+<h3>4. WHAT IS NEVER DECIDED WITHOUT HIM</h3>
+<p>Short and absolute. No size of change makes any of these small.</p>
+<ul>
+<li><b>Words a customer reads.</b> Any naming, label, headline, button copy, or product-noun change, in any of the four locales. Copy is not a pixel and it has no indifference band. <b>AMENDED 2026-08-21, the same day this file was written, by him, twice.</b> On the German word for Salon he said <i>&quot;you need that shit think that I use a sub counselor and look into other platform how they use what they say what is it mean&quot;</i>, and when the council&#x27;s answer came back to him as a recommendation to approve, he said <i>&quot;i told u let subagent decide it&quot;</i>. So: <b>when he hands a naming question to a council, the council&#x27;s researched answer IS the decision and it gets applied without him.</b> Rule 1 still governs naming he has NOT delegated. The test is his words, not the subject: &quot;research it and decide&quot; is a delegation, silence is not. Bringing back a researched recommendation for a one-word yes is the failure this amendment names, because it costs him the turn the council was supposed to save. Recorded because this file&#x27;s own rule 1 is what sent that question back to him.</li>
+<li><b>Anything that changes what a customer is promised.</b> A deadline, a cancellation or refund term, a response time, a guarantee, a consent meaning. CLAUDE.md, 2026-08-19: two refund-screen strings promised a 14-day report window and a salon response date while nothing computed or enforced either. If a screen names a promise, something must own it, and he decides the promise.</li>
+<li><b>Money.</b> A price, a fee, a surcharge, a discount, a commission, a VAT treatment, or how any of them is displayed. Swiss PBV total-price rules sit in the statutory tier.</li>
+<li><b>Anything a dated decision of his already settled the other way.</b> A LOCKFILE row, a TASTE_LOG entry, a REMOVED.md graveyard hit. Breaking a lock needs an explicit named yes from him. His frustration is not that yes: <i>&quot;idc&quot;</i> means he is annoyed, not that a lock is open.</li>
+<li><b>A statutory or safety floor.</b> WCAG 2.2 AA on a published customer surface, nFADP and GDPR consent, PBV total price, anything the Terms represent as true. When one of these collides with a taste decision of his, you surface the collision with both dates and propose the treatment that satisfies both. You never silently pick a side.</li>
+<li><b>Inventing a value that exists in no locked set.</b> A new hex, a new duration, a new radius, a size between two ramp steps. Closeness to an existing value is not permission (B30).</li>
+</ul>
+<hr>
+<h3>5. OPEN, AND NOT YOURS TO CLOSE</h3>
+<p>Three things are unresolved on purpose. If a question touches one, ASK. Do not let the test above walk you into deciding them.</p>
+<ul>
+<li><b>B37 (2026-08-16), the size-count contradiction.</b> Our own written rules disagree: one place demands 6 to 7 distinct sizes, another caps a screen at 4. He named this as a cause of the clutter he was complaining about and left it open, because reconciling it rewrites a locked row on every screen. Until he closes it, <b>the enforced 4-size and 2-weight ceiling is the working default everywhere.</b> Do not manufacture a fresh version of this question on an unrelated screen.</li>
+<li><b>M30 (2026-08-12), the calendar selected day.</b> The design contract keeps blue for the calendar date and slot fill. The shipped calendar has been ink since 08-12. M30 carries no verbatim, so the newest-decision-wins rule cannot be applied to it safely.</li>
+<li><b>M41, three weights on the home first viewport.</b> Three weights (400/500/600) ship there on his live instruction, and the two-weight ceiling is not an axis he waived by name.</li>
+</ul>
+<hr>
+<h3>6. THE SALON WORD, worked end to end</h3>
+<p>He asked whether the German product should keep calling a business a <b>Salon</b>. This is a section 4 item (words a customer reads), so it is an ASK, and this is what an ASK should look like: a recommendation he can accept in one word, with the case against it stated honestly, not a menu.</p>
+<p><b>Recommendation: keep &quot;Salon&quot; and &quot;Salons&quot;.</b> Reply &quot;keep&quot; and it is done.</p>
+<p><b>What the research found</b> (live fetches and searches, 2026-08-21):</p>
+<ul>
+<li>Every direct consumer marketplace in this exact vertical and language uses Salon as the umbrella noun. Treatwell on both .ch and .de (<i>&quot;Grosse Auswahl an top-bewerteten Salons&quot;</i>), Salonkee on both .de and .ch (<i>&quot;Finde dein Lieblingssalon&quot;</i>, and &quot;Salon &amp; Studios&quot; in its filters), and MySalon.ch, a Swiss product named around the word itself. Three independent companies, same choice.</li>
+<li>The platforms using something else are all talking to the salon OWNER, not the shopper: Shore.com says &quot;Betrieb&quot;, Terminland and BeautyBooking say &quot;Dienstleister&quot;, Salonkee reserves &quot;Geschäft&quot; for its owner-facing &quot;Ihr Geschäft hinzufügen&quot;. Different audience, different job for the word.</li>
+<li>Booksy is the one platform leading with &quot;Anbieter&quot;, and it has no meaningful Swiss presence, so it is the weakest comparable in the set. Its own category names still fall back to Studio and Salon.</li>
+<li>&quot;Studio&quot; stays as the category compound underneath: Nagelstudio, Massagestudio, Kosmetikstudio. Every competitor does exactly this.</li>
+<li>Fresha&#x27;s German-language marketplace page could not be loaded (410 on the German path), so its exact German noun is not confirmed here. Flagged rather than assumed. Its English Swiss pages say &quot;Salons&quot;.</li>
+<li>&quot;Store&quot; is the worst of the options considered. In German commercial usage it specifically means one branch of a retail chain, so it undersells a standalone owner-run salon as a chain outlet.</li>
+</ul>
+<p><b>The real defect this uncovered, and it is not a naming problem.</b> Solen already disagrees with itself. The rendered German homepage says &quot;Salons finden, sofort buchen&quot; while three SEO strings in the repo say &quot;Stores&quot;: <code>app/layout.tsx:26-27</code>, <code>app/[locale]/page.tsx:137</code>, and <code>app/[locale]/[city]/page.tsx:47-48</code>. Collapsing those three to &quot;Salons&quot; is the actual fix, and it is a copy change, so it waits for the same one-word yes.</p>
+<p><b>The honest case against keeping it, because his gut is not baseless.</b> &quot;Salon&quot; leans hair and beauty in German. The compounds that exist are Coiffeursalon and Schönheitssalon, and nobody calls a spa or a massage practice a Salon on its own; German speakers reach for Spa, Wellnesscenter or Massagepraxis. That is exactly why every platform above, including the ones with Salon in the headline, builds its real taxonomy out of Studio, Praxis and Spa underneath. So Salon works as an umbrella only because nobody scrutinises a homepage headline, not because it genuinely covers hair, barber, nails, makeup, spa and wellness in one native-sounding noun. And &quot;everyone does it&quot; could mean the category has never solved this word, not that it is solved. If Solen&#x27;s ambition is the booking layer for all of beauty and wellness, riding a coiffeur-first noun is a real long-term positioning cost. The research does not erase that cost. It shows nobody else has paid it down either, and that switching alone would put Solen in a category of one with no evidence it reads naturally to a shopper.</p>
+<hr>
+<h3>7. FEEDING THIS FILE</h3>
+<p>When he decides something, it goes in TASTE_LOG.md first, with the date and his verbatim words. Then, only if it changes what a subagent may DECIDE, add or amend a line here and cite that entry.</p>
+<p>A rule in this file with no owner and no date behind it will be overridden by the next agent&#x27;s opinion, which is the failure this file was written to stop. If you cannot cite him or a lock, the line does not belong here.</p>
+</div>

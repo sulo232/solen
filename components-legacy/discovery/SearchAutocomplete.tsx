@@ -81,7 +81,7 @@ export default function SearchAutocomplete({ query, onSelect, onSalonSelect }: S
 
       {salons.length > 0 && (
         <>
-          <span className="px-1.5 pb-1 pt-2 text-[12px] font-heading font-semibold uppercase tracking-[0.04em] text-s-ink-2">Stores</span>
+          <span className="px-1.5 pb-1 pt-2 text-[12px] font-heading font-semibold uppercase tracking-[0.04em] text-s-ink-2">Salons</span>
           {salons.map((s) => (
             <button
               key={s.id}

@@ -84,7 +84,7 @@ const DEFAULT_LABELS: DateTimeLabels = {
   pickDay: "Wähle einen Tag",
   pickDayHint: "Verfügbare Zeiten erscheinen hier.",
   noSlots: "Keine freien Termine",
-  noSlotsHint: "Wähle einen anderen Tag oder einen anderen Store.",
+  noSlotsHint: "Wähle einen anderen Tag oder einen anderen Salon.",
   moreDates: "Weitere Daten",
 };
 

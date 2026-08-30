@@ -98,3 +98,8 @@ _shot*.cjs
 /Untitled*
 supabase/.temp/
 scratchpad/
+
+# Playwright/verification scratch files. One of these (dated 2026-08-17) sat untracked
+# in this worktree for nine days and silently blocked 186 automatic merges, because the
+# checkpoint merge refuses to run while main has ANY uncommitted change, untracked included.
+.tmp-verify-*

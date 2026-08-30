@@ -179,14 +179,14 @@ export async function GET(_request: NextRequest) {
      (both key off userId/now-derived timestamps only), so fire them together and evaluate in
      priority order, same allSettled pattern as priorities 1/2/3a above. */
   const [replyResult, rebookResult] = await Promise.allSettled([
-    // 4. REPLY - review reply in last 7d
+    // 4. REPLY - review reply in last 7d (reply_text/reply_at live on review_replies,
+    // not on reviews, joined here the same way loyalty_stamps is joined above)
     supabase
       .from("reviews")
-      .select("id, salon_id, reply_text, reply_at, salons(slug, name)")
+      .select("id, salon_id, salons(slug, name), review_replies!inner(reply_text, is_public, created_at)")
       .eq("user_id", userId)
-      .not("reply_text", "is", null)
-      .gte("reply_at", last7d.toISOString())
-      .order("reply_at", { ascending: false })
+      .gte("review_replies.created_at", last7d.toISOString())
+      .order("created_at", { ascending: false, foreignTable: "review_replies" })
       .limit(1),
     // 5. REBOOK - N days since last visit at any salon
     supabase
@@ -207,11 +207,13 @@ export async function GET(_request: NextRequest) {
       const replies = replyResult.value.data;
       if (replies && replies.length > 0) {
         const r: any = replies[0];
+        // review_replies.review_id is UNIQUE, so this is a to-one embed (an object, not an array).
+        const replyText: string = r.review_replies?.reply_text ?? "";
         return NextResponse.json({
           kind: "reply",
           eyebrow: "Neue Antwort",
           headline: r.salons?.name ?? "Salon",
-          meta: r.reply_text.slice(0, 80) + (r.reply_text.length > 80 ? "..." : ""),
+          meta: replyText.slice(0, 80) + (replyText.length > 80 ? "..." : ""),
           href: `/salon/${r.salons?.slug ?? ""}/reviews`,
         });
       }

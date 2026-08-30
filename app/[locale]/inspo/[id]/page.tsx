@@ -189,7 +189,7 @@ export default async function DiscoverDetailPage({ params }: PageProps) {
   try {
     const { data: salonRows } = await supabase
       .from("salons")
-      .select("id, name, slug, average_rating, review_count, services!inner(id, name_de, name_en, price, category, is_active)")
+      .select("id, name, slug, average_rating, review_count, services!inner(id, name_de, name_en, name_fr, name_it, price, category, is_active)")
       .eq("is_active", true)
       .eq("services.is_active", true)
       .eq("services.category", serviceCategory)
@@ -200,7 +200,7 @@ export default async function DiscoverDetailPage({ params }: PageProps) {
     // Style-word tokens (>3 chars) from the look's name, to try to land booking on the matching service.
     const styleWords = (item.style_name ?? "").toLowerCase().split(/\s+/).filter((w) => w.length > 3);
     salons = rows.slice(0, 3).map((s: Record<string, unknown>) => {
-      type Svc = { id: string; name_de: string | null; name_en: string | null; price: number | null };
+      type Svc = { id: string; name_de: string | null; name_en: string | null; name_fr: string | null; name_it: string | null; price: number | null };
       const services = ((s.services as Svc[]) ?? []).filter((x) => typeof x.price === "number" && x.price > 0);
       // Pre-select the service whose name matches the look's style; else the cheapest in-category service, so
       // "Book this look" lands on a real service instead of an empty picker (owner: "is it connecting it back").
@@ -209,6 +209,16 @@ export default async function DiscoverDetailPage({ params }: PageProps) {
         return styleWords.some((w) => n.includes(w));
       });
       const chosen = matched ?? services.slice().sort((a, b) => (a.price ?? 0) - (b.price ?? 0))[0];
+      // Only one in-category service → priceFrom IS the payable total for that exact service, not a floor.
+      // "ab CHF X" is misleading here (PBV wants the payable number findable); render it bare, no "from" word.
+      // name_fr/name_it exist as live columns (migration 20260727190000) but weren't backfilled on older
+      // rows, so this falls through de → en → null rather than assuming fr/it is populated (no fabrication).
+      const priceExact = services.length === 1;
+      const localeKey = locale as "de" | "en" | "fr" | "it";
+      const byLocale: Record<string, string | null | undefined> = {
+        de: chosen?.name_de, en: chosen?.name_en, fr: chosen?.name_fr, it: chosen?.name_it,
+      };
+      const exactServiceName = priceExact ? (byLocale[localeKey] || chosen?.name_de || chosen?.name_en || null) : null;
       return {
         id: s.id as string,
         name: s.name as string,
@@ -216,6 +226,8 @@ export default async function DiscoverDetailPage({ params }: PageProps) {
         rating: (s.average_rating as number | null) ?? null,
         reviewCount: (s.review_count as number | null) ?? null,
         priceFrom: services.length ? Math.min(...services.map((x) => x.price as number)) : null,
+        priceExact,
+        exactServiceName,
         serviceId: chosen?.id ?? null,
       };
     });

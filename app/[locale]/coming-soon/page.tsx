@@ -13,7 +13,6 @@ const FEATURE_MAP: Record<string, { Icon: LucideIcon }> = {
   vouchers: { Icon: Gift },
   loyalty: { Icon: Star },
   referral: { Icon: Send },
-  behandlungen: { Icon: Heart },
 };
 
 export default function ComingSoonPage() {
@@ -30,7 +29,6 @@ export default function ComingSoonPage() {
     vouchers: t("description_vouchers"),
     loyalty: t("description_loyalty"),
     referral: t("description_referral"),
-    behandlungen: t("description_behandlungen"),
   };
   const description = descriptionMap[feature] ?? t("descriptionDefault");
 

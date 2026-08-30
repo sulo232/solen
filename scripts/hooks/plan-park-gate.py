@@ -83,7 +83,7 @@ import tempfile
 import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from _park_marker import PARK_LINE_RE, question_text  # noqa: E402
+from _park_marker import PARK_LINE_RE, is_open_park_line, question_text  # noqa: E402
 from _session_files import files_written_this_session  # noqa: E402
 
 SKIP_TTL = 90          # seconds; matches the raised-skip-cost convention
@@ -445,6 +445,43 @@ def distinctive_words(text: str):
     return {w for w in words if w not in STOPWORDS}
 
 
+def already_parked(pdir: str, claims) -> bool:
+    """True when an OPEN PARKED line for this same decision is already in the plan files.
+
+    Same distinctive-word technique arm B uses on freshly added lines, pointed at what is on disk
+    instead. Conservative on purpose: it needs at least two distinctive words in common, so a park
+    that merely shares the word "design" with an existing row still gets its own line.
+    """
+    claim_words = distinctive_words(" ".join(claims))
+    if len(claim_words) < 2:
+        return False
+    plans = os.path.join(pdir, "_plans")
+    if not os.path.isdir(plans):
+        return False
+    for root, _dirs, names in os.walk(plans):
+        for name in names:
+            if not name.endswith(".md"):
+                continue
+            try:
+                with open(os.path.join(root, name), encoding="utf-8", errors="replace") as fh:
+                    for line in fh:
+                        # is_open_park_line, not PARK_LINE_RE. 2026-08-22, caught by a reader
+                        # who ran it rather than read it: the docstring above says OPEN and the
+                        # code said any park line at all, so a decision already ANSWERED or
+                        # DROPPED could wave a genuinely new one through. Three closed lines are
+                        # sitting in this tree right now, so it was live, not theoretical.
+                        if not is_open_park_line(line):
+                            continue
+                        body = question_text(line).lower()
+                        hits = [w for w in claim_words
+                                if re.search(r"\b" + re.escape(w) + r"\b", body)]
+                        if len(hits) >= 2:
+                            return True
+            except OSError:
+                continue
+    return False
+
+
 def main() -> int:
     try:
         data = json.load(sys.stdin)
@@ -515,6 +552,16 @@ def main() -> int:
         return 0
 
     park_lines = [ln for ln in added if PARK_LINE_RE.search(ln)]
+
+    # ALREADY PARKED ON AN EARLIER TURN, added 2026-08-22 after this arm demanded a duplicate.
+    # It only ever looked at lines added THIS turn, so merely REPORTING a still-open park, which is
+    # what the say-whats-next rule asks every closing message to do, read as a fresh unrecorded
+    # park. The real case: the customer-severity ladder was parked in his own words on 2026-08-21,
+    # the line is in the plan file, and saying "still open: the customer-severity ladder" the next
+    # day was refused unless a SECOND line for the same decision was written. Two rows for one
+    # decision is precisely what this gate exists to prevent, so the demand was self-defeating.
+    if not park_lines and already_parked(pdir, claims):
+        return 0
 
     today = time.strftime("%Y-%m-%d")
     recipe = (
@@ -736,6 +783,34 @@ def selftest() -> int:
                      "fable-frontend, and keep or bin the compact-draft.")
         tests.append(("real message, genuine park of a still-open decision",
                       run(real_park, d, "a15"), 2))
+
+        # 16 REAL (2026-08-22, the customer-severity-ladder case named in the commit that added
+        # already_parked()). A decision parked and COMMITTED on an earlier turn, then merely
+        # reported again with no new park_lines this turn, must PASS. None of cases 1-15 exercise
+        # already_parked() at all: they either write a fresh park line this turn or write none, so
+        # this suite passed 15/15 whether or not already_parked() existed. Uses a real "now"
+        # timestamp for the turn (not the fixed 2026-08-07 default) so the earlier-turn commit is
+        # provably BEFORE the turn window, the same distinction already_parked() depends on.
+        d = fresh_repo(stack)
+        with open(os.path.join(d, "_plans", "WORK.md"), "a") as fh:
+            fh.write("- [ ] PARKED 2026-08-21 · Which severity ladder for a customer complaint, "
+                     "three tier or five tier? · from: owner call\n")
+        subprocess.run(["git", "-C", d, "add", "-A"], capture_output=True)
+        subprocess.run(["git", "-C", d, "commit", "-q", "-m", "park committed on an earlier turn"],
+                       capture_output=True)
+        time.sleep(1.1)  # strictly separate the earlier-turn commit from the turn tested below
+        already_parked_reply = (
+            "I parked the customer severity question for you again, still open from before, "
+            "unchanged, waiting on your call.")
+        now_ts = time.strftime("%Y-%m-%dT%H:%M:%S.000Z", time.gmtime())
+        rc16 = subprocess.run(
+            [sys.executable, __file__],
+            input=json.dumps({"transcript_path": transcript(already_parked_reply, now_ts),
+                              "session_id": f"{run_tag}-a16", "cwd": d}),
+            capture_output=True, text=True,
+            env={**os.environ, "CLAUDE_PROJECT_DIR": d}).returncode
+        tests.append(("real message, already-parked decision reported with no new line this turn",
+                      rc16, 0))
 
     ok = True
     for name, got, want in tests:

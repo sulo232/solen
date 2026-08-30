@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, paymentLimiter } from "@/lib/ratelimit";
+import { salonRespondsByDeadline, salonResponseOverdue, type DisputeStatus } from "@/lib/bookings/dispute-engine";
 
 // SP-5 Endpoint 1 — Salon-scoped refund/complaint REVIEW QUEUE (list only).
 //
@@ -60,8 +61,10 @@ export async function GET(req: NextRequest) {
   const limit = Math.min(Math.max(Number(sp.get("limit")) || 50, 1), 100);
   const cursor = sp.get("cursor"); // created_at keyset (descending)
 
-  // The salon owns the booking, not the dispute directly — scope through the
-  // booking. We need the booking ids for these salon(s), then the cases on them.
+  // The salon owns the booking, not the dispute directly, scope through the
+  // booking. Still fetched (small, salonIds-bound) for the reference_code /
+  // starts_at / amount enrichment below, NOT for a booking_id id-list filter
+  // anymore, see the fix note on the query below.
   // booking_disputes has no salon_id of its own (single source of truth stays on
   // bookings); the idx_booking_disputes_booking_id + status_created indexes keep
   // this cheap.
@@ -70,30 +73,66 @@ export async function GET(req: NextRequest) {
     .select("id, reference_code, starts_at, service_id, user_id, guest_name, guest_email, paid_amount, refunded_amount, salon_id")
     .in("salon_id", salonIds);
   if (bookingErr) {
-    console.error("[dashboard/disputes] salon bookings query failed:", bookingErr.message);
+    console.error(
+      "[dashboard/disputes] salon bookings query failed:",
+      bookingErr.message, bookingErr.details, bookingErr.hint, bookingErr.code,
+    );
     return NextResponse.json({ error: bookingErr.message }, { status: 500 });
   }
   if (!salonBookings || salonBookings.length === 0) {
     return NextResponse.json({ cases: [], next_cursor: null });
   }
   const bookingById = new Map(salonBookings.map((b) => [b.id, b]));
-  const bookingIds = salonBookings.map((b) => b.id);
 
-  // Cases on those bookings, filtered by status, recency-ordered, keyset paginated.
+  // Cases on those bookings, filtered by status, keyset paginated.
+  //
+  // FIX 2026-08-21: this used to filter with `.in("booking_id", bookingIds)`,
+  // bookingIds being every booking id for the caller's salon(s). A salon that
+  // owns many bookings (measured: the dev-fixture owner alone has 997 across
+  // 25 salons) serializes that array into the request URL, and the real
+  // failure was NOT PostgREST rejecting the query, it was a proxy in front of
+  // it answering a bare `400 Bad Request` (text/plain, no PostgREST error
+  // body at all, confirmed by hitting the REST endpoint directly) once that
+  // URL passed roughly 12-18KB. Known-answer control: the exact same select
+  // shape with a 3-id `.in("booking_id", ...)` list returned rows with no
+  // error, so the query SHAPE was never the problem, only the id-array size.
+  // FIX: filter through the FK-verified `bookings` relationship instead
+  // (booking_disputes.booking_id REFERENCES bookings(id), migration
+  // 075_booking_disputes.sql:7), so the URL only ever carries `salonIds`
+  // (bounded by how many salons one owner has, never by booking volume).
+  // Verified same rows both ways for the dev fixture (3/3 disputes, all
+  // belonging to the one salon that owns them) and a negative control: a
+  // different salon's id in this same filter returns zero of this owner's
+  // disputes, so the scoping boundary is unchanged.
+  //
+  // SORT: oldest-first (ascending) whenever the requested statuses include one
+  // still awaiting a salon response (open / salon_reviewing), newest-first
+  // otherwise. This is a TRIAGE queue against a live salonRespondsByDeadline()
+  // clock: newest-first buried the most-overdue case (oldest created_at, the
+  // one closest to auto-escalation) at the bottom of the default "open" view,
+  // the one screen this endpoint exists to surface it on (response-deadline-
+  // visible review, 2026-08-20). Terminal/resolved views keep recency-first,
+  // there is no clock left to triage by there.
+  const hasPendingSalonAction = statuses.some((s) => s === "open" || s === "salon_reviewing");
   let query = admin
     .from("booking_disputes")
     .select(
-      "id, booking_id, direction, reason_code, issue_type, eligibility, fast_track_recommended, requested_amount, resolved_amount, status, description, reporter_id, created_at",
+      "id, booking_id, direction, reason_code, issue_type, eligibility, fast_track_recommended, requested_amount, resolved_amount, status, description, reporter_id, created_at, bookings!inner(salon_id)",
     )
-    .in("booking_id", bookingIds)
+    .in("bookings.salon_id", salonIds)
     .in("status", statuses)
-    .order("created_at", { ascending: false })
+    .order("created_at", { ascending: hasPendingSalonAction })
     .limit(limit);
-  if (cursor) query = query.lt("created_at", cursor);
+  // Keyset direction must follow the sort direction above, or ascending pages
+  // would re-request the same already-seen rows instead of advancing.
+  if (cursor) query = hasPendingSalonAction ? query.gt("created_at", cursor) : query.lt("created_at", cursor);
 
   const { data: disputes, error: disputeErr } = await query;
   if (disputeErr) {
-    console.error("[dashboard/disputes] dispute query failed:", disputeErr.message);
+    console.error(
+      "[dashboard/disputes] dispute query failed:",
+      disputeErr.message, disputeErr.details, disputeErr.hint, disputeErr.code,
+    );
     return NextResponse.json({ error: disputeErr.message }, { status: 500 });
   }
 
@@ -148,6 +187,17 @@ export async function GET(req: NextRequest) {
       status: d.status,
       description: d.description,
       customer_name: customerName,
+      // Same function the customer-facing report route uses (dispute-engine.ts),
+      // so the date shown to the salon and the date shown to the customer are
+      // computed from the one place, never two copies drifting apart.
+      salon_responds_by: d.created_at
+        ? salonRespondsByDeadline(d.status as DisputeStatus, d.created_at)?.toISOString() ?? null
+        : null,
+      // Same status/created_at inputs as salon_responds_by above, so this can
+      // never disagree with it about which cases are overdue.
+      salon_response_overdue: d.created_at
+        ? salonResponseOverdue(d.status as DisputeStatus, d.created_at)
+        : false,
       created_at: d.created_at,
       booking: {
         starts_at: b?.starts_at ?? null,

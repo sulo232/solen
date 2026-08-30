@@ -52,7 +52,7 @@ jobs:
 
   every-15-min:
     if: github.event.schedule == '*/15 * * * *' || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'auto-complete-sweep')
-    name: Every 15 min · auto-complete, pending-timeout, abandon-sweep
+    name: Every 15 min · auto-complete, pending-timeout, abandon-sweep, walkin-no-show
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -73,7 +73,7 @@ jobs:
           echo "::error::solen.ch/api/health unhealthy (last status $status)"; exit 1
       - uses: ./.github/actions/ping-cron
         with:
-          paths: /api/cron/auto-complete,/api/cron/pending-timeout,/api/cron/abandon-sweep
+          paths: /api/cron/auto-complete,/api/cron/pending-timeout,/api/cron/abandon-sweep,/api/cron/walkin-no-show
           secret: ${{ secrets.CRON_SECRET }}
 
   every-30-min:
@@ -150,7 +150,7 @@ jobs:
 
   daily-03-utc:
     if: github.event.schedule == '0 3 * * *' || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'nightly-maintenance')
-    name: Daily 03:00 UTC · solen-score recalc (POST), process-deletions (GET), reconcile (GET), affinity-recompute (GET), salon-engagement-recompute (GET)
+    name: Daily 03:00 UTC · solen-score recalc (POST), process-deletions (GET), reconcile (GET), affinity-recompute (GET), salon-engagement-recompute (GET), dispute-timeout (GET)
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -187,6 +187,11 @@ jobs:
         uses: ./.github/actions/ping-cron
         with:
           paths: /api/cron/salon-engagement-recompute
+          secret: ${{ secrets.CRON_SECRET }}
+      - name: dispute-timeout (GET)
+        uses: ./.github/actions/ping-cron
+        with:
+          paths: /api/cron/dispute-timeout
           secret: ${{ secrets.CRON_SECRET }}
 
   daily-03-45-utc:

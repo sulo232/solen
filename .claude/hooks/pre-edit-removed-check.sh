@@ -25,6 +25,48 @@
 # Registered in .claude/settings.json under hooks.PreToolUse "Edit" + "Write".
 
 set -uo pipefail
+
+if [[ "${1:-}" == "--selftest" ]]; then
+  # 2026-08-18 fix, measured: this gate loose-matched _design-system/REMOVED.md by bare keyword
+  # and blocked 12 of 31 live route pages (/search /inspo /profile /account /coiffeur /termine
+  # among them). Line 34 names the Inspo search focus-ring TREATMENT, line 104 a page TITLE,
+  # line 44 a homepage-section COMPONENT, line 115 a superseded profile-tab HUB, none of which
+  # removed the route, and a bare keyword hit could not tell a component/treatment/title apart
+  # from the route itself. Fix: the "what" field must name the route as a delimited /segment
+  # path sitting next to the word "page" or "route", not just share a keyword. This harness
+  # proves both halves on a synthetic REMOVED.md + synthetic route files, never the real ones.
+  TDIR="${TMPDIR:-/tmp}/pre-edit-removed-selftest-$$"
+  mkdir -p "$TDIR/_design-system" "$TDIR/app/[locale]/widget" "$TDIR/app/[locale]/gadget"
+  cat > "$TDIR/_design-system/REMOVED.md" <<'MD'
+- widget widget-focus-ring | Widget focused-state treatment inside the /demo screen: the focus ring on the widget input. | Owner ditched the focus ring 2026-01-01, back button removed too. | widget/page.tsx unrelated
+- gadget gadget-page | the standalone gadget page /gadget was deleted. | owner removed 2026-01-01, never rebuild | was app/[locale]/gadget/page.tsx
+MD
+  echo "export default function Widget() { return null }" > "$TDIR/app/[locale]/widget/page.tsx"
+  echo "export default function Gadget() { return null }" > "$TDIR/app/[locale]/gadget/page.tsx"
+  PASS=0; TOTAL=2
+
+  PAYLOAD_WIDGET=$(printf '{"tool_name":"Edit","tool_input":{"file_path":"%s/app/[locale]/widget/page.tsx"}}' "$TDIR")
+  echo "$PAYLOAD_WIDGET" | CLAUDE_PROJECT_DIR="$TDIR" bash "$0" >/dev/null 2>&1; RC1=$?
+  if [[ "$RC1" == "0" ]]; then
+    echo "  PASS  entry naming a component/treatment (not the route) must pass (exit=$RC1, expected=0)"; PASS=$((PASS+1))
+  else
+    echo "  FAIL  entry naming a component/treatment (not the route) must pass (exit=$RC1, expected=0)"
+  fi
+
+  PAYLOAD_GADGET=$(printf '{"tool_name":"Edit","tool_input":{"file_path":"%s/app/[locale]/gadget/page.tsx"}}' "$TDIR")
+  echo "$PAYLOAD_GADGET" | CLAUDE_PROJECT_DIR="$TDIR" bash "$0" >/dev/null 2>&1; RC2=$?
+  if [[ "$RC2" == "2" ]]; then
+    echo "  PASS  entry naming the actual removed ROUTE must still block (exit=$RC2, expected=2)"; PASS=$((PASS+1))
+  else
+    echo "  FAIL  entry naming the actual removed ROUTE must still block (exit=$RC2, expected=2)"
+  fi
+
+  rm -rf "$TDIR"
+  echo ""
+  echo "$PASS/$TOTAL passed"
+  [[ "$PASS" == "$TOTAL" ]] && exit 0 || exit 1
+fi
+
 INPUT=$(cat)
 TOOL=$(echo "$INPUT" | jq -r '.tool_name // empty')
 FILE=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
@@ -138,8 +180,9 @@ HIT=""; HIT_STRONG=""
 if [[ -f "$REMOVED" ]]; then
   HIT=$(awk -v seg="$SEG" '
     {
-      bar = index($0, "|")
-      first = (bar > 0) ? substr($0, 1, bar - 1) : $0
+      n = split($0, parts, "|")
+      first = parts[1]
+      what = (n >= 2) ? parts[2] : ""
       nf = split(first, toks, /[ \t]+/)
       lseg = tolower(seg)
       hit = 0
@@ -153,7 +196,22 @@ if [[ -f "$REMOVED" ]]; then
           if (tolower(comps[k]) == lseg) { hit = 1; break }
         }
       }
-      if (hit) print NR ":" $0
+      if (!hit) next
+      # ROUTE CHECK (2026-08-18 fix, measured: this loose keyword match blocked 12 of 31 live
+      # route pages, e.g. line 34 names the Inspo search focus-ring TREATMENT and line 104 a
+      # page TITLE, neither is the route). The "what" field (2nd pipe column) must name the
+      # route as a delimited /segment path next to the word "page" or "route", not just share
+      # a keyword with a component/treatment/title that happens to render inside it.
+      lwhat = tolower(what)
+      routed = 0
+      if (match(lwhat, "(^|[^a-z0-9_-])/" lseg "([^a-z0-9_-]|$)")) {
+        slashpos = index(substr(lwhat, RSTART, RLENGTH), "/") + RSTART - 1
+        wstart = (slashpos > 40) ? slashpos - 40 : 1
+        wbefore = substr(lwhat, wstart, slashpos - wstart)
+        wafter = substr(lwhat, slashpos, RLENGTH + 40)
+        if ((wbefore ~ /page|route/) || (wafter ~ /page|route/)) routed = 1
+      }
+      if (routed) print NR ":" $0
     }
   ' "$REMOVED" 2>/dev/null | head -3 || true)
   HIT_STRONG=$(printf '%s\n' "$HIT" | grep -iE "remov|delet|kill|never rebuild|do NOT re-?(add|surface|build)" \

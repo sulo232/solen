@@ -60,7 +60,7 @@ function ForYouRow({
       <SectionFrame>
         <SectionTitle
           title={`Weil Sie ${label} mögen`}
-          link={{ label: `Alle ${label}-Stores`, href: `/${locale}/${category}` }}
+          link={{ label: `Alle ${label}-Salons`, href: `/${locale}/${category}` }}
           scrollRef={scrollRef}
         />
         <ScrollRow ref={scrollRef}>

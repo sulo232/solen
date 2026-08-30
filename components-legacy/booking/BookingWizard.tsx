@@ -101,6 +101,9 @@ interface BookingWizardProps {
   serviceOptions: ServiceOption[];
   // SP-1: surfaced from the server page so PayConfirmStep shows the guest form when logged out.
   isLoggedIn: boolean;
+  // Owner 2026-08-21: surfaced from the server page so PayConfirmStep only offers the
+  // gift-voucher code field when this salon actually has a redeemable voucher.
+  salonHasRedeemableVoucher: boolean;
 }
 
 // Step swap uses `useStepSwapMotion` (app/[locale]/_components/primitives/motion.ts),
@@ -108,7 +111,7 @@ interface BookingWizardProps {
 // (containing-block reasoning documented there, not re-derived here) and
 // full `prefers-reduced-motion` support.
 
-export default function BookingWizard({ services, staffList, salon, staffServices, serviceAddons, serviceOptions, isLoggedIn }: BookingWizardProps) {
+export default function BookingWizard({ services, staffList, salon, staffServices, serviceAddons, serviceOptions, isLoggedIn, salonHasRedeemableVoucher }: BookingWizardProps) {
   const t = useTranslations('booking') as any;
   const locale = useLocale();
   const router = useRouter();
@@ -165,7 +168,7 @@ export default function BookingWizard({ services, staffList, salon, staffService
       case 'hair':
         return <HairStep staff={selectedStaff} showBeard={services.some((s) => cartIds.has(s.id) && s.category === 'barbershop')} />;
       case 'pay-confirm':
-        return <PayConfirmStep salon={salon} staff={selectedStaff} isLoggedIn={isLoggedIn} />;
+        return <PayConfirmStep salon={salon} staff={selectedStaff} isLoggedIn={isLoggedIn} salonHasRedeemableVoucher={salonHasRedeemableVoucher} />;
       default:
         return null;
     }

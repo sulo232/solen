@@ -27,7 +27,7 @@ Deliberately NOT gated (would be false positives):
   - Sheets (rounded-t-/rounded-b-), images, inputs.
 
 Scope: design-surface .tsx/.jsx under app|components (NOT mockups/public, generated,
-.d.ts, node_modules, _audits, /dev/). NET-NEW only (Write content / Edit new_string /
+.d.ts, node_modules, _audits). NET-NEW only (Write content / Edit new_string /
 MultiEdit new_strings); pre-existing drift never blocks an unrelated edit.
 
 Escape hatches:
@@ -36,10 +36,91 @@ Escape hatches:
     with the word shadow-whisper within ~90 chars).
   - This turn: touch ~/.claude/card-radius-skip.flag        # 5-minute TTL
 FAIL-OPEN on any parse error.
+
+2026-08-18 stress-test fix: MEASURED that this gate exempted `/dev/`, and since
+2026-08-07 the real mockups live at `app/[locale]/dev/**/*.tsx`, not `public/_mockups/
+**.html` , so a shadow-whisper card at the wrong radius written into a `/dev/` route
+sailed straight through, exactly where the radius call is made now. `/dev/` dropped
+from the skip list; `app/[locale]/dev/**` files are `/app/` paths already, so they were
+always in scope by the app|components check, only the blanket `/dev/` exclusion below it
+was standing them down. Also added the file's first `--selftest`, it never had one.
 """
 import json, os, re, sys, time
 
 WHISPER_RADIUS = 24  # the grouped list-card grammar (shadow-whisper). Change ONLY with an owner yes.
+
+
+def _drive(file_path, content, tool="Write", old_string=None):
+    """Selftest helper: re-run this file as a subprocess with a synthetic PreToolUse payload,
+    same black-box shape hook-probe.py uses, so the test exercises the real stdin-driven path.
+    When old_string is given, drives an Edit (content becomes new_string) so the
+    already-present-in-old-text forgiveness path can be exercised too (2026-08-21)."""
+    import subprocess
+    if old_string is not None:
+        payload = {"tool_name": "Edit", "tool_input": {
+            "file_path": file_path, "old_string": old_string, "new_string": content}}
+    else:
+        payload = {"tool_name": tool, "tool_input": {"file_path": file_path, "content": content}}
+    p = subprocess.run([sys.executable, os.path.abspath(__file__)], input=json.dumps(payload),
+                        capture_output=True, text=True, timeout=10)
+    return p.returncode, p.stdout
+
+
+def selftest():
+    """2026-08-18: proves /dev/ is back in scope without breaking the exemptions around it.
+    2026-08-21: proves a reword that leaves an already-offending radius+shadow-whisper pair
+    untouched is forgiven, while a genuine addition or a genuine radius change still blocks."""
+    WRONG = '<div className="overflow-hidden rounded-[16px] border border-s-border bg-white shadow-whisper">'
+    cases = [
+        ("a /dev/ mockup route at the WRONG radius must now block",
+         "/Users/sulo/Documents/solen/app/[locale]/dev/airbnb-01-home/page.tsx",
+         '<div className="overflow-hidden rounded-[16px] border border-s-border bg-white shadow-whisper">x</div>',
+         True, None),
+        ("a /dev/ mockup route at the CORRECT radius (24) must pass",
+         "/Users/sulo/Documents/solen/app/[locale]/dev/airbnb-01-home/page.tsx",
+         '<div className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper">x</div>',
+         False, None),
+        ("a real app page at the wrong radius still blocks (pre-existing behavior)",
+         "/Users/sulo/Documents/solen/app/[locale]/salon/[slug]/page.tsx",
+         '<div className="overflow-hidden rounded-[16px] border border-s-border bg-white shadow-whisper">x</div>',
+         True, None),
+        ("public/_mockups/*.html stays out of scope (not .tsx/.jsx)",
+         "/Users/sulo/Documents/solen/public/_mockups/salon.html",
+         '<div class="overflow-hidden rounded-[16px] border border-s-border bg-white shadow-whisper">x</div>',
+         False, None),
+        ("a shadow-elevation card at any radius is not gated at all",
+         "/Users/sulo/Documents/solen/app/[locale]/dev/airbnb-02-search/page.tsx",
+         '<div className="rounded-[12px] shadow-elevation-2 bg-white">x</div>',
+         False, None),
+        ("2026-08-21: a text-only reword that leaves the offending radius+shadow-whisper "
+         "pair BYTE-IDENTICAL on both sides must be forgiven, not refused",
+         "/Users/sulo/Documents/solen/app/[locale]/salon/[slug]/page.tsx",
+         WRONG + "Neue Uberschrift</div>",
+         False, WRONG + "Alte Uberschrift</div>"),
+        ("2026-08-21 narrowness: a genuine ADDITION of the wrong-radius card (old had none) "
+         "must still block",
+         "/Users/sulo/Documents/solen/app/[locale]/salon/[slug]/page.tsx",
+         WRONG + "x</div>",
+         True, '<div className="p-4">x</div>'),
+        ("2026-08-21 narrowness: a genuine radius CHANGE (16 -> 18, still wrong) must still "
+         "block even though shadow-whisper itself did not move",
+         "/Users/sulo/Documents/solen/app/[locale]/salon/[slug]/page.tsx",
+         '<div className="overflow-hidden rounded-[18px] border border-s-border bg-white shadow-whisper">x</div>',
+         True, WRONG + "x</div>"),
+    ]
+    ok = 0
+    for name, fp, content, expect, old_string in cases:
+        _, out = _drive(fp, content, old_string=old_string)
+        got = bool(out.strip())
+        good = got == expect
+        ok += good
+        print(f"  {'PASS' if good else 'FAIL'}  {name}  (blocked={got}, expected={expect})")
+    print(f"\n{ok}/{len(cases)} passed")
+    return 0 if ok == len(cases) else 1
+
+
+if "--selftest" in sys.argv:
+    sys.exit(selftest())
 
 try:
     data = json.load(sys.stdin)
@@ -64,8 +145,9 @@ if not fp.endswith((".tsx", ".jsx")):
 low = fp.lower()
 if not (("/app/" in low or low.startswith("app/")) or "/components" in low or low.startswith("components")):
     sys.exit(0)
-# skip non-design-surface files
-if any(s in low for s in ("/public/", "_mockups/", "/_audits/", "node_modules", ".d.ts", "/generated", "/dev/")):
+# skip non-design-surface files , "/dev/" removed 2026-08-18: real mockups now live at
+# app/[locale]/dev/**/*.tsx and this exclusion was standing the radius check down exactly there.
+if any(s in low for s in ("/public/", "_mockups/", "/_audits/", "node_modules", ".d.ts", "/generated")):
     sys.exit(0)
 
 # the text being ADDED (net-new only)
@@ -83,6 +165,19 @@ if not blob.strip():
 
 RADIUS = re.compile(r"rounded-\[(\d+)px\]")
 
+# 2026-08-21 stress-test fix: this gate used to read only the ADDED text, so a reword that
+# leaves an already-offending `rounded-[Npx] ... shadow-whisper` pair untouched on both sides
+# of an Edit got refused as if it had just introduced the violation. Byte-identical fix: if the
+# exact radius token AND the shadow-whisper token were both already present, unchanged, in the
+# text this edit replaces, the edit did not add them, so forgive. Fails closed on any import
+# error, meaning the gate keeps refusing exactly as it did before this fix.
+try:
+    sys.path.insert(0, os.path.expanduser("~/.claude/hooks/_lib"))
+    from unchanged_by_this_edit import co_located
+except Exception:
+    def co_located(_data, _offenders, window=400):
+        return False
+
 offenders = []
 for m in RADIUS.finditer(blob):
     n = int(m.group(1))
@@ -99,6 +194,15 @@ for m in RADIUS.finditer(blob):
     # per-line escape
     esc_win = blob[max(0, m.start() - 120):m.end() + 120]
     if re.search(r"radius-ok\s*:", esc_win, re.I) or re.search(r"drift-ok\s*:", esc_win, re.I):
+        continue
+    # 2026-08-21, CORRECTED WITHIN THE HOUR by an adversary. This first read
+    # any_already_present(), which asks whether each token exists ANYWHERE in the old text,
+    # independently. The offense here is the PAIRING, a wrong radius next to shadow-whisper, so
+    # two harmless decoy lines (a chip that says rounded-[16px], a caption that says
+    # shadow-whisper) forgave a genuinely brand new violating card elsewhere in the same edit.
+    # Reproduced with plain readable JSX, no cleverness needed. co_located asks the old text the
+    # same question this gate asks the new one: are these two things near each other.
+    if co_located(data, [m.group(0), "shadow-whisper"], window=200):
         continue
     offenders.append(n)
 

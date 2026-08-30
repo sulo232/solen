@@ -49,9 +49,12 @@ interface PayConfirmStepProps {
   staff: StaffMember | null;
   // SP-1: false => render GuestBookingForm + send guest_name/phone/email to POST /api/bookings.
   isLoggedIn: boolean;
+  // Owner 2026-08-21: gates the voucher code field below, true only when this salon has at
+  // least one redeemable voucher.
+  salonHasRedeemableVoucher: boolean;
 }
 
-export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmStepProps) {
+export default function PayConfirmStep({ salon, staff, isLoggedIn, salonHasRedeemableVoucher }: PayConfirmStepProps) {
   const t = useTranslations('booking');
   // P1: NEW pay/confirm copy lives in its own `payConfirm` namespace (existing booking.* keys untouched).
   const tp = useTranslations('payConfirm');
@@ -664,8 +667,10 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
           border border-s-border bg-s-bg-surface p-4), the label reuses the "(d) Payment"
           eyebrow classes above, the input is the bare global input primitive (same as
           contactName/contactPhone), the button reuses BookingPaymentForm's existing
-          "Andere Zahlungsart" neutral-outline classes verbatim. No new size/color/radius. */}
-      {paymentMethod === 'online' && (
+          "Andere Zahlungsart" neutral-outline classes verbatim. No new size/color/radius.
+          Owner 2026-08-21: also hidden when the salon has no redeemable voucher, so the field
+          is never offered where it can never work. */}
+      {paymentMethod === 'online' && salonHasRedeemableVoucher && (
         <div className="rounded-input border border-s-border bg-s-bg-surface p-4">
           <p className="mb-2 text-[13px] font-semibold text-s-ink">{tp('voucherLabel')}</p>
           <div className="flex gap-2">

@@ -15,7 +15,10 @@ import {
   resolveEligibility,
   reasonAllowedOnConfirmed,
   writeCaseEvent,
+  salonRespondsByDeadline,
+  salonResponseOverdue,
   type ReasonCode,
+  type DisputeStatus,
 } from "@/lib/bookings/dispute-engine";
 import { sendEmail } from "@/lib/email";
 
@@ -69,6 +72,15 @@ function shapeCase(row: Record<string, any> | null) {
     admin_responded_at: row.admin_responded_at,
     stripe_refund_id: row.stripe_refund_id,
     expires_at: row.expires_at,
+    // Same function a timeout/auto-escalation job would use (dispute-engine.ts),
+    // so the date shown here and the date any future cron acts on can never
+    // drift apart. null once the salon has already responded.
+    salon_responds_by:
+      salonRespondsByDeadline(row.status as DisputeStatus, row.created_at)?.toISOString() ?? null,
+    // Discriminates "on track" from "already broken" for the same deadline above
+    // (response-deadline-visible review, 2026-08-20). Same status/created_at inputs,
+    // so it can never disagree with salon_responds_by.
+    salon_response_overdue: salonResponseOverdue(row.status as DisputeStatus, row.created_at),
     created_at: row.created_at,
     updated_at: row.updated_at,
   };

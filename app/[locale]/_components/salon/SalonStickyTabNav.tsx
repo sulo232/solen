@@ -153,7 +153,7 @@ export function SalonStickyTabNav({
   const nav = (
     <nav
       ref={navRef}
-      aria-label="Store-Abschnitte"
+      aria-label="Salon-Abschnitte"
       className={cn(
         // V2-D53.3 fix (round 2): switched from `sticky` to `fixed` so the
         // nav is always anchored to viewport top:0 once visible. `sticky`
@@ -198,7 +198,7 @@ export function SalonStickyTabNav({
           </span>
           <button
             type="button"
-            aria-label="Store teilen"
+            aria-label="Salon teilen"
             onClick={shareSalon}
             className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink transition-transform active:scale-95 active:duration-[80ms] active:ease-glide"
           >

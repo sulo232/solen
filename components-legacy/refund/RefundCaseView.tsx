@@ -155,7 +155,15 @@ export default function RefundCaseView({
         return;
       }
       const j = await res.json().catch(() => ({}));
-      setActionError(j?.error || t("toastEscalateError"));
+      // app/api/bookings/[id]/escalate/route.ts returns the raw code ESCALATION_WINDOW_CLOSED,
+      // not a sentence. Map it here rather than falling through to j.error, which would render
+      // that literal string in the styled error box in every locale. Never toastEscalateError
+      // for this one: the deadline does not move, so "please try again" is wrong advice.
+      const message =
+        j?.error === "ESCALATION_WINDOW_CLOSED"
+          ? t("toastEscalateWindowClosed")
+          : j?.error || t("toastEscalateError");
+      setActionError(message);
     } catch (err) {
       console.error("[RefundCaseView] escalate failed:", err);
       setActionError(t("toastEscalateError"));
@@ -623,7 +631,10 @@ function buildTimeline(
           state: "done",
           title: t("tlEscalated"),
           time,
-          meta: t("tlEscalatedByYou"),
+          // actor_role "system" = the timeout cron escalated it, not the customer
+          // (app/api/cron/dispute-timeout). Mirrors the guest/non-guest branch on
+          // "created" above: the label must match who/what actually acted.
+          meta: e.actor_role === "customer" || e.actor_role === "guest" ? t("tlEscalatedByYou") : t("tlEscalatedAuto"),
           note: e.note ? { who: t("tlYourNote"), body: e.note, tone: "neutral" } : undefined,
         });
         break;
@@ -859,6 +870,22 @@ function ActionInner({
   // ----- salon_rejected: shield note + the BLUE escalate CTA (the mockup state) -----
   if (c.status === "salon_rejected") {
     const daysLeft = escalateDaysLeft(c.salon_responded_at);
+    // escalateDaysLeft only reaches 0 once the 14-day window has fully lapsed (13d23h59m
+    // still returns 1), and no cron ever moves a case out of salon_rejected, so this is
+    // permanent, not a one-tick race. app/api/bookings/[id]/escalate/route.ts now refuses
+    // every tap here with ESCALATION_WINDOW_CLOSED, so the CTA and the escWindowToday
+    // "still today" copy retire together: a state that cannot exist gets no screen.
+    if (daysLeft <= 0) {
+      return (
+        <>
+          <ShieldNote text={t("escWindowClosedNote")} />
+          <Link href={`/${locale}/help`} className={secondaryBtn}>
+            {t("contactSupport")}
+          </Link>
+          <p className="mt-2 text-center text-[12px] leading-[1.5] text-s-ink-2">{t("footClosedNoAction")}</p>
+        </>
+      );
+    }
     return (
       <>
         <ShieldNote text={t("footEscalateNoGuarantee")} />
@@ -866,7 +893,7 @@ function ActionInner({
           {t("escalateToSolen")}
         </button>
         <p className="mt-2 text-center text-[12px] leading-[1.5] text-s-ink-2">
-          {daysLeft > 0 ? t("escWindowOpen", { days: daysLeft }) : t("escWindowToday")} {t("escFree")}
+          {t("escWindowOpen", { days: daysLeft })} {t("escFree")}
         </p>
       </>
     );
@@ -877,6 +904,13 @@ function ActionInner({
     return (
       <>
         <ShieldNote text={t("footEmailUpdate")} />
+        {c.salon_responds_by && (
+          <p className="mb-3 text-center text-[12px] leading-[1.5] text-s-ink-2"> {/* mockup-ok: restores the already-shipped escWindowOpen caption pattern, RefundCaseView.tsx:868, byte-identical classes, same role (small print under the CTA) */}
+            {c.salon_response_overdue
+              ? t("respondsByOverdue", { date: fmtDate(c.salon_responds_by, locale) })
+              : t("respondsBy", { date: fmtDate(c.salon_responds_by, locale) })}
+          </p>
+        )}
         <Link href={reportHref} className={secondaryBtn}>
           <MessageSquare size={17} strokeWidth={1.9} aria-hidden />
           {t("addMoreDetails")}

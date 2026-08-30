@@ -38,22 +38,50 @@ def find_flat(text: str):
     return m.group(0) if m else None
 
 
-def main():
-    try:
-        payload = json.load(sys.stdin)
-    except Exception:
-        sys.exit(0)
+def find_flat_all(text: str):
+    return [m.group(0) for m in FLAT.finditer(text or "")]
+
+
+def should_block(payload):
+    """Returns the matched offender text if this tool call should be blocked, else None.
+    Pure over the parsed payload (no stdin, no flag file) so --selftest can drive it directly."""
     if (payload.get("tool_name") or "") not in ("Write", "Edit", "MultiEdit"):
-        sys.exit(0)
+        return None
     ti = payload.get("tool_input") or {}
     path = (ti.get("file_path") or "").replace("\\", "/")
     if "public/_mockups/" not in path or not path.lower().endswith((".html", ".htm")):
-        sys.exit(0)
+        return None
     content = ti.get("content") or ti.get("new_string") or ""
     if not content.strip():
         edits = ti.get("edits") or []
         content = "\n".join(e.get("new_string", "") for e in edits)
     if not content.strip():
+        return None
+
+    hit = find_flat(content)
+    if not hit:
+        return None
+
+    # 2026-08-21: this gate read only the replacement text, so a reword that left an
+    # unrelated pre-existing "flat section"-style phrase untouched elsewhere on the same
+    # line was refused as if the phrase had just been typed. If every match found here is
+    # byte-identical in the text being replaced, this edit did not add it, and refusing
+    # does not remove it, it only blocks the unrelated work passing through.
+    try:
+        sys.path.insert(0, os.path.expanduser("~/.claude/hooks/_lib"))
+        from unchanged_by_this_edit import any_already_present
+        if any_already_present(payload, find_flat_all(content)):
+            return None
+    except Exception:
+        pass  # fail closed: if the helper is missing, keep refusing
+
+    return hit
+
+
+def main():
+    try:
+        payload = json.load(sys.stdin)
+    except Exception:
         sys.exit(0)
 
     project = os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()
@@ -66,7 +94,7 @@ def main():
         if (time.time() - os.path.getmtime(flag)) < 900 and reason:
             sys.exit(0)
 
-    hit = find_flat(content)
+    hit = should_block(payload)
     if hit:
         sys.stderr.write(
             "MOCKUP-NO-FLAT GATE (owner 2026-07-18 revert + 2026-07-19, furious): this mockup re-proposes the\n"
@@ -92,6 +120,42 @@ def selftest():
     print(f"flat-section proposal : {'BLOCK' if r1 else 'MISS'} ({r1})")
     print(f"borderless proposal   : {'BLOCK' if r2 else 'MISS'} ({r2})")
     print(f"carded change (keep)  : {'PASS' if r3 is None else 'FALSE-BLOCK(' + str(r3) + ')'}")
+
+    # 2026-08-21: old_string-blind cases, worked example is no-focus-ring-gate.py. should_block()
+    # is the function that must know old vs new; go through it, not find_flat() alone.
+    def edit(path, old, new):
+        return {"tool_name": "Edit", "tool_input": {
+            "file_path": path, "old_string": old, "new_string": new}}
+
+    MOCK = "public/_mockups/salon-pdp/change.html"
+    # reproduce case: the actual bug hit today. A pre-existing, untouched "flat section" phrase
+    # sits in the same string as an unrelated price edit and must NOT block.
+    reproduce = should_block(edit(MOCK,
+        "<!-- keep the flat section proof-of-concept comment untouched --><p>Price: CHF 45</p>",
+        "<!-- keep the flat section proof-of-concept comment untouched --><p>Price: CHF 50</p>"))
+    # narrowness 1: a genuine ADDITION of the phrase must still block.
+    add = should_block(edit(MOCK,
+        "<p>Price: CHF 45</p>",
+        "<!-- After: flatten the Team wrapper --><p>Price: CHF 45</p>"))
+    # narrowness 2: a genuine CHANGE of the phrase itself (rhythm -> section) must still block.
+    change = should_block(edit(MOCK,
+        "<!-- keep the flat rhythm proof-of-concept comment untouched --><p>Price: CHF 45</p>",
+        "<!-- keep the flat section proof-of-concept comment untouched --><p>Price: CHF 50</p>"))
+    # narrowness 3: a whole-file Write carrying the phrase is never forgiven, Write has no old side.
+    write_hit = should_block({"tool_name": "Write", "tool_input": {
+        "file_path": "public/_mockups/salon-pdp/whole.html",
+        "content": "<!-- keep the flat section note untouched --><p>Price: CHF 45</p>"}})
+
+    r4 = reproduce is None
+    r5 = bool(add)
+    r6 = bool(change)
+    r7 = bool(write_hit)
+    print(f"reword, phrase untouched (allow) : {'PASS' if r4 else 'FALSE-BLOCK(' + str(reproduce) + ')'}")
+    print(f"genuine addition (block)         : {'BLOCK' if r5 else 'MISS'} ({add})")
+    print(f"genuine change of phrase (block) : {'BLOCK' if r6 else 'MISS'} ({change})")
+    print(f"Write, phrase present (block)    : {'BLOCK' if r7 else 'MISS'} ({write_hit})")
+
+    ok = ok and r4 and r5 and r6 and r7
     print("SELFTEST", "OK" if ok else "FAILED")
     sys.exit(0 if ok else 1)
 

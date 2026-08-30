@@ -35,9 +35,9 @@ export function SalonAppCta({
   const cityLabel = capitalize(city);
   const quartierLabel = quartier ? formatQuartier(quartier) : null;
   const links = [
-    { label: `Andere Stores in ${cityLabel}`, href: `/${locale}/search?city=${encodeURIComponent(cityLabel)}` },
+    { label: `Andere Salons in ${cityLabel}`, href: `/${locale}/search?city=${encodeURIComponent(cityLabel)}` },
     ...(quartierLabel && quartierLabel.toLowerCase() !== cityLabel.toLowerCase()
-      ? [{ label: `Andere Stores in ${quartierLabel}`, href: `/${locale}/search?q=${encodeURIComponent(quartierLabel)}` }]
+      ? [{ label: `Andere Salons in ${quartierLabel}`, href: `/${locale}/search?q=${encodeURIComponent(quartierLabel)}` }]
       : []),
     { label: "Coiffeure", href: `/${locale}/coiffeur` },
     { label: "Barbershops", href: `/${locale}/barbershop` },

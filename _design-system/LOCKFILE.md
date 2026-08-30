@@ -95,8 +95,8 @@ the locked FROST_GLASS/scrim recipes are the only sanctioned alpha uses). Ad-hoc
 |---|---|---|
 | `s-ink` | `#0A0A0A` | Primary chart row (use `s-ink` directly for the Solen brand bar in any competitor-comparison chart; the `s-chart-1` alias was deleted in color-tokens-06, 2026-07-27, zero live callsites) |
 | `s-chart-2` | `#9CA3AF` | Secondary chart row (e.g. main competitor / Treatwell bar in /partner pricing chart) |
-| `s-chart-1` | `#0A0A0A` | Primary chart row (alias of `s-ink` — use for the Solen brand bar in any competitor-comparison chart) |
-| `s-chart-2` | `#9CA3AF` | Secondary chart row (e.g. main competitor / Treatwell bar in /partner pricing chart) **PLUS, since the owner-approved FLOORS LAW of 2026-07-21 (§17.4 below), the reinstated TERTIARY TEXT grey: chevrons, placeholders, timestamps, hints. NON-load-bearing text ONLY , forbidden on any copy the user has to read to decide.** This row previously named only the chart role, so the text role read as an undefined token. |
+| ~~`s-chart-1`~~ | ~~`#0A0A0A`~~ | ~~Primary chart row (alias of `s-ink`)~~ , **DELETED in color-tokens-06, 2026-07-27, zero live callsites. The row two above already said so; this duplicate did not. Struck 2026-08-17 by the weekly law pass. Use `s-ink`.** |
+| `s-chart-2` | `#9CA3AF` | Secondary chart row (e.g. main competitor / Treatwell bar in /partner pricing chart). ~~PLUS, since the owner-approved FLOORS LAW of 2026-07-21 (§17.4 below), the reinstated TERTIARY TEXT grey: chevrons, placeholders, timestamps, hints.~~ **THE TEXT ROLE IS STRUCK, 2026-08-17 by the weekly law pass, using a correction that was already written and dated: accessibility-05 (2026-07-27) computed `#9CA3AF` at 2.54:1 on white and 2.31:1 on `s-bg-sunken`, below WCAG 1.4.3 even at the large-text 3:1 floor, so NO font size makes it legal for prose. §17.4 below and the CLAUDE.md display-anchor floor both already say CHART-ONLY, never text of any kind. This row was the last one still granting the text role, and it sits in §1, which is what a builder reads top-down first. Chevrons, placeholders, timestamps and hints use `s-ink-2` (`#6B6B6B`, 5.33:1 on white / 4.85:1 on sunken, both AA) , the one token authorised for non-load-bearing text. WCAG AA is tier 2 statutory in the precedence chain and outranks the 07-21 reinstatement it cites.** |
 | `s-chart-3` | `#D1D5DB` | Tertiary chart row (e.g. competitor range / "others" bar in /partner pricing chart) |
 
 **Why discrete tokens (not opacity-modifier):** opacity-modifier-on-ink-2 (`bg-s-ink-2/40` / `bg-s-ink-2/30`) is a smell — it conflates hierarchy with transparency. Discrete chart-grey tokens make data-vis intent explicit + readable to drift-checker. Use this scale ONLY for bar/line/area charts (NOT for general UI grey).
@@ -1228,7 +1228,30 @@ Subagents take their block from this table to avoid collisions.
 
 ## §10 — Conflict-resolution rule + DUAL-AXIS SOURCE-OF-TRUTH (V3-D338, 2026-05-28)
 
-### §10.0 — The dual-axis rule (THE MOST IMPORTANT RULE — read first)
+### §10.0 — The dual-axis rule (SUPERSEDED 2026-08-12 — read the banner first)
+
+> **SUPERSEDED BY A DATED OWNER DECISION, 2026-08-12. Banner added 2026-08-17 by the weekly law pass.**
+> **Owner, verbatim: "airbnb te is source of truth"**, answering a question that quoted this exact rule
+> and named the precedent against it, so it was taken with the collision in front of him. **Airbnb is now
+> the source of truth on BOTH axes.** Fresha is no longer the structural authority, and `AESTHETIC = Uber`
+> falls with it wherever the two disagree. Recorded in `CLAUDE.md` (the design-system block) and in
+> `TASTE_LOG.md`, "2026-08-12 , AIRBNB BECOMES THE SOURCE OF TRUTH".
+>
+> This section was found unchanged five days later, still labelled THE MOST IMPORTANT RULE, while its own
+> header tells readers that a captured Fresha spec loses to the values here. Anyone reading the LOCKFILE
+> top-down and following the precedence chain literally would still be capturing Fresha today.
+>
+> **What did NOT move, because he did not move it and a taste source cannot outrank a floor:** the
+> statutory tier (WCAG AA, nFADP/GDPR, the PBV total-price rule), the FLOORS LAW minimums, no dark mode on
+> web, no fabricated data, and any dated TASTE_LOG decision he made by name. An Airbnb detail that collides
+> with one of those is surfaced as a conflict, never applied , the treatment
+> `_design-system/references/AIRBNB_SYSTEM_VS_OURS.md` already gives its seven.
+>
+> **Mockup-first still binds**, and he restated it in the same breath: *"no apply mockups i told u"*.
+>
+> The text below is kept verbatim, not deleted, so the reversal stays legible and so the axis DISCIPLINE
+> it teaches (identify structure vs aesthetic before reaching for a reference) survives the change of
+> which reference you reach for.
 
 User flag 2026-05-28: "structure n evrth like fresha but colorways typography contrast like ubers."
 

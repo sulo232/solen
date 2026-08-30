@@ -1,0 +1,53 @@
+{
+  "generatedAt": "2026-08-27T07:50:58.199Z",
+  "checks": [
+    {
+      "label": "barber_walkin_queue still \"waiting\" more than 45 minutes after joined_at",
+      "table": "barber_walkin_queue",
+      "count": 0,
+      "oldest": null
+    },
+    {
+      "label": "bookings still \"pending\" more than 2 days after created_at",
+      "table": "bookings",
+      "count": 7,
+      "oldest": {
+        "id": "d854f489-eb43-4ab7-913b-2078e8bebd7f",
+        "date": "2026-06-12T13:10:30.976478+00:00",
+        "daysOld": 75,
+        "salonId": "5784b1ab-7314-437a-a608-01a729f02cdd",
+        "salonName": "Cuts & Culture"
+      }
+    },
+    {
+      "label": "vouchers with remaining_amount still null more than 7 days after created_at",
+      "table": "vouchers",
+      "count": 0,
+      "oldest": null
+    },
+    {
+      "label": "bookings still \"confirmed\" more than 24 hours after their appointment time (starts_at)",
+      "table": "bookings",
+      "count": 35,
+      "oldest": {
+        "id": "fc7e5baf-57f9-4a3e-9338-392fc2d331e5",
+        "date": "2026-06-03T09:00:00+00:00",
+        "daysOld": 84,
+        "salonId": "5784b1ab-7314-437a-a608-01a729f02cdd",
+        "salonName": "Cuts & Culture"
+      }
+    },
+    {
+      "label": "barber_walkin_queue still \"in_chair\" more than 12 hours after joined_at",
+      "table": "barber_walkin_queue",
+      "count": 2,
+      "oldest": {
+        "id": "26e90a5d-d5ce-4e1f-9bd5-4031f8c93fb4",
+        "date": "2026-06-03T13:22:33.697413+00:00",
+        "daysOld": 84,
+        "salonId": "5784b1ab-7314-437a-a608-01a729f02cdd",
+        "salonName": "Cuts & Culture"
+      }
+    }
+  ]
+}

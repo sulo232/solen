@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""mockup-diagnosis-gate.py , no mockup without a measured, LOCKFILE-cited diagnosis (attacks the ROOT).
+"""SHELVED-NOTE 2026-08-24 (record only, logic below untouched, nothing armed/disarmed here):
+owner instruction, his words: "stand down the ones that fire rarely, fix the ones that fire a
+lot." Measured across his 49 sessions: 0 real firings. KNOWN DEFECT, verified 2026-08-24: this
+gate's own test suite fails even when run from the project directory it expects, i.e. the
+directory the probe rule says to check first. Wiring/arming stays the owner's call; see
+~/.claude/hooks/SHELVED.txt.
+
+mockup-diagnosis-gate.py , no mockup without a measured, LOCKFILE-cited diagnosis (attacks the ROOT).
 
 WHY (root-cause of 5 rejected rounds, subagent analysis 2026-07-19): the assistant INVENTS the proposed change
 instead of DERIVING it from a measured diff between the real rendered page and the locked law. Every round

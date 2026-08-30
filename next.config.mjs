@@ -38,6 +38,13 @@ const nextConfig = {
       { source: '/:locale(de|en|fr|it)/discover', destination: '/:locale/inspo', permanent: true },
       { source: '/:locale(de|en|fr|it)/entdecken/:path*', destination: '/:locale/inspo/:path*', permanent: true },
       { source: '/:locale(de|en|fr|it)/entdecken', destination: '/:locale/inspo', permanent: true },
+      // OWNER 2026-08-23: /behandlungen (treatments-by-type listing) is deleted, verbatim
+      // "delete it. We don't need that shit." It listed salons by treatment type, which the
+      // category pages already do. Its slugs came from service_categories, which do not map
+      // one to one onto the salon categories (/coiffeur, /nails, /barbershop, /spa), so there
+      // is no honest per-slug destination, every old link goes to the home page where search lives.
+      { source: '/:locale(de|en|fr|it)/behandlungen/:path*', destination: '/:locale', permanent: true },
+      { source: '/:locale(de|en|fr|it)/behandlungen', destination: '/:locale', permanent: true },
       {
         source: "/:locale/coiffeur",
         has: [{ type: "query", key: "quartier" }],

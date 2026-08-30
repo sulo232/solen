@@ -106,6 +106,20 @@ const RESEND_TIMEOUT_MS = 5000;
  *   booking-create or webhook request that triggered it. Optional so every EXISTING caller
  *   (there are several) keeps compiling unchanged.
  */
+/**
+ * The ONE wrapper every outgoing email body is placed inside at send time.
+ *
+ * Extracted from sendEmail's request body (2026-08-15) so the dev preview page
+ * (/dev/emails) can show a template exactly as a recipient gets it rather than an
+ * approximation. Extraction only: the string below is byte-identical to what was
+ * inlined before, so no email changes shape. When the shared shell (logo, 600px
+ * card, footer) lands, THIS is the single place it goes, and all 67 templates get
+ * it at once.
+ */
+export function wrapEmailHtml(html: string): string {
+  return `<div style="font-family:${EMAIL_FONT_STACK};color:${EMAIL_COLORS.ink};font-size:15px;line-height:1.5">${html}</div>`;
+}
+
 export async function sendEmail(payload: EmailPayload, requestId?: string): Promise<void> {
   const apiKey = getServerEnv().RESEND_API_KEY;
   if (!apiKey || apiKey === "PASTE_RESEND_KEY_HERE") {
@@ -140,7 +154,7 @@ export async function sendEmail(payload: EmailPayload, requestId?: string): Prom
         // salon-onboarding,welcome-series}.ts, which had zero font-family
         // declarations of their own and rendered in each client's default font
         // (Times New Roman in classic Outlook) with no brand typeface.
-        html: `<div style="font-family:${EMAIL_FONT_STACK};color:${EMAIL_COLORS.ink};font-size:15px;line-height:1.5">${payload.html}</div>`,
+        html: wrapEmailHtml(payload.html),
         // seo-comms-07: every send now carries a text/plain part, hand-written when the
         // template supplied one, else derived from the same html above.
         text: payload.text ?? stripHtmlToText(payload.html),
@@ -518,10 +532,15 @@ export function adminNewSalonNotification(
   };
 }
 
-export function salonOutreachInvitation(
+// async: unsubscribeToken() now runs on Web Crypto (crypto.subtle), which is async in every
+// runtime (see lib/unsubscribe-token.ts). Both callers were updated to await this: the
+// "salon-outreach-invitation" entry in lib/email-preview-samples.ts, and the
+// /dev/emails page (app/[locale]/dev/emails/page.tsx) that resolves it before rendering.
+export async function salonOutreachInvitation(
   to: string,
   vars: { salonName: string; claimUrl: string }
-): EmailPayload {
+): Promise<EmailPayload> {
+  const unsubToken = await unsubscribeToken(to);
   return {
     to,
     subject: `${vars.salonName} ist jetzt auf solen.ch gelistet — kostenlos Buchungen aktivieren`,
@@ -539,7 +558,7 @@ export function salonOutreachInvitation(
       <p>Bei Fragen: <a href="mailto:support@solen.ch">support@solen.ch</a></p>
       <p style="font-size:11px;color:${EMAIL_COLORS.ink2};margin-top:32px">
         solen.ch · Booking platform Basel ·
-        <a href="https://solen.ch/unsubscribe?email=${encodeURIComponent(to)}&t=${unsubscribeToken(to)}" style="color:${EMAIL_COLORS.ink2}">Abmelden</a>
+        <a href="https://solen.ch/unsubscribe?email=${encodeURIComponent(to)}&t=${unsubToken}" style="color:${EMAIL_COLORS.ink2}">Abmelden</a>
         · Diese E-Mail wurde an ${to} gesendet, da Ihr Salon öffentlich gelistet ist (nDSG Art. 31).
       </p>
     `,
@@ -626,7 +645,15 @@ export function welcomeEmail(
   to: string,
   vars: { name: string },
   locale: EmailLocale = "de",
-  step: 1 | 2 | 3 = 1
+  // NARROWED from `1 | 2 | 3` on 2026-08-15, found by the new /dev/emails preview: every
+  // locale array below holds TWO entries, so step 3 read undefined and threw a TypeError
+  // on `s.subject`, taking the whole send with it. The third step was never written. The
+  // type was widened when the 3-step onboarding wizard landed (adcd252e2) and the body
+  // never followed; the job then moved to lib/email-templates/welcome-series.ts
+  // (welcomeDay0/3/7), which is what /api/cron/welcome-series actually calls. So this is
+  // superseded, not lost: do NOT invent a third body. Narrowing turns a runtime crash
+  // into a compile error. No production caller exists today (grepped app/ and lib/).
+  step: 1 | 2 = 1
 ): EmailPayload {
   const steps: Record<EmailLocale, { subject: string; html: string }[]> = {
     de: [

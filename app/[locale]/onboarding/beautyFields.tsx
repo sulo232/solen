@@ -63,7 +63,7 @@ export const CATEGORY_OPTS: Choice[] = [
 ];
 
 export const INTEREST_OPTS: InterestChoice[] = [
-  { value: "top_rated", label: "Top-Stores", cls: "text-s-star" },
+  { value: "top_rated", label: "Top-Salons", cls: "text-s-star" },
   { value: "deals", label: "Deals & Angebote", note: "Gutscheine & Rabatte", cls: "text-s-urgency" },
   { value: "favorites", label: "Favoriten", cls: "text-[#FF3366]" },
   { value: "spa", label: "Spa & Entspannung", cls: "text-s-accent-bright" },

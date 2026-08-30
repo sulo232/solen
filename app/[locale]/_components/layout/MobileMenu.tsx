@@ -303,7 +303,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                   </span>
                   <span className="min-w-0">
                     <span className="block font-body text-[15px] font-bold text-s-ink">Dashboard</span>
-                    <span className="mt-0.5 block font-body text-[12px] font-medium text-s-ink-2">Store verwalten</span>
+                    <span className="mt-0.5 block font-body text-[12px] font-medium text-s-ink-2">Salon verwalten</span>
                   </span>
                 </span>
                 <ChevronRight size={18} strokeWidth={1.9} className="shrink-0 text-s-ink-2" aria-hidden />
@@ -404,7 +404,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
 
             {/* ─── Für Stores ─── */}
             <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold tracking-[-0.02em] text-s-ink mt-5 mb-2">
-              Für Stores
+              Für Salons
             </h2>
             <Link
               href={`/${locale}/partner`}

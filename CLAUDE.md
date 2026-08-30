@@ -30,9 +30,9 @@ Everything else (mechanical edits, sweeps, enforcement wiring, verification, app
 **Why this block exists:** SOURCE.md + LOCKFILE hold the full system, but they're 80KB+ and I don't re-read them before a small edit, so I drift. These ten are what my own correction history shows I break most. They live HERE because in-context beats buried. The machine-checkable ones (hex, retired tokens, dead clicks, arbitrary color, durations) are now **enforced** by a PreToolUse gate (`.claude/hooks/pre-edit-drift-gate.sh`) that BLOCKS the edit; the taste ones still need judgment every time.
 
 1. **No fabricated data.** Never render a number / status not wired to a live source: no "Frei in 15 Min", fake ratings, fake counts. Omit the element and flag it for wiring. A fake value is worse than a dot, it's a lie the user trusts.
-   **AMENDED 2026-08-02, owner verbatim: "the fake data is abt trust bro n sh u keep making dosh sh up, we are not live bro, we need seeded test sh, edit the rule then."** The rule is about TRUST, and trust needs a real customer to betray. Solen is PRE-LAUNCH with no real customers, so **SEEDING THE DATABASE IS NOT FABRICATION, IT IS THE FIX**, and it is the expected move whenever a real section renders empty or self-hides for lack of rows. The line is the SOURCE, not the origin of the values: a row in the database that the UI reads through its normal query is a live source, whoever inserted it. What stays banned is a value with NO source, hardcoded into a component or invented in JSX, so the screen claims something the system cannot back. **This rule may never again be cited as a reason NOT to seed.** I invoked it exactly that way on the Available-this-week rail, recommending we leave a real section invisible rather than seed two bookable slots, which is how a trust rule turned into an excuse for an empty product. Seed first, then check the section renders.
+   **SEEDING THE DATABASE IS NOT FABRICATION, IT IS THE FIX** (owner 2026-08-02), and it is the expected move whenever a real section renders empty for lack of rows. The line is the SOURCE, not who typed the values: a row the UI reads through its normal query is a live source, whoever inserted it. What stays banned is a value with NO source, hardcoded into a component or invented in JSX. **This rule may never again be cited as a reason NOT to seed.** Seed first, then check the section renders. (History: CLAUDE_HISTORY.md)
 2. **No decorative artifacts.** No separator / status dots (`•`, colored pips), no redundant filler ("· Walk-in", repeating the price already shown above the CTA). Every element carries information or it gets deleted. And when two adjacent bits already differ by colour or weight (e.g. green "Geöffnet" + ink "bis 19:00"), that contrast IS the separator, do NOT add a `·` between them too.
-3. **80 / 17 surfaces+ink; blue is SPARSE (small clickable bits ONLY).** ~80% neutral surfaces (white + COOL sunken `#F4F4F5`, no warm cream), ~17% ink (`#0A0A0A` + greys + hairlines + photos). Blue `s-accent #276EF1` goes ONLY on small clickable accents: **text links** ("Buchung verwalten", "Mehr lesen"), **small buttons / chips**, **small tappable metadata** (review counts "(54)"). NOT on big CTAs, NOT on see-all **arrows** (those stay ink/black), NOT on secondary buttons (neutral outline), NOT on body/labels/prices/headings/eyebrows. Clickability on structure is signalled by AFFORDANCE (chevron / underline-on-hover / weight / icon), not colour. The one primary/commit CTA stays ink (`bg-s-ink`). **(LOCKED 2026-06-10, RESTRAINT — supersedes the generous-blue v2; reference = **Fresha, measured**. CITATION CORRECTED 2026-07-28: Apple and Airbnb do NOT support this rule. Apple's HIG says to "limit the use of your brand's primary color to interactive elements (buttons, links, switches)", i.e. buttons are exactly where the key colour belongs; Material puts primary colour on prominent buttons; Carbon's `interactive-01` blue IS its primary-button token; Atlassian's primary button is solid brand blue; Airbnb's Reserve CTA is Rausch red. Only Fresha matches us, black pill CTAs with brand purple retired. This is a defensible MINORITY position aligned to the one competitor we locked structurally, not the majority pattern it was written as.)** Selected/active states stay blue ONLY for the calendar date/slot fill. FILTERS ARE NEUTRAL, NOT BLUE: pill / chip / sort segment / price slider / filter button, selected = `bg-s-bg-sunken` gray fill + `text-s-ink` + semibold, no blue, no focus ring (owner 2026-06-29, reconfirmed 2026-07-01; supersedes the V3-D450 blue-filter-pill).
+3. **80 / 17 surfaces+ink; blue is SPARSE (small clickable bits ONLY).** ~80% neutral surfaces (white + COOL sunken `#F4F4F5`, no warm cream), ~17% ink (`#0A0A0A` + greys + hairlines + photos). Blue `s-accent #276EF1` goes ONLY on small clickable accents: **text links** ("Buchung verwalten", "Mehr lesen"), **small buttons / chips**, **small tappable metadata** (review counts "(54)"). NOT on big CTAs, NOT on see-all **arrows** (those stay ink/black), NOT on secondary buttons (neutral outline), NOT on body/labels/prices/headings/eyebrows. Clickability on structure is signalled by AFFORDANCE (chevron / underline-on-hover / weight / icon), not colour. The one primary/commit CTA stays ink (`bg-s-ink`). **LOCKED 2026-06-10.** This is a deliberate MINORITY position: Apple, Material, Carbon, Atlassian and Airbnb all put the brand colour ON the primary button, and only Fresha matches us. (History: CLAUDE_HISTORY.md) Selected/active states stay blue ONLY for the calendar date/slot fill. FILTERS ARE NEUTRAL, NOT BLUE: pill / chip / sort segment / price slider / filter button, selected = `bg-s-bg-sunken` gray fill + `text-s-ink` + semibold, no blue, no focus ring (owner 2026-06-29, reconfirmed 2026-07-01; supersedes the V3-D450 blue-filter-pill).
 4. **Semantic color is independent of the interactive-blue accent. CONTRAST BOUNDS ADDED 2026-07-28, computed twice independently (mine and a research lens, identical to 2dp).** Every semantic hue has a legal ROLE and an illegal one, and the rule never said so, which is the actual defect. Against white / against the sunken tray `#F4F4F5`: star `#FFC32B` **1.60 / 1.46**, warning `#F1AE27` **1.94 / 1.77**, success `#16A34A` **3.30 / 3.00**, heart `#FF3366` **3.55 / 3.23**, accent `#276EF1` **4.58 / 4.17**, error `#DC2626` **4.83 / 4.39**. So: star and warning FAIL even the 3:1 graphical floor, they need a stroke or a darker companion when they must carry meaning alone. Success and heart are legal as ICONS, never as body text. Accent blue and error red pass on white and **FAIL AA text on the sunken tray**, which our own Edge-Visibility floor promotes as the default list surface, so neither may be body text on sunken. Measured live: 7 elements carry blue-on-sunken, 72 sites use green as text. WCAG AA is tier 2 statutory in the precedence chain, above taste at tier 5.** Elements with universal meaning keep their hue: star `#FFC32B`, success/confirmation = **normal green `#16A34A`** disc + white check (NOT deep `#15803D` — dark green rejected 2026-06-10; inline status chips may stay pale-green), availability green, error red, save-heart `#FF3366`. Blue is a small clickable accent only (links / small buttons / review counts) — NOT prices, NOT big CTAs; prices stay ink/grey. Don't monochrome a semantic element to ink to "stay on brand."
 5. **No muted focal fills + coherent emphasis.** Never use a dark `.text` token (`#906309`, `#9A3412`) as a FOCAL fill, it reads muddy. Focal = a vivid `.DEFAULT` token or surcharge orange `#EA580C` on a light tint bg. Surcharge is orange, not blue. And emphasis (weight or colour) maps to a WHOLE meaningful unit, never an orphan sub-token: bolding/colouring just the "65" but not the "from / CHF" reads as a glitch, not a decision. A card may carry two ink elements (name + price) only if the NAME is larger, so size, not colour, marks the anchor (V3-D442, amends A13).
 6. **Refined pastel, never screamy.** Inline status chips/badges = pastel `.bg` + ink text + saturated icon (Stripe / Vercel restraint), not a saturated solid block. The success/confirmation disc = **normal green `#16A34A`** + white check (NOT deep `#15803D`, NOT a pale tint).
@@ -103,13 +103,13 @@ Frozen single-values. Do NOT re-open any row without the owner saying so by name
 | density floor | (owner-approved 2026-07-21) populated state = the design target, from SEED data: PDP gallery >= 5, reviews >= 3, services >= 6, home >= 4 sections; list/grid first viewport >= 4 units mobile / 6 desktop + a cropped next item; full card info stack whenever data exists. **Richness ceiling (hierarchy-density-03):** above ~3x floor (80+ services, 100+ reviews, 40+ photos), group/cap, never render uncapped inline. **Sparse-but-real (hierarchy-density-04, SOURCE.md §10.0a):** a real thin salon (below floor, non-fabricated) waives the count floors but keeps no-fabrication + the missing-photo fallback + a one-line honest sub-state per below-floor section. |
 | hierarchy | name leads by SIZE; price bold-ink but smaller than name; rating = yellow star; filler (category·city·distance) greys out |
 | availability | **plain ink text — NO green pill** (owner call, do not re-add) |
-| radius | form/summary card **16** (`rounded-card`, `shadow-elevation`) · **grouped LIST-card 24** (`rounded-[24px]`+`shadow-whisper`, CATEGORY members in one card: salon services/products/bundles/staff/dashboard) · **individual entity-card 16** (`rounded-card`+border, flat, gap-separated, ONE card per DISTINCT entity , a stylist/person, a salon; `SalonResultCard` grammar; NOT a group card , owner 2026-07-19 "stylists are individual not groups") · button/chip pill · input **12** (corrected 2026-07-17, see below) · sheet **28** · image flush(0) |
+| radius | form/summary card **16** (`rounded-card`, `shadow-elevation-1`, and the `-1` is load-bearing: `shadow-elevation` is not a real class and Tailwind resolves it to nothing silently) · **grouped LIST-card 24** (`rounded-[24px]`+`shadow-whisper`, CATEGORY members in one card: salon services/products/bundles/staff/dashboard) · **individual entity-card 16** (`rounded-card`+border, flat, gap-separated, ONE card per DISTINCT entity , a stylist/person, a salon; `SalonResultCard` grammar; NOT a group card , owner 2026-07-19 "stylists are individual not groups") · button/chip pill · input **12** (corrected 2026-07-17, see below) · sheet **28** · image flush(0) |
 | spacing | 4-pt scale only; card pad `p-4`/`p-3`; page `max-w-[1280px]` (PDP 1180) |
 | wrap | name truncate · meta truncate · title wrap · body line-clamp · price/rating nowrap |
 | icon-button | `h-11 w-11` |
 | hairline | `border-s-border` = **`#E4E4E7`** (cool neutral, v2 rule 4; reverses warm V3-D447 #E0DDDB; one token, every divider) |
 | states | loading = `<Skeleton>` (shape matches the final layout, NOT a bare spinner) · empty = `<EmptyState>` **with the reference-grounded anatomy (owner 2026-07-21 "get references more"): PROMISE headline 18/600 (never a bare status label) + GESTURE subline + a filled ink CTA to the filling action + a 3D category icon (`/icons/categories/`) or ghost-preview , NEVER a grey Lucide disc; on the sunken tray inside a living page. 12-app evidence: `_design-system/research/TASTE_EMPTY_STATES.md`** · error = `<ErrorState>` (inline) / `ErrorFallback` (route). All exist + locked in COMPONENT_REGISTRY — USE them, don't hand-roll. |
-| focus | inputs: ONE ink edge only, `border-s-ink` (#0A0A0A) + white fill, NO halo, set globally in globals.css (`input:focus-visible`, unlayered on purpose); primitives add NO extra `outline` (V3-D449, no double ring). buttons/links: the global 2px ink `outline`. Corrected 2026-07-17 (owner, input-fill decision, verbatim "for input decision both a and b2 was the problem i hated that sh"): the soft `box-shadow` halo this row used to describe is DEAD by name for the third time (owner killed focus rings 2026-07-01 and 2026-07-02 too); the global `no-focus-ring-gate` already refuses it. Input fill itself = filled gray `#F4F4F5` at rest (LOCKFILE §3.5 depth system), radius **12** not 16 (see radius row, LOCKFILE §12.2 line ~422 already had this right, this row had drifted). |
+| focus | Input = **white fill + a 1px `#E4E4E7` resting line, and tapping it changes NOTHING visible**. Height 48, radius **12**. Buttons and links keep the global 2px ink `outline`. No halo, ever, and `no-focus-ring-gate` refuses one. Cost he accepted: no visible focus indicator, which WCAG 2.4.7 asks for; the smallest fix is the line darkening to `s-ink-2` instead of jumping to black, available if he wants it. (History: CLAUDE_HISTORY.md) |
 | disabled | `opacity-50 cursor-not-allowed` (e.g. the commit button before a slot is picked) |
 | touch target | interactive controls ≥ 44px (`h-11`), the a11y floor |
 | filter pill | selected = `bg-s-bg-sunken` + `text-s-ink` + semibold (calm gray, never blue-border, never black); unselected = white + hairline, hover deepens text (owner 2026-06-29, supersedes V3-D450) |
@@ -145,6 +145,8 @@ Capture method, settled by him earlier and unchanged: the live site in mobile vi
 
 Per-component rules: `_design-system/components/<Name>.md`. Open questions: `_design-system/QUESTIONS.md`. Taste decisions: `_design-system/TASTE_LOG.md` (read before design on a covered surface).
 
+**MAY YOU DECIDE IT YOURSELF? `_design-system/TASTE_AUTHORITY.md` answers that, and every subagent brief on a visual question must name it.** The four documents above say what is ALLOWED. None of them ever says what is YOURS, so with two legal values and no rule the default was always to ask him, which is exactly how a 13px versus 14px question reached the founder. Owner 2026-08-21, verbatim: *"why would you need my opinion for these small stuff? ... I cannot fucking understand with thirteen pixel, fourteen pixel ... we need to have like a file actually ... My taste is right to like actually make decisions."* TASTE_AUTHORITY holds a seven-step test returning DECIDE, SHOW, ASK or PARK, an indifference band read off the LOCKFILE §12 scale (one adjacent step, since his own system already ships both sides of every pair at two widths), the defaults per area with his dated words behind each, and the short absolute list that is never decided without him. It NARROWS TASTE_LOG M18, it does not cancel it: mockup-first still binds on anything he could tell apart.
+
 ---
 
 ## 🖼️ Mockup FIRST (visual changes) — ALWAYS
@@ -158,7 +160,7 @@ Before applying, building, or committing ANY visual / design change: **show the 
    **THE RULE NOW: the mockup's scope matches what is being decided.** One section or one element under discussion means show THAT, at its real size, with the variants STACKED so they can be compared in one glance. A whole-page mockup is for a whole-page decision (a new route, a re-ordered feed, chrome). The switcher-plus-iframe template is banned for single-section work: it costs a tap and a memory to compare two things that could have been side by side, which is exactly why he said "I can't even see a difference".
    **What did NOT change**, because he did not change it: the mockup is still a copy of the REAL thing with real data and real tokens, never a from-scratch redraw, and it is still treatment-only. The 2026-07-13 rejections that produced the old wording were about ISOLATED OUT-OF-CONTEXT A/B PANELS of a component nobody could place; a full-size section rendered with real data is not that.
    **STALE CLAIM CORRECTED in the same edit:** this line used to say the whole-page requirement was "hook-enforced" by `mockup-english-gate.py` and that the gate "requires `Mockup-scope: whole-page`". It does not and never did. That gate only blocks hardcoded German. Nothing was enforcing whole-page; the format was coming from this line alone.
-   Previous wording, superseded: a mockup is a preview of the WHOLE real page (full route chrome, variant-switchable), never an isolated component panel or A/B swatch board. Hardcoded mockup copy is ALWAYS ENGLISH (owner 2026-07-01, REAFFIRMED by the 2026-07-13 correction; a same-day dictated "always in german" was a mis-transcription and is void). Real components rendering German via i18n are exempt; give review links at /en/ so the page reads English. Gate: `.claude/hooks/mockup-english-gate.py` (blocks hardcoded German in a mockup file, and that is ALL it does; it has no scope check).
+   **Hardcoded mockup copy is ALWAYS ENGLISH** (owner 2026-07-01). Real components rendering German via i18n are exempt; give review links at /en/ so the page reads English. Enforced by the GLOBAL `~/.claude/hooks/mockup-english-gate.py`, which blocks hardcoded German in a mockup file and does nothing else. (History, including the superseded whole-page wording and which copy of that gate is armed: CLAUDE_HISTORY.md)
 
 ---
 
@@ -169,9 +171,9 @@ Before applying, building, or committing ANY visual / design change: **show the 
 | Input arrives | FIRST tool call of the turn — before ANY edit or opinion |
 |---|---|
 | Reference image attached / pointed at ("ss folder", IMG_xxxx, "screenshot") | `python3 ~/.claude/skills/pixel-spec-auto/scripts/extract.py <image> <outdir>` → implement against spec.md. If detection fails (borderless UI), PIL pixel-sample the measurements directly. Escalate to `screenshot-spec` if still missing elements. |
-| `<launch-selected-element>` XML pasted | `preview_eval` → `getBoundingClientRect()` + `getComputedStyle` on the element, its container, and siblings. Report NUMBERS, then one fix. |
-| Measurement-complaint words: "overlap", "clipped", "off", "not like the ss/picture", "unbalanced", "different heights", "not 1:1", "compare", "still wrong" | Measure live UI (`preview_eval` rects) AND the reference (PIL) BEFORE editing. Confirmation-bias warning: do NOT pattern-match to recently-changed elements. |
-| Brand-named structure rebuild ("like Fresha('s) X") | `fresha-section-capture` (live URL) or pixel-measure the provided screenshots. STRUCTURE=Fresha / AESTHETIC=Uber-LOCKFILE (§ dual-axis above). |
+| `<launch-selected-element>` XML pasted | `mcp__Claude_Browser__javascript_tool` (CORRECTED 2026-08-18: was `preview_eval`, which does not exist in this build , superseded 2026-07-12 by the Claude_Browser family, verified live; do not re-add the old name) → `getBoundingClientRect()` + `getComputedStyle` on the element, its container, and siblings. Report NUMBERS, then one fix. |
+| Measurement-complaint words: "overlap", "clipped", "off", "not like the ss/picture", "unbalanced", "different heights", "not 1:1", "compare", "still wrong" | Measure live UI (`mcp__Claude_Browser__javascript_tool` rects , CORRECTED 2026-08-18: was `preview_eval`, superseded 2026-07-12 by the Claude_Browser family, verified live) AND the reference (PIL) BEFORE editing. Confirmation-bias warning: do NOT pattern-match to recently-changed elements. |
+| Brand-named structure rebuild ("like Fresha('s) X" , he still names Fresha sometimes) | `fresha-section-capture` (live URL) or pixel-measure the provided screenshots. ~~STRUCTURE=Fresha / AESTHETIC=Uber-LOCKFILE (§ dual-axis above)~~ , **CORRECTED 2026-08-17: that clause contradicted this same file 44 lines above, which records his dated 2026-08-12 decision ("airbnb te is source of truth") replacing Fresha-for-structure / Uber-for-aesthetic on BOTH axes. Capture whatever brand HE names in the message , the capture-don't-guess rule is what fires here , and grade the result against AIRBNB as the source of truth, plus the floors, which no taste source outranks.** |
 | ANY other brand/visual reference named ("this animation from Airbnb", "web Uber Eats", "like Stripe's hover"), or a liked ASPECT of a shared image/recording ("I like how the structure / aesthetic / motion / shadow / shader is") | `Skill(reference-lock)` → resolve brand+platform+surface, classify the aspect, CAPTURE the real thing (record-interaction.mjs video + animations.json / Mobbin / ffmpeg frames of a recording), write `_design-system/references/<brand>--<surface>.md` with a Philosophy section, arm the active-ref lock. NEVER build a named reference from training memory. Enforced globally by the `reference` category in `~/.claude/hooks/fable-skill-trigger.py`. |
 | Any visual just changed (screenshot taken / mockup ported) | `gemini-visual-check` (image vs reference) before claiming a match. |
 | Owner criticizes a look WITHOUT naming the cause ("this is bad", "looks bad", "ugly", "off", "busy", "unbalanced", "doesnt look right", "sieht schlecht aus") | `Skill(solen-taste-diagnosis)` FIRST: measured walk (squint, hierarchy counts, typography floors, grouping tree, contrast math) against RATIONALE.md + research/TASTE_*.md floors; report NAMED violations with numbers, THEN propose the fix. Never guess-and-apply on a look complaint. |
@@ -249,10 +251,66 @@ link in an email has **no replay protection at all**: verified on the shipped ro
 no single-use check of any kind. The feature was not cancelled and it was not superseded. It was
 written, reviewed, and stranded on a branch nobody merged. Nothing in this system said so.
 
-**ACTIVE, not a silent default.** He asked for this to be armed rather than advice, so:
-`~/.claude/hooks/missing-needs-a-reason-gate.py` (Stop) refuses a closing message that reports
-something missing, absent, or not there without naming WHY, and refuses a claim that something was
-restored or added back when the graveyard has an entry for it.
+**ACTIVE, not a silent default, and CORRECTED 2026-08-24 so the claim matches what runs.** It is
+live as rule 1 of the before-you-write note (`~/.claude/hooks/reply-shape-preflight.py`, verbatim:
+"MISSING NEEDS A REASON. If you call something missing, absent, or never landed, say WHY"), which
+arrives BEFORE the reply is written, so acting on it costs him nothing.
+
+~~This line used to say `~/.claude/hooks/missing-needs-a-reason-gate.py` (Stop) enforced it.~~ That
+file exists, its 11 checks pass, and it is registered in NO settings file and dispatched by no
+aggregator, verified 2026-08-24 against a control of three hooks known to be armed. So the sentence
+was claiming an enforcement that has never run once. It is left unarmed deliberately, for a reason
+worth keeping: it has no `stop_hook_active` guard, so it can refuse the same turn repeatedly, which
+is the exact behaviour that made a session unusable on 2026-08-23. A refusal at Stop also arrives
+after the message is already written, so the most it can ever produce is a second message. The
+principle he asked for is enforced; the file named here was not the thing enforcing it.
+
+---
+
+## 🎭 NO DECORATION: a thing that looks finished and is wired to nothing (owner 2026-08-19)
+
+**Owner, verbatim:** *"when you build something, you keep making these decorations or, like,
+unfinished stuff, right, even though I thought it actually finishes loop. Finish it as a loop. But,
+you know, it's like the requirement, like, at the end. It's gonna cause more harm than good, right,
+because you're being too lazy."*
+
+**MEASURED THE SAME DAY, with a control run first on keys known to be rendered: 1,716 of the 5,849
+copy keys in `messages/en.json`, 29 percent, have a name that appears in NO source file** under
+`app/`, `components/`, `components-legacy/` or `lib/`. Written, reviewed, translated into four
+languages, and shown on no screen. 87 of them are in `refundFlow`, which had just been translated
+into three languages that same day, so roughly 261 translations were produced for text nobody can
+ever see.
+
+**Two of those were PROMISES**, which is what makes this worse than waste: `reportWindowNote` ("You
+can report up to 14 days after your appointment") and `respondsBy` ("Salon responds by {date}") were
+both written and both rendered nowhere. The refund screens told a customer a deadline existed while
+nothing measured it, enforced it, or displayed it.
+
+**THE RULE.** A feature is not done when its pieces exist. It is done when the last one is
+connected. Specifically, and these are the shapes this project actually produces:
+- Copy written but rendered nowhere. A string in `messages/*.json` with no render site is not a
+  half-built feature, it is a finished-LOOKING one, which is worse, because nothing will ever tell
+  you it is missing.
+- A deadline printed but never computed, enforced or acted on. If a screen names a date, something
+  must own that date.
+- A column, table or flag that exists and nothing reads. Consent toggles are the dangerous member of
+  this family: the user is told they turned something off while a separate sender keeps going.
+- A control that renders and does nothing (the existing dead-affordance rule).
+
+**Why it is worse than leaving it out:** an absent feature is visibly absent and gets built. A
+decorated one is invisibly absent, passes every review, and is discovered by a customer.
+
+**THE CLOSE CONDITION, and this is the half he was naming.** The loop is not finished when the
+build agents return. It is finished when the LAST MILE is proven: the thing renders, the guard
+refuses something, the job runs. Take one real end-to-end path and drive it. "The code is there" is
+the exact claim this rule exists to refuse.
+
+**Enforced, not advice:** `~/.claude/hooks/i18n-write-gate.py` refuses a copy key added with nothing
+rendering it (`f888f11`). Scope is deliberately narrow: only keys being added right now. The 1,716
+already present are grandfathered, because a check that refused 29 percent of existing copy would be
+switched off within a day. `scripts/check-i18n-parity.mjs` does NOT cover this and never did: it
+compares the four locale key sets against each other, so a key present in all four and rendered in
+zero files passes clean.
 
 ---
 
@@ -329,7 +387,7 @@ Walk top down; higher wins. Latest DATED owner decision wins; "supersedes X" kil
 3. Hooks and gates (a deny message is an instruction, not an obstacle)
 4. _design-system/LOCKFILE.md frozen literals
 5. This file's pinned blocks (taste rules, design contract, binary triggers, exists protocol)
-6. _design-system/TASTE_LOG.md dated decisions
+6. _design-system/TASTE_LOG.md dated decisions, then _design-system/TASTE_AUTHORITY.md (2026-08-21), which sits directly BELOW the log on purpose: it only ever routes a question to DECIDE / SHOW / ASK / PARK and cites the log for every value, so a dated entry always wins over it
 7. Memory feedback files
 8. Global ~/.claude/CLAUDE.md rules, together with the ~/.claude system docs it points to (LAW_SYSTEM.md, LOOP_SYSTEM.md, MODEL_ROUTING.md, REPORT_SYSTEM.md, REGRESSION_SYSTEM.md, CONTEXT_SYSTEM.md, FABLE_DNA.md) , same tier, the doctrine layer for cross-project behavior
 9. Generic checklists (uiux-audit) and legacy _rules/* (anything palette, Figma, Vercel, or push flavored there is history) (_rules cleaned 2026-07-07; if push/Vercel/Figma/palette-flavored text ever resurfaces there, it is history, never law)

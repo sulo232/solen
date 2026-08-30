@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<title>Design law , 17 Aug</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --line:#E4E4E7; --bg:#FFFFFF; --sunken:#F4F4F5;
+    --ok:#16A34A; --err:#DC2626;
+  }
+  *{box-sizing:border-box; -webkit-text-size-adjust:100%}
+  html,body{margin:0; background:var(--bg); color:var(--ink);
+    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:15px; line-height:1.55; -webkit-font-smoothing:antialiased}
+  .wrap{max-width:720px; margin:0 auto; padding:28px 16px 72px}
+  h1{font-size:30px; line-height:1.15; letter-spacing:-.02em; font-weight:600; margin:0 0 6px}
+  .sub{color:var(--ink2); font-size:14px; margin:0 0 26px}
+  h2{font-size:20px; letter-spacing:-.01em; font-weight:600; margin:38px 0 10px}
+  p{margin:0 0 12px}
+  .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:0 0 8px}
+  .stat{background:var(--sunken); border-radius:16px; padding:14px 12px}
+  .stat b{display:block; font-size:26px; font-weight:600; letter-spacing:-.02em;
+    font-variant-numeric:tabular-nums; line-height:1.1}
+  .stat span{display:block; font-size:12px; color:var(--ink2); margin-top:3px}
+  .card{border:1px solid var(--line); border-radius:16px; padding:16px; margin:0 0 12px; background:var(--bg)}
+  .card.big{background:var(--sunken); border:0}
+  .k{font-size:12px; color:var(--ink2); margin:0 0 4px}
+  .q{background:var(--sunken); border-radius:12px; padding:12px 14px; margin:10px 0; font-size:15px}
+  .card.big .q{background:#fff}
+  .row{display:flex; gap:10px; align-items:flex-start; padding:12px 0; border-top:1px solid var(--line)}
+  .row:first-of-type{border-top:0}
+  .dot{flex:0 0 auto; width:8px; height:8px; border-radius:50%; margin-top:8px; background:var(--ok)}
+  .dot.open{background:var(--err)}
+  .row p{margin:0}
+  .row .t{font-weight:600}
+  .row .d{display:block; color:var(--ink2); font-size:14px; margin-top:2px}
+  code{background:var(--sunken); border-radius:6px; padding:1px 5px; font-size:13px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .foot{color:var(--ink2); font-size:13px; margin-top:34px; padding-top:14px; border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>The law files were nine days behind you</h1>
+  <p class="sub">Weekly design-law pass, 9 to 17 August 2026</p>
+
+  <div class="stats">
+    <div class="stat"><b>97</b><span>decisions of yours found</span></div>
+    <div class="stat"><b>6</b><span>were written down</span></div>
+    <div class="stat"><b>8</b><span>things fixed</span></div>
+  </div>
+  <div class="stats">
+    <div class="stat"><b>15</b><span>new contradictions</span></div>
+    <div class="stat"><b>11</b><span>rules said twice</span></div>
+    <div class="stat"><b>12</b><span>need your word</span></div>
+  </div>
+
+  <h2>The worst one</h2>
+  <div class="card big">
+    <p class="k">12 August</p>
+    <div class="q">&ldquo;airbnb te is source of truth&rdquo;</div>
+    <p>The main project file recorded that the same day. Five days later the design lockfile still said
+    structure comes from Fresha and aesthetic from Uber, in a section titled
+    <b>&ldquo;THE MOST IMPORTANT RULE, read first&rdquo;</b>. Searching that whole file for any mention of
+    your decision found nothing.</p>
+    <p>The lockfile outranks the file that was correct. So anyone following the rules properly would still
+    be copying Fresha today. Fixed, with your words and the date on it, and the old text kept underneath
+    so the reversal stays readable.</p>
+  </div>
+
+  <p>The same thing happened twice more in one week, which is what makes it a pattern rather than a
+  slip. You killed the grey input fill on 9 August; the file that is loaded into every single session
+  still described it. You rejected the green availability pill months ago; it was crossed out in one line
+  and left alive twelve lines below, where the same page had promoted it into a rule for every screen.</p>
+
+  <p><b>This estate is good at recording a reversal and bad at carrying it to the other files.</b> Every
+  one of these was written down, dated, and in some cases in your own words. It just never travelled.</p>
+
+  <h2>Fixed this week</h2>
+  <div class="card">
+    <div class="row"><span class="dot"></span><p><span class="t">Airbnb is the source of truth, everywhere now</span>
+      <span class="d">The lockfile section, and a second place in the project file that still said Fresha.</span></p></div>
+    <div class="row"><span class="dot"></span><p><span class="t">Your input decision reached the file that is always open</span>
+      <span class="d">White fill, hairline, nothing happens when you tap. It had been describing the old grey for eight days.</span></p></div>
+    <div class="row"><span class="dot"></span><p><span class="t">A grey that fails accessibility, still being handed out</span>
+      <span class="d">2.54 to 1 against white, offered for timestamps and hints. A correction from 27 July fixed one section and missed the one people read first.</span></p></div>
+    <div class="row"><span class="dot"></span><p><span class="t">A shadow that does not exist</span>
+      <span class="d"><code>shadow-elevation</code> is not a real class. Tailwind throws it away without a word, so every card built from that line shipped flat.</span></p></div>
+    <div class="row"><span class="dot"></span><p><span class="t">97 of your decisions written into the taste log</span>
+      <span class="d">Split in two on purpose: the ones on the live site, and the ones still stuck on branches. Each one says whether you were quoted.</span></p></div>
+    <div class="row"><span class="dot"></span><p><span class="t">Three components the registry still recommends</span>
+      <span class="d">All three files were deleted. Two went with the business pages you cut on 14 August.</span></p></div>
+  </div>
+
+  <h2>Six things only you can answer</h2>
+  <div class="card">
+    <div class="row"><span class="dot open"></span><p><span class="t">Input corners: 12 or 16?</span>
+      <span class="d">Five rule files say 12. The code says 16. It now ships on the menu button you locked.</span></p></div>
+    <div class="row"><span class="dot open"></span><p><span class="t">Two font weights, which two?</span>
+      <span class="d">One file says 400 and 600, another demands 500 for buttons and prices. Your own 11 August instruction shipped three.</span></p></div>
+    <div class="row"><span class="dot open"></span><p><span class="t">The picked calendar day: black or blue?</span>
+      <span class="d">The contract says blue. It has been black since 12 August.</span></p></div>
+    <div class="row"><span class="dot open"></span><p><span class="t">Which phone size is a rule measured on?</span>
+      <span class="d">Mockups are built at 402 wide and graded at 390. Both numbers are in the rules.</span></p></div>
+    <div class="row"><span class="dot open"></span><p><span class="t">The close button: a circled X, or a pill saying Close?</span>
+      <span class="d">Two files record your one decision from 10 August differently.</span></p></div>
+    <div class="row"><span class="dot open"></span><p><span class="t">Next-slot on a card: plain text, or gone?</span>
+      <span class="d">One file says plain text, another says delete it entirely. The green pill is dead either way.</span></p></div>
+  </div>
+
+  <h2>And the branches, again</h2>
+  <p>Three branches still carry 37 of your decisions that the live site has never seen. The good news:
+  the big design branch merged this week, 383 commits. This is the fourth time this has come up and the
+  first time it got smaller.</p>
+
+  <h2>What I changed so this stops</h2>
+  <p>No new check. The one that already watches every edit to a rule file treated the word
+  &ldquo;supersedes&rdquo; as a free pass. It now has to say <b>where the old rule is written</b>, which
+  file and which section, or the edit is refused. You cannot retire a rule without pointing at where it
+  lives, because that pointer is the thing that makes anyone go and cross it out.</p>
+  <p>That check had never been tested even once. It has nine tests now, all passing.</p>
+
+  <p class="foot">Full detail: <code>_plans/LAW_IMPROVE_2026-08-17.md</code>. Every decision, with your
+  words where you said them: <code>_design-system/TASTE_LOG.md</code>.</p>
+
+</div>
+</body>
+</html>

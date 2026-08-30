@@ -44,9 +44,24 @@ ARMING ORDER MATTERS: run the one-time sweep first, arm this second. A gate arme
 before the sweep would deny the sweep's own commit. Same order COPY_LAW.md section 8
 used for the register ratchet.
 
-CLI:  python3 design-canon-gate.py --audit [repo_root]
+CLI:  python3 scripts/hooks/canon-archive-gate.py --audit [repo_root]
+      (2026-08-18: this line said `design-canon-gate.py`, which exists nowhere on disk,
+      in either repo copy or under ~/.claude. The gate was renamed and its own
+      instructions were not. Anyone following them ran a file that is not there.)
       Prints every top-level file that is not on the list, with its destination.
       Always exits 0. Safe for the weekly law pass.
+
+Fixed 2026-08-18 (stress-test pass): this gate was armed before its own documented one-time
+sweep ran (the ARMING ORDER note above has said so since it was written), so the top level
+already held 30 non-canon files the moment it went live, and it denied editing ANY of them,
+forever, because it checked "is this name on the canon list" rather than "did THIS edit add a
+new offender". Both trigger points now compare violation count before vs after the change and
+deny only on an INCREASE: check_file_write() passes any edit to a file that already existed on
+disk (grandfathered, the edit did not create the violation), and check_commit() looks at git's
+own staged status ('A' = added) so a commit that only touches content of a pre-existing offender,
+or moves one out with `git mv`, is never blocked for the 29 others still sitting there. Also
+corrected: the remedy text pointed at `.claude/hooks/design-canon-gate.py`, which has never
+existed on disk under any name; the real file is `scripts/hooks/canon-archive-gate.py`.
 """
 import json
 import os
@@ -87,6 +102,12 @@ CANON = {
     # instrument; the load-bearing column is what each one is BLIND to.
     "INSTRUMENT_CALIBRATION.md": "what each measuring instrument has proved, and what it is blind to",
     "_rebuilt_routes.json":  "the drift checker's strict-scope allowlist (config)",
+    # Added 2026-08-21. Sibling of TASTE_AUTHORITY.md but for a different concern: TASTE_AUTHORITY
+    # decides how things LOOK, this decides WHO DECIDES an operational call (fix now, park, ask).
+    # TASTE_AUTHORITY.md had never been registered here either, a pre-existing gap; both rows land
+    # together because the two files are siblings and a helper reads them as a pair.
+    "TASTE_AUTHORITY.md":     "who may decide a small visual/taste question without asking him",
+    "DECISION_AUTHORITY.md":  "who may decide a small operational question (fix now/park/ask) without asking him",
 }
 
 # Sanctioned subdirectories. Everything below them governs itself.
@@ -235,30 +256,60 @@ def check_file_write(data):
     name = top_level_name(fp)
     if not name or name in CANON or name in SUBDIRS:
         return
+    # 2026-08-18 stress-test fix: grandfather PRE-EXISTING offenders. Editing a file that already
+    # existed at the top level before this turn does not increase the offender count, so it is
+    # not a NEW violation, only creating a brand-new non-canon file is. See the docstring note.
+    if os.path.exists(fp):
+        return
     root = git_root(os.path.dirname(fp) or None)
     dest, why, confident = destination(name, root)
-    exists = os.path.exists(fp)
-    if exists:
-        action = ("The file already exists at the top level, so the move comes first:\n"
-                  + move_line(name, dest, confident))
-    else:
-        action = ("Write it at its destination instead:\n  %s%s"
-                  % (dest or "_design-system/archive/  (or research/ or _plans/)", name))
+    action = ("Write it at its destination instead:\n  %s%s"
+              % (dest or "_design-system/archive/  (or research/ or _plans/)", name))
     deny(
         "DESIGN CANON (owner Q8, 2026-08-07: \"one canon file per concern, everything "
-        "else a pointer, dated reports archived\"): you are trying to %s "
+        "else a pointer, dated reports archived\"): you are trying to create "
         "`_design-system/%s`, which is not on the canon list.\n\n"
         "Where it goes: %s\nWhy: %s\n\n"
         "%s\n\n"
         "The canon list, one file per concern:\n%s\n\n"
         "If this really is a new concern that no row above owns, add the basename to "
-        "CANON in .claude/hooks/design-canon-gate.py with the concern it owns, in "
+        "CANON in scripts/hooks/canon-archive-gate.py with the concern it owns, in "
         "the same turn. If it is not, put the content in the canon file that owns its "
         "concern and leave a pointer, or move the file to its destination with "
         "`git mv`."
-        % ("edit" if exists else "create", name,
-           dest or "you pick", why, action, canon_list_text())
+        % (name, dest or "you pick", why, action, canon_list_text())
     )
+
+
+def newly_added_offenders(root):
+    """Top-level _design-system entries this STAGED commit is genuinely ADDING as a new
+    non-canon entry (git status 'A' at that exact top-level path). 2026-08-18 fix: a commit
+    that only edits the CONTENT of a pre-existing offender, or `git mv`s one out, must never
+    be blocked for the other 29 still sitting there, so this counts additions, not the
+    standing total. Fail-open (empty list) on any git error."""
+    try:
+        r = subprocess.run(["git", "diff", "--cached", "--name-status"],
+                           cwd=root, capture_output=True, text=True, timeout=10)
+        lines = r.stdout.splitlines()
+    except Exception:
+        return []
+    top_level = re.compile(r"^_design-system/([^/]+)$")
+    added = []
+    for line in lines:
+        parts = line.split("\t")
+        if len(parts) < 2:
+            continue
+        status, path = parts[0], parts[-1]
+        if not status.startswith("A"):
+            continue  # only a brand-new path is a new violation; M/D/R-into-a-subdir are not
+        m = top_level.match(path)
+        if not m:
+            continue
+        name = m.group(1)
+        if name in CANON or name in SUBDIRS:
+            continue
+        added.append(name)
+    return sorted(set(added))
 
 
 def check_commit(data):
@@ -276,7 +327,7 @@ def check_commit(data):
         return
     if not any(s.startswith("_design-system/") for s in staged):
         return
-    bad = offenders(root)
+    bad = newly_added_offenders(root)
     if not bad:
         return
     rows, moves = [], []
@@ -286,20 +337,88 @@ def check_commit(data):
         moves.append(move_line(name, dest, confident))
     deny(
         "DESIGN CANON (owner Q8, 2026-08-07, verbatim: \"make it so it acc gets "
-        "archived and evrth like acc gate for that so it forces\"): this commit "
-        "touches `_design-system/`, and the top level still holds %d entr(ies) that "
-        "are not on the canon list. Move them in this commit:\n\n%s\n\n"
+        "archived and evrth like acc gate for that so it forces\"): this commit STAGES "
+        "%d brand-new top-level `_design-system/` entr(ies) that are not on the canon "
+        "list (pre-existing offenders are grandfathered , this only counts what THIS "
+        "commit adds). Move them in this commit:\n\n%s\n\n"
         "  mkdir -p _design-system/archive _design-system/reports\n%s\n\n"
         "An entry stays at the top level only if it is the ONE canon file for a "
         "concern. If one of these is, add its basename to CANON in "
-        ".claude/hooks/design-canon-gate.py with the concern it owns. Emergency "
+        "scripts/hooks/canon-archive-gate.py with the concern it owns. Emergency "
         "escape: touch .claude/design-canon-skip.flag (5 minutes)."
         % (len(bad), "\n".join(rows), "\n".join(moves))
     )
 
 
 # ---------------------------------------------------------------------------
+def _selftest_git(tmp, *args):
+    return subprocess.run(["git", "-c", "user.email=t@t.com", "-c", "user.name=t"] + list(args),
+                          cwd=tmp, capture_output=True, text=True, timeout=10)
+
+
+def _selftest_drive(tmp, payload):
+    env = dict(os.environ)
+    env.pop("CLAUDE_PROJECT_DIR", None)
+    return subprocess.run([sys.executable, os.path.abspath(__file__)], input=json.dumps(payload),
+                          cwd=tmp, capture_output=True, text=True, timeout=10, env=env)
+
+
+def selftest():
+    """--selftest (added 2026-08-18 with the grandfather fix): a pre-existing offender, seeded
+    and committed BEFORE the gate is driven, must stay editable; only a genuinely new top-level
+    non-canon entry (a Write to a path that doesn't exist yet, or a commit that stages one with
+    git status 'A') may still block."""
+    import tempfile
+    bad = cases = 0
+
+    def check(name, ok, extra=""):
+        nonlocal bad, cases
+        cases += 1
+        bad += 0 if ok else 1
+        print(f"{'ok  ' if ok else 'FAIL'}  {name}" + (f"  ({extra!r})" if extra and not ok else ""))
+
+    with tempfile.TemporaryDirectory() as tmp:
+        _selftest_git(tmp, "init", "-q")
+        os.makedirs(os.path.join(tmp, "_design-system"))
+        pre_existing = os.path.join(tmp, "_design-system", "OLD_OFFENDER.md")
+        with open(pre_existing, "w") as f:
+            f.write("some historical doc, not on the canon list\n")
+        _selftest_git(tmp, "add", "-A")
+        _selftest_git(tmp, "commit", "-q", "-m", "seed pre-existing offender")
+
+        r1 = _selftest_drive(tmp, {"tool_name": "Edit", "tool_input": {
+            "file_path": pre_existing, "old_string": "some", "new_string": "changed"}})
+        check("edit to a pre-existing offender passes", r1.stdout.strip() == "", r1.stdout)
+
+        new_offender = os.path.join(tmp, "_design-system", "BRAND_NEW.md")
+        r2 = _selftest_drive(tmp, {"tool_name": "Write", "tool_input": {
+            "file_path": new_offender, "content": "x"}})
+        check("write of a brand-new non-canon file blocks",
+              '"permissionDecision": "deny"' in r2.stdout, r2.stdout)
+
+        with open(pre_existing, "w") as f:
+            f.write("changed content, still not canon\n")
+        _selftest_git(tmp, "add", "-A")
+        r3 = _selftest_drive(tmp, {"tool_name": "Bash", "tool_input": {
+            "command": "git commit -m 'edit offender content'"}})
+        check("commit touching only pre-existing offender content passes",
+              r3.stdout.strip() == "", r3.stdout)
+
+        with open(new_offender, "w") as f:
+            f.write("brand new\n")
+        _selftest_git(tmp, "add", "-A")
+        r4 = _selftest_drive(tmp, {"tool_name": "Bash", "tool_input": {
+            "command": "git commit -m 'add new offender'"}})
+        check("commit staging a brand-new non-canon file blocks",
+              '"permissionDecision": "deny"' in r4.stdout, r4.stdout)
+
+    print(f"\n{cases - bad}/{cases} passed")
+    return 0 if bad == 0 else 1
+
+
 def main():
+    if "--selftest" in sys.argv:
+        sys.exit(selftest())
     if "--audit" in sys.argv:
         root = None
         for a in sys.argv[1:]:

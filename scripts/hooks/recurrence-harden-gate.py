@@ -133,9 +133,72 @@ def _settings_blobs(pdir):
     return out
 
 
+def _aggregator_members(pdir):
+    """Every hook dispatched BY an aggregator that is itself armed.
+
+    A check can be live without appearing in any settings file. Four aggregators now dispatch
+    their members by subprocess, so the member's name is inside the aggregator's source, not in
+    settings.json. Added 2026-08-24 after this gate reported finish-autonomously-gate.py as
+    "NOTHING RUNS IT" in the same turn that that very file refused the message, through
+    batch-family-aggregator.py. It runs. This gate could not see how.
+    """
+    named = set()
+    blobs = _settings_blobs(pdir)
+    hooks_dir = os.path.expanduser("~/.claude/hooks")
+    try:
+        entries = os.listdir(hooks_dir)
+    except OSError:
+        return named
+    for fn in entries:
+        if "aggregator" not in fn or not fn.endswith(".py"):
+            continue
+        # the aggregator itself must be armed, or its members are not live either
+        if not any(fn in blob for blob in blobs):
+            continue
+        try:
+            src = open(os.path.join(hooks_dir, fn), encoding="utf-8", errors="replace").read()
+        except OSError:
+            continue
+        # only the MEMBERS list, never the whole file, so a name merely discussed in a comment
+        # (several aggregators explain by name which hooks they deliberately EXCLUDE) is not
+        # mistaken for a member.
+        m = re.search(r"MEMBERS\s*=\s*\[(.*?)\]", src, re.S)
+        if m:
+            named.update(re.findall(r"([\w-]+\.py)", m.group(1)))
+    return named
+
+
+def _settings_commands(pdir):
+    """Only the strings a settings file will actually EXECUTE, never its prose.
+
+    A NAME IS NOT A WIRE. The old check asked whether the basename appeared anywhere in the
+    settings text, so a hook mentioned in a comment counted as armed. Found 2026-08-24 with a
+    control: no-irreversible-delete-gate.py was deliberately left OFF that day and the reason was
+    written into a note inside settings.json. That note made the gate report it as armed. A check
+    whose whole job is spotting enforcement that does not run was being fooled by prose about
+    enforcement that does not run.
+    """
+    cmds = []
+    for p in (os.path.expanduser("~/.claude/settings.json"),
+              os.path.expanduser("~/.claude/settings.local.json"),
+              os.path.join(pdir, ".claude", "settings.json"),
+              os.path.join(pdir, ".claude", "settings.local.json")):
+        try:
+            conf = json.load(open(p, encoding="utf-8"))
+        except Exception:
+            continue
+        for groups in (conf.get("hooks") or {}).values():
+            for g in groups or []:
+                for h in g.get("hooks", []) or []:
+                    cmds.append(str(h.get("command", "")))
+    return cmds
+
+
 def is_armed(basename, pdir):
-    """A hook file is enforcement only if some settings.json actually runs it."""
-    return any(basename in blob for blob in _settings_blobs(pdir))
+    """Enforcement if a settings file EXECUTES it, or an armed aggregator dispatches it."""
+    if any(basename in c for c in _settings_commands(pdir)):
+        return True
+    return basename in _aggregator_members(pdir)
 
 
 def recorded_pending_arm(pdir, basename):
@@ -216,6 +279,12 @@ def enforcement_built_since(pdir, since_epoch):
 def main():
     try:
         data = json.load(sys.stdin)
+        # One refusal per turn (2026-08-23). `stop_hook_active` is true on every re-run
+        # after this check already blocked, so returning success here is what stops the
+        # same objection being raised against message after message. The product force-
+        # ends the turn after 8 consecutive blocks anyway, so a run past one is wasted.
+        if data.get("stop_hook_active"):
+            sys.exit(0)
     except Exception:
         return 0
     pdir = project_dir()

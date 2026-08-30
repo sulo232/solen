@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Kontakt — Solen",
-  description: "Kontaktiere Solen: allgemeine Anfragen, Hilfe für Kund:innen und Stores, Presse.",
+  description: "Kontaktiere Solen: allgemeine Anfragen, Hilfe für Kund:innen und Salons, Presse.",
 };
 
 export default async function KontaktPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -42,7 +42,7 @@ export default async function KontaktPage({ params }: { params: Promise<{ locale
               </li>
               <li>
                 <Link href={`${p}/partner`} className="text-s-accent">
-                  Hilfe für Stores
+                  Hilfe für Salons
                 </Link>
               </li>
               <li>

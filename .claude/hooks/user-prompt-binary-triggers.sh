@@ -14,8 +14,40 @@
 #
 # Event: UserPromptSubmit. stdout (exit 0) is added to Claude's context.
 # Keep output SHORT — it lands in the conversation every matching turn.
+#
+# Fixed 2026-08-18 (stress-test pass): trigger 4's injected text still said "STRUCTURE=Fresha,
+# AESTHETIC=Uber/LOCKFILE", a clause CLAUDE.md itself strikes through by name after the owner's
+# 2026-08-12 "airbnb te is source of truth" decision. Because hooks sit above the law file in the
+# precedence chain, this injected string was winning over the corrected doc on every matching
+# prompt. The trigger still fires and still points at the capture step; only the authority clause
+# changed, to match CLAUDE.md's binary-trigger row as corrected 2026-08-17.
+#
+# Fixed 2026-08-18 (same pass): triggers 1 and 3 injected "preview_eval getBoundingClientRect",
+# a tool that does not exist in this build (superseded 2026-07-12 by
+# mcp__Claude_Browser__javascript_tool, per feedback_binary_triggers.md). Repointed both.
 
 set -uo pipefail
+
+if [[ "${1:-}" == "--selftest" ]]; then
+  # Added 2026-08-18 with the STRUCTURE/AESTHETIC fix: this gate never had a self-test.
+  PASS=0; TOTAL=2
+  OUT=$(echo '{"prompt":"make the top bar like freshas"}' | bash "$0")
+  if echo "$OUT" | grep -q "fresha-section-capture" && ! echo "$OUT" | grep -qE "AESTHETIC=Uber|STRUCTURE=Fresha"; then
+    echo "  PASS  fresha trigger fires the capture row, no stale STRUCTURE/AESTHETIC clause"; PASS=$((PASS+1))
+  else
+    echo "  FAIL  fresha trigger fires the capture row, no stale STRUCTURE/AESTHETIC clause"
+    echo "$OUT"
+  fi
+  OUT2=$(echo '{"prompt":"what time is it"}' | bash "$0")
+  if [[ -z "$OUT2" ]]; then
+    echo "  PASS  a non-matching prompt injects nothing"; PASS=$((PASS+1))
+  else
+    echo "  FAIL  a non-matching prompt injects nothing"
+  fi
+  echo ""
+  echo "$PASS/$TOTAL passed"
+  [[ "$PASS" == "$TOTAL" ]] && exit 0 || exit 1
+fi
 
 INPUT=$(cat)
 PROMPT=$(echo "$INPUT" | jq -r '.prompt // empty' 2>/dev/null)
@@ -35,7 +67,7 @@ TRIGGERS=()
 
 # 1. Selected-element XML pasted (launch devtools picker) → measure, don't interpret.
 if echo "$PROMPT" | grep -q '<launch-selected-element'; then
-  TRIGGERS+=("SELECTED ELEMENT pasted → FIRST tool call: preview_eval getBoundingClientRect() + getComputedStyle on the element, its container, and siblings. Report the NUMBERS before any edit.")
+  TRIGGERS+=("SELECTED ELEMENT pasted → FIRST tool call: mcp__Claude_Browser__javascript_tool getBoundingClientRect() + getComputedStyle on the element, its container, and siblings. Report the NUMBERS before any edit.")
 fi
 
 # 2. Reference image attached / pointed at → pixel-scan it, don't eyeball.
@@ -53,12 +85,12 @@ fi
 
 # 3. Measurement-complaint vocabulary → the user SEES a concrete defect; measure it.
 if echo "$P" | grep -qE 'overlap|clipp|misalign|unbalanc|different height|diff height|heights everywhere|not like th|nothing like|not 1:1|1:1|pixel|exact|compare bro|compare th|looks off|still wrong|still off'; then
-  TRIGGERS+=("MEASUREMENT COMPLAINT → measure the live UI (preview_eval getBoundingClientRect) AND the reference (PIL sample) BEFORE editing. Numbers first, then one fix. No guess-and-apply.")
+  TRIGGERS+=("MEASUREMENT COMPLAINT → measure the live UI (mcp__Claude_Browser__javascript_tool getBoundingClientRect) AND the reference (PIL sample) BEFORE editing. Numbers first, then one fix. No guess-and-apply.")
 fi
 
 # 4. Brand-named structural rebuild → capture the real thing, not memory.
 if echo "$P" | grep -qE 'like (the )?fresha|fresha('"'"'s)? (screenshot|ss|ref|page|design)|wie fresha'; then
-  TRIGGERS+=("FRESHA STRUCTURE reference → fire fresha-section-capture (or measure the provided screenshots with PIL/pixel-spec-auto) before rebuilding. STRUCTURE=Fresha, AESTHETIC=Uber/LOCKFILE.")
+  TRIGGERS+=("FRESHA STRUCTURE reference → fire fresha-section-capture (or measure the provided screenshots with PIL/pixel-spec-auto) before rebuilding. Grade the result against AIRBNB as the source of truth on both structure and aesthetic (owner 2026-08-12, dated CLAUDE.md correction 2026-08-17), plus the FLOORS, which no taste source outranks.")
 fi
 
 # 5. Removal/rejection vocabulary → the graveyard must grow THIS TURN (owner 2026-06-12).

@@ -115,6 +115,60 @@ export function reasonAllowedOnConfirmed(reasonCode: ReasonCode): boolean {
   return reasonCode === "wrong_amount" || reasonCode === "double_charge";
 }
 
+// SALON RESPONSE DEADLINE. The "salon responds by {date}" promise already
+// exists as COPY only, no computed date behind it: messages/en.json
+// sentBodyRefund ("48 hours to respond"), sentStepReviewingMeta ("Responds
+// within 48 hours"), ledeInReview ("within 48 hours"), tlSalonReviewingMeta
+// ("up to 48h to respond") and escSalonReviewingBody ("usually responds
+// within 2 days") all converge on the same number, in all 4 locales. No file
+// anywhere turns that into an actual Date (checked: no cron, no route reads
+// it). This is the one place that does, so a later timeout/auto-escalation
+// job can import the exact same function and the two can never disagree
+// (REFUND_PROCESS_2026-08-19.md, "A salon that ignores a case blocks it
+// forever"). Escalation-on-timeout is that job's decision to make; nothing
+// here writes a status or moves money, per line 13 above.
+
+/** Hours the salon has to respond, matching the number already live in copy. */
+export const SALON_RESPONSE_WINDOW_HOURS = 48;
+
+/**
+ * The salon's response deadline, clocked from when the case was filed
+ * (created_at; nothing writes 'salon_reviewing' today, so 'open' is the
+ * only live pending state, both are accepted here for when it starts being
+ * used). Returns null once the case is past this stage (the salon already
+ * responded, or it was never in this stage) so a stale date is never shown.
+ */
+export function salonRespondsByDeadline(
+  status: DisputeStatus,
+  createdAtIso: string,
+): Date | null {
+  if (status !== "open" && status !== "salon_reviewing") return null;
+  const created = new Date(createdAtIso).getTime();
+  if (Number.isNaN(created)) return null;
+  return new Date(created + SALON_RESPONSE_WINDOW_HOURS * 60 * 60 * 1000);
+}
+
+/**
+ * True once the salon's response deadline (above) has already passed and the
+ * case is still sitting in open/salon_reviewing. salonRespondsByDeadline() only
+ * computes the promised date, it never compares it to now, so both render
+ * sites (RefundCaseView.tsx, dashboard/refunds/page.tsx) showed the identical
+ * present/future-tense "responds by" copy even after the deadline had passed
+ * (response-deadline-visible review, 2026-08-20). Reads the same status/date
+ * inputs as salonRespondsByDeadline so the two can never disagree about which
+ * cases are overdue, mirroring this file's own stated purpose. Display-only:
+ * it does not write anything and nothing here decides to escalate, that stays
+ * the dispute-timeout cron's job via escalateCase() above.
+ */
+export function salonResponseOverdue(
+  status: DisputeStatus,
+  createdAtIso: string,
+): boolean {
+  const deadline = salonRespondsByDeadline(status, createdAtIso);
+  if (!deadline) return false;
+  return Date.now() > deadline.getTime();
+}
+
 // ───────────────────────────────────────────────────────────────────────────
 // case_events timeline writer — shared by all SP-3 endpoints.
 // ───────────────────────────────────────────────────────────────────────────
@@ -162,6 +216,90 @@ export async function writeCaseEvent(
     return false;
   }
   return true;
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+// ESCALATE (status -> 'escalated'): the ONE transition, shared by every
+// caller that can move a case into Solen review: the admin "escalate" action
+// (app/api/admin/booking-disputes/[id]/action/route.ts) and a timeout cron.
+// Extracted here so a timeout job reuses the exact same transition instead of
+// a second copy (this file's own header: "so the five SP-3 endpoints don't
+// each re-implement it"). Sets the SAME columns the admin action already set
+// (mediation_started_at / mediation_deadline_at, 30 days), so an escalation
+// looks identical in the DB regardless of who or what triggered it.
+//
+// REVIEW-FIRST (line 13): this only ever writes status='escalated'. It never
+// refunds, never approves, never touches money. A human still decides via
+// admin_approve / admin_reject / refund on the now-escalated case.
+// ───────────────────────────────────────────────────────────────────────────
+
+export interface EscalateCaseArgs {
+  /** ADMIN (service-role) client, the CAS update must not fight RLS. */
+  db: SupabaseClient;
+  disputeId: string;
+  /** The status just read for this dispute, the CAS target. */
+  fromStatus: DisputeStatus;
+  actorRole: CaseActorRole;
+  /** null for a guest/system actor. */
+  actorUserId?: string | null;
+  note?: string | null;
+}
+
+export interface EscalateCaseResult {
+  /** false = lost the CAS (already escalated / moved on by a concurrent
+   *  actor or run) or the DB write failed. Not an error the caller must
+   *  surface, either way the case is no longer sitting un-escalated. */
+  escalated: boolean;
+  mediationDeadlineAt?: string;
+}
+
+/**
+ * CAS `fromStatus` -> 'escalated', set the 30-day mediation window, write the
+ * timeline row. Idempotent by construction: the `.eq("status", fromStatus)`
+ * CAS means a case already flipped by a prior call (or a concurrent one)
+ * fails this call's update with zero rows, so a retry or an overlapping run
+ * never double-escalates or re-writes the mediation deadline.
+ */
+export async function escalateCase(args: EscalateCaseArgs): Promise<EscalateCaseResult> {
+  const { db, disputeId, fromStatus, actorRole, actorUserId, note } = args;
+
+  const mediationStart = new Date();
+  const mediationDeadline = new Date(mediationStart.getTime() + 30 * 24 * 60 * 60 * 1000);
+
+  const { data: row, error } = await db
+    .from("booking_disputes")
+    .update({
+      status: "escalated",
+      mediation_started_at: mediationStart.toISOString(),
+      mediation_deadline_at: mediationDeadline.toISOString(),
+    })
+    .eq("id", disputeId)
+    .eq("status", fromStatus) // CAS
+    .select("id")
+    .maybeSingle();
+
+  if (error) {
+    console.error(`[dispute-engine] escalateCase update failed for dispute ${disputeId}:`, error.message);
+    return { escalated: false };
+  }
+  if (!row) {
+    // Lost the CAS: someone/something already moved this case off `fromStatus`.
+    // Not a failure to report, the desired end state (not stuck un-escalated) is
+    // already true.
+    return { escalated: false };
+  }
+
+  await writeCaseEvent(db, {
+    disputeId,
+    actorRole,
+    actorUserId: actorUserId ?? null,
+    action: "escalated",
+    fromStatus,
+    toStatus: "escalated",
+    note: note ?? null,
+  });
+
+  return { escalated: true, mediationDeadlineAt: mediationDeadline.toISOString() };
 }
 
 // ───────────────────────────────────────────────────────────────────────────

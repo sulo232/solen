@@ -22,6 +22,10 @@ export interface SalonLite {
   /** B15 (PSYCHOLOGY law 6): backs `rating`. A star never renders without its review count. */
   reviewCount: number | null;
   priceFrom: number | null;
+  /** True when priceFrom is the price of the ONE in-category service (a payable total, not a floor), render it bare, no "from" word. */
+  priceExact: boolean;
+  /** The exact service's localized name (de/en fallback), shown under the price only when priceExact is true. Null when unavailable. */
+  exactServiceName: string | null;
   serviceId: string | null;
 }
 
@@ -406,7 +410,19 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
                     )}
                   </span>
                   <span className="flex items-center gap-3">
-                    {s.priceFrom != null && <span className="font-heading text-[14.5px] font-bold tracking-[-0.01em] text-s-ink">ab CHF {s.priceFrom}</span>}
+                    {/* mockup-ok: app/[locale]/dev/decision-inspo-exact-price (owner-approved, PBV payable-total fix) */}
+                    {s.priceFrom != null && (
+                      s.priceExact ? (
+                        <span>
+                          <span className="block font-heading text-[14.5px] font-bold tracking-[-0.01em] text-s-ink">CHF {s.priceFrom}</span>
+                          {s.exactServiceName && (
+                            <span className="block truncate text-[12px] font-normal text-s-ink-2">{s.exactServiceName}</span>
+                          )}
+                        </span>
+                      ) : (
+                        <span className="font-heading text-[14.5px] font-bold tracking-[-0.01em] text-s-ink">ab CHF {s.priceFrom}</span>
+                      )
+                    )}
                     <span className="rounded-full border border-s-border bg-s-bg-sunken px-4 py-2 text-[13px] font-semibold text-s-ink">{t.book}</span>
                   </span>
                 </Link>

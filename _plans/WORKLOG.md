@@ -1,3 +1,37 @@
+## 2026-08-17 , weekly design-law improvement pass (workstream #41 LAW, standing loop)
+
+**Auto-triggered.** Harvested 97 dated owner decisions (60 on `main`, 37 on three unmerged branches), 15
+new contradictions + 9 carried, 11 duplications, **8 safe fixes**, 12 owner decisions needed. Full
+report: [LAW_IMPROVE_2026-08-17.md](LAW_IMPROVE_2026-08-17.md).
+
+**The finding: the law files were nine days behind you, and the worst gap was in the file that calls
+itself the most important rule.** On 2026-08-12 you said *"airbnb te is source of truth"*. CLAUDE.md
+recorded it the same day. Five days later `LOCKFILE.md` §10.0, titled "THE MOST IMPORTANT RULE , read
+first", still said structure comes from Fresha and aesthetic from Uber, and a grep of that whole file for
+the supersession returned zero hits , while the LOCKFILE sits **above** CLAUDE.md in the precedence
+chain. CLAUDE.md was also contradicting itself 44 lines apart. Both fixed. The same shape appeared twice
+more and was fixed twice more: the input rule you killed on 08-09 was still printed by CLAUDE.md, the one
+file in context every turn; and the green availability pill you rejected was struck in one line of
+TASTE_LOG and left standing twelve lines below as a universal colour convention.
+
+Also fixed: a WCAG failure that §1 of the LOCKFILE was still handing out (a grey at 2.54:1 granted a
+tertiary TEXT role, already withdrawn by a dated 07-27 correction that §17.4 carried and §1 did not); a
+shadow class that does not exist sitting in the row builders copy from, which Tailwind drops in silence
+so cards shipped flat; and three registry rows marked `locked` pointing at deleted files.
+
+**Harden: widened the existing gate, no new one.** "Supersedes" was an unconditional free pass through
+`design-law-integrity-gate`; it must now name where the old rule lives (a file, a §, or a sha) or the
+write is refused. The gate had no suite at all before this turn and now has 9/9, driven end to end.
+
+Open for you, the six new ones: is `rounded-input` 12 or 16 (it is 16 in the code and now ships on the
+menu button you locked); which two weights the two-weight ceiling means (your own 08-11 home instruction
+shipped three); is the calendar's selected day ink or blue (it has shipped ink since 08-12 against the
+contract); which viewport a floor is measured at (mockups are built at 402 and graded at 390); is the
+close control a circled X or a pill reading "Close" (two law files record your one 08-10 decision
+differently); and whether card availability is ink text or gone entirely.
+
+---
+
 ## 2026-08-10 , weekly design-law improvement pass (workstream #41 LAW, standing loop)
 
 **Auto-triggered.** Harvested 11 dated owner decisions, 3 new contradictions + 6 carried, 4 duplications,

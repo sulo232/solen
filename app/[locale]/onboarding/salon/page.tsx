@@ -5,13 +5,13 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "motion/react";
-import { Check, ChevronRight, ArrowLeft, PartyPopper, Loader2, Building2, AlertCircle, Camera, TrendingUp } from "lucide-react";
+import { Check, ChevronRight, ArrowLeft, PartyPopper, Loader2, Building2, AlertCircle, Camera, TrendingUp, Target } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import InteractiveHoverButton from "@/components-legacy/ui/interactive-hover-button";
 import { slideSwitch } from "@/lib/animations";
 import AddressAutocomplete from "@/components-legacy/ui/AddressAutocomplete";
 import ImageUpload from "@/components-legacy/ui/ImageUpload";
-import { FieldHelper } from "@/app/[locale]/_components/primitives";
+import { FieldHelper, PillToggle, PillGroup } from "@/app/[locale]/_components/primitives";
 import type { SalonCategory } from "@/lib/types";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 
@@ -20,13 +20,21 @@ import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 // ─────────────────────────────────────────
 import { CATEGORY_OPTIONS } from "@/lib/constants/categories";
 
-const TOTAL_STEPS = 3;
+const TOTAL_STEPS = 4;
 
 const STEP_META = [
   { icon: Building2, label: "basics" },
   { icon: TrendingUp, label: "quickwin" },
   { icon: Camera, label: "photos" },
+  { icon: Target, label: "about" },
 ];
+
+// Extra onboarding questions (owner 2026-08-23, "the extra sign up question"). Option
+// values are stored slugs, never rendered directly; the label comes from t() so every
+// option is a real translation key in all four locales, not hardcoded copy.
+const ACQUISITION_OPTIONS = ["instagram", "google", "referral", "event", "other"] as const;
+const TEAM_SIZE_OPTIONS = ["solo", "small", "medium", "large"] as const;
+const GOAL_OPTIONS = ["more_bookings", "save_time", "fewer_no_shows", "marketing", "payments"] as const;
 
 // ─────────────────────────────────────────
 // Step wrapper
@@ -309,6 +317,95 @@ function Step3({ data, onChange, category, t }: {
 // Step 3 — Photos (optional)
 // ─────────────────────────────────────────
 
+// Step 4 (About, extra onboarding questions, optional)
+
+interface AboutData {
+  acquisition_source: string;
+  acquisition_other: string;
+  team_size: string;
+  onboarding_goals: string[];
+}
+
+// mockup-ok: this restores the already-shipped Step1 label style (className copied verbatim
+// from the "categories" label above) and the already-shipped Step1 free-text input style
+// (className copied verbatim from the name/email inputs above); option pills go through the
+// registered PillToggle/PillGroup primitive unmodified. No new appearance is designed here,
+// so there is nothing to mock up; task explicitly directed building straight into real code
+// with the project's own existing controls, no mockup requested.
+function StepAbout({ data, onChange, t }: { data: AboutData; onChange: (d: AboutData) => void; t: TFunc }) {
+  const toggleGoal = (g: string) => {
+    const next = data.onboarding_goals.includes(g)
+      ? data.onboarding_goals.filter((x) => x !== g)
+      : [...data.onboarding_goals, g];
+    onChange({ ...data, onboarding_goals: next });
+  };
+
+  return (
+    <StepContainer title={t("stepAbout.title")} subtitle={t("stepAbout.subtitle")}>
+      <div className="space-y-5">
+        <div>
+          <label className="block text-[12px] font-heading tracking-[0.08em] text-s-ink/40 mb-2">
+            {t("stepAbout.acquisitionLabel")}
+          </label>
+          <PillGroup mode="single" aria-label={t("stepAbout.acquisitionLabel")}>
+            {ACQUISITION_OPTIONS.map((opt) => (
+              <PillToggle
+                key={opt}
+                active={data.acquisition_source === opt}
+                onClick={() => onChange({ ...data, acquisition_source: opt })}
+              >
+                {t(`stepAbout.acquisitionOptions.${opt}`)}
+              </PillToggle>
+            ))}
+          </PillGroup>
+          {data.acquisition_source === "other" && (
+            <input
+              value={data.acquisition_other}
+              onChange={(e) => onChange({ ...data, acquisition_other: e.target.value })}
+              className="w-full mt-2.5 px-4 py-3 text-sm text-s-ink transition-[border-color,box-shadow] shadow-warm-sm"
+              placeholder={t("stepAbout.acquisitionOtherPlaceholder")}
+            />
+          )}
+        </div>
+
+        <div>
+          <label className="block text-[12px] font-heading tracking-[0.08em] text-s-ink/40 mb-2">
+            {t("stepAbout.teamSizeLabel")}
+          </label>
+          <PillGroup mode="single" aria-label={t("stepAbout.teamSizeLabel")}>
+            {TEAM_SIZE_OPTIONS.map((opt) => (
+              <PillToggle
+                key={opt}
+                active={data.team_size === opt}
+                onClick={() => onChange({ ...data, team_size: opt })}
+              >
+                {t(`stepAbout.teamSizeOptions.${opt}`)}
+              </PillToggle>
+            ))}
+          </PillGroup>
+        </div>
+
+        <div>
+          <label className="block text-[12px] font-heading tracking-[0.08em] text-s-ink/40 mb-2">
+            {t("stepAbout.goalsLabel")}
+          </label>
+          <PillGroup mode="multi" aria-label={t("stepAbout.goalsLabel")}>
+            {GOAL_OPTIONS.map((opt) => (
+              <PillToggle
+                key={opt}
+                active={data.onboarding_goals.includes(opt)}
+                onClick={() => toggleGoal(opt)}
+              >
+                {t(`stepAbout.goalsOptions.${opt}`)}
+              </PillToggle>
+            ))}
+          </PillGroup>
+        </div>
+      </div>
+    </StepContainer>
+  );
+}
+
 function StepPhotos({
   uploadedUrls,
   onUpload,
@@ -380,6 +477,11 @@ export default function SalonOnboardingPage() {
   // Step 3 state (photos — optional)
   const [photoUrls, setPhotoUrls] = useState<string[]>([]);
 
+  // Step 4 state (extra onboarding questions, optional)
+  const [about, setAbout] = useState<AboutData>({
+    acquisition_source: "", acquisition_other: "", team_size: "", onboarding_goals: [],
+  });
+
   // Restore wizard state: DB first, then sessionStorage fallback
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => {
@@ -387,6 +489,7 @@ export default function SalonOnboardingPage() {
       if (data.basics) setBasics(data.basics as BasicsData);
       if (data.quickWin) setQuickWin(data.quickWin as QuickWinData);
       if (data.photoUrls) setPhotoUrls(data.photoUrls as string[]);
+      if (data.about) setAbout(data.about as AboutData);
     };
 
     const loadDraft = async () => {
@@ -420,7 +523,7 @@ export default function SalonOnboardingPage() {
   // Save wizard state to sessionStorage + DB (debounced)
   useEffect(() => {
     if (!hydrated) return;
-    const stateObj = { basics, quickWin, photoUrls, step };
+    const stateObj = { basics, quickWin, photoUrls, about, step };
     try {
       sessionStorage.setItem("solen_wizard", JSON.stringify(stateObj));
     } catch { /* storage full */ }
@@ -430,13 +533,13 @@ export default function SalonOnboardingPage() {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          draft_data: { basics, quickWin, photoUrls },
+          draft_data: { basics, quickWin, photoUrls, about },
           current_step: step,
         }),
       }).catch((err) => console.error("[OnboardingSalon] draft autosave failed:", err)); // fire-and-forget
     }, 2000);
     return () => clearTimeout(timer);
-  }, [hydrated, basics, quickWin, photoUrls, step]);
+  }, [hydrated, basics, quickWin, photoUrls, about, step]);
 
   // Auth guard — redirect to register if no session
   const [authChecked, setAuthChecked] = useState(false);
@@ -521,6 +624,13 @@ export default function SalonOnboardingPage() {
           // Gallery photos uploaded in step 3
           gallery_urls: photoUrls.length > 0 ? photoUrls : undefined,
           cover_photo_url: photoUrls[0] || undefined,
+          // Extra onboarding questions from step 4 (owner 2026-08-23). All optional; an
+          // untouched question sends "" / [] and the API stores null, never a fabricated value.
+          acquisition_source: about.acquisition_source === "other"
+            ? (about.acquisition_other.trim() || "other")
+            : about.acquisition_source,
+          team_size: about.team_size,
+          onboarding_goals: about.onboarding_goals,
         }),
       });
       if (!res.ok) {
@@ -692,6 +802,13 @@ export default function SalonOnboardingPage() {
                 uploadedUrls={photoUrls}
                 onUpload={setPhotoUrls}
                 t={t as any}
+              />
+            )}
+            {step === 4 && (
+              <StepAbout
+                data={about}
+                onChange={setAbout}
+                t={t}
               />
             )}
           </motion.div>

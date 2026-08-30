@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Über uns — Solen",
-  description: "Solen ist die Schweizer Buchungsplattform für Beauty & Wellness. Stores finden, in 30 Sekunden buchen, ohne Anrufen.",
+  description: "Solen ist die Schweizer Buchungsplattform für Beauty & Wellness. Salons finden, in 30 Sekunden buchen, ohne Anrufen.",
 };
 
 export default async function UeberUnsPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -27,7 +27,7 @@ export default async function UeberUnsPage({ params }: { params: Promise<{ local
             </h2>
             <p className="text-sm text-s-ink-2 leading-relaxed">
               Solen verbindet Menschen in der ganzen Schweiz mit Coiffeur-, Barber-,
-              Nagel-, Spa- und Massage-Stores. Den passenden Store finden, in rund 30
+              Nagel-, Spa- und Massage-Salons. Den passenden Salon finden, in rund 30
               Sekunden einen Termin buchen, ohne Anrufen, mit sofortiger Bestätigung.
             </p>
           </section>
@@ -46,12 +46,12 @@ export default async function UeberUnsPage({ params }: { params: Promise<{ local
 
           <section>
             <h2 className="font-display text-s-ink text-lg font-semibold mb-3 pb-2 border-b border-s-border">
-              Sind Sie ein Store?
+              Sind Sie ein Salon?
             </h2>
             <p className="text-sm text-s-ink-2 leading-relaxed">
               Mit Solen verwalten Sie Termine, Walk-ins und Zahlungen an einem Ort.{" "}
               <Link href={`${p}/partner`} className="text-s-accent">
-                Mehr für Stores
+                Mehr für Salons
               </Link>
               .
             </p>

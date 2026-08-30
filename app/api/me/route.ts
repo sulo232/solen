@@ -25,7 +25,7 @@ export async function GET() {
   const [profileResult, lastBookingResult, nextBookingResult, favoritesResult] = await Promise.all([
     supabase
       .from("profiles")
-      .select("first_name")
+      .select("display_name")
       .eq("id", userId)
       .single(),
     supabase
@@ -60,8 +60,13 @@ export async function GET() {
   const nb = nextBookingResult.data;
   const favs = favoritesResult.data ?? [];
 
+  // profiles has display_name (full name), not first_name; take the first word so the
+  // response keeps its documented "profile (first_name)" contract for a homepage greeting.
+  const displayName = profileResult.data?.display_name?.trim();
+  const firstName = displayName ? displayName.split(/\s+/)[0] : null;
+
   return NextResponse.json({
-    profile: profileResult.data ?? null,
+    profile: firstName ? { first_name: firstName } : null,
     lastBooking: lb
       ? { name: (lb.salons as any)?.name ?? null, slug: (lb.salons as any)?.slug ?? null }
       : null,

@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rota</title>
+<!-- Base: net-new -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/dashboard/staff/page.tsx
+  That is the real screen this sits beside. It edits PEOPLE (add, services, languages, permissions).
+  This is the same salon's team seen as a WEEK, which that screen has no version of. Nothing here
+  redraws an existing page, because there is no existing page for a week.
+
+  Owner 2026-08-23, verbatim: "Number two, the staff. It's a week... yeah. Built that. We need that."
+  and, on how to show it to him first: "Build two or three versions, send a link".
+
+  Diagnosis: no week view exists for staff shifts | measured 3 live endpoints
+  (app/api/staff/[id]/availability, staff/time-off, staff/breaks) against 0 page files matching
+  schedule, rota or shift | violates the no-decoration rule in the project CLAUDE.md (a back end
+  that renders on no screen is a feature nobody can reach) | target one screen a salon owner opens.
+
+  Backend-check: this screen renders NO action. It is read only, three ways to look at one week,
+  and there is no button on it that changes anything. The data it shows is backed by
+  app/api/staff/[id]/availability/route.ts, app/api/staff/breaks/route.ts and
+  app/api/staff/time-off/route.ts, all three live. Editing a shift from here would be new and is
+  deliberately not drawn.
+
+  measured: on the REAL sibling screen /de/dashboard/staff at 402 wide, this session, with
+  getBoundingClientRect and getComputedStyle:
+    h1 "Team"       26px / 600      so this heading is 26, not an invented 28
+    hairline        rgb(228,228,231) = #E4E4E7, the token already in use
+    person photo    44 x 44         so the day list uses 44
+    nav pill radius 12px
+    body font       Inter
+
+  Depicts: shift block start and end time -> app/api/staff/[id]/availability/route.ts
+  Depicts: the break under a shift -> app/api/staff/breaks/route.ts
+  Depicts: the Away block -> app/api/staff/time-off/route.ts
+  Depicts: names and faces -> app/[locale]/dashboard/staff/page.tsx
+  Depicts: the closed day -> app/api/staff/[id]/availability/route.ts
+  Depicts: three week arrangements -> NET-NEW: no rota screen exists anywhere today
+  Depicts: the working count line -> app/api/staff/[id]/availability/route.ts
+
+  Exists-check: `npm run exists rota` and `npm run exists schedule`, both run for real this turn.
+  Neither returned a week view. What came back was a graveyard entry about full-bleed heroes, two
+  onboarding and booking components, and four validation symbols.
+
+  Data is real, not invented: pulled out of staff_schedules, staff_breaks and staff_time_off for
+  the seeded test salon and written to data.js.
+
+  Three arrangements, ONE screen with a toggle, per _BASE rule 2. Silent, per _BASE rule 3.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --border:#E4E4E7; --sunken:#F4F4F5;
+    --accent:#276EF1; --accent-pale:#EAEFFE; --success:#16A34A; --success-bg:#E8F5E9;
+    --white:#fff;
+  }
+  *{box-sizing:border-box;-webkit-text-size-adjust:100%}
+  html,body{margin:0;padding:0;background:var(--white)}
+  body{font-family:Inter,system-ui,-apple-system,sans-serif;color:var(--ink);
+       min-height:100dvh;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:402px;margin:0 auto;padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+  .top{position:sticky;top:0;z-index:5;background:var(--white);
+       padding:14px 16px 10px;border-bottom:1px solid var(--border)}
+  h1{font-family:"Inter Tight",Inter,sans-serif;font-size:26px;font-weight:600;
+     letter-spacing:-0.02em;margin:0 0 2px}
+  .sub{font-size:13px;color:var(--ink2);margin:0}
+  .seg{display:flex;gap:6px;margin-top:12px}
+  .seg button{flex:1;height:34px;border-radius:999px;border:1px solid var(--border);
+    background:var(--white);font-family:inherit;font-size:13px;font-weight:500;color:var(--ink);
+    cursor:pointer}
+  .seg button[aria-pressed="true"]{background:var(--sunken);font-weight:600}
+  .pane{display:none;padding:16px}
+  .pane.on{display:block}
+
+  .grid{border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--white)}
+  .grow{display:grid;grid-template-columns:78px repeat(6,1fr);align-items:stretch}
+  .ghead{background:var(--sunken);font-size:11px;font-weight:600;color:var(--ink2);
+    text-align:center;padding:8px 0;border-bottom:1px solid var(--border)}
+  .ghead.first{text-align:left;padding-left:12px}
+  .gname{display:flex;align-items:center;gap:8px;padding:10px 8px 10px 12px;
+    border-bottom:1px solid var(--border);font-size:14px;font-weight:600}
+  .gname img,.gname .ph{width:26px;height:26px;border-radius:999px;object-fit:cover;flex:0 0 auto}
+  .gcell{border-bottom:1px solid var(--border);border-left:1px solid var(--border);
+    padding:6px 3px;display:flex;align-items:center;justify-content:center;min-height:52px}
+  .grow:last-child .gname,.grow:last-child .gcell{border-bottom:0}
+  .blk{width:100%;border-radius:8px;background:var(--accent-pale);color:var(--ink);
+    font-size:10px;font-weight:600;line-height:1.25;text-align:center;padding:5px 2px;
+    font-variant-numeric:tabular-nums}
+  .blk .b{display:block;color:var(--ink2);font-weight:500;font-size:9px;margin-top:2px}
+  .off{font-size:11px;color:var(--ink2)}
+  .away{width:100%;border-radius:8px;background:var(--success-bg);color:var(--ink);
+    font-size:10px;font-weight:600;text-align:center;padding:5px 2px}
+
+  .picker{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none}
+  .picker::-webkit-scrollbar{display:none}
+  .pchip{display:flex;align-items:center;gap:7px;flex:0 0 auto;height:40px;padding:0 12px 0 6px;
+    border-radius:999px;border:1px solid var(--border);background:var(--white);
+    font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;color:var(--ink)}
+  .pchip[aria-pressed="true"]{background:var(--sunken);font-weight:600}
+  .pchip img,.pchip .ph{width:28px;height:28px;border-radius:999px;object-fit:cover}
+  .drow{display:flex;align-items:center;gap:12px;padding:14px 4px;border-bottom:1px solid var(--border)}
+  .drow:last-child{border-bottom:0}
+  .dday{width:44px;font-size:13px;font-weight:600}
+  .dtime{font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
+  .dmeta{font-size:12px;color:var(--ink2);margin-top:2px}
+  .dot{width:8px;height:8px;border-radius:999px;background:var(--accent);flex:0 0 auto}
+  .dot.none{background:var(--border)}
+  .dot.away{background:var(--success)}
+
+  .days{display:flex;gap:6px;margin-bottom:14px}
+  .days button{flex:1;height:52px;border-radius:12px;border:1px solid var(--border);
+    background:var(--white);font-family:inherit;cursor:pointer;color:var(--ink);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+  .days button[aria-pressed="true"]{background:var(--sunken)}
+  .days .dn{font-size:10px;color:var(--ink2);font-weight:500}
+  .days .dv{font-size:15px;font-weight:600}
+  .card{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--border);
+    border-radius:16px;margin-bottom:8px;background:var(--white)}
+  .card img,.card .ph{width:44px;height:44px;border-radius:999px;object-fit:cover}
+  .cname{font-size:15px;font-weight:600}
+  .cmeta{font-size:12px;color:var(--ink2);margin-top:2px}
+  .ctime{margin-left:auto;font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
+  .ctime.off{color:var(--ink2);font-weight:500;font-size:13px}
+  .cover{font-size:13px;color:var(--ink2);margin:0 0 12px}
+  .ph{background:var(--sunken);display:grid;place-items:center;font-size:12px;font-weight:600;
+      color:var(--ink2);flex:0 0 auto}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <h1>This week</h1>
+    <p class="sub" id="range"></p>
+    <div class="seg" role="group">
+      <button aria-pressed="true"  data-p="a">Everyone</button>
+      <button aria-pressed="false" data-p="b">One person</button>
+      <button aria-pressed="false" data-p="c">One day</button>
+    </div>
+  </div>
+
+  <section class="pane on" id="pane-a"><div class="grid" id="gridA"></div></section>
+  <section class="pane" id="pane-b">
+    <div class="picker" id="pickB"></div>
+    <div id="listB"></div>
+  </section>
+  <section class="pane" id="pane-c">
+    <div class="days" id="daysC"></div>
+    <p class="cover" id="coverC"></p>
+    <div id="listC"></div>
+  </section>
+</div>
+
+<script src="./data.js"></script>
+<script>
+(function () {
+  var DAYS = [
+    { n: 1, s: "Mon", d: 24 }, { n: 2, s: "Tue", d: 25 }, { n: 3, s: "Wed", d: 26 },
+    { n: 4, s: "Thu", d: 27 }, { n: 5, s: "Fri", d: 28 }, { n: 6, s: "Sat", d: 29 }
+  ];
+  var P = (window.ROTA && window.ROTA.people) || [];
+  document.getElementById("range").textContent = "24 to 29 August";
+
+  function shift(p, day) { var s = p.week[String(day)]; return s && s.working ? s : null; }
+  function brk(p, day) { return (p.breaks || []).filter(function (b) { return b.day === day; }); }
+  function awayOn(p, day) {
+    var dd = DAYS.filter(function (x) { return x.n === day; })[0];
+    var iso = "2026-08-" + String(dd.d);
+    return (p.off || []).some(function (o) { return iso >= o.from && iso <= o.to; });
+  }
+  function av(p) {
+    return p.avatar ? '<img src="' + p.avatar + '" alt="">'
+                    : '<span class="ph">' + p.name.slice(0, 1) + "</span>";
+  }
+
+  var g = '<div class="grow"><div class="ghead first">Team</div>'
+    + DAYS.map(function (d) { return '<div class="ghead">' + d.s + "</div>"; }).join("") + "</div>";
+  P.forEach(function (p) {
+    g += '<div class="grow"><div class="gname">' + av(p) + "<span>" + p.name + "</span></div>";
+    DAYS.forEach(function (d) {
+      var s = shift(p, d.n), b = brk(p, d.n), away = awayOn(p, d.n);
+      g += '<div class="gcell">';
+      if (away) g += '<span class="away">Away</span>';
+      else if (!s) g += '<span class="off">-</span>';
+      else g += '<span class="blk">' + s.from + "<br>" + s.to
+        + (b.length ? '<span class="b">' + b[0].from + "</span>" : "") + "</span>";
+      g += "</div>";
+    });
+    g += "</div>";
+  });
+  document.getElementById("gridA").innerHTML = g;
+
+  var sel = 0;
+  function drawB() {
+    document.getElementById("pickB").innerHTML = P.map(function (p, i) {
+      return '<button class="pchip" aria-pressed="' + (i === sel) + '" data-i="' + i + '">'
+        + av(p) + "<span>" + p.name + "</span></button>";
+    }).join("");
+    var p = P[sel], h = "";
+    DAYS.forEach(function (d) {
+      var s = shift(p, d.n), b = brk(p, d.n), away = awayOn(p, d.n);
+      h += '<div class="drow"><span class="dot ' + (away ? "away" : s ? "" : "none") + '"></span>'
+        + '<span class="dday">' + d.s + "</span><div>";
+      if (away) h += '<div class="dtime">Away</div><div class="dmeta">Holiday</div>';
+      else if (!s) h += '<div class="dtime" style="color:var(--ink2);font-weight:500">Not working</div>';
+      else {
+        h += '<div class="dtime">' + s.from + " to " + s.to + "</div>";
+        if (b.length) h += '<div class="dmeta">Break ' + b[0].from + " to " + b[0].to + "</div>";
+      }
+      h += "</div></div>";
+    });
+    document.getElementById("listB").innerHTML = h;
+  }
+  document.getElementById("pickB").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-i]");
+    if (b) { sel = Number(b.dataset.i); drawB(); }
+  });
+
+  var day = 4;
+  function drawC() {
+    document.getElementById("daysC").innerHTML = DAYS.map(function (d) {
+      return '<button aria-pressed="' + (d.n === day) + '" data-d="' + d.n + '">'
+        + '<span class="dn">' + d.s + '</span><span class="dv">' + d.d + "</span></button>";
+    }).join("");
+    var on = P.filter(function (p) { return shift(p, day) && !awayOn(p, day); });
+    document.getElementById("coverC").textContent = on.length + " of " + P.length + " working";
+    document.getElementById("listC").innerHTML = P.map(function (p) {
+      var s = shift(p, day), b = brk(p, day), away = awayOn(p, day);
+      return '<div class="card">' + av(p) + '<div><div class="cname">' + p.name + "</div>"
+        + '<div class="cmeta">'
+        + (away ? "Holiday" : s ? (b.length ? "Break " + b[0].from : "No break") : "Not working")
+        + "</div></div>"
+        + '<span class="ctime' + (s && !away ? "" : " off") + '">'
+        + (away ? "Away" : s ? s.from + " to " + s.to : "Off") + "</span></div>";
+    }).join("");
+  }
+  document.getElementById("daysC").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-d]");
+    if (b) { day = Number(b.dataset.d); drawC(); }
+  });
+
+  drawB();
+  drawC();
+
+  document.querySelector(".seg").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-p]");
+    if (!b) return;
+    var all = document.querySelectorAll(".seg button");
+    for (var i = 0; i < all.length; i++) all[i].setAttribute("aria-pressed", String(all[i] === b));
+    var panes = document.querySelectorAll(".pane");
+    for (var j = 0; j < panes.length; j++) panes[j].classList.remove("on");
+    document.getElementById("pane-" + b.dataset.p).classList.add("on");
+  });
+})();
+</script>
+</body>
+</html>

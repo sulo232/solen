@@ -13,12 +13,45 @@ Two modes (argv[1]):
          That is what makes the log stay fed instead of going stale.
 
 Fail-open everywhere: a worklog bug must never brick a session or trap a stop.
+
+2026-08-18 audit: `start` injected the top TWO entries in full on every session, no matter how
+old they were, up to 2,770 bytes of narrative text that stops being "recent work" once it is a
+week-plus old. Tightened per the audit's own instruction: parse the date off the newest entry's
+`## YYYY-MM-DD` heading; if it is within RECENT_DAYS, inject that ONE entry in full (was two);
+otherwise inject a single-line pointer (title + how many days old) instead of the full text.
+Age is measured against the wall clock, not committed anywhere, so this never goes stale itself.
+
+Root cause found while measuring the "8-day-stale" case named in the audit: it was not that
+the newest entry (2026-08-17) was actually 8 days old, it was that the OLD entry-splitting
+logic (`text.split("\n## ")`, then discard `parts[0]` as "the file header") silently threw the
+real newest entry away every time, because the real _plans/WORKLOG.md has no separate header
+line before its first `## ` entry , that first entry IS `parts[0]`, and treating it as a header
+made the hook always show the SECOND-newest entry as if it were the newest. Fixed by finding
+every `## ` heading directly (regex, line-anchored) instead of assuming a header exists.
 """
+import datetime
 import json
 import os
+import re
 import subprocess
 import sys
 import time
+
+# how many days old the newest entry can be and still count as "recent work" worth showing
+# in full , past this it becomes a one-line pointer instead (2026-08-18).
+RECENT_DAYS = 3
+ENTRY_DATE_RE = re.compile(r"^##\s*(\d{4}-\d{2}-\d{2})")
+HEADING_RE = re.compile(r"(?m)^## ")
+
+
+def split_worklog_entries(text):
+    """Every `## `-headed entry in text, in file order. Finds heading START positions directly
+    instead of splitting on "\n## " and discarding the first chunk as a file header , the real
+    _plans/WORKLOG.md has no leading header at all (its first line IS the first `## ` entry),
+    so the old split-and-drop-parts[0] approach silently threw the real newest entry away every
+    time (2026-08-18 audit)."""
+    starts = [m.start() for m in HEADING_RE.finditer(text)]
+    return [text[s:e] for s, e in zip(starts, starts[1:] + [len(text)])]
 
 
 def read_stdin():
@@ -49,6 +82,37 @@ def git_ok(proj, args):
         return False
 
 
+def render_start_context(worklog_path, today=None):
+    """The SessionStart additionalContext for the newest WORKLOG.md entry, or None. Pure (no
+    I/O beyond reading worklog_path); shared by `main` and --selftest so they exercise the
+    exact same decision path. `today` is injectable for the selftest, defaults to the real date."""
+    if not os.path.exists(worklog_path):
+        return None
+    text = open(worklog_path, encoding="utf-8").read()
+    entries = split_worklog_entries(text)
+    if not entries:
+        return None
+    newest = entries[0]
+    title = newest.splitlines()[0].lstrip("# ").strip()
+    m = ENTRY_DATE_RE.match(newest)
+    age_days = None
+    if m:
+        try:
+            entry_date = datetime.date.fromisoformat(m.group(1))
+            age_days = ((today or datetime.date.today()) - entry_date).days
+        except ValueError:
+            age_days = None
+
+    if age_days is not None and age_days > RECENT_DAYS:
+        return (f"WORK LOG: newest entry is {age_days} days old (\"{title}\"). "
+                "See _plans/WORKLOG.md for what shipped.")
+    body = newest
+    if len(body) > 2500:
+        body = body[:2500] + "\n... (truncated; see _plans/WORKLOG.md)"
+    return ("RECENT WORK LOG (_plans/WORKLOG.md, newest first) , what was done "
+            "recently, plain English:\n\n" + body)
+
+
 def main():
     mode = sys.argv[1] if len(sys.argv) > 1 else "start"
     data = read_stdin()
@@ -73,23 +137,12 @@ def main():
                         f.write(head)
         except Exception:
             pass
-        # surface the newest entries
+        # surface the newest entry , in full if it's recent, a one-line pointer if it's stale
         try:
-            if not os.path.exists(worklog):
-                sys.exit(0)
-            text = open(worklog, encoding="utf-8").read()
-            parts = text.split("\n## ")
-            entries = ["## " + p for p in parts[1:]]  # skip the file header
-            newest = entries[:2]  # top of file = newest (2 max: context diet 2026-07-08)
-            if not newest:
-                sys.exit(0)
-            body = "\n\n".join(newest)
-            if len(body) > 2500:
-                body = body[:2500] + "\n... (truncated; see _plans/WORKLOG.md)"
-            ctx = ("RECENT WORK LOG (_plans/WORKLOG.md, newest first) , what was done in "
-                   "recent sessions, plain English:\n\n" + body)
-            print(json.dumps({"hookSpecificOutput": {
-                "hookEventName": "SessionStart", "additionalContext": ctx}}))
+            ctx = render_start_context(worklog)
+            if ctx:
+                print(json.dumps({"hookSpecificOutput": {
+                    "hookEventName": "SessionStart", "additionalContext": ctx}}))
         except Exception:
             pass
         sys.exit(0)
@@ -138,7 +191,78 @@ def main():
     sys.exit(0)
 
 
+def _selftest():
+    import tempfile
+
+    failed = 0
+    tmp = tempfile.mkdtemp(prefix="worklog-selftest-")
+    path = os.path.join(tmp, "WORKLOG.md")
+    today = datetime.date(2026, 8, 18)
+
+    def write(entries_text):
+        with open(path, "w") as f:
+            f.write("# Work log\n\n" + entries_text)
+
+    def check(label, ok):
+        nonlocal failed
+        print(("PASS" if ok else "FAIL") + f": {label}")
+        if not ok:
+            failed += 1
+
+    # recent entry (1 day old): full text, not a pointer.
+    write("## 2026-08-17 , the actual work that happened yesterday\n\nDetail paragraph.\n")
+    ctx = render_start_context(path, today=today)
+    check("recent entry (1 day old) injects the FULL entry", ctx is not None and "RECENT WORK LOG" in ctx and "the actual work that happened yesterday" in ctx)
+    check("recent entry does not degrade to a one-line pointer", "days old" not in (ctx or ""))
+
+    # exactly at the RECENT_DAYS boundary: still full.
+    write(f"## {(today - datetime.timedelta(days=RECENT_DAYS)).isoformat()} , boundary entry\n\nx\n")
+    ctx = render_start_context(path, today=today)
+    check(f"entry exactly {RECENT_DAYS} days old still counts as recent (full text)", ctx is not None and "RECENT WORK LOG" in ctx)
+
+    # the audit's own case: 8-day-stale entry -> one-line pointer, not the full 2,770-byte dump.
+    write("## 2026-08-10 , weekly design-law improvement pass\n\n" + ("Detail. " * 400) + "\n")
+    ctx = render_start_context(path, today=today)
+    check("8-day-stale entry (the audit's own case) becomes a ONE-LINE pointer",
+          ctx is not None and ctx.startswith("WORK LOG: newest entry is 8 days old"))
+    check("stale pointer is short (a one-liner, not the full narrative dump)",
+          ctx is not None and len(ctx) < 200)
+    check("stale pointer names the title", ctx is not None and "weekly design-law improvement pass" in ctx)
+
+    # empty / missing file -> nothing injected.
+    ctx = render_start_context(os.path.join(tmp, "does-not-exist.md"), today=today)
+    check("missing WORKLOG.md injects nothing", ctx is None)
+
+    write("# Work log\n\n")
+    ctx = render_start_context(path, today=today)
+    check("a WORKLOG.md with a header but zero entries injects nothing", ctx is None)
+
+    # the ROOT CAUSE case: the real _plans/WORKLOG.md has NO leading header at all, its first
+    # line IS the first entry. The old split("\n## ")[1:] logic discarded this entry as if it
+    # were a header and showed the SECOND entry as "newest" , this is what actually produced
+    # the audit's "8-day-stale" symptom (2026-08-10 shown as newest when 2026-08-17 was real).
+    with open(path, "w") as f:
+        f.write(
+            "## 2026-08-17 , the real newest entry, no header line before it\n\nDetail.\n"
+            "## 2026-08-10 , an older entry\n\nOlder detail.\n"
+        )
+    ctx = render_start_context(path, today=today)
+    check("no-leading-header file: the TRUE newest entry is found, not silently dropped",
+          ctx is not None and "the real newest entry, no header line before it" in ctx)
+    check("no-leading-header file: the older entry is NOT shown as newest",
+          ctx is not None and "an older entry" not in ctx)
+
+    import shutil
+    shutil.rmtree(tmp, ignore_errors=True)
+
+    total = 10
+    print(f"\n{total - failed}/{total} passed")
+    return 1 if failed else 0
+
+
 if __name__ == "__main__":
+    if "--selftest" in sys.argv:
+        sys.exit(_selftest())
     try:
         main()
     except Exception:

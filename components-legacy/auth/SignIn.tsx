@@ -201,8 +201,8 @@ export default function SignIn() {
   }
 
   return (
-    <div className="flex flex-col gap-3 w-full">
-      {/* Email + Password — primary */}
+    <div className="flex flex-col w-full">
+      {/* Email + Password, primary */}
       <form onSubmit={handlePasswordLogin} className="flex flex-col gap-3">
         <input
           type="email"
@@ -212,7 +212,7 @@ export default function SignIn() {
           required
           autoComplete="email"
           inputMode="email"
-          className="w-full h-14 px-5 text-[15px] text-s-ink placeholder:text-s-ink-2 focus:outline-none transition-colors" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
+          className="w-full h-14 px-5 text-[15px] text-s-ink placeholder:text-s-ink-2 !bg-s-bg-sunken !border-transparent focus:outline-none transition-colors" // mockup-ok: public/_mockups/login-uncluttered-2026-08-20.html "B, with your three changes" panel, owner-approved (!bg/!border beat the unlayered focus-visible !important in globals.css so the fill stays grey at rest AND on focus, no new focus treatment)
         />
         <div className="relative">
           <input
@@ -222,7 +222,7 @@ export default function SignIn() {
             placeholder="Passwort"
             required
             autoComplete="current-password"
-            className="w-full h-14 px-5 !pr-12 text-[15px] text-s-ink placeholder:text-s-ink-2 focus:outline-none transition-colors" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
+            className="w-full h-14 px-5 !pr-12 text-[15px] text-s-ink placeholder:text-s-ink-2 !bg-s-bg-sunken !border-transparent focus:outline-none transition-colors" // mockup-ok: public/_mockups/login-uncluttered-2026-08-20.html "B, with your three changes" panel, owner-approved (!bg/!border beat the unlayered focus-visible !important in globals.css so the fill stays grey at rest AND on focus, no new focus treatment)
           />
           <button
             type="button"
@@ -244,21 +244,21 @@ export default function SignIn() {
 
       <button
         onClick={() => setResetMode(true)}
-        className="text-[13px] font-medium text-s-accent transition-colors text-center py-1">
+        className="mt-3 text-[13px] font-medium text-s-ink underline underline-offset-[3px] transition-colors text-center py-1">
         Passwort vergessen?
       </button>
 
-      <div className="flex items-center gap-3 my-1">
-        <div className="flex-1 h-px bg-s-border" />
-        <span className="text-[12px] text-s-ink-2">{t("or")}</span>
-        <div className="flex-1 h-px bg-s-border" />
-      </div>
+      {/* mockup-ok: public/_mockups/login-uncluttered-2026-08-20.html "B, with your three changes"
+          panel, owner-approved. Fixed 120px gap to the ways-in block below, not flex-grow to the
+          floor (item 7). Isolated from the parent's gap-3 by rejoining a fresh flex group after it. */}
+      <div className="h-[120px]" aria-hidden="true" />
 
-      {/* Social — Apple + Google */}
+      {/* Social, Apple + Google */}
       <button
         onClick={handleApple}
         disabled={loading}
-        className="relative w-full h-14 rounded-btn bg-white border border-s-border text-[15px] font-medium text-s-ink hover:bg-s-bg-sunken transition-colors disabled:opacity-50 flex items-center justify-center"
+        // mockup-ok: public/_mockups/login-uncluttered-2026-08-20.html "B, with your three changes" panel, owner-approved
+        className="relative w-full h-14 rounded-btn bg-s-ink text-white text-[15px] font-medium disabled:opacity-50 flex items-center justify-center"
       >
         <span className="absolute left-5 flex items-center" aria-hidden>
           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
@@ -270,7 +270,8 @@ export default function SignIn() {
       <button
         onClick={handleGoogle}
         disabled={loading}
-        className="relative w-full h-14 rounded-btn bg-white border border-s-border text-[15px] font-medium text-s-ink hover:bg-s-bg-sunken transition-colors disabled:opacity-50 flex items-center justify-center"
+        // mockup-ok: public/_mockups/login-uncluttered-2026-08-20.html "B, with your three changes" panel, owner-approved
+        className="relative w-full h-14 rounded-btn bg-s-bg-sunken text-[15px] font-medium text-s-ink disabled:opacity-50 flex items-center justify-center mt-3"
       >
         <span className="absolute left-5 flex items-center" aria-hidden>
           <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -282,8 +283,7 @@ export default function SignIn() {
         </span>
         {t("google_login")}
       </button>
-
-      <p className="text-[12px] text-s-ink-2 text-center mt-1">{t("terms")}</p>
+      {/* mockup-ok: public/_mockups/login-uncluttered-2026-08-20.html "B, with your three changes" panel, owner-approved (terms line removed, item 5) */}
     </div>
   );
 }

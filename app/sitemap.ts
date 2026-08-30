@@ -59,22 +59,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         });
       }
     }
-    // Treatment category pages from service_categories
-    const { data: categories } = await supabase
-      .from("service_categories")
-      .select("slug")
-      .is("parent_id", null);
-
-    for (const cat of categories ?? []) {
-      for (const locale of LOCALES) {
-        entries.push({
-          url:             `${APP_URL}/${locale}/behandlungen/${cat.slug}`,
-          lastModified:    new Date(),
-          changeFrequency: "weekly",
-          priority:        0.7,
-        });
-      }
-    }
     // Discovery items
     const { data: discoveryItems } = await supabase
       .from("discovery_items")
