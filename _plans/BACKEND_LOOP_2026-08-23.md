@@ -581,6 +581,47 @@ be re-proposed as new work without saying which of these four reasons applies.
       read by nothing at all, so they are decoration, and the eight-area model he chose on
       2026-08-14 is not built.
 
+### 2026-08-31, the last mile of staff logins, and it is broken today
+
+**INVITING SOMEONE THROWS AWAY THE ACCESS YOU GAVE THEM. Found while closing the loop on the
+eight areas, and it is the difference between the feature working and being decoration.**
+
+The chain, every link checked against the live database and the live code:
+
+1. `staff_invites` has BOTH an `access_role` (text) and a `permissions` (jsonb) column. Verified
+   against the live schema, not a migration file.
+2. **Nothing ever writes them.** `app/api/staff/invite/route.ts:71-79` inserts exactly
+   `salon_id`, `email`, `staff_name`, `token`, `expires_at`, `status`. And it could not write
+   them anyway: `staffInviteSchema` at `lib/validations.ts:403-406` accepts only `email` and
+   `staff_name`, so a client sending access would be rejected.
+3. **Nothing ever reads them.** A grep for `invite.permissions` and `invite.access_role` across
+   `app` and `lib` returns ZERO. The control on that same grep, `invite.salon_id`, returns 6, so
+   the search works and the zero is real.
+4. So `app/api/staff/accept-invite/route.ts:94-104` creates the staff row with only
+   `salon_id`, `name`, `user_id`, `is_active`. `permissions` falls to its column default `'{}'`.
+5. Under `requireSalonAccess`, `{}` means access to NOTHING. So an owner picks what a new
+   teammate may see, sends the invite, and the teammate arrives able to open nothing.
+
+**WHY IT IS MISSING, per the missing-needs-a-reason law: HALF-LANDED.** The columns shipped and
+the code that fills them never did. Not killed (nothing in REMOVED.md), not superseded (nothing
+else carries access through an invite), not blocked. The dangerous kind: the product looks
+finished because the columns exist and the invite screen sends.
+
+**TODAY IT HARMS NOBODY, and that is measured, not assumed.** All 70 `staff_members` rows have
+`user_id` null, `permissions` `{}` and `access_role` null. Not one staff member can log in at
+all, so nothing has been locked out. It becomes real the day the first invite is accepted.
+
+**A CONSEQUENCE FOR THE 57 HAND-ROLLED OWNER CHECKS, which changes the risk I named last night.**
+I said converting them would loosen access and so needed his approval first. With zero staff
+logins in existence, converting them today changes what exactly nobody can do. The approval is
+still worth having for the SCREEN, but the routes are far safer than I described.
+
+- [ ] **FIX THE INVITE PATH so the access an owner picks survives the invite.** Three edits, all
+      small: widen `staffInviteSchema` to accept `access_role` and `permissions`, write them on
+      the insert, and copy them onto the staff row in accept-invite (both the create branch and
+      the link-an-existing-row branch, which today only sets `user_id`). Queued behind the modal
+      build because both touch `lib/validations.ts` and the same page.
+
 ### 2026-08-31, search speed: measured before touching anything
 
 **THE NUMBER HE FEELS: a text search takes 518ms, and 390ms of that is one call to Google's
