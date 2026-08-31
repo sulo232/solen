@@ -616,11 +616,36 @@ I said converting them would loosen access and so needed his approval first. Wit
 logins in existence, converting them today changes what exactly nobody can do. The approval is
 still worth having for the SCREEN, but the routes are far safer than I described.
 
-- [ ] **FIX THE INVITE PATH so the access an owner picks survives the invite.** Three edits, all
-      small: widen `staffInviteSchema` to accept `access_role` and `permissions`, write them on
-      the insert, and copy them onto the staff row in accept-invite (both the create branch and
-      the link-an-existing-row branch, which today only sets `user_id`). Queued behind the modal
-      build because both touch `lib/validations.ts` and the same page.
+- [x] **FIXED, `9ad47de02`.** `staffInviteSchema` now accepts both, the invite insert writes
+      both, and accept-invite copies both onto the staff row in the create branch AND in the
+      link-an-existing-person branch that previously only set `user_id`. The invite SELECT is
+      `.select("*")`, checked verbatim, so the two columns arrive without a select edit; had it
+      been column-listed and missed, everyone would have silently landed on `{}` again and the
+      fix would have done nothing.
+      **AND TWO MORE DEFECTS ON THE SAME PATH, found by driving it end to end rather than reading it.**
+      - [x] **ADDING A STAFF MEMBER WAS BROKEN, and had been.** `POST /api/staff` answered **405**
+            with no handler at all, while `app/[locale]/dashboard/staff/page.tsx:207` has been
+            posting to it. Two controls: `GET` on the same route answered 200, and `POST` to the
+            invite route answered 400 with a validation message, so a 405 really meant no handler
+            rather than a rejected body. WHY: **never landed.** A scan of all 20 local branches
+            found the file on 20 of 20 (the control) and a POST handler on exactly ONE,
+            `claude/crazy-bose-57e405`. Lifted across and extended for `languages`,
+            `instagram_url`, `years_experience` and `access_role`, validated by a
+            `staffCreateSchema` derived from the existing `staffUpdateSchema` rather than retyped,
+            and the salon comes from `getActiveSalon` not the body.
+      - [x] **THE ROLE VALIDATED AND WAS THEN SILENTLY DROPPED.** `app/api/staff/[id]/route.ts`
+            copies fields onto the update through a hardcoded allowlist that did not contain
+            `access_role`, so the PATCH answered 200 and wrote nothing. Added.
+      - [x] **PROVEN LIVE, read back from the DATABASE and not from the API's own answer**, because
+            an API that answers `{ok:true}` while writing nothing is the exact failure being fixed.
+            Created a teammate through the real route with `access_role: front_desk` and three
+            areas: **200**. Sent a deliberately WRONG `salon_id` in the body: it was ignored and
+            the row landed on the correct salon, so the guard holds. PATCHed the role to
+            `manager`: the database row reads `access_role = "manager"`. The test row was then
+            deleted and `staff_members` is back to its **70** rows, his three real people
+            untouched.
+      - [x] **The staff list returned no `access_role`**, having stored it, so the edit modal could
+            not show the role that is saved. Added to the select.
 
 ### 2026-08-31, search speed: measured before touching anything
 
@@ -737,7 +762,7 @@ refuters per finding, rather than another grep by hand.
       the validator refusing junk rather than refusing everything; Emma's row was restored to
       `{}` afterwards. Original box text kept below.
 
-- [ ] PARKED 2026-08-30 · Do you want the staff modal switched from today's three switches to the eight areas, exactly as the mockup shows it? · from: the eight-area build, the model and the gate are on main and only the screen is left
+- [x] ANSWERED 2026-08-31: he picked "Both mockups, applied", so the staff modal was built and is on main at `9ad47de02`. Verified on the running screen: Front desk ticks calendar, rota and clients; Staff leaves only calendar; touching any box moves the chip to Custom; the selected chip computes #F4F4F5 + ink + 600, the locked treatment, with no blue on any chip. Asked separately about the FILTER pill he answered "mockup", so that one is shown and NOT applied.
 - [x] **The mockup for it is built and served.**
       `public/_mockups/staff-access-eight-areas.html`, today's three switches stacked above the
       eight areas he chose on 2026-08-14, at the real 437px modal width. Grounded in
