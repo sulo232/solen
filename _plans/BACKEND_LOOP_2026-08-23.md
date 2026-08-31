@@ -665,9 +665,22 @@ timer, not with `AbortSignal.timeout` and not with an `AbortController`. So this
 THREE ways of bounding an outbound call, and any sweep that looks for fewer than three will
 report a false positive. The live sweep running now was told about all three.
 
-- [x] **Fork 3, Plan A executed: measured first, one change identified, before-number recorded
-      above.** The change is a cache on the query embedding, keyed on the normalized text, capped
-      because the key is user-controlled. After-number to be recorded on the same table.
+- [x] **Fork 3, Plan A executed end to end. AFTER: a repeated search is 532ms -> 170ms, 3.1x.**
+      `verified:` commit `a0a25af72`, measured live on the running server, medians of 7 runs,
+      with TWO controls in the same measurement so the number cannot be a coincidence:
+      | | before | after |
+      |---|---|---|
+      | the same word searched again | 532ms | **170ms** |
+      | a brand new word every time (control) | 394ms | 550ms, still slow, as it must be |
+      | 1 char, semantic block skipped (the floor) | 102ms | 146ms |
+      The floor is the reading that matters: a repeat now costs about 24ms more than doing no
+      semantic work at all, where it used to cost 430ms more. The novel-word control staying
+      slow is what proves this is a cache and not a generally faster server.
+      Design notes on the cache itself, all deliberate: query text only, not the backfill texts
+      (each seen once, so a cache there is pure memory); keyed on the trimmed lowercase text so
+      Haar and haar share an entry; capped at 500 with oldest-out eviction because the key is
+      attacker-controlled text and an uncapped Map is a memory leak anyone can drive; failures
+      never cached, so one bad minute upstream cannot poison a word for six hours.
 
 ### 2026-08-31, what he chose and both arms of every fork, decided while he is here
 
