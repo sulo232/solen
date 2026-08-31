@@ -902,3 +902,53 @@ Carried into the next batch, each with the reason it is not done rather than a b
       review that is later hidden is never deleted from `review_translations`. Harmless today,
       because that table has exactly one reader and it now filters on every path. It becomes a
       leak the moment anyone writes a second reader without the same filter.
+
+---
+
+## 2026-08-31 · Twenty calls that could hang forever, and a booking calendar that is nearly empty
+
+- [x] **Every Gemini and Upstash Redis call in the repo was unbounded, and now is not.**
+      `verified:` commit `3f1242f19`. 11 Gemini model constructions across 9 files, 8 Redis
+      clients, and one `dns.lookup` had no time limit of any kind, so a stalled provider held
+      the request open with nothing to end it. The class survived every earlier sweep because
+      an SDK call contains no `fetch(`, and both this repo's sweeps and its bounded-call
+      idioms are written around `fetch(`. Root cause was two missing SDK defaults, so the fix
+      is two shared factories (`lib/ai/gemini.ts`, `lib/redis.ts`) plus the one Node-core call,
+      not twenty separate patches. The Redis signal is passed in its FUNCTION form, which is
+      load-bearing: verified in the shipped SDK (`chunk-IH7W44G6.mjs:142-151`) that a bare
+      `AbortSignal` on a module-scope client is spent after the first timeout and would
+      silently kill every later request. A read-only reviewer graded it PASS on all nine
+      checklist items and independently traced the refund path to confirm a timeout refuses
+      the refund rather than risking a second charge. Live proof: four Inspo thumbnails
+      returned 200 as real JPEGs through the newly bounded DNS lookup.
+
+- [x] **Booking is not slow. It is empty, on 12 of your 20 salons.** `verified:` measured live
+      against the real endpoints the time step calls. The two calls a customer waits on answer
+      in 172-275ms warm, against a 112-238ms floor for a route that does almost nothing, so
+      there is no speed problem to fix. What there is: `/api/availability/time-slots` returns
+      zero times for 12 of the 20 active salons on every date, and the 8 that do work run out
+      on 2026-09-09. Six of those 8 only cover 3 of their 11 to 15 services, because their
+      staff carry 9 `staff_services` rows (3 staff x 3 services) while the two salons that
+      cover everything carry 44 and 48.
+
+- [x] **The reason, and it is one setting, not a bug.** `verified:` the nightly job that fills
+      the calendar (`/api/cron/generate-slots`, scheduled daily 02:00 UTC in
+      `.github/workflows/cron-jobs.yml:139`) returns 503 before it does anything when
+      `CRON_SECRET` is unset, and `lib/env.ts:227` documents exactly that. The run recorder was
+      wired into all 23 crons on 2026-07-11 (`7f057ede3`); `cron_runs` holds exactly **one** row
+      in the whole database, from that same day. Control: that one row proves the write path
+      works, so the emptiness is real. So no scheduled job has recorded a run in 51 days, and
+      the newest availability row was created 2026-08-18.
+
+- [ ] PARKED 2026-08-31 · The nightly job that fills your booking calendar has never run,
+      because it needs a password (CRON_SECRET) that is not set. Do you want me to set a local
+      one and fill all 20 salons now, or do you want to set it on the live site so the job
+      starts running by itself every night? · from: measuring booking speed, which turned out
+      to be a booking-emptiness problem instead
+      **Plan A (my pick, and they are not exclusive):** you say yes, I add a local one, restart
+      the dev server, and every salon has 30 days of bookable times within the hour. That fixes
+      what you can see today. **Plan B:** the same value goes into the live site's settings and
+      into GitHub, which is the only thing that makes it keep working after tonight. Plan A
+      without Plan B goes empty again in 30 days.
+      Blocked on you because it is an `.env.local` edit and a live credential, both of which
+      you told me to ask about first.
