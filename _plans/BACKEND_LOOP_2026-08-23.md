@@ -581,6 +581,96 @@ be re-proposed as new work without saying which of these four reasons applies.
       read by nothing at all, so they are decoration, and the eight-area model he chose on
       2026-08-14 is not built.
 
+### 2026-08-31, search speed: measured before touching anything
+
+**THE NUMBER HE FEELS: a text search takes 518ms, and 390ms of that is one call to Google's
+embedding service that is repeated in full every single time, even for text searched a second
+ago.** Everything else on the search path is already fast.
+
+Measured live against the running dev server, medians of 5 runs each, plus one EXPLAIN ANALYZE
+on the live database. The 1-character row is the control that isolates the cost: the semantic
+block is gated on `q.length >= 2`, so a 1-character query skips it entirely and shows what the
+rest of the route costs on its own.
+
+| what was asked for | median |
+|---|---|
+| `q=h` , 1 char, semantic block SKIPPED (the control) | **102ms** |
+| `q=ha` , 2 chars, embedding + ranking run | **518ms** |
+| `q=haar` repeated 5 times identically | **532ms** |
+| `q=` novel text every time | **394ms** |
+| `search_salons_ranked('haar', 60, null)` on the database itself | **26ms** |
+| filter by category (`coiffeur`, `nails`) | 81 to 106ms |
+| filter by city | 258ms |
+| sort by distance | 284ms |
+| open now | 182ms |
+| geocode a street name | 30ms |
+
+Reading it: 518 minus 102 is about 420ms for the semantic block, and the database is only 26ms
+of that, so **roughly 390ms is the Gemini round trip**. The repeated-query row is the proof that
+nothing caches: searching the identical word five times costs the same every time. The comment
+already sitting at `lib/search/embeddings.ts:33` says "every search which misses cache goes
+through this call", and that cache was never built, which is the decoration shape this project
+bans by name: a comment naming a thing that does not exist.
+
+**A STALE CLAIM IN THIS PLAN, CORRECTED.** An earlier line here called this "the one Google call
+every cache-missing search makes". Two errors in one phrase. The geocode call is MAPBOX, not
+Google (`app/api/search/geocode/route.ts`), and it is not on this path at all: it is a separate
+30ms cached endpoint. The Google call is the Gemini EMBEDDING at `lib/search/embeddings.ts:23`,
+and there is no cache in front of it to miss.
+
+**THE THIRD BOUNDING IDIOM, found here and worth recording**, because two of my own greps missed
+it: `app/api/salons/route.ts:138-141` bounds the embedding with a `Promise.race` against a 500ms
+timer, not with `AbortSignal.timeout` and not with an `AbortController`. So this codebase has
+THREE ways of bounding an outbound call, and any sweep that looks for fewer than three will
+report a false positive. The live sweep running now was told about all three.
+
+- [x] **Fork 3, Plan A executed: measured first, one change identified, before-number recorded
+      above.** The change is a cache on the query embedding, keyed on the normalized text, capped
+      because the key is user-controlled. After-number to be recorded on the same table.
+
+### 2026-08-31, what he chose and both arms of every fork, decided while he is here
+
+He was asked what this session is for and picked THREE, not one: apply both mockups, hunt for
+real hangs, make search and booking faster. Asked separately which filter button he wants, he
+answered "mockup", so the pill is SHOWN and not applied. Both links served and confirmed
+loading through the tunnel before this was written.
+
+**A CORRECTION HE ACTED ON, stated because it changed what he was choosing between.** Last
+night he was told three outbound calls could hang forever. All three are bounded and always
+were. `app/api/auth/verify-phone/send/route.ts:74` and `app/api/admin/nail/generate/route.ts:116`
+carry `AbortSignal.timeout`, and `lib/email.ts:136-163` uses the other legal idiom, an
+`AbortController` with a 5000ms `RESEND_TIMEOUT_MS` and a `clearTimeout` at :175. The cause was
+the instrument, twice: a 14-line window when the real timeouts sat 14 and 15 lines below the
+call, then a grep for one idiom when this codebase uses two. Per the second-theory stop rule,
+the measurement itself is now the thing being rebuilt, as a four-angle sweep with three
+refuters per finding, rather than another grep by hand.
+
+- FORK 1, the eight areas on the staff screen.
+  PLAN A: he approves the mockup, wire the eight areas into the modal, keep the three legacy
+  keys accepted so nothing already saved breaks, then convert routes area by area.
+  PLAN B, if he rejects the look: keep the model and the gate exactly as they are on main, and
+  re-mock only the screen. Nothing behind it needs to change for a look change.
+
+- FORK 2, the hang sweep.
+  PLAN A: findings survive their refuters, fix each one with the house idiom, smallest bound
+  that cannot break a legitimately slow call.
+  PLAN B, if the sweep returns nothing: that is a real answer, not a failure. Say so plainly,
+  publish how each angle searched so the emptiness is checkable, and move the session's weight
+  onto fork 3 rather than manufacturing findings.
+
+- FORK 3, search and booking speed.
+  PLAN A: measure the customer path end to end first, one number before and one after, and cut
+  the biggest single cost.
+  PLAN B, if the measurement shows the path is already fast: do not optimise anyway. Report the
+  number, name what IS slow instead, and spend the time there.
+
+- FORK 4, the filter pill.
+  PLAN A: he picks C, apply it to all eight dashboard screens through one shared component
+  rather than eight edits, per the compose-do-not-redraw floor.
+  PLAN B, if he picks B or keeps the blue: record the dated decision in TASTE_LOG and leave the
+  contrast note attached to it, because the readable floor is statutory and does not disappear
+  because a look call went the other way.
+
 ### The remainder of this session, tracked rather than narrated
 
 - [x] **THE MODEL AND THE GATE ARE BUILT AND ON MAIN. The SCREEN is waiting on him.**
