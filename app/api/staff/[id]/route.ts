@@ -42,7 +42,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   // they are dropped from the allowlist rather than guessed at a mapping.
   const allowedFields = [
     "name", "avatar_url", "specialties", "is_active", "commission_rate",
-    "languages", "instagram_url", "years_experience", "permissions",
+    "languages", "instagram_url", "years_experience", "permissions", "access_role",
   ] as const;
   const update: Database["public"]["Tables"]["staff_members"]["Update"] = {};
   for (const key of allowedFields) {

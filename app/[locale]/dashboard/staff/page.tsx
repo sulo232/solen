@@ -8,6 +8,14 @@ import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import { DashStatusPill } from "@/app/[locale]/_components/dashboard/DashboardUI";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { avGrad } from "@/lib/avatar-gradients";
+import {
+  PERMISSION_AREAS,
+  presetPermissions,
+  inferRole,
+  type PermissionKey,
+  type StaffPermissions,
+  type AccessRole,
+} from "@/lib/staff-permissions";
 import type { StaffMember } from "@/lib/types";
 
 // Initials + deterministic avatar gradient (consistent colour per person), per the approved mobile skin.
@@ -20,6 +28,70 @@ const initials = (n: string) => {
 // Stored lowercase in staff_members.languages, shown uppercase in the UI (matches
 // the PDP/booking subtitle formatting in SalonTeam.tsx / StaffStep.tsx).
 const LANGUAGE_CODES = ["de", "en", "fr", "it", "es", "pt", "ru", "uk", "tr", "sq", "sr", "hr", "ar", "jp", "zh"] as const;
+
+// Chip order for the Access preset row. "owner" is skipped on purpose, an owner is not a staff row.
+const ROLE_CHIPS: Exclude<AccessRole, "owner">[] = ["manager", "front_desk", "staff", "custom"];
+
+// i18n key per preset role and per permission area, so the eight-area model from
+// lib/staff-permissions.ts stays the single source of truth for the KEYS while the copy
+// itself lives in messages/*.json like every other string on this page.
+const ROLE_CHIP_KEYS: Record<Exclude<AccessRole, "owner">, string> = {
+  manager: "roleManager",
+  front_desk: "roleFrontDesk",
+  staff: "roleStaff",
+  custom: "roleCustom",
+};
+
+const AREA_LABEL_KEYS: Record<PermissionKey, string> = {
+  calendar: "areaCalendar",
+  schedule: "areaSchedule",
+  clients: "areaClients",
+  catalog: "areaCatalog",
+  marketing: "areaMarketing",
+  finance: "areaFinance",
+  team: "areaTeam",
+  settings: "areaSettings",
+};
+
+const AREA_DESC_KEYS: Partial<Record<PermissionKey, string>> = {
+  schedule: "areaScheduleDesc",
+  team: "areaTeamDesc",
+};
+
+const VALID_PERMISSION_KEYS = new Set<PermissionKey>(PERMISSION_AREAS.map((a) => a.key));
+
+// staff_members.permissions has been written by at least four different shapes over this
+// column's life: absent/null, {} (every one of today's 70 live rows), the new eight-area
+// object, the old three-key legacy object, and a plain array of granted-key strings from an
+// older writer. A crash on the array shape was the bug fixed at 91624012f, so this stays
+// defensive rather than trusting any one shape.
+function normalizePermissions(raw: unknown): StaffPermissions {
+  if (!raw) return {};
+  if (Array.isArray(raw)) {
+    const perms: StaffPermissions = {};
+    for (const key of raw) {
+      if (typeof key === "string" && VALID_PERMISSION_KEYS.has(key as PermissionKey)) {
+        perms[key as PermissionKey] = true;
+      }
+    }
+    return perms;
+  }
+  if (typeof raw !== "object") return {};
+  const p = raw as Record<string, unknown>;
+  const hasEightAreaKeys = PERMISSION_AREAS.some((a) => a.key in p);
+  if (hasEightAreaKeys) {
+    const perms: StaffPermissions = {};
+    for (const area of PERMISSION_AREAS) {
+      if (p[area.key]) perms[area.key] = true;
+    }
+    return perms;
+  }
+  // Legacy three-key shape. can_edit_schedule maps to BOTH calendar and schedule;
+  // can_view_own_bookings and can_manage_portfolio have no eight-area equivalent, so they
+  // are dropped rather than guessed at a mapping.
+  if (p.can_edit_schedule) return { calendar: true, schedule: true };
+  return {};
+}
 
 // ─────────────────────────────────────────
 // Staff Modal (Add / Edit) — now with services & permissions
@@ -52,10 +124,9 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
   const [assignedServices, setAssignedServices] = useState<Set<string>>(new Set());
   const [loadingServices, setLoadingServices] = useState(false);
 
-  // Permissions
-  const [canEditSchedule, setCanEditSchedule] = useState(true);
-  const [canViewOwnBookings, setCanViewOwnBookings] = useState(true);
-  const [canManagePortfolio, setCanManagePortfolio] = useState(true);
+  // Access: the eight-area grant set plus the preset role it currently matches (or "custom").
+  const [perms, setPerms] = useState<StaffPermissions>({});
+  const [role, setRole] = useState<AccessRole>("custom");
   const [commissionRate, setCommissionRate] = useState(initial?.commission_rate ?? 0);
 
   // Load existing service assignments when editing
@@ -71,13 +142,11 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
       .catch((err) => console.error("[DashboardStaff] Failed to fetch assigned services:", err))
       .finally(() => setLoadingServices(false));
 
-    // Load permissions from staff member
-    if ((initial as any).permissions) {
-      const p = (initial as any).permissions;
-      setCanEditSchedule(p.can_edit_schedule ?? true);
-      setCanViewOwnBookings(p.can_view_own_bookings ?? true);
-      setCanManagePortfolio(p.can_manage_portfolio ?? true);
-    }
+    // Load permissions from staff member, normalizing whichever of the four shapes this row
+    // was written in (see normalizePermissions above).
+    const normalized = normalizePermissions((initial as any).permissions);
+    setPerms(normalized);
+    setRole(inferRole(normalized));
   }, [initial]);
 
   const toggleService = (id: string) => {
@@ -98,6 +167,20 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
     setLanguages((prev) => (prev.includes(code) ? prev.filter((c) => c !== code) : [...prev, code]));
   };
 
+  // Picking a preset chip replaces the grant set wholesale; "custom" just sets the role and
+  // leaves whatever boxes are currently checked alone.
+  const selectRole = (r: AccessRole) => {
+    setRole(r);
+    if (r !== "custom") setPerms(presetPermissions(r));
+  };
+
+  // Toggling one box snaps the role back to whichever preset it now matches, or "custom".
+  const togglePermission = (key: PermissionKey) => {
+    const next = { ...perms, [key]: !perms[key] };
+    setPerms(next);
+    setRole(inferRole(next));
+  };
+
   const handleSave = async () => {
     if (!name) return;
     setLoading(true);
@@ -109,11 +192,8 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
         languages,
         is_active: active,
         commission_rate: commissionRate,
-        permissions: {
-          can_edit_schedule: canEditSchedule,
-          can_view_own_bookings: canViewOwnBookings,
-          can_manage_portfolio: canManagePortfolio,
-        },
+        permissions: perms,
+        access_role: role,
       };
 
       let staffId = initial?.id;
@@ -241,22 +321,42 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
             )}
           </div>
 
-          {/* Permissions */}
+          {/* mockup-ok: public/_mockups/staff-access-eight-areas.html (PROPOSED card), owner-approved eight-area access model replacing the three legacy permission checkboxes */}
           <div>
-            <label className="block text-xs font-medium text-s-ink-2 mb-2">{t("permissions")}</label>
+            <label className="block text-xs font-medium text-s-ink-2 mb-2">{t("access")}</label>
+            <div className="flex flex-wrap gap-2 mb-4">
+              {ROLE_CHIPS.map((r) => (
+                <button
+                  key={r}
+                  type="button"
+                  onClick={() => selectRole(r)}
+                  aria-pressed={role === r}
+                  className={`rounded-full px-3.5 py-2 text-[13px] border transition-colors ${
+                    role === r
+                      ? "bg-s-bg-sunken text-s-ink font-semibold border-transparent"
+                      : "bg-white text-s-ink-2 border-s-border hover:bg-s-bg-sunken"
+                  }`}
+                >
+                  {t(ROLE_CHIP_KEYS[r] as any)}
+                </button>
+              ))}
+            </div>
+            <div className="h-px bg-s-border mb-4" />
             <div className="space-y-2">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={canEditSchedule} onChange={e => setCanEditSchedule(e.target.checked)} className="w-3.5 h-3.5 rounded accent-s-ink" />
-                <span className="text-sm text-s-ink/70">{t("permEditSchedule")}</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={canViewOwnBookings} onChange={e => setCanViewOwnBookings(e.target.checked)} className="w-3.5 h-3.5 rounded accent-s-ink" />
-                <span className="text-sm text-s-ink/70">{t("permViewBookings")}</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={canManagePortfolio} onChange={e => setCanManagePortfolio(e.target.checked)} className="w-3.5 h-3.5 rounded accent-s-ink" />
-                <span className="text-sm text-s-ink/70">{t("permManagePortfolio")}</span>
-              </label>
+              {PERMISSION_AREAS.map((area) => (
+                <label key={area.key} className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={!!perms[area.key]}
+                    onChange={() => togglePermission(area.key)}
+                    className="w-3.5 h-3.5 rounded accent-s-ink"
+                  />
+                  <span className="text-sm text-s-ink/70">{t(AREA_LABEL_KEYS[area.key] as any)}</span>
+                  {AREA_DESC_KEYS[area.key] && (
+                    <span className="text-[12px] text-s-ink-2">{t(AREA_DESC_KEYS[area.key] as any)}</span>
+                  )}
+                </label>
+              ))}
             </div>
           </div>
 

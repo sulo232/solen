@@ -75,6 +75,8 @@ export async function POST(req: NextRequest) {
       salon_id: salon.id,
       email: validated.email,
       staff_name: validated.staff_name ?? null,
+      access_role: validated.access_role ?? null,
+      permissions: validated.permissions ?? {},
       token,
       expires_at: expiresAt,
       status: "pending",

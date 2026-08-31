@@ -1,7 +1,7 @@
 import { z, ZodSchema } from "zod";
 import { PORTFOLIO_CATEGORY_KEYS } from "@/lib/portfolio-categories";
 import { REPORT_STATUSES, REPORT_TARGET_TYPES, REPORT_REASONS } from "@/lib/content-reports";
-import { PERMISSION_AREAS, type PermissionKey } from "@/lib/staff-permissions";
+import { PERMISSION_AREAS, ROLE_LABELS, type PermissionKey, type AccessRole } from "@/lib/staff-permissions";
 
 // ─── Helper ──────────────────────────────────────────────────────────────────
 
@@ -400,9 +400,35 @@ export const disputeResponseSchema = z.object({
   customer_response: z.string().max(500).optional(),
 });
 
+// Eight keys from lib/staff-permissions.ts (the "eight separate areas" model),
+// imported rather than retyped so the schema and the model can never drift apart.
+const permissionAreaShape = Object.fromEntries(
+  PERMISSION_AREAS.map((area) => [area.key, z.boolean().optional()])
+) as Record<PermissionKey, z.ZodOptional<z.ZodBoolean>>;
+
+// Unknown keys are rejected (.strict()) so a salon owner can no longer write
+// arbitrary junk into staff_members.permissions. The three legacy keys are kept
+// accepted alongside the new eight so the current dashboard
+// (app/[locale]/dashboard/staff/page.tsx) keeps working until it is rebuilt to
+// write the new shape.
+export const staffPermissionsSchema = z
+  .object({
+    ...permissionAreaShape,
+    can_edit_schedule: z.boolean().optional(),
+    can_view_own_bookings: z.boolean().optional(),
+    can_manage_portfolio: z.boolean().optional(),
+  })
+  .strict();
+
+// Derived from ROLE_LABELS (lib/staff-permissions.ts) rather than retyped, so the accepted
+// enum can never drift from the AccessRole union.
+const accessRoleValues = Object.keys(ROLE_LABELS) as [AccessRole, ...AccessRole[]];
+
 export const staffInviteSchema = z.object({
   email: z.string().email(),
   staff_name: z.string().min(2).max(100).optional(),
+  access_role: z.enum(accessRoleValues).optional(),
+  permissions: staffPermissionsSchema.optional(),
 });
 
 // Cash / in-person walk-in dropped straight into the live queue by staff: only the service is
@@ -1445,26 +1471,6 @@ export const servicesReorderSchema = z.object({
     .max(200),
 });
 
-// Eight keys from lib/staff-permissions.ts (the "eight separate areas" model),
-// imported rather than retyped so the schema and the model can never drift apart.
-const permissionAreaShape = Object.fromEntries(
-  PERMISSION_AREAS.map((area) => [area.key, z.boolean().optional()])
-) as Record<PermissionKey, z.ZodOptional<z.ZodBoolean>>;
-
-// Unknown keys are rejected (.strict()) so a salon owner can no longer write
-// arbitrary junk into staff_members.permissions. The three legacy keys are kept
-// accepted alongside the new eight so the current dashboard
-// (app/[locale]/dashboard/staff/page.tsx) keeps working until it is rebuilt to
-// write the new shape.
-export const staffPermissionsSchema = z
-  .object({
-    ...permissionAreaShape,
-    can_edit_schedule: z.boolean().optional(),
-    can_view_own_bookings: z.boolean().optional(),
-    can_manage_portfolio: z.boolean().optional(),
-  })
-  .strict();
-
 export const staffUpdateSchema = z.object({
   name: z.string().min(1).max(200).optional(),
   avatar_url: z.string().url().max(2000).nullable().optional(),
@@ -1475,6 +1481,14 @@ export const staffUpdateSchema = z.object({
   instagram_url: z.string().url().max(500).nullable().optional(),
   years_experience: z.number().int().min(0).max(80).nullable().optional(),
   permissions: staffPermissionsSchema.optional(),
+  access_role: z.enum(accessRoleValues).optional(),
+});
+
+// POST /api/staff (owner directly adds a staff member, no invitation) reuses every field
+// staffUpdateSchema already validates and just makes name required, so the two can never
+// drift apart.
+export const staffCreateSchema = staffUpdateSchema.extend({
+  name: z.string().min(1).max(200),
 });
 
 export const reviewFlagSchema = z.object({

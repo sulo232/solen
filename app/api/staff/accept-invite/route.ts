@@ -84,10 +84,16 @@ export async function POST(req: NextRequest) {
       : { data: null };
 
     if (namedStaff) {
-      // Link existing staff member to this user
+      // Link existing staff member to this user, carrying over the access the owner
+      // picked when they sent the invite (was dropped here before, so a linked staff
+      // member always landed on the permissions column default of {}, no access at all).
       await supabase
         .from("staff_members")
-        .update({ user_id: user.id })
+        .update({
+          user_id: user.id,
+          permissions: invite.permissions ?? {},
+          access_role: invite.access_role ?? null,
+        })
         .eq("id", namedStaff.id);
       staffMemberId = namedStaff.id;
     } else {
@@ -99,6 +105,8 @@ export async function POST(req: NextRequest) {
           name: invite.staff_name ?? user.user_metadata?.display_name ?? user.email?.split("@")[0] ?? "Staff",
           user_id: user.id,
           is_active: true,
+          permissions: invite.permissions ?? {},
+          access_role: invite.access_role ?? null,
         })
         .select("id")
         .single();
