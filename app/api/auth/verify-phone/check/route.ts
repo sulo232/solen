@@ -3,17 +3,14 @@ export const runtime = "edge";
 
 import { NextRequest, NextResponse } from "next/server";
 import { applyRateLimit, authLimiter, getClientIp } from "@/lib/ratelimit";
-import { Redis } from "@upstash/redis";
+import { createBoundedRedis } from "@/lib/redis";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
 import { validateBody, verifyPhoneCheckSchema } from "@/lib/validations";
 
 const env = getServerEnv();
 const redis = (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN)
-  ? new Redis({
-      url: env.UPSTASH_REDIS_REST_URL,
-      token: env.UPSTASH_REDIS_REST_TOKEN,
-    })
+  ? createBoundedRedis(env.UPSTASH_REDIS_REST_URL, env.UPSTASH_REDIS_REST_TOKEN)
   : null;
 
 export async function POST(request: NextRequest) {

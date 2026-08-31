@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getGeminiModel } from "@/lib/ai/gemini";
 import { getServerEnv } from "@/lib/env";
 import { wrapUntrustedInput } from "@/lib/ai/untrusted";
 
@@ -53,7 +53,7 @@ const FIELD_RULE: Record<string, string> = {
 function getModel() {
   const apiKey = getServerEnv().GEMINI_API_KEY;
   if (!apiKey) return null;
-  return new GoogleGenerativeAI(apiKey).getGenerativeModel({ model: "gemini-2.5-flash" });
+  return getGeminiModel(apiKey, { model: "gemini-2.5-flash" });
 }
 
 /**

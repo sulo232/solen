@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getGeminiModel } from "@/lib/ai/gemini";
 import type { SalonCategory } from "@/lib/types";
 import { getServerEnv } from "@/lib/env";
 import { wrapUntrustedInput } from "@/lib/ai/untrusted";
@@ -17,8 +17,7 @@ export async function detectCategory(
   const apiKey = getServerEnv().GEMINI_API_KEY;
   if (!apiKey) return null;
 
-  const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const model = getGeminiModel(apiKey, { model: "gemini-2.0-flash" });
 
   const prompt = `You are a beauty/wellness category classifier for a Swiss booking platform.
 Given a user search query, return ONLY the single most likely category from this list:

@@ -1,7 +1,7 @@
 // lib/ai-vision.ts — Gemini 2.5 Flash for auto-categorization
 // Server-side only. GEMINI_API_KEY must never be exposed.
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getGeminiModel, GEMINI_VISION_TIMEOUT_MS } from "@/lib/ai/gemini";
 import type { AIVisionResult } from "@/lib/types";
 import { getServerEnv } from "@/lib/env";
 import { assertSafeFetchUrl } from "@/lib/security/ssrf-guard";
@@ -220,8 +220,7 @@ export async function analyzeDiscoveryImage(imageUrl: string, category?: string 
   }
 
   try {
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = getGeminiModel(apiKey, { model: "gemini-2.5-flash" }, GEMINI_VISION_TIMEOUT_MS);
 
     // Fetch image as base64. redirect:"manual" so a 30x response can't bounce the fetch
     // into internal space after the guard above already cleared the original host, a 3xx
@@ -308,8 +307,7 @@ export async function analyzeDiscoveryTikTok(
   const apiKey = getServerEnv().GEMINI_API_KEY;
   if (!apiKey) throw new Error("GEMINI_API_KEY not configured");
 
-  const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+  const model = getGeminiModel(apiKey, { model: "gemini-2.5-flash" }, GEMINI_VISION_TIMEOUT_MS);
 
   // --- Strategy 1: Try stored thumbnail ---
   let imageData = thumbnailUrl ? await fetchImageBase64(thumbnailUrl) : null;
@@ -416,8 +414,7 @@ ${safeProducts.join("\n")}
 PRODUCTS`;
 
   try {
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = getGeminiModel(apiKey, { model: "gemini-2.5-flash" }, GEMINI_VISION_TIMEOUT_MS);
     const result = await model.generateContent(prompt);
     const cleaned = result.response.text().replace(/```json?\n?/g, "").replace(/```/g, "").trim();
     const parsed = JSON.parse(cleaned) as DiscoveryI18n;
