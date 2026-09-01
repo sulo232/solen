@@ -839,6 +839,15 @@ window. The detail for each sits in the box below it.
 
 - [ ] PARKED 2026-08-26, **RE-MEASURED 2026-09-01 and the number behind it was wrong** · Should a nightly job delete past time slots that were never booked? `verified:` today the calendar holds 227,758 rows, 23,479 of them in the past and 23,428 of those never booked. **But only 889 are older than 90 days**, which is the horizon this box asked about. So the job as originally worded would delete 889 rows out of 227,758, four tenths of one percent, and buy nothing. The old line quoted 17,572 of 62,913, which was ALL past slots, not the 90-day-old ones the question was about, so it made the case look far stronger than it is. (A control ran first: past plus future came to 24 rows more than the total, which is the fill inserting rows between the two queries, not a wrong filter.) **Plan A (my pick): leave it.** At 0.4% it is not worth a nightly job, and the table is only this big because we just filled it on purpose. **Plan B:** prune past and never-booked at ANY age, which is 23,428 rows, 10% of the table, and is the only version that actually reclaims anything. Deleting rows is yours by your own rule either way. · from: the storage pass, and nothing has ever removed a slot
 - [ ] PARKED 2026-08-26, still off as of 2026-09-01 15:05 · Do you want leaked-password protection switched on, knowing it rejects sign-ups using passwords from known breach lists? `verified:` re-checked the security advisor today, `auth_leaked_password_protection` is still reported as disabled. It is a toggle in your Supabase dashboard, not code, so it has to be you. The page that explains it: [password security](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection) · from: the Supabase security advisor, it is a dashboard toggle and not code
+
+- [x] CHECKED AND CLEAR 2026-09-01 · The same advisor run flagged three database functions as
+      callable without signing in. **None of them is a hole, and I checked rather than reporting
+      it.** `verified:` `create_group_booking` refuses on its very first line, it raises
+      "Must be signed in to create a group booking" when there is no session, and it then verifies
+      that the slot, the service and the staff member all belong to the salon being named, so
+      nobody can book a slot at one salon through another. The other two, `search_salons_ranked`
+      and `search_suggest`, are read-only search helpers that are meant to be public.
+      Recorded so a later pass does not raise the same warning again as if it were new.
 - [x] CLOSED 2026-09-01 · **All three July fixes are accounted for, none is stranded, and this
       needed no decision from him.** The box said one was still stranded. That was wrong, and the
       contradiction was already sitting in this same file: line 425 recorded the analytics one as
