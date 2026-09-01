@@ -2,16 +2,20 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-31T12:07:29 (trigger: auto)
+- taken: 2026-09-01T16:42:57 (trigger: auto)
 - branch: claude/agent-flow-design-overhaul-2af2c2
 
 ## git
 ```
-6a2cbf58b Tick what landed, with the proof on the ticked line
-9ad47de02 Eight areas on the staff screen, and three things that stopped it working
-75d0e70f4 Record the after number on the same table as the before
-a0a25af72 Searching the same word twice no longer pays for it twice
-001a474b3 Inviting a teammate throws away the access you gave them
+f8b2b2330 The two things I saw in the booking flow were my own instrument
+f0758ce2a checkpoint(auto): 1 uncommitted file(s) at turn end
+99e2903d4 All 20 salons are bookable again, up from 8
+fbdf88b7b Booking is not slow, it is empty on 12 of 20 salons
+3f1242f19 Twenty calls that could hang forever now give up instead
+```
+```
+M _plans/BACKEND_LOOP_2026-08-23.md
+ M components-legacy/booking/CountUpNumber.tsx
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
