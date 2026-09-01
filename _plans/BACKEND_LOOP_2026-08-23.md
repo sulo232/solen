@@ -1019,6 +1019,15 @@ Carried into the next batch, each with the reason it is not done rather than a b
       **THE AFTER, same salon, same Thursday, same endpoint: 15 of 15, every one with 12 real
       times.** Damenschnitt, Coloration and Balayage all answer now where they returned nothing
       an hour earlier.
+      **NOBODY CAN BE DOUBLE BOOKED BY THIS, checked because the change made the risk 4x bigger.**
+      A slot row is per stylist per service per time, so a stylist who had 3 rows at 15:45 now has
+      11 to 15, one for each service. If booking one did not block the rest, two customers could
+      take the same stylist at the same moment.
+      `verified:` the database refuses it itself. `prevent_double_booking` is an EXCLUDE constraint,
+      not merely an index: same stylist, overlapping time, status booked or blocked. Proved it by
+      running the attack inside a transaction that rolls back: booked one of a stylist's 11 rows at
+      15:45, then tried a second, and the second was REFUSED. Read the rows afterwards as a control,
+      all 11 are still available, so nothing was changed by the test.
       **Tripling the calendar did NOT make booking slower, checked because I caused the growth.**
       `verified:` the times endpoint over 6 calls at ~243k future rows: 1162 cold, then 171, 187,
       109, 95, 209, a warm median of 171ms against the 172 to 275ms measured before any of this.
