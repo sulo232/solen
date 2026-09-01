@@ -963,9 +963,20 @@ Carried into the next batch, each with the reason it is not done rather than a b
       none of which has recorded a run in 51 days. **Plan B:** leave it, and I refill by hand
       whenever you ask. Blocked on you because it is a live credential.
 
-- [ ] PARKED 2026-09-01 · 18 of your 20 salons only offer 3 of their 11 to 15 services, even now.
-      Do you want every staff member linked to every service their salon sells? · from: the
-      calendar fill, which could only create times for services a staff member is linked to
+- [ ] IN FLIGHT 2026-09-01 · 18 of your 20 salons only offered 3 of their 11 to 15 services.
+      **Done and proven for one salon; the rest are waiting on the slot job, which takes about an
+      hour per pass.** I linked every active staff member to every active service in their own
+      salon: 513 rows added, insert only, nothing updated or deleted, and every pair written to
+      `.claude/staff-services-added.json` so it can be undone exactly. Control held: the two
+      salons that were already complete gained 0 rows.
+      `verified:` **Smooth Skin Studio went from 3 bookable services to 11 of 11.** Asked the same
+      endpoint the booking screen calls, once per service, for Thursday 3 September: all 11
+      return 36 times each. The mechanism is confirmed by timestamps, not by assumption, the
+      links went in at 14:49:51 and that salon's newest slot was created at 14:55:26, after;
+      the control is Atelier Haarwerk, already complete, whose newest slot is 14:15, before.
+      The pass that was running when the links landed had already gone past the other 17 salons,
+      so a fresh pass is running now. · from: the calendar fill, which could only create times
+      for services a staff member is linked to
       **Why:** those salons carry 9 `staff_services` rows (3 staff x 3 services each). The two
       that offer everything carry 44 and 48. The generator can only make slots for a service the
       staff member is actually linked to, so this caps what a customer can book no matter how
