@@ -1010,7 +1010,15 @@ Carried into the next batch, each with the reason it is not done rather than a b
       links went in at 14:49:51 and that salon's newest slot was created at 14:55:26, after;
       the control is Atelier Haarwerk, already complete, whose newest slot is 14:15, before.
       The pass that was running when the links landed had already gone past the other 17 salons,
-      so a fresh pass is running now. · from: the calendar fill, which could only create times
+      so a fresh pass is running now.
+      **Tripling the calendar did NOT make booking slower, checked because I caused the growth.**
+      `verified:` the times endpoint over 6 calls at ~243k future rows: 1162 cold, then 171, 187,
+      109, 95, 209, a warm median of 171ms against the 172 to 275ms measured before any of this.
+      The database plan is an index scan on `availability_slots_dedup_uniq` at 59ms with every page
+      already cached. One thing to do once the fill stops: the planner is estimating 13 rows where
+      the real answer is 108, which is normal after a bulk insert and is fixed by running ANALYZE
+      on the table. Left until the fill finishes so it is not immediately stale again.
+      · from: the calendar fill, which could only create times
       for services a staff member is linked to
       **Why:** those salons carry 9 `staff_services` rows (3 staff x 3 services each). The two
       that offer everything carry 44 and 48. The generator can only make slots for a service the
