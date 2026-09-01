@@ -2,16 +2,19 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-31T19:32:38 (trigger: auto)
+- taken: 2026-09-01T16:50:04 (trigger: auto)
 - branch: claude/stress-test-gates-hooks-6dc8e8
 
 ## git
 ```
+4982dfc27 Close the inspector hole in the two worst checks: written, proven, one line to apply
+838a93a63 checkpoint(auto): 1 uncommitted file(s) at turn end
+68a3a41be Stress test the harness: three of my own claims broke, the hole is 8 checks not 1
 5510c138e Close the boss-loop plan, all three of his asks answered
 050b3ab82 Answer the boss-loop question: almost all of it already runs, two real gaps
-e78e8aca5 Park the design work and open the boss-loop question
-e3247eb7c Add the eighth mockup to his page and name the third bug
-613e8b0af Close the queue: the last blocker was mine to clear, not a wall
+```
+```
+M _plans/BOSS_LOOP_2026-08-31.md
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
@@ -53,3 +56,11 @@ e3247eb7c Add the eighth mockup to his page and name the third bug
 110 | DESIGN RE-ENGINEER , improve the system we have, measured against live Airbnb | **ACTIVE** (2026-07-28)
 72 | REFUND PROCESS: does it exist, who decides, is it legal (owner 2026-08-19: "Is there even a refund process, and how does it even proceed? Who is gonna decide it? ... with the tax and fix if it's legal or not") | **ACTIVE** (2026-08-19)
 111 | GATE + HOOK STRESS TEST , all 305 hooks driven with real payloads, not read (owner 2026-08-17: "actually evaluate and stress test each one") | **ACTIVE** (2026-08-18)
+
+## BOSS_LOOP_2026-08-31.md
+Open boxes:
+- [ ] BLOCKED, needs him: the sandbox denies writes to `~/.claude/settings.json`, so I cannot unwire
+- [ ] The other 6 checks with the same hole: council-trigger.py, harden-needs-council-gate.py,
+- [ ] Tell the hands-off loop to open the page. `refine.workflow.js:21` already accepts a
+- [ ] The one test not run: one real job end to end through the loop against a real page, with
+- [ ] Take the two duplicate permission checks off the end-of-turn list:
