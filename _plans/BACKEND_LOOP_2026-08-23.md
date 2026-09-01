@@ -968,14 +968,24 @@ Carried into the next batch, each with the reason it is not done rather than a b
       carried on working, which is the same unbounded-call family fixed in `3f1242f19`, this time
       in a throwaway script of mine rather than in the product.
 
-- [ ] PARKED 2026-09-01 · Do you want the live site's nightly job switched on too? Today's fill
-      runs out on 30 September. · from: filling the calendars, which fixed the data but not the
-      schedule
-      **Plan A (my pick):** you put a CRON_SECRET into Netlify's environment variables and the
-      same value into GitHub's repository secrets. The job then runs itself at 02:00 UTC nightly
-      and the calendars never run dry again. It also switches on the other 26 scheduled jobs,
-      none of which has recorded a run in 51 days. **Plan B:** leave it, and I refill by hand
-      whenever you ask. Blocked on you because it is a live credential.
+- [ ] PARKED 2026-09-01, **the exact steps worked out 2026-09-01 so it is a two-minute job** ·
+      Do you want the live site's nightly calendar job switched on? Today's fill covers to
+      1 October (the job fills a rolling 30 days from whenever it runs).
+      `verified:` the schedule already exists and is already written correctly. `.github/workflows/
+      cron-jobs.yml:138-149` runs generate-slots at 02:00 UTC daily and passes `secrets.CRON_SECRET`;
+      `.github/actions/ping-cron/action.yml` calls `https://solen.ch` directly and stops with a loud
+      error when that secret is empty. Nothing needs building. The only missing piece is the value.
+      **Plan A (my pick), two places, same value:** generate one with `openssl rand -base64 32`, put
+      it in GitHub under Settings, Secrets and variables, Actions, named `CRON_SECRET`, and put the
+      identical value in Netlify under Site configuration, Environment variables, same name. Make a
+      fresh one; the local value I set for testing stays local and must not be reused. That starts
+      the nightly calendar fill and also the other 26 scheduled jobs, none of which has recorded a
+      run in 51 days. **Plan B:** leave it and I refill by hand whenever you ask.
+      **A limit worth naming:** I cannot see whether those scheduled runs have been firing and
+      failing, or not firing at all. `gh run list` is refused from here (`api.github.com` fails TLS
+      through the sandbox proxy), so that half is unmeasured rather than checked.
+      Blocked on you because it is a live credential. · from: filling the calendars, which fixed the
+      data but not the schedule
 
 - [ ] IN FLIGHT 2026-09-01 · 18 of your 20 salons only offered 3 of their 11 to 15 services.
       **Done and proven for one salon; the rest are waiting on the slot job, which takes about an
