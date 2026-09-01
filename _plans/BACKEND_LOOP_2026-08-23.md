@@ -1013,9 +1013,12 @@ Carried into the next batch, each with the reason it is not done rather than a b
       so a fresh pass is running now.
       **The before, taken through the customer's own endpoint, so the after can be compared like
       for like.** `verified:` Muse Beauty Studio on Thursday 3 September, asked once per service:
-      3 of its 15 return times, and the 12 that return NOTHING include Damenschnitt, Herrenschnitt,
-      Coloration, Balayage and Strähnen. A customer wanting a haircut at that salon sees an empty
-      calendar on every date. Only the three make-up services answer.
+      3 of its 15 returned times, and the 12 that returned NOTHING included Damenschnitt,
+      Herrenschnitt, Coloration, Balayage and Strähnen. A customer wanting a haircut at that salon
+      saw an empty calendar on every date. Only the three make-up services answered.
+      **THE AFTER, same salon, same Thursday, same endpoint: 15 of 15, every one with 12 real
+      times.** Damenschnitt, Coloration and Balayage all answer now where they returned nothing
+      an hour earlier.
       **Tripling the calendar did NOT make booking slower, checked because I caused the growth.**
       `verified:` the times endpoint over 6 calls at ~243k future rows: 1162 cold, then 171, 187,
       109, 95, 209, a warm median of 171ms against the 172 to 275ms measured before any of this.
