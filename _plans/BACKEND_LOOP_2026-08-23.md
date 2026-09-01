@@ -839,7 +839,21 @@ window. The detail for each sits in the box below it.
 
 - [ ] PARKED 2026-08-26 · Should a nightly job delete past time slots that were never booked and are older than 90 days? · from: the storage pass, 17,572 of 62,913 slots are already in the past and nothing has ever removed one
 - [ ] PARKED 2026-08-26 · Do you want leaked-password protection switched on, knowing it rejects sign-ups using passwords from known breach lists? · from: the Supabase security advisor, it is a dashboard toggle and not code
-- [ ] PARKED 2026-08-26, NARROWED 2026-09-01 to ONE item, the other two are done · **Two of the three no longer need bringing across.** `verified:` the AI-call timeout landed today in commit `3f1242f19` and covers all 11 Gemini sites through `lib/ai/gemini.ts`, which is broader than the stranded July version; the search-embedding timeout is on this branch at `lib/search/embeddings.ts:96` (`AbortSignal.timeout(10000)`). **Only the cached-analytics fix is still stranded**, and it stays his call because cherry-picking it belongs to the branch reconciliation workstream (67), not to a blind lift. · from: the regression pass
+- [x] CLOSED 2026-09-01 · **All three July fixes are accounted for, none is stranded, and this
+      needed no decision from him.** The box said one was still stranded. That was wrong, and the
+      contradiction was already sitting in this same file: line 425 recorded the analytics one as
+      landed on 2026-08-23 while line 842 kept calling it stranded.
+      `verified:` **analytics caching is live**, `app/api/analytics/platform/route.ts:11` sets
+      `revalidate = 86400`, on this branch AND on `main`. It genuinely caches rather than merely
+      declaring it: nothing in the route calls `cookies()`, `headers()` or sets `force-dynamic`,
+      and `createAdminSupabaseClient` (`lib/supabase.ts:78-95`) passes a cookie adapter whose
+      `getAll()` returns `[]` and never touches `next/headers`, so the route is not forced
+      dynamic. That is a different mechanism from the stranded July version, which used
+      `unstable_cache`, and it does the same job.
+      The other two, re-verified today: the AI-call timeout landed in `3f1242f19` and covers all
+      11 Gemini sites through `lib/ai/gemini.ts`, broader than the July version; the
+      search-embedding timeout is at `lib/search/embeddings.ts:96` (`AbortSignal.timeout(10000)`).
+      Nothing to cherry-pick, so workstream 67 does not own this. · from: the regression pass
 
 - **HIS CALL: prune old slots.** (PARKED above) 17,572 of the 62,913 slots are in the past and 16,711 of
       those were never booked. Nothing removes them, ever. Deleting rows is his decision by
