@@ -1045,4 +1045,11 @@ Carried into the next batch, each with the reason it is not done rather than a b
       run it lands on a number already equal to the target so nothing repaints. Built by the
       coder, graded PASS by an independent reviewer on all 7 items including the traced
       100-then-190 race and a per-branch leak check; typecheck exit 0; no dashes.
+      **LAST MILE PROVEN IN THE REAL PRODUCT, on the live booking page, with the animation
+      clock stopped the same way a hidden tab stops it** (`requestAnimationFrame` accepting
+      callbacks and never running them). Smooth Skin Studio, Rückenmassage already selected at
+      CHF 75, then a second service added: at 250ms the bar read **CHF 75 next to 2 Artikel**,
+      which is the defect itself, the stale price beside the correct item count; at 700ms it read
+      **CHF 100**, the true total, because the safety net fired at 600ms. Without this change it
+      would have stayed at CHF 75 for as long as the tab stayed hidden.
       · from: chasing my own hidden-tab reading
