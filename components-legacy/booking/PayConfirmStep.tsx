@@ -61,6 +61,8 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn, salonHasRedee
   // SP-1: the guest-form copy lives in the top-level `guestBookingForm` namespace (shared with
   // GuestBookingForm.tsx); read it directly rather than via a cross-namespace path.
   const tg = useTranslations('guestBookingForm');
+  // Top-level `errors` namespace, not `booking`, so `t` cannot reach `errors.slot_taken`.
+  const te = useTranslations('errors');
   const locale = useLocale();
   const router = useRouter();
   const { formData, goToStep, resetForm } = useBooking();
@@ -280,6 +282,14 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn, salonHasRedee
       if (!bookingRes.ok) {
         const errorData = await bookingRes.json().catch(() => null);
         console.error('[PayConfirmStep] create booking failed:', errorData?.message);
+        // 409 + SLOT_TAKEN is the one failure the customer can actually act on: someone else
+        // took this stylist at this time while they were paying (app/api/bookings/route.ts
+        // returns it at four sites, including the 23P01 catch for the prevent_double_booking
+        // exclusion constraint). Telling them "Booking failed" hides the one useful instruction,
+        // which is to pick another time. errors.slot_taken already exists in all four locales.
+        if (bookingRes.status === 409 && errorData?.code === 'SLOT_TAKEN') {
+          throw new Error(te('slot_taken'));
+        }
         // Friendly localized copy, not the raw server string.
         throw new Error(t('payment.bookingFailed'));
       }
