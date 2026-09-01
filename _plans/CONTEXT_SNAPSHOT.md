@@ -2,20 +2,19 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-30T21:15:08 (trigger: auto)
+- taken: 2026-08-31T12:07:29 (trigger: auto)
 - branch: claude/agent-flow-design-overhaul-2af2c2
 
 ## git
 ```
-8ec72d9d8 Bring main in so this branch builds again, and stop it drifting further
-bc4f85484 The eight areas you chose in August, brought across and made real underneath
-290af37f5 The calendar's accents were rendering black because the token they use is dead
-780c188c7 The gray he called everywhere, counted: 810 background uses, and a third are on pages no customer opens
-ab7f0f7cb Your login lockout switched itself off during an outage. The fix was written in July and never merged
+6a2cbf58b Tick what landed, with the proof on the ticked line
+9ad47de02 Eight areas on the staff screen, and three things that stopped it working
+75d0e70f4 Record the after number on the same table as the before
+a0a25af72 Searching the same word twice no longer pays for it twice
+001a474b3 Inviting a teammate throws away the access you gave them
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
-80 | THE SITE DOES NOT BUILD (found 2026-08-27 opening a preview of main for the owner) | **ACTIVE** (2026-08-27)
 74 | OVERNIGHT LOOP: how I work + efficiency (speed/money) + harness + skills (owner 2026-08-24, going to sleep: "finish evrth as a. loop") | **ACTIVE** (2026-08-24)
 75 | HIS OPEN ASKS, the ones I measured instead of doing (owner 2026-08-24: "are you sure you finished everything? What about the one... like, the number three and also about the context and about the price and also the skills") | **ACTIVE** (2026-08-24)
 76 | FIX ALL OF THEM, not report them (owner 2026-08-24: "instead of just telling me? You should fix all of them... stop telling me I fixed it") | **ACTIVE** (2026-08-24)
