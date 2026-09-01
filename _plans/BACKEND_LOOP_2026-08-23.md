@@ -1013,9 +1013,9 @@ Carried into the next batch, each with the reason it is not done rather than a b
       Blocked on you because it is a live credential. · from: filling the calendars, which fixed the
       data but not the schedule
 
-- [ ] IN FLIGHT 2026-09-01 · 18 of your 20 salons only offered 3 of their 11 to 15 services.
-      **Done and proven for one salon; the rest are waiting on the slot job, which takes about an
-      hour per pass.** I linked every active staff member to every active service in their own
+- [x] DONE 2026-09-01, commits `5d953f7fd` and `ffa6cdc4c` · `verified:` **20 of 20 salons now
+      offer every service they sell, 248 of 248, up from 77.** 18 of your 20 salons only offered 3
+      of their 11 to 15 services. I linked every active staff member to every active service in their own
       salon: 513 rows added, insert only, nothing updated or deleted, and every pair written to
       `.claude/staff-services-added.json` so it can be undone exactly. Control held: the two
       salons that were already complete gained 0 rows.
@@ -1025,7 +1025,10 @@ Carried into the next batch, each with the reason it is not done rather than a b
       links went in at 14:49:51 and that salon's newest slot was created at 14:55:26, after;
       the control is Atelier Haarwerk, already complete, whose newest slot is 14:15, before.
       The pass that was running when the links landed had already gone past the other 17 salons,
-      so a fresh pass is running now.
+      so a second pass was run and finished at 16:07.
+      **FINAL, every salon measured one service at a time with an exact count:** all 20 salons full,
+      248 of 248 services with real future times, 331,179 future bookable times against roughly
+      23,700 at the start of the day. Only 2 salons were fully bookable this morning.
       **The before, taken through the customer's own endpoint, so the after can be compared like
       for like.** `verified:` Muse Beauty Studio on Thursday 3 September, asked once per service:
       3 of its 15 returned times, and the 12 that returned NOTHING included Damenschnitt,
@@ -1043,6 +1046,11 @@ Carried into the next batch, each with the reason it is not done rather than a b
       running the attack inside a transaction that rolls back: booked one of a stylist's 11 rows at
       15:45, then tried a second, and the second was REFUSED. Read the rows afterwards as a control,
       all 11 are still available, so nothing was changed by the test.
+      **AFTER THE FILL STOPPED, re-measured:** the database query is now 0.59ms where it read 59ms
+      mid-fill, and the times endpoint has a warm median of 214ms against the 172 to 275ms baseline,
+      so the endpoint is unchanged at 5x the rows. `ANALYZE` was run on the table; being honest about
+      what it bought, the row estimate barely moved (13 to 8 against an actual 108), so the speed-up
+      is the write pressure lifting, not the statistics. The plan was already the right one.
       **Tripling the calendar did NOT make booking slower, checked because I caused the growth.**
       `verified:` the times endpoint over 6 calls at ~243k future rows: 1162 cold, then 171, 187,
       109, 95, 209, a warm median of 171ms against the 172 to 275ms measured before any of this.
