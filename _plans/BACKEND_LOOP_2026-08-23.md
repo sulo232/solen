@@ -838,7 +838,7 @@ Each one is on the standing open-decisions page as of today, so it does not die 
 window. The detail for each sits in the box below it.
 
 - [ ] PARKED 2026-08-26 · Should a nightly job delete past time slots that were never booked and are older than 90 days? · from: the storage pass, 17,572 of 62,913 slots are already in the past and nothing has ever removed one
-- [ ] PARKED 2026-08-26 · Do you want leaked-password protection switched on, knowing it rejects sign-ups using passwords from known breach lists? · from: the Supabase security advisor, it is a dashboard toggle and not code
+- [ ] PARKED 2026-08-26, still off as of 2026-09-01 15:05 · Do you want leaked-password protection switched on, knowing it rejects sign-ups using passwords from known breach lists? `verified:` re-checked the security advisor today, `auth_leaked_password_protection` is still reported as disabled. It is a toggle in your Supabase dashboard, not code, so it has to be you. The page that explains it: [password security](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection) · from: the Supabase security advisor, it is a dashboard toggle and not code
 - [x] CLOSED 2026-09-01 · **All three July fixes are accounted for, none is stranded, and this
       needed no decision from him.** The box said one was still stranded. That was wrong, and the
       contradiction was already sitting in this same file: line 425 recorded the analytics one as
