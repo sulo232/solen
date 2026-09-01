@@ -110,6 +110,7 @@ export default function ReferralPage() {
             </div>
             <button
               onClick={copyCode}
+              aria-label={t("copyCode")}
               className="p-3 rounded-btn bg-s-ink text-white hover:brightness-[1.06] transition-colors"
             >
               {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
