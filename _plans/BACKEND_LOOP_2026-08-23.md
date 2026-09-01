@@ -940,7 +940,7 @@ Carried into the next batch, each with the reason it is not done rather than a b
       works, so the emptiness is real. So no scheduled job has recorded a run in 51 days, and
       the newest availability row was created 2026-08-18.
 
-- [x] **DONE 2026-09-01, he said yes: all 20 salons are bookable again.** `verified:` asked the
+- [x] **DONE 2026-09-01, he said yes: all 20 salons are bookable again.** `verified:` commit `99e2903d4`; asked the
       real endpoint the booking time step calls, for every salon, every one of its services,
       over the next four days. **20 of 20 salons a customer can book right now, up from 8**, and
       every one of them now runs from today to 2026-09-30 instead of stopping on 09-09. Future
@@ -974,10 +974,36 @@ Carried into the next batch, each with the reason it is not done rather than a b
       **Plan B:** leave it, if a real salon would genuinely only offer 3 of its services per
       stylist. I did not do it because your yes covered filling the calendars, not this.
 
-- [ ] SEEN, NOT DIAGNOSED, 2026-09-01 · Walking the booking flow on `/de/salon/muse-beauty-studio/booking`
-      to watch the new times render, two things looked wrong and I stopped rather than guess: the
-      header advanced to "Stylist:in auswählen" while the body still showed the services list, and
-      the running summary read "CHF 0 / 0 Min" with one item selected on a 220 CHF, 90 minute
-      service. Both were read off the live DOM, but the page was mid-animation and a second clean
-      run did not reproduce the first one the same way, so the instrument is not trustworthy here
-      and neither is called a bug yet. Worth one focused pass with a settled page.
+- [x] **DIAGNOSED 2026-09-01: neither of the two things I saw is a defect. Both were my own
+      instrument.** `verified:` driven end to end on the live booking flow.
+      (a) The summary bar reading "CHF 0 / 0 Min" with a service selected: `CountUpNumber`
+      (`components-legacy/booking/CountUpNumber.tsx`) is driven entirely by
+      `requestAnimationFrame`, and I measured **0 animation frames in 1500ms** in that browser
+      tab while it was hidden, so the number never left its starting frame. Read straight off the
+      React props at the same moment, the component was RECEIVING `value: 190` and `value: 90`
+      and painting `0` and `0`. Foregrounding the same tab: 263 frames in 1200ms and the bar
+      immediately read "CHF 190 | 1 Artikel | 90 Min". Known-answer control: an earlier reading
+      in the same session, taken while the tab was in front, already showed the correct
+      "CHF 220 | 1 Artikel | 90 Min".
+      (b) The header saying "Stylist:in auswählen" over the services list: that step is ONE
+      component, `components-legacy/booking/ServicesStaffStep.tsx`, wrapped in an
+      `AnimatePresence mode="wait"` crossfade. I was reading the DOM mid-transition. Let it
+      settle and the staff list renders correctly (Keine Präferenz, Maximale Verfügbarkeit,
+      Lena, Mara, Sara).
+      (c) A third thing I saw and chased: every one of the 14 day chips disabled. Also correct.
+      I had picked Brautstyling, and Muse's staff are linked only to the three make-up services,
+      so `/api/availability/unavailable-dates` correctly returned all 60 days unavailable. Pick
+      a service they DO offer and 12 of 14 days are live, Sundays correctly closed.
+
+- [x] **LAST MILE PROVEN: real times render on screen for a salon that had none this morning.**
+      `verified:` Muse Beauty Studio, Braut-Make-up, Thursday 3 September, the booking screen
+      shows **12 times, 09:00 to 17:15**, grouped Morgens and Nachmittags. This is the salon that
+      returned zero times on every date before today's fill.
+
+- [ ] PARKED 2026-09-01 · Small robustness gap, low likelihood, worth one line: the animated
+      price in the booking bar shows **0** rather than the real number whenever the animation
+      clock is not running, because `CountUpNumber` has a fallback for reduced-motion but none
+      for "frames never arrive". A customer who backgrounds the tab mid-animation and comes back
+      could see CHF 0 next to a selected service. The one-line fix is to paint the final value
+      when no frame has arrived within the animation's own 480ms. Not done because it is not what
+      you asked for and it is not what anyone has hit. · from: chasing my own hidden-tab reading
