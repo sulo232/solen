@@ -786,6 +786,21 @@ refuters per finding, rather than another grep by hand.
       same approval as the screen, not ahead of it. Nothing regressed in the meantime: every
       one of those 57 checks still refuses everyone but the owner, exactly as before.
 
+- [ ] PARKED 2026-09-01 · Three more things that can go wrong while a customer pays still say only
+      "Buchung fehlgeschlagen", and fixing them means writing new words in four languages, which is
+      yours. Do you want them written? · from: fixing the fourth one, the reviewer found the others
+      **What they are:** the booking route answers with four different reasons and the payment screen
+      showed one message for all of them. Today I connected the one that already had words written
+      (`SLOT_TAKEN`, someone took that time while they were paying). The other three, at
+      `app/api/bookings/route.ts` lines 237, 243, 456 and 507, are: the stylist has hit the number of
+      appointments they take in a day, this looks like a booking the customer already made, and the
+      stylist is fully booked. **Nothing in the copy files covers any of the three**, checked across
+      all four languages; the nearest matches are a dashboard quick reply and the waitlist line, and
+      neither fits a customer mid-payment. **Plan A (my pick):** you say the word and I draft the
+      three in your voice, in all four languages, for you to approve before they ship.
+      **Plan B:** leave them on the generic message, which is what ships today and is not wrong,
+      only unhelpful.
+
 - [ ] PARKED 2026-08-30 · The chosen filter button on eight dashboard screens is blue, which you ruled out twice. Do you want option C from the mockup, a white chosen pill on the gray page at 44px? · from: measuring the staff screen, the blue also fails the readable floor at 4.02 against 4.5
 - [x] **Mockup built and served: `public/_mockups/dashboard-filter-pill-gray.html`, three
       options at the real 437px width, A today's blue, B the locked recipe applied literally,
