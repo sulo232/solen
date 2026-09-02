@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getGeminiModel } from "@/lib/ai/gemini";
 import { searchStockPhotos } from "@/lib/stock-photos";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
@@ -55,8 +55,7 @@ export async function POST(req: NextRequest) {
   const apiKey = getServerEnv().GEMINI_API_KEY;
   if (!apiKey) return NextResponse.json({ error: "GEMINI_API_KEY not set" }, { status: 500 });
 
-  const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+  const model = getGeminiModel(apiKey, { model: "gemini-2.5-flash" });
 
   // input-abuse-06 (2026-07-27): description is an admin-supplied request body field, one
   // of the trust-boundary categories wrapUntrustedInput exists for (defense in depth even

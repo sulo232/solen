@@ -4,7 +4,7 @@ import { createHash, randomInt } from "crypto";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, directoryClaimCode, type EmailLocale } from "@/lib/email";
 import { applyRateLimit, authLimiter, getClientIp } from "@/lib/ratelimit";
-import { Redis } from "@upstash/redis";
+import { createBoundedRedis } from "@/lib/redis";
 import { getServerEnv } from "@/lib/env";
 import { validateBody, directoryClaimSchema } from "@/lib/validations";
 
@@ -18,7 +18,7 @@ function hashCode(code: string): string {
 // applyRateLimit's fail-open convention.
 const env = getServerEnv();
 const redis = (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN)
-  ? new Redis({ url: env.UPSTASH_REDIS_REST_URL, token: env.UPSTASH_REDIS_REST_TOKEN })
+  ? createBoundedRedis(env.UPSTASH_REDIS_REST_URL, env.UPSTASH_REDIS_REST_TOKEN)
   : null;
 const MAX_CODE_ATTEMPTS = 5;
 

@@ -250,7 +250,7 @@ SLOT/HOURS EDGE — overnight hours (close<open) handled by isOpenNow; all-close
 
 SERVICE DATA-LAYER LIMITS — FR/IT service name/description IMPOSSIBLE (no columns; type declares them = drift; don't promise). Per-service deposit/online-bookable/parallel-capacity DON'T EXIST as service fields (deposit=salon-level; bookable=is_active; capacity=category tables + station_required + daily_limit_per_staff). name_en="" → server writes name_en=name_de (keep the fallback).
 
-PERMISSIONS BROKEN — modal writes object {can_edit_schedule,...}; my-schedule route reads string-array ['edit_own_schedule','manage_all'] → schedule-edit ALWAYS 403s. Standardize one vocabulary BEFORE shipping any permission toggle. accept-bookings/checkout/see-revenue are ASPIRATIONAL (not wired) = net-new keys + enforcement, not just UI. access_role column = dead (implement as preset→permission expansion, or drop).
+PERMISSIONS, FIXED 2026-08-30, commit `91624012f`. This line used to say schedule-edit ALWAYS 403s. It never did: the route called `.includes()` on the object the modal writes, so it CRASHED, on every staff member. The route now understands both shapes: an explicit `can_edit_schedule: false` returns 403, and `{}`, null and both legacy array forms allow, matching the dashboard's own `?? true`. Standardize one vocabulary BEFORE shipping any permission toggle. accept-bookings/checkout/see-revenue are ASPIRATIONAL (not wired) = net-new keys + enforcement, not just UI. access_role column = dead (implement as preset→permission expansion, or drop).
 
 ## OPEN DECISIONS (owner)
 

@@ -2,20 +2,23 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-30T21:15:08 (trigger: auto)
+- taken: 2026-09-01T16:42:57 (trigger: auto)
 - branch: claude/agent-flow-design-overhaul-2af2c2
 
 ## git
 ```
-8ec72d9d8 Bring main in so this branch builds again, and stop it drifting further
-bc4f85484 The eight areas you chose in August, brought across and made real underneath
-290af37f5 The calendar's accents were rendering black because the token they use is dead
-780c188c7 The gray he called everywhere, counted: 810 background uses, and a third are on pages no customer opens
-ab7f0f7cb Your login lockout switched itself off during an outage. The fix was written in July and never merged
+f8b2b2330 The two things I saw in the booking flow were my own instrument
+f0758ce2a checkpoint(auto): 1 uncommitted file(s) at turn end
+99e2903d4 All 20 salons are bookable again, up from 8
+fbdf88b7b Booking is not slow, it is empty on 12 of 20 salons
+3f1242f19 Twenty calls that could hang forever now give up instead
+```
+```
+M _plans/BACKEND_LOOP_2026-08-23.md
+ M components-legacy/booking/CountUpNumber.tsx
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
-80 | THE SITE DOES NOT BUILD (found 2026-08-27 opening a preview of main for the owner) | **ACTIVE** (2026-08-27)
 74 | OVERNIGHT LOOP: how I work + efficiency (speed/money) + harness + skills (owner 2026-08-24, going to sleep: "finish evrth as a. loop") | **ACTIVE** (2026-08-24)
 75 | HIS OPEN ASKS, the ones I measured instead of doing (owner 2026-08-24: "are you sure you finished everything? What about the one... like, the number three and also about the context and about the price and also the skills") | **ACTIVE** (2026-08-24)
 76 | FIX ALL OF THEM, not report them (owner 2026-08-24: "instead of just telling me? You should fix all of them... stop telling me I fixed it") | **ACTIVE** (2026-08-24)

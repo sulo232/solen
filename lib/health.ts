@@ -70,11 +70,8 @@ export async function probeRedis(): Promise<ProbeResult> {
     return { status: "unconfigured" };
   }
   try {
-    const { Redis } = await import("@upstash/redis");
-    const redis = new Redis({
-      url: env.UPSTASH_REDIS_REST_URL,
-      token: env.UPSTASH_REDIS_REST_TOKEN,
-    });
+    const { createBoundedRedis } = await import("@/lib/redis");
+    const redis = createBoundedRedis(env.UPSTASH_REDIS_REST_URL, env.UPSTASH_REDIS_REST_TOKEN);
     await withTimeout(redis.ping(), PROBE_TIMEOUT_MS, "redis probe");
     return { status: "ok" };
   } catch (err) {
