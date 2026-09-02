@@ -2,9 +2,9 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { effectivePaymentMode } from "@/lib/bookings/payment-mode";
-import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, bookingConfirmation, salonNewBooking } from "@/lib/email";
-import { applyRateLimit, bookingLimiter, getClientIp } from "@/lib/ratelimit";
+import { applyRateLimit, bookingLimiter, bearerVerifyLimiter, getClientIp } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, createBookingSchema } from "@/lib/validations";
 // SP-2 owns guest-access primitives; SP-1 only CALLS them (no parallel token/code scheme).
@@ -15,13 +15,25 @@ import { loadPricedBundle } from "@/lib/pricing/bundle";
 import { completeReferralForFirstBooking } from "@/lib/referral/complete-referral";
 import { reportError } from "@/lib/error-report";
 import { resolveSwissLocale } from "@/lib/format";
+import { resolveRequestUser } from "@/lib/auth/request-user";
 import type { Database } from "@/lib/database.types";
 // Ties a completed booking back to the search that led to it, which is what feeds the personal row.
 import { attributeBookingToSearch } from "@/lib/points/attribution";
 
 export async function GET(request: NextRequest) {
-  const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  // resolveRequestUser (lib/auth/request-user.ts) resolves the caller from EITHER the web
+  // session cookie, unchanged, or an iOS `Authorization: Bearer <token>` header, itself
+  // verified server-side against the Supabase Auth server. Without this an app customer
+  // listing their own bookings hit a hard 401 (see POST below for the fuller writeup and
+  // the same identical ordering: the round trip a Bearer token costs to verify is throttled
+  // by IP BEFORE the resolve, and only when a header is actually present).
+  if (request.headers.get("Authorization")) {
+    const authFlood = await applyRateLimit(bearerVerifyLimiter, { ip: getClientIp(request) });
+    if (authFlood) return authFlood;
+  }
+  const resolvedUser = await resolveRequestUser(request);
+  if (resolvedUser instanceof NextResponse) return resolvedUser;
+  const { user, supabase } = resolvedUser;
   if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
 
   const { searchParams } = new URL(request.url);
@@ -124,9 +136,30 @@ export async function POST(request: NextRequest) {
   // SP-1: the route is the auth boundary, NOT a hard 401. A logged-in user keeps the verified
   // G1 path (RLS-backed client, user_id = auth.uid()). A logged-out guest is allowed, but its
   // row (user_id IS NULL) is rejected by RLS `bookings_insert_auth`, so the guest write MUST go
-  // through the service-role admin client (§10b.6 — guest writes never rely on RLS).
-  const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  // through the service-role admin client (§10b.6, guest writes never rely on RLS).
+  // resolveRequestUser (lib/auth/request-user.ts) resolves the caller from EITHER the web
+  // session cookie or an iOS `Authorization: Bearer <token>` header, verifying the token
+  // against the Supabase Auth server rather than trusting it; an invalid/expired Bearer token
+  // returns its own 401 here (`instanceof NextResponse`), never falling through to guest.
+  // Verifying a Bearer token costs an outbound round trip to the Supabase Auth server, and the
+  // caller needs no credentials to make us spend it: any non-empty `Authorization: Bearer x`
+  // reaches it. The cookie path never had this exposure, because `getUser()` with no session
+  // cookie short-circuits without a network call, so the Bearer branch introduced it and it lands
+  // BEFORE `bookingLimiter` below, which is the throttle §10b.12 put on this surface precisely so
+  // it would not sit unbounded for anon. Found by the security review of this change, 2026-08-14.
+  // So bound the round trip first, by IP, and only when there is a header to verify.
+  // `bearerVerifyLimiter` is 30/min and is registered ABUSE_PRONE, so it fails CLOSED if Upstash
+  // is ever unset in production. `generalLimiter` was the first choice and would have been wrong
+  // for exactly that reason: it is not in that set, so the guard would have passed everything
+  // silently on a misconfigured production boot.
+  if (request.headers.get("Authorization")) {
+    const authFlood = await applyRateLimit(bearerVerifyLimiter, { ip: getClientIp(request) });
+    if (authFlood) return authFlood;
+  }
+
+  const resolvedUser = await resolveRequestUser(request);
+  if (resolvedUser instanceof NextResponse) return resolvedUser;
+  const { user, supabase } = resolvedUser;
   const isGuest = !user;
   const db = isGuest ? createAdminSupabaseClient() : supabase;
 
