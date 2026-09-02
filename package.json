@@ -14,6 +14,7 @@
     "health": "node scripts/system-health.mjs",
     "check:invariants": "node scripts/check-invariants.mjs",
     "check:i18n-parity": "node scripts/check-i18n-parity.mjs",
+    "check:hardcoded-copy": "node scripts/check-hardcoded-copy.mjs",
     "check:retired-sync": "python3 .claude/skills/solen-drift-check/scripts/check-retired-sync.py",
     "check:floors": "node scripts/check-geometry.mjs --floors-only",
     "gate:floors": "node scripts/check-geometry.mjs --floors-only --gate",

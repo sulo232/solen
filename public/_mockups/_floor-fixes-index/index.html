@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Every screen that fails, and five ways to fix each one</title>
+<!-- Base: elicitation -->
+<!-- Scale: full-page -->
+<!--
+  Base is `elicitation` because this file REBUILDS NO EXISTING SURFACE. It is an index: a list of
+  links to the ten comparison pages, each of which stacks the real page plus five proposed fixes as
+  live iframes. It renders no product UI and proposes no treatment, so there is no capture for it to
+  stand on. It carries the full header block anyway so it is never mistaken for an untracked page.
+
+  Measured: this page itself, live at 402x844, getBoundingClientRect + getComputedStyle: anchor 30px
+  ("Every screen that fails") over a 14px body, ratio 2.14x, 3 distinct sizes, bold share 1 of 22
+  visible text elements (4.5%), content width 402. That is the salon page's own ladder, which is
+  what every screen listed below is being moved onto, so this page holds itself to it too.
+
+  Grounded-in: public/_mockups/compare-*/index.html, the ten comparison pages it links
+  Grounded-in: public/_mockups/fix-*--*/index.html, the forty individual variants behind those
+  Grounded-in: _design-system/research/FLOORS_WARM_2026-08-27.md, the measurement log
+
+  Depicts: the index list itself -> NET-NEW: a static list of links to files on disk, no product
+    surface is drawn here, so there is nothing to trace to a route
+  Depicts: Coiffeur, Nails and Spa row -> app/[locale]/coiffeur/page.tsx
+  Depicts: Barber row -> app/[locale]/barbershop/page.tsx
+  Depicts: Home row -> app/[locale]/page.tsx
+  Depicts: Search results row -> app/[locale]/[city]/[category]/page.tsx
+  Depicts: Basel row -> app/[locale]/[city]/page.tsx
+  Depicts: Inspo row -> app/[locale]/inspo/page.tsx
+  Depicts: Salon reviews row -> app/[locale]/salon/[slug]/reviews/page.tsx
+  Depicts: Profile and settings row -> app/[locale]/profile/page.tsx
+  Depicts: Notifications row -> app/[locale]/notifications/page.tsx
+  Depicts: Why Solen row -> app/[locale]/warum-solen/page.tsx
+
+  Diagnosis: 14 of the 15 customer routes measured break at least one design floor | measured at
+    390x844 with scripts/check-geometry.mjs on 2026-08-27 | violates FLOORS LAW items 2, 6 and 7 in
+    CLAUDE.md | target 0, which is what /de/salon/cuts-and-culture already scores
+  Diagnosis: most customer screens have no display anchor | the largest text on /de/coiffeur,
+    /de/nails, /de/spa, /de/basel/coiffeur and /de/inspo is a small rail label, measured 18px on the
+    settled reading and 14px on the unsettled one, against a 28px floor, at a ratio of 1.02x to 1.5x
+    against a 1.8x floor | violates the display anchor floor and the anchor ratio floor | target
+    30px at 2.14x, the salon page's own numbers
+  Diagnosis: this project's own floors checker measured logged-in routes signed out | it carries no
+    authentication at all, so pointed at /de/notifications it followed the redirect and measured
+    /de/auth/login, printing the result under the notifications heading | violates rule 15a, a cause
+    is a claim and carries a tier | target: the checker signs in, and marks any route that
+    redirected somewhere else instead of presenting its numbers as that route's
+  Diagnosis: the same checker slept a fixed 4000ms and then measured | on a machine under load that
+    samples a half-drawn page, which is why /de/coiffeur read 0.71% photographic when it settles at
+    41.75% | violates nothing written down, which is the point: nothing in this system said a
+    measurement has to be stable before it counts | target: wait until two consecutive samples
+    agree, and say so when they never do
+
+  Exists-check: `npm run exists mockups-index` run this turn. ONE hit: MockupsIndex at
+  app/[locale]/dev/mockups/page.tsx. That index lists DEV ROUTES under app/[locale]/dev/, which
+  these static comparison files are not, so it cannot list them and this page does not duplicate it.
+  No component is created. `_design-system/REMOVED.md` has no entry covering the floors work or a
+  static mockup index.
+
+  Treatment-only: nothing. This file changes no product pixel.
+-->
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 402px; margin: 0 auto; padding: 0 0 64px; }
+
+  .lede { padding: 30px 16px 8px; }
+  .lede h1 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 30px; font-weight: 600; line-height: 1.12; letter-spacing: -0.02em;
+  }
+  .lede p { margin-top: 12px; font-size: 14px; line-height: 1.55; color: #6B6B6B; }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  .tray { margin-top: 24px; background: #F4F4F5; padding: 18px 16px; }
+  .tray h2 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 17px; font-weight: 500; line-height: 1.25; letter-spacing: -0.01em;
+  }
+  .tray p { margin-top: 8px; font-size: 14px; line-height: 1.55; color: #6B6B6B; }
+
+  .list { margin-top: 8px; }
+  a.row {
+    display: block; text-decoration: none; color: inherit;
+    padding: 16px; border-bottom: 1px solid #E4E4E7;
+  }
+  a.row:first-child { border-top: 1px solid #E4E4E7; }
+  a.row .name { font-size: 17px; font-weight: 500; line-height: 1.3; letter-spacing: -0.01em; }
+  a.row .what { margin-top: 5px; font-size: 14px; line-height: 1.5; color: #6B6B6B; }
+  a.row .open { margin-top: 8px; font-size: 14px; font-weight: 500; color: #276EF1; }
+
+  .note { padding: 22px 16px 0; font-size: 14px; line-height: 1.55; color: #6B6B6B; }
+  .note strong { color: #0A0A0A; font-weight: 500; }
+  .note + .note { padding-top: 14px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <h1>Every screen that fails</h1>
+    <p>I measured all <span class="nums">15</span> of your customer screens on a phone.
+       <span class="nums">14</span> break at least one of your own design rules. Your salon page
+       breaks none, and it is the one you said you like.</p>
+  </div>
+
+  <div class="tray">
+    <h2>Each link holds five options</h2>
+    <p>Open one and you get your real page six times down a single screen. The first is what ships
+       today. The five below it are five different ways to fix it, each one your live page with one
+       change on it. Scroll and compare, nothing to tap.</p>
+  </div>
+
+  <div class="list">
+
+    <a class="row" href="/_mockups/compare-category-pages/index.html">
+      <div class="name">Coiffeur, Nails and Spa</div>
+      <div class="what">All three measured the same, so one fix covers all three. No headline: the
+        biggest thing on screen is a small label above the salon list.</div>
+      <div class="open">Open five options</div>
+    </a>
+
+    <a class="row" href="/_mockups/compare-barbershop/index.html">
+      <div class="name">Barber</div>
+      <div class="what">Your heaviest screen. So much of the text is bold that bold stops meaning
+        anything, and the walk-in cards sit where salon photos should be.</div>
+      <div class="open">Open five options</div>
+    </a>
+
+    <a class="row" href="/_mockups/compare-home/index.html">
+      <div class="name">Home</div>
+      <div class="what">The biggest words on your home page are "Top auf Solen" at
+        <span class="nums">18px</span>, and the salons start below the fold.</div>
+      <div class="open">Open five options</div>
+    </a>
+
+    <a class="row" href="/_mockups/compare-search-results/index.html">
+      <div class="name">Search results</div>
+      <div class="what">The screen someone lands on after searching. No headline naming what they
+        searched for, and nothing on the screen is emphasised at all.</div>
+      <div class="open">Open five options</div>
+    </a>
+
+    <a class="row" href="/_mockups/compare-city-page/index.html">
+      <div class="name">Basel</div>
+      <div class="what">More than half the text is bold, the most of any screen you own, and no
+        salon photos reach the first screen.</div>
+      <div class="open">Open five options</div>
+    </a>
+
+    <a class="row" href="/_mockups/compare-inspo/index.html">
+      <div class="name">Inspo</div>
+      <div class="what">Your photo feed opens with no title. The biggest text is the grey wording
+        inside the search box.</div>
+      <div class="open">Open five options</div>
+    </a>
+
+    <a class="row" href="/_mockups/compare-salon-reviews/index.html">
+      <div class="name">Salon reviews</div>
+      <div class="what">A sub page of the salon page you like, and it breaks rules its parent does
+        not. Seven text sizes, six of them within a few pixels of each other.</div>
+      <div class="open">Open five options</div>
+    </a>
+
+    <a class="row" href="/_mockups/compare-profile-and-settings/index.html">
+      <div class="name">Your profile and settings</div>
+      <div class="what">Both screens in one page. No headline, and a lot of the text carries the
+        same weight so nothing leads.</div>
+      <div class="open">Open five options</div>
+    </a>
+
+    <a class="row" href="/_mockups/compare-notifications/index.html">
+      <div class="name">Notifications</div>
+      <div class="what">The flattest screen you own. One text size, nothing bolder, nothing
+        bigger.</div>
+      <div class="open">Open five options</div>
+    </a>
+
+    <a class="row" href="/_mockups/compare-why-solen/index.html">
+      <div class="name">Why Solen</div>
+      <div class="what">Seven text sizes bunched together, and the greyest screen you own at
+        <span class="nums">74%</span> painted grey.</div>
+      <div class="open">Open five options</div>
+    </a>
+
+  </div>
+
+  <div class="note">
+    <strong>I took the pass and fail counts off this page on purpose.</strong> Every measurement
+    today was taken while forty other jobs drove the same test machine, so screens got photographed
+    before they finished drawing, and four counts moved when they were checked again. What each
+    screen is missing has not changed and is described above in plain words. The exact counts are
+    being re-taken on a quiet machine and go back on when they hold still.
+  </div>
+  <div class="note">
+    <strong>Two faults in my measuring tool came out of this.</strong> It could not log in, so when
+    it measured your notifications and profile screens it was really measuring the sign-in screen.
+    And it waited a fixed four seconds before looking, which is not enough on a busy machine. Both
+    are being fixed, and the same tool runs your nightly check, so this was never only about today.
+  </div>
+  <div class="note">
+    <strong>If a box shows an error instead of your page, reload.</strong> The test machine is still
+    busy building the rest of this. It comes back on a second load.
+  </div>
+
+</div>
+</body>
+</html>

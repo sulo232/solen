@@ -1,0 +1,1752 @@
+[
+ {
+  "path": "app/[locale]/_components/homepage/CategoryTabs.tsx",
+  "add": 7,
+  "rem": 2,
+  "kinds": [
+   "screen-reader label"
+  ],
+  "hits": {
+   "screen-reader label": 2
+  },
+  "samples": {
+   "screen-reader label": [
+    "+aria-label",
+    "-aria-label"
+   ]
+  },
+  "commits": [
+   "Your English, French and Italian site stops speaking German"
+  ]
+ },
+ {
+  "path": "app/[locale]/_components/homepage/FeaturedStylists.tsx",
+  "add": 2,
+  "rem": 1,
+  "kinds": [
+   "screen-reader label"
+  ],
+  "hits": {
+   "screen-reader label": 1
+  },
+  "samples": {
+   "screen-reader label": [
+    "+useTranslations"
+   ]
+  },
+  "commits": [
+   "Stop the English, French and Italian site speaking German to screen readers"
+  ]
+ },
+ {
+  "path": "app/[locale]/_components/homepage/Reviews.tsx",
+  "add": 10,
+  "rem": 5,
+  "kinds": [
+   "screen-reader label"
+  ],
+  "hits": {
+   "screen-reader label": 9
+  },
+  "samples": {
+   "screen-reader label": [
+    "+aria-label",
+    "+t(\"",
+    "+useTranslations",
+    "-aria-label"
+   ]
+  },
+  "commits": [
+   "Stop the English, French and Italian site speaking German to screen readers",
+   "Your English home page said Bewertungen. It says Reviews now",
+   "Your English, French and Italian site stops speaking German"
+  ]
+ },
+ {
+  "path": "app/[locale]/_components/homepage/SalonCard.tsx",
+  "add": 5,
+  "rem": 3,
+  "kinds": [
+   "screen-reader label"
+  ],
+  "hits": {
+   "screen-reader label": 7
+  },
+  "samples": {
+   "screen-reader label": [
+    "+aria-label",
+    "+useTranslations",
+    "-aria-label"
+   ]
+  },
+  "commits": [
+   "Your English, French and Italian site stops speaking German"
+  ]
+ },
+ {
+  "path": "app/[locale]/_components/homepage/SearchBar.tsx",
+  "add": 3,
+  "rem": 2,
+  "kinds": [
+   "screen-reader label"
+  ],
+  "hits": {
+   "screen-reader label": 3
+  },
+  "samples": {
+   "screen-reader label": [
+    "+aria-label",
+    "+useTranslations",
+    "-aria-label"
+   ]
+  },
+  "commits": [
+   "Stop the English, French and Italian site speaking German to screen readers",
+   "Your English, French and Italian site stops speaking German"
+  ]
+ },
+ {
+  "path": "app/[locale]/_components/homepage/SectionHeader.tsx",
+  "add": 3,
+  "rem": 1,
+  "kinds": [
+   "screen-reader label"
+  ],
+  "hits": {
+   "screen-reader label": 8
+  },
+  "samples": {
+   "screen-reader label": [
+    "+aria-hidden",
+    "+aria-label",
+    "+useTranslations",
+    "-aria-hidden",
+    "-aria-label"
+   ]
+  },
+  "commits": [
+   "Your English, French and Italian site stops speaking German"
+  ]
+ },
+ {
+  "path": "app/[locale]/_components/homepage/WalkInBand.tsx",
+  "add": 1,
+  "rem": 1,
+  "kinds": [
+   "screen-reader label"
+  ],
+  "hits": {
+   "screen-reader label": 1
+  },
+  "samples": {
+   "screen-reader label": [
+    "+t(\""
+   ]
+  },
+  "commits": [
+   "Your English home page said Bewertungen. It says Reviews now"
+  ]
+ },
+ {
+  "path": "app/[locale]/_components/layout/CategoryPillRow.tsx",
+  "add": 19,
+  "rem": 10,
+  "kinds": [
+   "screen-reader label"
+  ],
+  "hits": {
+   "screen-reader label": 4
+  },
+  "samples": {
+   "screen-reader label": [
+    "+aria-label",
+    "+useTranslations",
+    "-aria-label"
+   ]
+  },
+  "commits": [
+   "The search bar stops moving: one spot and one size on all seven screens",
+   "Your English, French and Italian site stops speaking German"
+  ]
+ },
+ {
+  "path": "app/[locale]/_components/layout/Footer.tsx",
+  "add": 2,
+  "rem": 1,
+  "kinds": [
+   "screen-reader label"
+  ],
+  "hits": {
+   "screen-reader label": 9
+  },
+  "samples": {
+   "screen-reader label": [
+    "+aria-hidden",
+    "+aria-label",
+    "+useTranslations",
+    "-aria-hidden",
+    "-aria-label"
+   ]
+  },
+  "commits": [
+   "Your English, French and Italian site stops speaking German"
+  ]
+ },
+ {
+  "path": "app/[locale]/_components/layout/Header.tsx",
+  "add": 74,
+  "rem": 39,
+  "kinds": [
+   "screen-reader label",
+   "back arrow"
+  ],
+  "hits": {
+   "back arrow": 4,
+   "screen-reader label": 13
+  },
+  "samples": {
+   "back arrow": [
+    "+ChevronLeft",
+    "-ArrowLeft"
+   ],
+   "screen-reader label": [
+    "+aria-hidden",
+    "+aria-label",
+    "+useTranslations",
+    "-aria-hidden",
+    "-aria-label"
+   ]
+  },
+  "commits": [
+   "Every back control on the site is now the triangle he asked for, and 44 across",
+   "Stop the English, French and Italian site speaking German to screen readers",
+   "The search bar stops moving: one spot and one size on all seven screens",
+   "Your English, French and Italian site stops speaking German"
+  ]
+ },
+ {
+  "path": "app/[locale]/_components/layout/MobileMenu.tsx",
+  "add": 1,
+  "rem": 1,
+  "kinds": [
+   "screen-reader label"
+  ],
+  "hits": {
+   "screen-reader label": 24
+  },
+  "samples": {
+   "screen-reader label": [
+    "+aria-hidden",
+    "+aria-label",
+    "-aria-hidden",
+    "-aria-label"
+   ]
+  },
+  "commits": [
+   "Stop the English, French and Italian site speaking German to screen readers"
+  ]
+ },
+ {
+  "path": "app/[locale]/_components/primitives/BackButton.tsx",
+  "add": 67,
+  "rem": 24,
+  "kinds": [
+   "back arrow",
+   "shadow or edge",
+   "screen-reader label"
+  ],
+  "hits": {
+   "back arrow": 15,
+   "shadow or edge": 4,
+   "screen-reader label": 1
+  },
+  "samples": {
+   "back arrow": [
+    "+BackButton",
+    "+ChevronLeft",
+    "-ArrowLeft",
+    "-BackButton"
+   ],
+   "shadow or edge": [
+    "+border-s-border",
+    "+rounded-",
+    "-border-s-border",
+    "-rounded-"
+   ],
+   "screen-reader label": [
+    "+aria-label"
+   ]
+  },
+  "commits": [
+   "Every back control on the site is now the triangle he asked for, and 44 across",
+   "Stop the English, French and Italian site speaking German to screen readers",
+   "The shared back button can now be a link, which unblocks eight more pages"
+  ]
+ },
+ {
+  "path": "app/[locale]/_components/primitives/DateTimePicker.tsx",
+  "add": 7,
+  "rem": 4,
+  "kinds": [
+   "screen-reader label"
+  ],
+  "hits": {
+   "screen-reader label": 10
+  },
+  "samples": {
+   "screen-reader label": [
+    "+aria-label",
+    "+useTranslations",
+    "-aria-label"
+   ]
+  },
+  "commits": [
+   "Your English, French and Italian site stops speaking German"
+  ]
+ },
+ {
+  "path": "app/[locale]/_components/salon/SalonBreadcrumb.tsx",
+  "add": 3,
+  "rem": 1,
+  "kinds": [
+   "screen-reader label"
+  ],
+  "hits": {
+   "screen-reader label": 4
+  },
+  "samples": {
+   "screen-reader label": [
+    "+aria-label",
+    "+useTranslations",
+    "-aria-label"
+   ]
+  },
+  "commits": [
+   "Stop the English, French and Italian site speaking German to screen readers"
+  ]
+ },
+ {
+  "path": "app/[locale]/_components/salon/SalonHeader.tsx",
+  "add": 1,
+  "rem": 1,
+  "kinds": [
+   "screen-reader label",
+   "weight or colour"
+  ],
+  "hits": {
+   "weight or colour": 2,
+   "screen-reader label": 4
+  },
+  "samples": {
+   "weight or colour": [
+    "+text-s-",
+    "-text-s-"
+   ],
+   "screen-reader label": [
+    "+aria-hidden",
+    "+aria-label",
+    "-aria-hidden",
+    "-aria-label"
+   ]
+  },
+  "commits": [
+   "Stop the English, French and Italian site speaking German to screen readers"
+  ]
+ },
+ {
+  "path": "app/[locale]/_components/salon/SalonHero.tsx",
+  "add": 4,
+  "rem": 4,
+  "kinds": [
+   "screen-reader label"
+  ],
+  "hits": {
+   "screen-reader label": 7
+  },
+  "samples": {
+   "screen-reader label": [
+    "+aria-hidden",
+    "+aria-label",
+    "+useTranslations",
+    "-aria-hidden",
+    "-aria-label"
+   ]
+  },
+  "commits": [
+   "Stop the English, French and Italian site speaking German to screen readers"
+  ]
+ },
+ {
+  "path": "app/[locale]/_components/salon/SalonImageGallery.tsx",
+  "add": 30,
+  "rem": 27,
+  "kinds": [
+   "back arrow",
+   "screen-reader label",
+   "shadow or edge",
+   "size or spacing"
+  ],
+  "hits": {
+   "back arrow": 5,
+   "screen-reader label": 1,
+   "shadow or edge": 1,
+   "size or spacing": 1
+  },
+  "samples": {
+   "back arrow": [
+    "+BackButton",
+    "-ArrowLeft"
+   ],
+   "screen-reader label": [
+    "-aria-label"
+   ],
+   "shadow or edge": [
+    "-rounded-"
+   ],
+   "size or spacing": [
+    "+ml-1"
+   ]
+  },
+  "commits": [
+   "Every back control on the site is now the triangle he asked for, and 44 across",
+   "Nine hand-drawn back buttons now come from the one shared button",
+   "Tapping a salon photo crashed the gallery, on every salon page"
+  ]
+ },
+ {
+  "path": "app/[locale]/_components/salon/SalonLightbox.tsx",
+  "add": 7,
+  "rem": 5,
+  "kinds": [
+   "screen-reader label",
+   "back arrow"
+  ],
+  "hits": {
+   "screen-reader label": 11,
+   "back arrow": 4
+  },
+  "samples": {
+   "screen-reader label": [
+    "+aria-label",
+    "+t(\"",
+    "+useTranslations",
+    "-aria-label"
+   ],
+   "back arrow": [
+    "+ChevronLeft",
+    "-ChevronLeft"
+   ]
+  },
+  "commits": [
+   "Stop the English, French and Italian site speaking German to screen readers"
+  ]
+ },
+ {
+  "path": "app/[locale]/_components/salon/SalonStickyTabNav.tsx",
+  "add": 15,
+  "rem": 12,
+  "kinds": [
+   "back arrow",
+   "screen-reader label",
+   "shadow or edge",
+   "size or spacing"
+  ],
+  "hits": {
+   "back arrow": 5,
+   "screen-reader label": 5,
+   "shadow or edge": 1,
+   "size or spacing": 1
+  },
+  "samples": {
+   "back arrow": [
+    "+BackButton",
+    "-ArrowLeft"
+   ],
+   "screen-reader label": [
+    "+aria-hidden",
+    "+aria-label",
+    "-aria-hidden",
+    "-aria-label"
+   ],
+   "shadow or edge": [
+    "-rounded-"
+   ],
+   "size or spacing": [
+    "+ml-1"
+   ]
+  },
+  "commits": [
+   "Every back control on the site is now the triangle he asked for, and 44 across",
+   "Nine hand-drawn back buttons now come from the one shared button",
+   "Stop the English, French and Italian site speaking German to screen readers"
+  ]
+ },
+ {
+  "path": "app/[locale]/_components/salon/SalonVenuesNearby.tsx",
+  "add": 3,
+  "rem": 1,
+  "kinds": [
+   "screen-reader label",
+   "back arrow",
+   "weight or colour"
+  ],
+  "hits": {
+   "screen-reader label": 4,
+   "back arrow": 2,
+   "weight or colour": 2
+  },
+  "samples": {
+   "screen-reader label": [
+    "+aria-label",
+    "+useTranslations",
+    "-aria-label"
+   ],
+   "back arrow": [
+    "+ChevronLeft",
+    "-ChevronLeft"
+   ],
+   "weight or colour": [
+    "+text-s-",
+    "-text-s-"
+   ]
+  },
+  "commits": [
+   "Your English, French and Italian site stops speaking German"
+  ]
+ },
+ {
+  "path": "app/[locale]/_components/search/CategoryHeroCarousel.tsx",
+  "add": 4,
+  "rem": 2,
+  "kinds": [
+   "screen-reader label"
+  ],
+  "hits": {
+   "screen-reader label": 5
+  },
+  "samples": {
+   "screen-reader label": [
+    "+aria-label",
+    "+t(\"",
+    "+useTranslations",
+    "-aria-label"
+   ]
+  },
+  "commits": [
+   "Stop the English, French and Italian site speaking German to screen readers",
+   "Your English, French and Italian site stops speaking German"
+  ]
+ },
+ {
+  "path": "app/[locale]/_components/search/MapSalonDetail.tsx",
+  "add": 3,
+  "rem": 2,
+  "kinds": [
+   "back arrow"
+  ],
+  "hits": {
+   "back arrow": 2
+  },
+  "samples": {
+   "back arrow": [
+    "+ChevronLeft",
+    "-ChevronLeft"
+   ]
+  },
+  "commits": [
+   "Stop the English, French and Italian site speaking German to screen readers"
+  ]
+ },
+ {
+  "path": "app/[locale]/_components/search/SalonResultCard.tsx",
+  "add": 12,
+  "rem": 2,
+  "kinds": [
+   "screen-reader label"
+  ],
+  "hits": {
+   "screen-reader label": 2
+  },
+  "samples": {
+   "screen-reader label": [
+    "+aria-hidden",
+    "-aria-hidden"
+   ]
+  },
+  "commits": [
+   "Stop the English, French and Italian site speaking German to screen readers"
+  ]
+ },
+ {
+  "path": "app/[locale]/_components/search/SearchOverlay.tsx",
+  "add": 1,
+  "rem": 1,
+  "kinds": [
+   "weight or colour",
+   "back arrow",
+   "screen-reader label"
+  ],
+  "hits": {
+   "back arrow": 6,
+   "weight or colour": 10,
+   "screen-reader label": 2
+  },
+  "samples": {
+   "back arrow": [
+    "+ChevronLeft",
+    "-ChevronLeft"
+   ],
+   "weight or colour": [
+    "+text-s-",
+    "-text-s-"
+   ],
+   "screen-reader label": [
+    "+aria-label",
+    "-aria-label"
+   ]
+  },
+  "commits": [
+   "Your English, French and Italian site stops speaking German"
+  ]
+ },
+ {
+  "path": "app/[locale]/_components/search/SearchTemplate.tsx",
+  "add": 15,
+  "rem": 5,
+  "kinds": [
+   "screen-reader label",
+   "shadow or edge",
+   "back arrow",
+   "weight or colour"
+  ],
+  "hits": {
+   "shadow or edge": 2,
+   "screen-reader label": 10,
+   "back arrow": 2,
+   "weight or colour": 2
+  },
+  "samples": {
+   "shadow or edge": [
+    "+rounded-",
+    "-rounded-"
+   ],
+   "screen-reader label": [
+    "+aria-hidden",
+    "-aria-hidden"
+   ],
+   "back arrow": [
+    "+ArrowLeft",
+    "-ArrowLeft"
+   ],
+   "weight or colour": [
+    "+text-s-",
+    "-text-s-"
+   ]
+  },
+  "commits": [
+   "The search bar stops moving: one spot and one size on all seven screens"
+  ]
+ },
+ {
+  "path": "app/[locale]/_components/tips/TipSheet.tsx",
+  "add": 3,
+  "rem": 1,
+  "kinds": [
+   "screen-reader label"
+  ],
+  "hits": {
+   "screen-reader label": 4
+  },
+  "samples": {
+   "screen-reader label": [
+    "+aria-label",
+    "+useTranslations",
+    "-aria-label"
+   ]
+  },
+  "commits": [
+   "Stop the English, French and Italian site speaking German to screen readers"
+  ]
+ },
+ {
+  "path": "app/[locale]/booking/lookup/page.tsx",
+  "add": 17,
+  "rem": 13,
+  "kinds": [
+   "screen-reader label",
+   "back arrow",
+   "shadow or edge"
+  ],
+  "hits": {
+   "back arrow": 4,
+   "screen-reader label": 22,
+   "shadow or edge": 2
+  },
+  "samples": {
+   "back arrow": [
+    "+BackButton",
+    "-ArrowLeft"
+   ],
+   "screen-reader label": [
+    "+aria-hidden",
+    "+aria-label",
+    "-aria-hidden",
+    "-aria-label"
+   ],
+   "shadow or edge": [
+    "+rounded-",
+    "-rounded-"
+   ]
+  },
+  "commits": [
+   "Every back control on the site is now the triangle he asked for, and 44 across",
+   "The last six hand-drawn back controls now compose the shared button"
+  ]
+ },
+ {
+  "path": "app/[locale]/booking/resend-link/page.tsx",
+  "add": 9,
+  "rem": 11,
+  "kinds": [
+   "screen-reader label",
+   "back arrow",
+   "shadow or edge"
+  ],
+  "hits": {
+   "back arrow": 5,
+   "screen-reader label": 15,
+   "shadow or edge": 4
+  },
+  "samples": {
+   "back arrow": [
+    "+BackButton",
+    "-ArrowLeft"
+   ],
+   "screen-reader label": [
+    "+aria-hidden",
+    "-aria-hidden",
+    "-aria-label"
+   ],
+   "shadow or edge": [
+    "+rounded-",
+    "+shadow-",
+    "-rounded-"
+   ]
+  },
+  "commits": [
+   "Every back control on the site is now the triangle he asked for, and 44 across",
+   "The last six hand-drawn back controls now compose the shared button"
+  ]
+ },
+ {
+  "path": "app/[locale]/dev/decision-backbutton/page.tsx",
+  "add": 1,
+  "rem": 1,
+  "kinds": [
+   "back arrow"
+  ],
+  "hits": {
+   "back arrow": 2
+  },
+  "samples": {
+   "back arrow": [
+    "+BackButton",
+    "-BackButton"
+   ]
+  },
+  "commits": [
+   "Stop the English, French and Italian site speaking German to screen readers"
+  ]
+ },
+ {
+  "path": "app/[locale]/inspo/board/[id]/page.tsx",
+  "add": 6,
+  "rem": 4,
+  "kinds": [
+   "back arrow",
+   "screen-reader label",
+   "shadow or edge"
+  ],
+  "hits": {
+   "back arrow": 4,
+   "screen-reader label": 4,
+   "shadow or edge": 2
+  },
+  "samples": {
+   "back arrow": [
+    "+ChevronLeft",
+    "-ArrowLeft"
+   ],
+   "screen-reader label": [
+    "+aria-label",
+    "+useTranslations",
+    "-aria-label"
+   ],
+   "shadow or edge": [
+    "+rounded-",
+    "-rounded-"
+   ]
+  },
+  "commits": [
+   "Every back control on the site is now the triangle he asked for, and 44 across",
+   "Stop the English, French and Italian site speaking German to screen readers"
+  ]
+ },
+ {
+  "path": "app/[locale]/inspo/page.tsx",
+  "add": 29,
+  "rem": 2,
+  "kinds": [
+   "size or spacing"
+  ],
+  "hits": {
+   "size or spacing": 5
+  },
+  "samples": {
+   "size or spacing": [
+    "+mb-3",
+    "+pt-0",
+    "+w-7",
+    "-mb-3",
+    "-pt-1"
+   ]
+  },
+  "commits": [
+   "Inspo now keeps its search bar on screen like every other page",
+   "The search bar stops moving: one spot and one size on all seven screens"
+  ]
+ },
+ {
+  "path": "app/[locale]/inspo/saved/[id]/page.tsx",
+  "add": 3,
+  "rem": 3,
+  "kinds": [
+   "back arrow",
+   "shadow or edge"
+  ],
+  "hits": {
+   "back arrow": 4,
+   "shadow or edge": 2
+  },
+  "samples": {
+   "back arrow": [
+    "+ChevronLeft",
+    "-ArrowLeft"
+   ],
+   "shadow or edge": [
+    "+rounded-",
+    "-rounded-"
+   ]
+  },
+  "commits": [
+   "Every back control on the site is now the triangle he asked for, and 44 across"
+  ]
+ },
+ {
+  "path": "app/[locale]/inspo/saved/page.tsx",
+  "add": 9,
+  "rem": 10,
+  "kinds": [
+   "back arrow",
+   "screen-reader label",
+   "shadow or edge"
+  ],
+  "hits": {
+   "back arrow": 5,
+   "screen-reader label": 1,
+   "shadow or edge": 1
+  },
+  "samples": {
+   "back arrow": [
+    "+BackButton",
+    "-ArrowLeft"
+   ],
+   "screen-reader label": [
+    "-aria-label"
+   ],
+   "shadow or edge": [
+    "-rounded-"
+   ]
+  },
+  "commits": [
+   "Every back control on the site is now the triangle he asked for, and 44 across",
+   "Nine hand-drawn back buttons now come from the one shared button"
+  ]
+ },
+ {
+  "path": "app/[locale]/onboarding/OnboardingFlow.tsx",
+  "add": 10,
+  "rem": 9,
+  "kinds": [
+   "back arrow",
+   "screen-reader label",
+   "shadow or edge"
+  ],
+  "hits": {
+   "back arrow": 5,
+   "screen-reader label": 3,
+   "shadow or edge": 1
+  },
+  "samples": {
+   "back arrow": [
+    "+BackButton",
+    "+ChevronLeft",
+    "-ArrowLeft"
+   ],
+   "screen-reader label": [
+    "+useTranslations",
+    "-aria-label"
+   ],
+   "shadow or edge": [
+    "-rounded-"
+   ]
+  },
+  "commits": [
+   "Every back control on the site is now the triangle he asked for, and 44 across",
+   "Nine hand-drawn back buttons now come from the one shared button",
+   "Stop the English, French and Italian site speaking German to screen readers"
+  ]
+ },
+ {
+  "path": "app/[locale]/profile/favorites/page.tsx",
+  "add": 8,
+  "rem": 6,
+  "kinds": [
+   "screen-reader label"
+  ],
+  "hits": {
+   "screen-reader label": 6
+  },
+  "samples": {
+   "screen-reader label": [
+    "+t(\""
+   ]
+  },
+  "commits": [
+   "Your English, French and Italian site stops speaking German"
+  ]
+ },
+ {
+  "path": "app/[locale]/profile/looks/page.tsx",
+  "add": 9,
+  "rem": 6,
+  "kinds": [
+   "screen-reader label"
+  ],
+  "hits": {
+   "screen-reader label": 6
+  },
+  "samples": {
+   "screen-reader label": [
+    "+t(\""
+   ]
+  },
+  "commits": [
+   "Your English, French and Italian site stops speaking German"
+  ]
+ },
+ {
+  "path": "app/[locale]/profile/referral/page.tsx",
+  "add": 16,
+  "rem": 15,
+  "kinds": [
+   "screen-reader label",
+   "text size"
+  ],
+  "hits": {
+   "screen-reader label": 11,
+   "text size": 10
+  },
+  "samples": {
+   "screen-reader label": [
+    "+t(\"",
+    "+useTranslations"
+   ],
+   "text size": [
+    "+text-base",
+    "+text-xs",
+    "-text-base",
+    "-text-xs"
+   ]
+  },
+  "commits": [
+   "Your English, French and Italian site stops speaking German"
+  ]
+ },
+ {
+  "path": "app/[locale]/profile/stamps/page.tsx",
+  "add": 11,
+  "rem": 10,
+  "kinds": [
+   "screen-reader label",
+   "text size"
+  ],
+  "hits": {
+   "screen-reader label": 10,
+   "text size": 2
+  },
+  "samples": {
+   "screen-reader label": [
+    "+aria-hidden",
+    "+t(\"",
+    "-aria-hidden"
+   ],
+   "text size": [
+    "+text-[13px]",
+    "-text-[13px]"
+   ]
+  },
+  "commits": [
+   "Your English, French and Italian site stops speaking German"
+  ]
+ },
+ {
+  "path": "app/[locale]/queue/[token]/page.tsx",
+  "add": 14,
+  "rem": 9,
+  "kinds": [
+   "shadow or edge",
+   "weight or colour",
+   "back arrow",
+   "screen-reader label"
+  ],
+  "hits": {
+   "back arrow": 5,
+   "shadow or edge": 7,
+   "weight or colour": 6,
+   "screen-reader label": 3
+  },
+  "samples": {
+   "back arrow": [
+    "+BackButton",
+    "-ArrowLeft"
+   ],
+   "shadow or edge": [
+    "+rounded-",
+    "-rounded-"
+   ],
+   "weight or colour": [
+    "+text-s-",
+    "-text-s-"
+   ],
+   "screen-reader label": [
+    "+aria-label",
+    "-aria-label"
+   ]
+  },
+  "commits": [
+   "Every back control on the site is now the triangle he asked for, and 44 across",
+   "The last six hand-drawn back controls now compose the shared button"
+  ]
+ },
+ {
+  "path": "app/[locale]/salon/[slug]/team/page.tsx",
+  "add": 12,
+  "rem": 10,
+  "kinds": [
+   "back arrow",
+   "screen-reader label",
+   "shadow or edge"
+  ],
+  "hits": {
+   "back arrow": 6,
+   "screen-reader label": 3,
+   "shadow or edge": 1
+  },
+  "samples": {
+   "back arrow": [
+    "+BackButton",
+    "+ChevronLeft",
+    "-ArrowLeft"
+   ],
+   "screen-reader label": [
+    "+aria-hidden",
+    "-aria-hidden",
+    "-aria-label"
+   ],
+   "shadow or edge": [
+    "-rounded-"
+   ]
+  },
+  "commits": [
+   "Every back control on the site is now the triangle he asked for, and 44 across",
+   "The last six hand-drawn back controls now compose the shared button"
+  ]
+ },
+ {
+  "path": "app/[locale]/walk-in-pay/page.tsx",
+  "add": 2,
+  "rem": 2,
+  "kinds": [
+   "weight or colour",
+   "back arrow",
+   "screen-reader label"
+  ],
+  "hits": {
+   "back arrow": 4,
+   "weight or colour": 6,
+   "screen-reader label": 2
+  },
+  "samples": {
+   "back arrow": [
+    "+ChevronLeft",
+    "-ArrowLeft"
+   ],
+   "weight or colour": [
+    "+text-s-",
+    "-text-s-"
+   ],
+   "screen-reader label": [
+    "+aria-hidden",
+    "-aria-hidden"
+   ]
+  },
+  "commits": [
+   "Every back control on the site is now the triangle he asked for, and 44 across"
+  ]
+ },
+ {
+  "path": "components-legacy/MapView.tsx",
+  "add": 3,
+  "rem": 1,
+  "kinds": [
+   "screen-reader label",
+   "text size"
+  ],
+  "hits": {
+   "screen-reader label": 2,
+   "text size": 2
+  },
+  "samples": {
+   "screen-reader label": [
+    "+useTranslations"
+   ],
+   "text size": [
+    "+text-lg",
+    "-text-lg"
+   ]
+  },
+  "commits": [
+   "Your English, French and Italian site stops speaking German"
+  ]
+ },
+ {
+  "path": "components-legacy/auth/SignIn.tsx",
+  "add": 8,
+  "rem": 3,
+  "kinds": [
+   "screen-reader label",
+   "weight or colour"
+  ],
+  "hits": {
+   "screen-reader label": 2,
+   "weight or colour": 2
+  },
+  "samples": {
+   "screen-reader label": [
+    "+useTranslations",
+    "-useTranslations"
+   ],
+   "weight or colour": [
+    "+text-s-",
+    "-text-s-"
+   ]
+  },
+  "commits": [
+   "checkpoint(auto): 2 uncommitted file(s) at turn end"
+  ]
+ },
+ {
+  "path": "components-legacy/booking/BookingWizard.tsx",
+  "add": 18,
+  "rem": 18,
+  "kinds": [
+   "back arrow",
+   "screen-reader label",
+   "shadow or edge"
+  ],
+  "hits": {
+   "back arrow": 7,
+   "screen-reader label": 2,
+   "shadow or edge": 2
+  },
+  "samples": {
+   "back arrow": [
+    "+BackButton",
+    "-ArrowLeft"
+   ],
+   "screen-reader label": [
+    "-aria-label"
+   ],
+   "shadow or edge": [
+    "-rounded-"
+   ]
+  },
+  "commits": [
+   "Every back control on the site is now the triangle he asked for, and 44 across",
+   "Nine hand-drawn back buttons now come from the one shared button"
+  ]
+ },
+ {
+  "path": "components-legacy/booking/StaffProfileSheet.tsx",
+  "add": 3,
+  "rem": 2,
+  "kinds": [
+   "text size",
+   "screen-reader label"
+  ],
+  "hits": {
+   "screen-reader label": 1,
+   "text size": 4
+  },
+  "samples": {
+   "screen-reader label": [
+    "+useTranslations"
+   ],
+   "text size": [
+    "+text-[14px]",
+    "+text-[16px]",
+    "-text-[14px]",
+    "-text-[16px]"
+   ]
+  },
+  "commits": [
+   "Your English, French and Italian site stops speaking German"
+  ]
+ },
+ {
+  "path": "components-legacy/dashboard/DashboardLayout.tsx",
+  "add": 1,
+  "rem": 1,
+  "kinds": [
+   "weight or colour",
+   "screen-reader label",
+   "back arrow"
+  ],
+  "hits": {
+   "screen-reader label": 2,
+   "weight or colour": 8,
+   "back arrow": 2
+  },
+  "samples": {
+   "screen-reader label": [
+    "+aria-label",
+    "-aria-label"
+   ],
+   "weight or colour": [
+    "+text-s-",
+    "-text-s-"
+   ],
+   "back arrow": [
+    "+ArrowLeft",
+    "-ArrowLeft"
+   ]
+  },
+  "commits": [
+   "Stop the English, French and Italian site speaking German to screen readers"
+  ]
+ },
+ {
+  "path": "components-legacy/dashboard/SalonSwitcher.tsx",
+  "add": 3,
+  "rem": 1,
+  "kinds": [
+   "weight or colour",
+   "screen-reader label"
+  ],
+  "hits": {
+   "screen-reader label": 4,
+   "weight or colour": 8
+  },
+  "samples": {
+   "screen-reader label": [
+    "+aria-label",
+    "+useTranslations",
+    "-aria-label"
+   ],
+   "weight or colour": [
+    "+text-s-",
+    "-text-s-"
+   ]
+  },
+  "commits": [
+   "Stop the English, French and Italian site speaking German to screen readers"
+  ]
+ },
+ {
+  "path": "components-legacy/discovery/DetailPage.tsx",
+  "add": 11,
+  "rem": 11,
+  "kinds": [
+   "back arrow",
+   "weight or colour",
+   "screen-reader label",
+   "shadow or edge"
+  ],
+  "hits": {
+   "back arrow": 6,
+   "screen-reader label": 1,
+   "shadow or edge": 1,
+   "weight or colour": 2
+  },
+  "samples": {
+   "back arrow": [
+    "+BackButton",
+    "+ChevronLeft",
+    "-ArrowLeft"
+   ],
+   "screen-reader label": [
+    "-aria-label"
+   ],
+   "shadow or edge": [
+    "-rounded-"
+   ],
+   "weight or colour": [
+    "+text-s-",
+    "-text-s-"
+   ]
+  },
+  "commits": [
+   "Every back control on the site is now the triangle he asked for, and 44 across",
+   "Nine hand-drawn back buttons now come from the one shared button"
+  ]
+ },
+ {
+  "path": "components-legacy/discovery/InlinePrefsPanel.tsx",
+  "add": 3,
+  "rem": 2,
+  "kinds": [
+   "weight or colour",
+   "screen-reader label",
+   "text size"
+  ],
+  "hits": {
+   "screen-reader label": 2,
+   "weight or colour": 4,
+   "text size": 2
+  },
+  "samples": {
+   "screen-reader label": [
+    "+useTranslations"
+   ],
+   "weight or colour": [
+    "+text-s-",
+    "-text-s-"
+   ],
+   "text size": [
+    "+text-sm",
+    "-text-sm"
+   ]
+  },
+  "commits": [
+   "Your English, French and Italian site stops speaking German"
+  ]
+ },
+ {
+  "path": "components-legacy/discovery/LikeButton.tsx",
+  "add": 3,
+  "rem": 1,
+  "kinds": [
+   "screen-reader label"
+  ],
+  "hits": {
+   "screen-reader label": 4
+  },
+  "samples": {
+   "screen-reader label": [
+    "+aria-label",
+    "+useTranslations",
+    "-aria-label"
+   ]
+  },
+  "commits": [
+   "Your English, French and Italian site stops speaking German"
+  ]
+ },
+ {
+  "path": "components-legacy/discovery/SaveButton.tsx",
+  "add": 3,
+  "rem": 1,
+  "kinds": [
+   "screen-reader label"
+  ],
+  "hits": {
+   "screen-reader label": 4
+  },
+  "samples": {
+   "screen-reader label": [
+    "+aria-label",
+    "+useTranslations",
+    "-aria-label"
+   ]
+  },
+  "commits": [
+   "Your English, French and Italian site stops speaking German"
+  ]
+ },
+ {
+  "path": "components-legacy/discovery/SaveToBoardSheet.tsx",
+  "add": 6,
+  "rem": 4,
+  "kinds": [
+   "screen-reader label",
+   "text size",
+   "weight or colour",
+   "shadow or edge"
+  ],
+  "hits": {
+   "screen-reader label": 6,
+   "text size": 4,
+   "weight or colour": 2,
+   "shadow or edge": 2
+  },
+  "samples": {
+   "screen-reader label": [
+    "+aria-label",
+    "+useTranslations",
+    "-aria-label"
+   ],
+   "text size": [
+    "+text-[14px]",
+    "+text-[16px]",
+    "-text-[14px]",
+    "-text-[16px]"
+   ],
+   "weight or colour": [
+    "+text-s-",
+    "-text-s-"
+   ],
+   "shadow or edge": [
+    "+rounded-",
+    "-rounded-"
+   ]
+  },
+  "commits": [
+   "Stop the English, French and Italian site speaking German to screen readers",
+   "Your English, French and Italian site stops speaking German"
+  ]
+ },
+ {
+  "path": "components-legacy/editor/EditorPage.tsx",
+  "add": 3,
+  "rem": 3,
+  "kinds": [
+   "back arrow",
+   "shadow or edge"
+  ],
+  "hits": {
+   "back arrow": 4,
+   "shadow or edge": 2
+  },
+  "samples": {
+   "back arrow": [
+    "+ChevronLeft",
+    "-ArrowLeft"
+   ],
+   "shadow or edge": [
+    "+rounded-",
+    "-rounded-"
+   ]
+  },
+  "commits": [
+   "Every back control on the site is now the triangle he asked for, and 44 across"
+  ]
+ },
+ {
+  "path": "components-legacy/refund/RefundCaseView.tsx",
+  "add": 9,
+  "rem": 11,
+  "kinds": [
+   "screen-reader label",
+   "back arrow",
+   "shadow or edge"
+  ],
+  "hits": {
+   "back arrow": 6,
+   "screen-reader label": 21,
+   "shadow or edge": 1
+  },
+  "samples": {
+   "back arrow": [
+    "+BackButton",
+    "+ChevronLeft",
+    "-ArrowLeft"
+   ],
+   "screen-reader label": [
+    "+aria-hidden",
+    "-aria-hidden",
+    "-aria-label"
+   ],
+   "shadow or edge": [
+    "-rounded-"
+   ]
+  },
+  "commits": [
+   "Every back control on the site is now the triangle he asked for, and 44 across",
+   "The last six hand-drawn back controls now compose the shared button"
+  ]
+ },
+ {
+  "path": "components-legacy/refund/ReportRefundEntry.tsx",
+  "add": 8,
+  "rem": 12,
+  "kinds": [
+   "screen-reader label",
+   "back arrow",
+   "shadow or edge"
+  ],
+  "hits": {
+   "back arrow": 4,
+   "screen-reader label": 9,
+   "shadow or edge": 1
+  },
+  "samples": {
+   "back arrow": [
+    "+BackButton",
+    "-ArrowLeft"
+   ],
+   "screen-reader label": [
+    "+aria-hidden",
+    "-aria-hidden",
+    "-aria-label"
+   ],
+   "shadow or edge": [
+    "-rounded-"
+   ]
+  },
+  "commits": [
+   "Every back control on the site is now the triangle he asked for, and 44 across",
+   "Nine hand-drawn back buttons now come from the one shared button"
+  ]
+ },
+ {
+  "path": "components-legacy/refund/UpchargeApproveView.tsx",
+  "add": 8,
+  "rem": 11,
+  "kinds": [
+   "screen-reader label",
+   "back arrow",
+   "shadow or edge"
+  ],
+  "hits": {
+   "back arrow": 5,
+   "screen-reader label": 19,
+   "shadow or edge": 1
+  },
+  "samples": {
+   "back arrow": [
+    "+BackButton",
+    "-ArrowLeft"
+   ],
+   "screen-reader label": [
+    "+aria-hidden",
+    "-aria-hidden",
+    "-aria-label"
+   ],
+   "shadow or edge": [
+    "-rounded-"
+   ]
+  },
+  "commits": [
+   "Every back control on the site is now the triangle he asked for, and 44 across",
+   "The last six hand-drawn back controls now compose the shared button"
+  ]
+ },
+ {
+  "path": "components-legacy/staff/StaffProfilePage.tsx",
+  "add": 18,
+  "rem": 17,
+  "kinds": [
+   "screen-reader label",
+   "text size",
+   "back arrow",
+   "weight or colour"
+  ],
+  "hits": {
+   "screen-reader label": 14,
+   "back arrow": 5,
+   "weight or colour": 4,
+   "text size": 6
+  },
+  "samples": {
+   "screen-reader label": [
+    "+aria-label",
+    "+t(\"",
+    "+useTranslations",
+    "-aria-label"
+   ],
+   "back arrow": [
+    "+BackButton",
+    "+ChevronLeft",
+    "-ArrowLeft"
+   ],
+   "weight or colour": [
+    "+text-s-",
+    "-text-s-"
+   ],
+   "text size": [
+    "+text-[14px]",
+    "+text-[18px]",
+    "-text-[14px]",
+    "-text-[18px]"
+   ]
+  },
+  "commits": [
+   "Every back control on the site is now the triangle he asked for, and 44 across",
+   "Nine hand-drawn back buttons now come from the one shared button",
+   "Stop the English, French and Italian site speaking German to screen readers",
+   "Your English, French and Italian site stops speaking German"
+  ]
+ },
+ {
+  "path": "components-legacy/staff/StaffReviewsSheet.tsx",
+  "add": 15,
+  "rem": 10,
+  "kinds": [
+   "back arrow",
+   "text size",
+   "screen-reader label",
+   "weight or colour",
+   "shadow or edge"
+  ],
+  "hits": {
+   "back arrow": 5,
+   "screen-reader label": 3,
+   "text size": 4,
+   "shadow or edge": 1,
+   "weight or colour": 2
+  },
+  "samples": {
+   "back arrow": [
+    "+BackButton",
+    "-ArrowLeft"
+   ],
+   "screen-reader label": [
+    "+useTranslations",
+    "-aria-label"
+   ],
+   "text size": [
+    "+text-[14px]",
+    "+text-[17px]",
+    "-text-[14px]",
+    "-text-[17px]"
+   ],
+   "shadow or edge": [
+    "+shadow-"
+   ],
+   "weight or colour": [
+    "+text-s-",
+    "-text-s-"
+   ]
+  },
+  "commits": [
+   "Every back control on the site is now the triangle he asked for, and 44 across",
+   "Nine hand-drawn back buttons now come from the one shared button",
+   "Stop the English, French and Italian site speaking German to screen readers",
+   "Your English, French and Italian site stops speaking German"
+  ]
+ },
+ {
+  "path": "components-legacy/ui/Breadcrumb.tsx",
+  "add": 1,
+  "rem": 1,
+  "kinds": [
+   "text size",
+   "weight or colour"
+  ],
+  "hits": {
+   "text size": 2,
+   "weight or colour": 2
+  },
+  "samples": {
+   "text size": [
+    "+text-sm",
+    "-text-sm"
+   ],
+   "weight or colour": [
+    "+text-s-",
+    "-text-s-"
+   ]
+  },
+  "commits": [
+   "Stop the English, French and Italian site speaking German to screen readers"
+  ]
+ },
+ {
+  "path": "components-legacy/ui/ImageUploader.tsx",
+  "add": 1,
+  "rem": 1,
+  "kinds": [
+   "weight or colour",
+   "screen-reader label"
+  ],
+  "hits": {
+   "screen-reader label": 2,
+   "weight or colour": 4
+  },
+  "samples": {
+   "screen-reader label": [
+    "+aria-label",
+    "-aria-label"
+   ],
+   "weight or colour": [
+    "+text-s-",
+    "-text-s-"
+   ]
+  },
+  "commits": [
+   "Stop the English, French and Italian site speaking German to screen readers"
+  ]
+ },
+ {
+  "path": "components-legacy/ui/PhotoLightbox.tsx",
+  "add": 6,
+  "rem": 4,
+  "kinds": [
+   "screen-reader label"
+  ],
+  "hits": {
+   "screen-reader label": 10
+  },
+  "samples": {
+   "screen-reader label": [
+    "+aria-label",
+    "+useTranslations",
+    "-aria-label"
+   ]
+  },
+  "commits": [
+   "Stop the English, French and Italian site speaking German to screen readers"
+  ]
+ },
+ {
+  "path": "components/ui/animated-testimonials.tsx",
+  "add": 7,
+  "rem": 3,
+  "kinds": [
+   "screen-reader label",
+   "back arrow"
+  ],
+  "hits": {
+   "screen-reader label": 14,
+   "back arrow": 2
+  },
+  "samples": {
+   "screen-reader label": [
+    "+aria-hidden",
+    "+aria-label",
+    "+t(\"",
+    "+useTranslations",
+    "-aria-hidden",
+    "-aria-label"
+   ],
+   "back arrow": [
+    "+ChevronLeft",
+    "-ChevronLeft"
+   ]
+  },
+  "commits": [
+   "Stop the English, French and Italian site speaking German to screen readers"
+  ]
+ }
+]

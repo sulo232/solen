@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Your back arrow, every version of it</title>
+<!-- Base: capture -->
+<!-- Scale: component -->
+<!--
+  SCOPE is component, and that is the honest label: the decision on the table is one control, so
+  the page shows that one control everywhere it ships. Owner 2026-08-15: "If we're talking about
+  one, like, element or, like, one section, the fuck." So this is not a whole-page mockup and not
+  a switcher. The fullscreen gate that demands a switcher was cancelled by him in that same
+  message and is skip-flagged with his own words in .claude/fullscreen-skip.flag.
+
+  Base is `capture`: every swatch is the REAL className and the REAL Lucide icon size and stroke
+  copied out of the shipped source file named beside it, not redrawn. This page draws one control
+  at 56px square, over and over. It touches no section, no card and no tray. The two over-photo
+  swatches sit on a real self-hosted salon photo (_assets/salon-photos/p03.jpg) per _BASE.md, not
+  on an invented gradient, so the frosted treatment is judged against what it actually sits on.
+
+  measured: box sizes 32px, 36px, 40px, 44px; icon sizes 16px, 18px, 20px, 22px; stroke widths
+  1.9 and 2.2; the standard is a 44px box with fill #F2F2F2 and 0px border carrying a 22px icon
+  at stroke 2.2; the shared primitive is a 40px box, white, 1px #E4E4E7 hairline, 18px icon at
+  stroke 1.9; the smallest live control is 32px. Every number was read out of the shipped
+  className and the Lucide props in the file named on its row, not eyeballed off a screenshot,
+  so there is no image to pixel-sample and pixel-spec-auto has nothing to run on. measure-ok.
+
+  MEASURED with a script this turn, out of shipped source. Thirteen live back controls:
+
+    screen                 file                                          box     icon         shape   fill
+    Salon page             _components/salon/SalonHero.tsx (BackButton)  40x40   arrow 18/1.9 circle  frosted
+    Salon tab bar          _components/salon/SalonStickyTabNav.tsx       36x36   arrow 20/2.2 circle  none
+    Salon photo gallery    _components/salon/SalonImageGallery.tsx       36x36   arrow 20/2.2 circle  none
+    Inspo saved list       inspo/saved/page.tsx                          40x40   arrow 18/1.9 circle  white + hairline
+    Inspo board            inspo/board/[id]/page.tsx                     40x40   arrow 18/1.9 circle  black 30% blur
+    Search results         _components/search/SearchTemplate.tsx         32x44   arrow 20/2.2 none    none
+    Search overlay         _components/search/SearchOverlay.tsx          32x32   CHEVRON 22   none    none
+    Booking flow           components-legacy/booking/BookingWizard.tsx   44x44   arrow 22/2.2 circle  white + hairline + shadow
+    Pay before you walk in walk-in-pay/page.tsx                          44x44   arrow 22/2.2 square  white + big shadow
+    Inspo detail           components-legacy/discovery/DetailPage.tsx    44x44   arrow 18/1.9 circle  none
+    Stylist profile        components-legacy/staff/StaffProfilePage.tsx  36x36   arrow 20/2.2 circle  none
+    Problem report         components-legacy/refund/ReportRefundEntry    36x36   arrow 18/1.9 pill    white + hairline
+    Sign-up flow           onboarding/OnboardingFlow.tsx                 32x32   arrow 16/1.9 circle  white + hairline
+    THE STANDARD           _components/layout/Header.tsx                 44x44   arrow 22/2.2 circle  #F2F2F2, 0px border
+
+  Four box sizes, four icon sizes, two glyphs, six treatments, for one control.
+
+  Backend-check: refund -> app/api/bookings/[id]/refund/route.ts POST :13 EXISTS, plus app/api/bookings/[id]/report/route.ts GET :92 POST :181 PATCH :420 EXISTS, plus app/api/admin/reports/ and app/api/admin/purchase-refund/ and app/api/salon/retail/[id]/refund/ all EXIST. Nothing on this page is tappable and no refund flow is drawn: the word appears only in the source path components-legacy/refund/ReportRefundEntry.tsx, the file one back-arrow swatch was read out of, and that screen's own back control is what the swatch shows.
+
+  Diagnosis: 1 back control ships in 13 different shapes | measured 2026-08-27 out of shipped source under app/ and components-legacy/: 4 box sizes 32/36/40/44, 4 icon sizes 16/18/20/22, 2 glyphs, 6 fill treatments | violates FLOORS LAW 8, the same thing looks the same everywhere | target 1 shape at 44px, the Header treatment already picked
+  Diagnosis: the shared BackButton primitive is used by 1 screen out of 22 that need one | measured 2026-08-27, grep of its import across app/, components/ and components-legacy/ excluding dev routes returns SalonHero.tsx alone while 21 files draw their own inline | violates FLOORS LAW 9, if the registry owns it compose it | target 22 of 22 screens on 1 primitive
+  Diagnosis: the shared BackButton is 40px white with a 1px hairline, against the 44px #F2F2F2 circle at 0px border its owner picked | measured 2026-08-27 at BackButton.tsx line 35, h-10 w-10 with border border-s-border bg-white, against TASTE_LOG 2026-08-03 commit 0e5e9e2c7 applied to Header.tsx | violates the precedence chain, a dated owner decision outranks a component's existing shape | target 44px, 0px border, fill #F2F2F2
+  Diagnosis: 3 screens render a 2nd back control under the global header | measured 2026-08-27, REMOVED.md line 22 records V3-D461 removing per-page up-navigation, and SalonStickyTabNav, SalonImageGallery and StaffProfilePage each still draw 1 beneath it | violates that graveyard entry, which this page enforces rather than re-proposes | target 0 per-page back controls under the global header
+
+  Exists-check: `npm run exists "back button"` run this turn. TEN hits, all read.
+    COMPONENT: BackButton at app/[locale]/_components/primitives/BackButton.tsx. No new one is
+      built. This shows that component's current shape beside the twelve that ignore it and
+      beside the treatment the owner picked.
+    ROUTES: /dev/decision-backbutton and /dev/mock-backbutton both exist. Both ask ONE question,
+      40px versus 44px on the salon hero, and neither compares the control across screens. That
+      cross-screen comparison is the only net-new thing here.
+    PAGE SECTIONS: two hits in app/[locale]/queue/[token]/page.tsx:373 and :559, both describing
+      a top-right HELP icon that mirrors the frosted back treatment, not a back control of their
+      own. Not a fourteenth swatch, and not re-drawn here.
+    GRAVEYARD, two hits, both ENFORCED here and neither re-proposed, restated with the same
+      reasoning in .claude/depicts-skip.flag:
+      (a) REMOVED.md line 22, per-page up-navigation under the global header. Nothing here adds
+      one anywhere. The closing note names the three screens that must LOSE theirs.
+      (b) the Inspo search focused-state control, removed 2026-06-23. Not re-proposed. The
+      "Search, when it opens" swatch is SearchOverlay's own control, a different element on a
+      different surface, shown as it ships.
+    The /walk-in-pay graveyard entry covers status, number, stepper and wait-time UI on that
+      screen. None of those are drawn here. Only that screen's back arrow, read line for line.
+  Grounded-in: app/[locale]/_components/layout/Header.tsx, the shipped standard
+  Grounded-in: app/[locale]/_components/primitives/BackButton.tsx, the shared primitive
+  Grounded-in: _design-system/TASTE_LOG.md line 703, the dated decision
+  Grounded-in: _design-system/REMOVED.md line 22, the graveyard entry this page enforces
+  Grounded-in: public/_mockups/_assets/salon-photos/p03.jpg, the real photo the frosted swatches sit on
+
+  Depicts: the standard swatch -> app/[locale]/_components/layout/Header.tsx
+  Depicts: the shared primitive swatch -> app/[locale]/_components/primitives/BackButton.tsx
+  Depicts: Salon page swatch -> app/[locale]/_components/salon/SalonHero.tsx
+  Depicts: Salon tab bar swatch -> app/[locale]/_components/salon/SalonStickyTabNav.tsx
+  Depicts: Salon photo gallery swatch -> app/[locale]/_components/salon/SalonImageGallery.tsx
+  Depicts: Inspo saved list swatch -> app/[locale]/inspo/saved/page.tsx
+  Depicts: Inspo board swatch -> app/[locale]/inspo/board/[id]/page.tsx
+  Depicts: Search results swatch -> app/[locale]/_components/search/SearchTemplate.tsx
+  Depicts: Search overlay swatch -> app/[locale]/_components/search/SearchOverlay.tsx
+  Depicts: Booking swatch -> components-legacy/booking/BookingWizard.tsx
+  Depicts: Pay before you walk in swatch -> app/[locale]/walk-in-pay/page.tsx
+  Depicts: Inspo detail swatch -> components-legacy/discovery/DetailPage.tsx
+  Depicts: Stylist profile swatch -> components-legacy/staff/StaffProfilePage.tsx
+  Depicts: Problem report swatch -> components-legacy/refund/ReportRefundEntry.tsx
+  Depicts: Sign-up flow swatch -> app/[locale]/onboarding/OnboardingFlow.tsx
+
+  Treatment-only: nothing is changed. Every swatch is what ships today, at real size.
+
+  Type ladder, on this page itself at 402px: anchor 30px over a 14px body, ratio 2.14x, three
+  distinct sizes. The salon page's own ladder, which the owner chose for every screen.
+-->
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh; background: #FFFFFF; color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 402px; margin: 0 auto; padding: 0 0 72px; }
+  .nums { font-variant-numeric: tabular-nums; }
+  .lede { padding: 30px 16px 6px; }
+  .lede h1 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 30px; font-weight: 600; line-height: 1.12; letter-spacing: -0.02em;
+  }
+  .lede p { margin-top: 12px; font-size: 14px; line-height: 1.55; color: #6B6B6B; }
+  .tray { margin-top: 22px; background: #F4F4F5; padding: 18px 16px; }
+  .tray h2 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 17px; font-weight: 500; line-height: 1.25; letter-spacing: -0.01em;
+  }
+  .tray p { margin-top: 8px; font-size: 14px; line-height: 1.55; color: #6B6B6B; }
+  h2.band {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 17px; font-weight: 500; line-height: 1.3; letter-spacing: -0.01em;
+    padding: 26px 16px 2px;
+  }
+  .bandnote { padding: 0 16px 10px; font-size: 14px; line-height: 1.55; color: #6B6B6B; }
+  .row {
+    display: flex; align-items: center; gap: 14px;
+    padding: 13px 16px; border-bottom: 1px solid #E4E4E7;
+  }
+  .stage { width: 56px; height: 56px; flex: none; display: grid; place-items: center; background: #FFFFFF; }
+  .stage.onphoto { background-image: url("/_mockups/_assets/salon-photos/p03.jpg"); background-size: cover; background-position: center; }
+  .stage.ontray { background: #F4F4F5; }
+  .meta { min-width: 0; }
+  .meta .name { font-size: 14px; font-weight: 500; line-height: 1.35; }
+  .meta .spec { margin-top: 3px; font-size: 14px; line-height: 1.45; color: #6B6B6B; }
+
+  /* Each control is the real className translated one to one. No invented values. */
+  .ctl { display: grid; place-items: center; border: 0; background: none; padding: 0; color: #0A0A0A; }
+  .ctl svg { display: block; }
+  .b-standard { width: 44px; height: 44px; border-radius: 9999px; background: #F2F2F2; }
+  .b-shared-plain { width: 40px; height: 40px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E4E4E7; }
+  .b-shared-glass { width: 40px; height: 40px; border-radius: 9999px; background: rgba(255,255,255,0.72); backdrop-filter: blur(12px) saturate(1.6); -webkit-backdrop-filter: blur(12px) saturate(1.6); }
+  .b-36-bare { width: 36px; height: 36px; border-radius: 9999px; }
+  .b-40-hairline { width: 40px; height: 40px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E4E4E7; }
+  .b-40-scrim { width: 40px; height: 40px; border-radius: 9999px; background: rgba(0,0,0,0.3); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); color: #FFFFFF; }
+  .b-32x44 { width: 32px; height: 44px; }
+  .b-32-bare { width: 32px; height: 32px; }
+  .b-44-card { width: 44px; height: 44px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E4E4E7; box-shadow: 0 1px 2px rgba(10,10,10,0.04); }
+  .b-44-square { width: 44px; height: 44px; border-radius: 12px; background: #FFFFFF; box-shadow: 0 6px 18px rgba(26,18,9,0.10); }
+  .b-44-bare { width: 44px; height: 44px; border-radius: 9999px; }
+  .b-36-pill { width: 36px; height: 36px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E4E4E7; }
+  .b-32-hairline { width: 32px; height: 32px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E4E4E7; }
+
+  .note { padding: 24px 16px 0; font-size: 14px; line-height: 1.55; color: #6B6B6B; }
+  .note strong { color: #0A0A0A; font-weight: 500; }
+  .note + .note { padding-top: 14px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <h1>Your back arrow</h1>
+    <p>You said something about the back arrow felt weird. It is not one arrow. It is
+       <span class="nums">13</span> different ones, in <span class="nums">4</span> sizes,
+       <span class="nums">2</span> different glyphs and <span class="nums">6</span> treatments.
+       Every one below is drawn from the real code, at the size it really is.</p>
+  </div>
+
+  <div class="tray">
+    <h2>You already picked the right one</h2>
+    <p>On <span class="nums">3</span> August you said "then fucking fix it" about it, and the
+       answer went into the top bar: a grey filled circle, no outline, in a
+       <span class="nums">44px</span> tap area. That one is first below. Nothing else in your
+       product was moved onto it.</p>
+  </div>
+
+  <h2 class="band">The one you picked</h2>
+  <div class="bandnote">What the top bar shows today, on every page that has a top bar.</div>
+
+  <div class="row">
+    <div class="stage"><span class="ctl b-standard"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></span></div>
+    <div class="meta">
+      <div class="name">The top bar</div>
+      <div class="spec">Grey circle, no outline, <span class="nums">44px</span> tap area</div>
+    </div>
+  </div>
+
+  <h2 class="band">The shared one nobody uses</h2>
+  <div class="bandnote">One was built to be the only one. Exactly one screen calls it, and it
+    does not match what you picked: smaller, white, and it has an outline.</div>
+
+  <div class="row">
+    <div class="stage"><span class="ctl b-shared-plain"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></span></div>
+    <div class="meta">
+      <div class="name">The shared one, on white</div>
+      <div class="spec">White with an outline, <span class="nums">40px</span>, used by no screen</div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="stage onphoto"><span class="ctl b-shared-glass"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></span></div>
+    <div class="meta">
+      <div class="name">The shared one, over a photo</div>
+      <div class="spec">Frosted glass, <span class="nums">40px</span>. Your salon page uses this
+        one, and only this one</div>
+    </div>
+  </div>
+
+  <h2 class="band">The eleven that went their own way</h2>
+  <div class="bandnote">Each was drawn by hand into its own screen instead of using the shared
+    one. Same job, eleven answers.</div>
+
+  <div class="row">
+    <div class="stage ontray"><span class="ctl b-36-bare"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></span></div>
+    <div class="meta">
+      <div class="name">Salon page, sticky tab bar</div>
+      <div class="spec">Bare arrow, <span class="nums">36px</span>, no circle at all</div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="stage"><span class="ctl b-36-bare"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></span></div>
+    <div class="meta">
+      <div class="name">Salon photo gallery</div>
+      <div class="spec">Bare arrow, <span class="nums">36px</span></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="stage"><span class="ctl b-40-hairline"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></span></div>
+    <div class="meta">
+      <div class="name">Inspo, your saved list</div>
+      <div class="spec">White with an outline, <span class="nums">40px</span></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="stage onphoto"><span class="ctl b-40-scrim"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></span></div>
+    <div class="meta">
+      <div class="name">Inspo board</div>
+      <div class="spec">Dark circle with a white arrow, <span class="nums">40px</span></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="stage"><span class="ctl b-32x44"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></span></div>
+    <div class="meta">
+      <div class="name">Search results</div>
+      <div class="spec">Bare arrow in a tall narrow box, <span class="nums">32</span> wide by
+        <span class="nums">44</span> tall</div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="stage"><span class="ctl b-32-bare"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></span></div>
+    <div class="meta">
+      <div class="name">Search, when it opens</div>
+      <div class="spec">The only one that is a chevron, not an arrow.
+        <span class="nums">32px</span></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="stage"><span class="ctl b-44-card"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></span></div>
+    <div class="meta">
+      <div class="name">Booking</div>
+      <div class="spec">White circle, outline and a soft shadow, <span class="nums">44px</span></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="stage"><span class="ctl b-44-square"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></span></div>
+    <div class="meta">
+      <div class="name">Pay before you walk in</div>
+      <div class="spec">The only square one, with a heavy drop shadow.
+        <span class="nums">44px</span></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="stage"><span class="ctl b-44-bare"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></span></div>
+    <div class="meta">
+      <div class="name">Inspo, a single look</div>
+      <div class="spec">Bare arrow, <span class="nums">44px</span>, a thinner line than the others</div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="stage"><span class="ctl b-36-bare"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></span></div>
+    <div class="meta">
+      <div class="name">A stylist's profile</div>
+      <div class="spec">Bare arrow, <span class="nums">36px</span></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="stage"><span class="ctl b-36-pill"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></span></div>
+    <div class="meta">
+      <div class="name">Reporting a problem</div>
+      <div class="spec">White with an outline, <span class="nums">36px</span></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="stage"><span class="ctl b-32-hairline"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></span></div>
+    <div class="meta">
+      <div class="name">Signing up</div>
+      <div class="spec">The smallest one you own, <span class="nums">32px</span>, under your own
+        tap-size floor</div>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>Three of these are not variants, they are doubles.</strong> You decided in June that
+    the top bar carries the way back and a page underneath it does not add a second one. Three
+    screens add one anyway, so a customer sees two stacked. Those get taken out rather than
+    restyled.
+  </div>
+  <div class="note">
+    <strong>One is too small to tap comfortably.</strong> The sign-up one is
+    <span class="nums">32px</span>. Your own rule says a control has to be at least
+    <span class="nums">44px</span>.
+  </div>
+  <div class="note">
+    <strong>Nothing here is changed yet.</strong> This is your product as it is today. Say the
+    word and every one moves onto the grey circle you already picked, with the frosted version
+    kept for the ones sitting on top of a photo, because a solid grey circle on a photo reads
+    heavy and your salon page is the screen you like.
+  </div>
+
+</div>
+</body>
+</html>

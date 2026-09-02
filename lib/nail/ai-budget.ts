@@ -4,7 +4,8 @@
  * Key pattern: nail-ai-budget:{YYYY-MM}
  */
 
-import { Redis } from "@upstash/redis";
+import type { Redis } from "@upstash/redis";
+import { createBoundedRedis } from "@/lib/redis";
 import { getServerEnv } from "@/lib/env";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 
@@ -71,10 +72,7 @@ function getRedis(): Redis | null {
   if (redis) return redis;
   const env = getServerEnv();
   if (!env.UPSTASH_REDIS_REST_URL || !env.UPSTASH_REDIS_REST_TOKEN) return null;
-  redis = new Redis({
-    url: env.UPSTASH_REDIS_REST_URL,
-    token: env.UPSTASH_REDIS_REST_TOKEN,
-  });
+  redis = createBoundedRedis(env.UPSTASH_REDIS_REST_URL, env.UPSTASH_REDIS_REST_TOKEN);
   return redis;
 }
 

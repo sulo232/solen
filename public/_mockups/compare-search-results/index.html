@@ -1,0 +1,714 @@
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+Note on Scale: the live gate only accepts full-page or component, and this document renders the
+  whole real route in every panel even though each individual decision below is one screen's type
+  hierarchy, not a page redesign. Same precedent already used by every sibling file this page pulls
+  from (floor-fix-search-results, fix-search-results--b/c/d/e), all declared full-page for the same
+  reason. This file adds nothing new: it is the same five files, stacked on one page so they can be
+  scrolled and compared without a tab or a switcher.
+
+Grounded-in: app/[locale]/[city]/[category]/page.tsx (route) -> app/[locale]/_components/search/SearchTemplate.tsx.
+  Every panel below is the SAME real route, http://localhost:3457/de/basel/coiffeur, in an iframe.
+  Panel 0 is untouched. Panels 1 through 5 are the same route with one stylesheet, lifted verbatim
+  from the matching sibling file, injected into the loaded DOM client-side:
+    Panel 1 <- public/_mockups/floor-fix-search-results/index.html            (variant A)
+    Panel 2 <- public/_mockups/fix-search-results--b-hierarchy/index.html     (variant B)
+    Panel 3 <- public/_mockups/fix-search-results--c-content-forward/index.html (variant C)
+    Panel 4 <- public/_mockups/fix-search-results--d-airbnb-weight/index.html (variant D)
+    Panel 5 <- public/_mockups/fix-search-results--e-recompose/index.html     (variant E)
+  All five source files exist on disk; none were missing.
+
+Depicts: panel 0 -> the real route, untouched, today.
+Depicts: panel 1 -> variant A, smallest possible change: adds one real page heading above the first rail, nothing else.
+Depicts: panel 2 -> variant B, hierarchy first: adds the same heading, then turns the two rail labels down so the heading is unmistakably the biggest thing.
+Depicts: panel 3 -> variant C, content forward: trims the chrome above the first card and widens the rail cards so more real salon photo shows sooner.
+Depicts: panel 4 -> variant D, weight ceiling: one CSS rule drops every bold element inside the results content from weight 600 to weight 500.
+Depicts: panel 5 -> variant E, recompose: combines the missing heading with a screen-wide weight-500 ceiling, carrying two named exceptions for the salon-card name and price, which stay locked at 600. CORRECTION: the source file's own anchor selector does not match the live route (confirmed on both the source file and this copy: applyChange never fires, status stuck on "loading"); this panel uses the same rail-anchor already proven by panels 1-2 for the heading, weight ceiling unchanged. See the script comment above applyOption5 for the full finding.
+
+Diagnosis: results-page display anchor | measured 18px live at 390x844 (getBoundingClientRect + getComputedStyle on every visible leaf text node, the tallest being the "Top Coiffeur" rail label) | violates the house ladder (>= 28px, house value 30px) and LOCKFILE EMPHASIS BUDGET F6 | target 30px
+Diagnosis: results-page anchor-to-body ratio | measured 1.29x-1.5x live (18px rail label over a 12-14px body tier, both readings logged across the five source files) | violates the house ladder (>= 1.8x) and EMPHASIS BUDGET F7b | target 2.14x, matching /de/salon/cuts-and-culture
+Diagnosis: text at weight >= 600 | measured 31.03%-33.82% live across two independent full-content sweeps (9/29 and 46/136 leaf text elements, both this project's own scripts/check-geometry.mjs formula) | violates the house ladder (<= 30%) | target under 30%
+
+Every number above was measured live this session and by three prior sessions building the source
+files, not estimated, and all of them contradict the brief's original numbers for this route
+(brief said imagery 0%, anchor 14px, ratio 1.17x, weight share 0% PASS). None of the five source
+files built on the wrong numbers; each one re-measured live first and states the correction in its
+own header comment. This file does not re-measure a fourth time, it aggregates what the five
+already found, and all five agree with each other to within rounding.
+
+Exists-check: `npm run exists "compare search results"`, run this turn, returned 0 matches
+  ("Likely safe to build new"). This directory did not exist before this file.
+
+Reference-checked: _design-system/references/AIRBNB_SYSTEM_VS_OURS.md. Panel 4's source file
+  (fix-search-results--d-airbnb-weight) names Airbnb as the weight-budget precedent; the number
+  behind that (Airbnb's own PDP measured at 3.1% weight>=600) is already captured there and in
+  LOCKFILE EMPHASIS BUDGET F7a's provenance note, not re-derived from memory in this file. This
+  page's own caption for panel 4 avoids naming the brand for that reason and states the mechanism
+  (one CSS rule, weight 600 to 500) instead.
+
+Treatment-only: this file adds NOTHING to any panel's content or styling beyond what its own source
+  file already contains. Each "after" script below is copied verbatim from its source file's
+  <script> block (selectors, class strings, and CSS rules unchanged); only the iframe ids and the
+  intro/caption copy around them are new, written for this comparison page.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Search results, five fixes compared</title>
+<style>
+  :root{
+    --ink:#0A0A0A;
+    --ink2:#52525B;
+    --sunken:#F4F4F5;
+    --hairline:#E4E4E7;
+    --accent:#276EF1;
+    --font:'Inter Tight',system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fff;color:var(--ink)}
+  body{
+    font-family:var(--font);
+    -webkit-font-smoothing:antialiased;
+    padding:28px 16px 80px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:28px;
+  }
+  .intro, .closing{max-width:402px;width:100%}
+  .intro h1{
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:-0.01em;
+    line-height:1.28;
+    margin-bottom:12px;
+  }
+  .intro p, .closing p{
+    font-size:15px;
+    line-height:1.55;
+    color:var(--ink2);
+    margin-bottom:10px;
+  }
+  .intro p strong, .closing p strong{color:var(--ink)}
+  .closing h2{
+    font-size:16px;
+    font-weight:700;
+    margin:20px 0 8px;
+  }
+  .closing ul{margin:0 0 4px 18px}
+  .closing li{
+    font-size:14px;
+    line-height:1.55;
+    color:var(--ink2);
+    margin-bottom:6px;
+  }
+  .closing li strong{color:var(--ink)}
+  .closing li.his::before{content:"His call: ";font-weight:700;color:var(--ink)}
+  .closing li.match::before{content:"Just matching the salon page: ";font-weight:700;color:var(--ink)}
+  .divider{
+    width:402px;
+    max-width:100%;
+    height:1px;
+    background:var(--hairline);
+  }
+  .panel{width:402px;max-width:100%;position:relative}
+  .panel-label{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:12px;
+    padding:0 2px 8px;
+  }
+  .panel-label .tag{
+    flex:none;
+    font-size:11px;
+    font-weight:700;
+    padding:4px 10px;
+    border-radius:999px;
+    background:var(--ink);
+    color:#fff;
+    white-space:nowrap;
+  }
+  .panel-label .tag.now{background:#52525B}
+  .panel-label .tag.opt{background:#16A34A}
+  .panel-label .cap{
+    font-size:12.5px;
+    line-height:1.4;
+    color:var(--ink2);
+    text-align:right;
+  }
+  .panel-label .cap strong{color:var(--ink)}
+  .frame-wrap{
+    width:402px;
+    max-width:100%;
+    height:660px;
+    border:1px solid var(--hairline);
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 1px 2px rgba(10,10,10,.04), 0 10px 30px -18px rgba(10,10,10,.12);
+    background:#fff;
+    position:relative;
+  }
+  iframe{width:402px;height:844px;border:0;display:block}
+  .badge{
+    position:absolute;
+    top:8px;
+    left:8px;
+    background:rgba(22,163,74,.95);
+    color:#fff;
+    font-size:11px;
+    font-weight:700;
+    padding:4px 10px;
+    border-radius:999px;
+    z-index:5;
+    pointer-events:none;
+  }
+  .opt-num{
+    display:inline-block;
+    background:var(--ink);
+    color:#fff;
+    font-size:11px;
+    font-weight:700;
+    border-radius:6px;
+    padding:1px 6px;
+    margin-right:6px;
+  }
+  .tag.opt.unconfirmed{background:#52525B}
+  .pending-msg{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#fff;
+    color:var(--ink2);
+    font-size:13px;
+    font-weight:600;
+    z-index:6;
+  }
+  .badge.checking{background:rgba(82,82,91,.95)}
+  .badge.failed{background:rgba(220,38,38,.95)}
+</style>
+</head>
+<body>
+
+  <div class="intro">
+    <h1>Five ways to fix the results page, stacked so you can scroll and pick</h1>
+    <p>Today, when he searches Coiffeur in Basel, the page drops him straight into a small rail
+    label ("Top Coiffeur") with nothing above it that reads as a page title. There is no headline
+    at all, the biggest text is 18px, and on top of that too much of the page's text is bold at
+    once, so nothing stands out as the one loud thing.</p>
+    <p>Every copy below is the <strong>real, live results page</strong>, loaded in an iframe, not a
+    redrawn picture of it. The first one is untouched, exactly what ships today. Each one after it
+    is the same real page with one option's fix applied on load. Scroll down to compare them
+    side by side.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="panel">
+    <div class="panel-label">
+      <span class="tag now">Now, live</span>
+      <span class="cap" id="cap0">The real page today.<br>No title, 18px is the biggest text, over-bold in places.</span>
+    </div>
+    <div class="frame-wrap" data-frame="frame0">
+      <div class="pending-msg">Loading</div>
+      <iframe id="frame0" data-src="/de/basel/coiffeur" title="Search results, now, real page"></iframe>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="panel">
+    <div class="panel-label">
+      <span class="tag opt" id="tag1"><span class="opt-num">1</span>Smallest change</span>
+      <span class="cap" id="cap1">Adds one real title line above the results, "Coiffeur in Basel", sized to match the salon page. Nothing else moves.</span>
+    </div>
+    <div class="frame-wrap" data-frame="frame1">
+      <div class="pending-msg">Loading</div>
+      <span class="badge" style="display:none">+1 heading, nothing else changed</span>
+      <iframe id="frame1" data-src="/de/basel/coiffeur" title="Search results, option 1, smallest change"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-label">
+      <span class="tag opt" id="tag2"><span class="opt-num">2</span>Hierarchy first</span>
+      <span class="cap" id="cap2">Same new title, plus the two section labels underneath it are turned down so the title is clearly the one biggest thing.</span>
+    </div>
+    <div class="frame-wrap" data-frame="frame2">
+      <div class="pending-msg">Loading</div>
+      <span class="badge" style="display:none">1 new headline, 2 labels calmed</span>
+      <iframe id="frame2" data-src="/de/basel/coiffeur" title="Search results, option 2, hierarchy first"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-label">
+      <span class="tag opt" id="tag3"><span class="opt-num">3</span>Real content, higher and bigger</span>
+      <span class="cap" id="cap3">Trims the empty space above the first card and makes the salon photos in the row bigger, so real content shows sooner.</span>
+    </div>
+    <div class="frame-wrap" data-frame="frame3">
+      <div class="pending-msg">Loading</div>
+      <span class="badge" style="display:none">less empty space, bigger photos</span>
+      <iframe id="frame3" data-src="/de/basel/coiffeur" title="Search results, option 3, content forward"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-label">
+      <span class="tag opt" id="tag4"><span class="opt-num">4</span>Turn down the bold</span>
+      <span class="cap" id="cap4">Turns every bold word on the page down to medium weight. No title added, nothing moves, only the weight changes.</span>
+    </div>
+    <div class="frame-wrap" data-frame="frame4">
+      <div class="pending-msg">Loading</div>
+      <span class="badge" style="display:none">every bold word turned down</span>
+      <iframe id="frame4" data-src="/de/basel/coiffeur" title="Search results, option 4, weight ceiling"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-label">
+      <span class="tag opt" id="tag5"><span class="opt-num">5</span>Clear every failing number at once</span>
+      <span class="cap" id="cap5">Combines the new title with the page-wide weight turn-down. The salon name and price on each card stay bold, everything else calms down.</span>
+    </div>
+    <div class="frame-wrap" data-frame="frame5">
+      <div class="pending-msg">Loading</div>
+      <span class="badge" style="display:none">new headline + page-wide weight fix</span>
+      <iframe id="frame5" data-src="/de/basel/coiffeur" title="Search results, option 5, recompose"></iframe>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="closing">
+    <h2>What's his call, and what's just matching the salon page he already likes</h2>
+    <ul>
+      <li class="his">Whether the page gets a title at all. It has never had one; every option
+      except 4 adds real, first-time visible content, not a style tweak.</li>
+      <li class="his">If a title is added, whether it's bold (options 1 and 2) or medium weight
+      (option 5). Bold matches the salon page's own title exactly; medium keeps the page's total
+      bold-text share lower.</li>
+      <li class="his">Whether to touch every bold word on the page (options 4 and 5) or leave the
+      cards' bold names and prices as the only bold text (options 1, 2, 3).</li>
+      <li class="match">The title's size (30px) and font. Both are copied directly from the salon
+      page's own locked title, not invented.</li>
+      <li class="match">The 30/14 title-to-body size ratio and the under-30%-bold ceiling. Both are
+      the exact numbers the salon page already clears, applied here, not new rules.</li>
+    </ul>
+  </div>
+
+<script>
+  // Shared helper: every rail-based option needs to find the two real rail headings, not the FAQ
+  // heading at the bottom of the page, which server-renders immediately and would otherwise be
+  // matched first. Only an h2 whose own section contains a photo counts as a rail. Copied verbatim
+  // from the source files this page pulls from.
+  function findRailHeadings(doc) {
+    var h2s = doc.querySelectorAll("h2");
+    var rails = [];
+    for (var i = 0; i < h2s.length; i++) {
+      var h2 = h2s[i];
+      var sec = h2.closest("section") || h2.parentElement;
+      if (sec && sec.querySelector("img")) rails.push(h2);
+    }
+    return rails;
+  }
+
+  var H1_CLASS = "font-display text-[clamp(30px,2.8vw,34px)] font-semibold leading-[1.1] tracking-[-0.02em] text-s-ink";
+
+  function realHeadingText(doc) {
+    var m = /^Beste (.+?) in (.+?) - /.exec(doc.title || "");
+    return m ? (m[1] + " in " + m[2]) : "Coiffeur in Basel";
+  }
+
+  // ---- Option 1, lifted verbatim from floor-fix-search-results/index.html ----
+  function applyOption1(doc) {
+    if (doc.getElementById("sweep-hero-h1")) return true;
+    var rails = findRailHeadings(doc);
+    if (rails.length === 0) return false;
+    var first = rails[0];
+    var anchor = first.closest("section") || first.parentElement;
+    if (!anchor || !anchor.parentElement) return false;
+    var h1 = doc.createElement("h1");
+    h1.id = "sweep-hero-h1";
+    h1.className = H1_CLASS;
+    h1.style.marginBottom = "16px";
+    h1.textContent = realHeadingText(doc);
+    anchor.parentElement.insertBefore(h1, anchor);
+    return true;
+  }
+
+  // ---- Option 2, lifted verbatim from fix-search-results--b-hierarchy/index.html ----
+  function findMapPill(doc) {
+    var candidates = doc.querySelectorAll("button, a");
+    for (var i = 0; i < candidates.length; i++) {
+      var cs = getComputedStyle(candidates[i]);
+      if (cs.position === "fixed" && cs.fontSize === "13.5px") return candidates[i];
+    }
+    return null;
+  }
+  function applyOption2(doc) {
+    if (doc.getElementById("sweep-hero-h1")) return true;
+    var rails = findRailHeadings(doc);
+    if (rails.length === 0) return false;
+    var first = rails[0];
+    var anchor = first.closest("section") || first.parentElement;
+    if (anchor && anchor.parentElement) {
+      var h1 = doc.createElement("h1");
+      h1.id = "sweep-hero-h1";
+      h1.className = H1_CLASS;
+      h1.style.marginBottom = "16px";
+      h1.style.fontWeight = "500";
+      h1.textContent = realHeadingText(doc);
+      anchor.parentElement.insertBefore(h1, anchor);
+    }
+    for (var i = 0; i < rails.length; i++) rails[i].style.fontWeight = "500";
+    var pill = findMapPill(doc);
+    if (pill) pill.style.fontSize = "14px";
+    return true;
+  }
+
+  // ---- Option 3, lifted verbatim from fix-search-results--c-content-forward/index.html ----
+  // CORRECTION, found live this session: the original guard set data-sweep-applied the moment ANY
+  // one sub-effect landed, even when the card-resize sub-effect found zero elements on that tick
+  // (the 16 card anchors render slightly after the container/head/scroller/search-wrap elements on
+  // this route). Once the flag was set, the early-return at the top of this function skipped the
+  // card-resize check forever, so the cards were never actually resized while the badge stayed
+  // green. Fixed so the flag is only set once EVERY sub-effect this option claims has landed; a
+  // partial application keeps returning false so armPersistentWatch keeps retrying the parts that
+  // did not, and if a part still has not landed when the poll cap expires the caller's existing
+  // failure path (markFailed) takes over instead of a false-positive badge.
+  function applyOption3(doc) {
+    if (doc.documentElement.getAttribute("data-sweep-applied")) return true;
+    var required = 0;
+    var applied = 0;
+    var container = Array.prototype.find.call(
+      doc.querySelectorAll("div"),
+      function (d) { return /max-w-\[1280px\]/.test(d.className) && /pt-4/.test(d.className); }
+    );
+    required++;
+    if (container) { container.style.paddingTop = "4px"; applied++; }
+    var headWraps = doc.querySelectorAll("div.mb-\\[14px\\]");
+    required++;
+    if (headWraps.length) {
+      headWraps.forEach(function (hw) { hw.style.marginBottom = "6px"; });
+      applied++;
+    }
+    var scrollers = doc.querySelectorAll("div.mt-1.flex.gap-3.overflow-x-auto");
+    required++;
+    if (scrollers.length) {
+      scrollers.forEach(function (s) {
+        s.style.marginTop = "0px";
+        s.style.paddingTop = "0px";
+        s.style.paddingBottom = "0px";
+      });
+      applied++;
+    }
+    var searchWrap = doc.querySelector(".max-md\\:sticky.max-md\\:top-0.max-md\\:z-\\[55\\]");
+    required++;
+    if (searchWrap) {
+      var inner = searchWrap.querySelector(".mx-auto.w-full.max-w-\\[680px\\].px-4");
+      if (inner) { inner.style.paddingTop = "2px"; inner.style.paddingBottom = "2px"; applied++; }
+    }
+    var cardWraps = Array.prototype.filter.call(
+      doc.querySelectorAll("a"),
+      function (a) { return /w-\[calc\(\(100vw-44px\)\/1\.5\)\]/.test(a.className); }
+    );
+    required++;
+    if (cardWraps.length) {
+      cardWraps.forEach(function (a) { a.style.width = "calc((100vw - 32px) / 1.15)"; });
+      applied++;
+    }
+    if (applied === required) { doc.documentElement.setAttribute("data-sweep-applied", "1"); return true; }
+    return false;
+  }
+
+  // ---- Option 4, lifted verbatim from fix-search-results--d-airbnb-weight/index.html ----
+  function applyOption4(doc) {
+    if (doc.getElementById("sweep-weight-style")) return true;
+    var style = doc.createElement("style");
+    style.id = "sweep-weight-style";
+    style.textContent = "main .font-semibold { font-weight: 500 !important; }";
+    doc.head.appendChild(style);
+    return true;
+  }
+
+  // ---- Option 5, adapted from fix-search-results--e-recompose/index.html ----
+  // CORRECTION, found live this session: the source file's own anchor selector,
+  // '[role="tablist"][aria-label="Kategorien"]', does not match anything on the real route today
+  // (checked live in BOTH this file's frame5 and the source file's own afterFrame: tablistFound
+  // is false in both, and the source file's own status badge is permanently stuck on "loading"
+  // because its whole applyChange, heading AND weight-ceiling stylesheet together, is gated
+  // behind that one selector). Rather than reproduce a panel that silently does nothing while
+  // labeled "applied", this uses the SAME rail-anchor already proven live by options 1 and 2 to
+  // place the heading, and applies the weight-ceiling stylesheet unconditionally so it is never
+  // blocked by the heading's anchor point. The class list in the stylesheet and the two V3-D442
+  // locked exceptions (card name h3, price span) are unchanged from the source file.
+  function applyOption5(doc) {
+    if (doc.getElementById("mockup-recompose-style")) return true;
+    var rails = findRailHeadings(doc);
+    if (rails.length === 0) return false;
+    if (!doc.getElementById("mockup-hero-h1")) {
+      var first = rails[0];
+      var anchor = first.closest("section") || first.parentElement;
+      if (anchor && anchor.parentElement) {
+        var h1 = doc.createElement("h1");
+        h1.id = "mockup-hero-h1";
+        h1.className = H1_CLASS;
+        h1.style.marginBottom = "16px";
+        h1.textContent = realHeadingText(doc);
+        anchor.parentElement.insertBefore(h1, anchor);
+      }
+    }
+    var style = doc.createElement("style");
+    style.id = "mockup-recompose-style";
+    style.textContent =
+      '[class~="font-semibold"], [class~="font-bold"] { font-weight:500 !important; }\n' +
+      'h3[class~="font-semibold"] { font-weight:600 !important; }\n' +
+      'span.tabular-nums span[class~="font-semibold"] { font-weight:600 !important; }';
+    doc.head.appendChild(style);
+    return true;
+  }
+
+  var OPTIONS = {
+    frame1: applyOption1,
+    frame2: applyOption2,
+    frame3: applyOption3,
+    frame4: applyOption4,
+    frame5: applyOption5
+  };
+
+  // Marks the injected node each option leaves behind, used only to notice when the real page's
+  // own hydration wipes it out from under us so we know to run applyFn again. Not part of what
+  // any fix does, purely a survival check on top of it.
+  var MARKERS = {
+    frame1: function (doc) { return !!doc.getElementById("sweep-hero-h1"); },
+    frame2: function (doc) { return !!doc.getElementById("sweep-hero-h1"); },
+    frame3: function (doc) { return doc.documentElement.getAttribute("data-sweep-applied") === "1"; },
+    frame4: function (doc) { return !!doc.getElementById("sweep-weight-style"); },
+    frame5: function (doc) { return !!doc.getElementById("mockup-recompose-style"); }
+  };
+
+  // ---- Load orchestration: six live copies of one real Next.js route stampeded the dev server
+  // and the browser badly enough that fix-detection polls hit their old 30s cap before the target
+  // element ever appeared, and once a cap is hit the interval is cleared for good so that panel
+  // stayed broken for the life of the page. Fix: panels load ONE AT A TIME (a chain, driven by
+  // onFrameSettled below), gated further by an IntersectionObserver so a panel below the fold on a
+  // phone never starts before the ones above it are visible. The poll cap is raised to 60s, and a
+  // MutationObserver keeps re-applying a fix that hydration overwrites after the first success,
+  // which is the exact failure measured live on the option 5 source file.
+  var PANEL_ORDER = ["frame0", "frame1", "frame2", "frame3", "frame4", "frame5"];
+  var POLL_INTERVAL_MS = 200;
+  var POLL_CAP_MS = 60000;
+  var POLL_MAX_TRIES = Math.ceil(POLL_CAP_MS / POLL_INTERVAL_MS);
+
+  var panelState = {};
+  var panelVisible = {};
+  var chainPos = 0;
+  var originalBadgeText = {};
+
+  function wrapFor(frameId) {
+    return document.querySelector('.frame-wrap[data-frame="' + frameId + '"]');
+  }
+  function pendingFor(frameId) {
+    var w = wrapFor(frameId);
+    return w ? w.querySelector(".pending-msg") : null;
+  }
+  function badgeFor(frameId) {
+    var w = wrapFor(frameId);
+    return w ? w.querySelector(".badge") : null;
+  }
+  function hidePending(frameId) {
+    var p = pendingFor(frameId);
+    if (p) p.style.display = "none";
+  }
+  function markChecking(frameId) {
+    var b = badgeFor(frameId);
+    if (b) {
+      b.textContent = "Checking the fix";
+      b.classList.remove("failed");
+      b.classList.add("checking");
+      b.style.display = "";
+    }
+  }
+  function markApplied(frameId) {
+    var b = badgeFor(frameId);
+    if (b) {
+      b.textContent = originalBadgeText[frameId] || b.textContent;
+      b.classList.remove("checking", "failed");
+      b.style.display = "";
+    }
+  }
+  function markFailed(frameId) {
+    var num = frameId.replace("frame", "");
+    var b = badgeFor(frameId);
+    var cap = document.getElementById("cap" + num);
+    var tag = document.getElementById("tag" + num);
+    if (b) {
+      b.textContent = "Could not confirm, reload to try again";
+      b.classList.remove("checking");
+      b.classList.add("failed");
+      b.style.display = "";
+    }
+    if (cap) {
+      cap.textContent = "This change did not apply on this load. Reload the page to try again.";
+    }
+    if (tag) tag.classList.add("unconfirmed");
+  }
+
+  // The dev server under this page's own load, plus every other tab hitting the same route,
+  // was measured (this session) full-reloading an iframe's document AFTER our fix had already
+  // been confirmed inside it (Next.js Fast Refresh / HMR replaces the iframe's whole document,
+  // which a same-document MutationObserver cannot see since it is bound to the document that just
+  // got replaced). So the watch is armed on the iframe's own "load" event, and stays armed for
+  // the life of the panel, not just for the first load: every reload re-runs the same applyFn and
+  // re-arms a fresh MutationObserver against the NEW document. The first confirmation still drives
+  // the chain forward exactly once; a reload after that reapplies silently unless the fix fails to
+  // come back within the same 60s cap, in which case the badge is pulled back down to failed so
+  // the caption never sits next to a screen that quietly lost its change.
+  function armPersistentWatch(frameId, applyFn, markerFn) {
+    var f = document.getElementById(frameId);
+    var firstSettleDone = false;
+    var activeInterval = null;
+
+    function currentDoc() {
+      try { return f.contentDocument; } catch (e) { return null; }
+    }
+
+    function attempt() {
+      var doc = currentDoc();
+      if (!doc) return false;
+      try {
+        return applyFn(doc);
+      } catch (e) {
+        console.error("[compare-search-results] apply failed for " + frameId, e);
+        return false;
+      }
+    }
+
+    function guardMutations(doc) {
+      try {
+        var mo = new MutationObserver(function () {
+          var stillThere = false;
+          try { stillThere = markerFn(doc); } catch (e) { stillThere = false; }
+          if (!stillThere) {
+            try { applyFn(doc); } catch (e) {
+              console.error("[compare-search-results] reapply after hydration failed for " + frameId, e);
+            }
+          }
+        });
+        mo.observe(doc.documentElement, { childList: true, subtree: true });
+      } catch (e) {
+        console.error("[compare-search-results] could not attach mutation guard for " + frameId, e);
+      }
+    }
+
+    function runOneWatchCycle() {
+      if (activeInterval) clearInterval(activeInterval);
+      var tries = 0;
+      var confirmed = false;
+      activeInterval = setInterval(function () {
+        tries++;
+        if (!confirmed && attempt()) {
+          confirmed = true;
+          clearInterval(activeInterval);
+          var doc = currentDoc();
+          if (doc) guardMutations(doc);
+          if (!firstSettleDone) {
+            firstSettleDone = true;
+            onFrameSettled(frameId, true);
+          }
+          return;
+        }
+        if (!confirmed && tries >= POLL_MAX_TRIES) {
+          clearInterval(activeInterval);
+          if (!firstSettleDone) {
+            firstSettleDone = true;
+            onFrameSettled(frameId, false);
+          } else {
+            // was confirmed once, a reload knocked it out, and it did not come back in time
+            markFailed(frameId);
+          }
+        }
+      }, POLL_INTERVAL_MS);
+    }
+
+    f.addEventListener("load", runOneWatchCycle);
+  }
+
+  function startPanel(frameId) {
+    panelState[frameId] = "loading";
+    hidePending(frameId);
+    var f = document.getElementById(frameId);
+    if (frameId === "frame0") {
+      var settled = false;
+      var timer = setTimeout(function () {
+        if (!settled) { settled = true; onFrameSettled(frameId, false); }
+      }, POLL_CAP_MS);
+      f.addEventListener("load", function () {
+        if (!settled) { settled = true; clearTimeout(timer); onFrameSettled(frameId, true); }
+      });
+      f.src = f.dataset.src;
+      return;
+    }
+    markChecking(frameId);
+    armPersistentWatch(frameId, OPTIONS[frameId], MARKERS[frameId]);
+    f.src = f.dataset.src;
+  }
+
+  function onFrameSettled(frameId, ok) {
+    panelState[frameId] = ok ? "applied" : "failed";
+    if (frameId === "frame0") {
+      if (!ok) {
+        var cap0 = document.getElementById("cap0");
+        if (cap0) cap0.innerHTML += "<br>The real page did not finish loading on this attempt. Reload to try again.";
+      }
+    } else if (ok) {
+      markApplied(frameId);
+    } else {
+      markFailed(frameId);
+    }
+    chainPos++;
+    tryStartNext();
+  }
+
+  function tryStartNext() {
+    if (chainPos >= PANEL_ORDER.length) return;
+    var id = PANEL_ORDER[chainPos];
+    if (panelState[id] === "pending" && panelVisible[id]) {
+      startPanel(id);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    PANEL_ORDER.forEach(function (id) {
+      panelState[id] = "pending";
+      panelVisible[id] = false;
+      var b = badgeFor(id);
+      if (b) originalBadgeText[id] = b.textContent;
+    });
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var id = entry.target.getAttribute("data-frame");
+        if (entry.isIntersecting) {
+          panelVisible[id] = true;
+          io.unobserve(entry.target);
+          tryStartNext();
+        }
+      });
+    }, { root: null, rootMargin: "400px 0px 400px 0px", threshold: 0 });
+
+    PANEL_ORDER.forEach(function (id) {
+      var w = wrapFor(id);
+      if (w) io.observe(w);
+    });
+
+    tryStartNext();
+  });
+</script>
+</body>
+</html>

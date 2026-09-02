@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Give Inspo back its title on phone</title>
+<!-- Base: capture -->
+<!-- Scale: component -->
+<!--
+  Scale is component because the thing being decided is one heading node at the top of Inspo, not
+  a whole-page redesign. Both panels below are the REAL running Inspo page, loaded live from the
+  dev server, same route, same data, rendered at its real phone width in a scrollable frame so the
+  search pill, category pills, filter chips and the start of the photo feed all stay visible around
+  the change, exactly as they render on a phone today. The only difference between the two panels
+  is one element added after load, in the second panel only.
+
+  Grounded-in: app/[locale]/inspo/page.tsx (the route, its search pill / filter row / category tile
+    row / masonry grid, all unmodified)
+  Grounded-in: app/[locale]/_components/layout/Header.tsx:416-731 (the route-gated logo-slot title,
+    read to find WHERE Inspo's real title text already lives)
+  Grounded-in: the running dev server, both panels load /de/inspo from it directly at 402px wide
+
+  Depicts: Inspo before panel → app/[locale]/inspo/page.tsx (route /de/inspo, unmodified at load)
+  Depicts: Inspo after panel → app/[locale]/inspo/page.tsx (route /de/inspo, one heading node injected client-side after load, text sourced from Header.tsx's own tDiscover("title") which resolves discover.title in messages/*.json)
+  Both panels load the identical real route at 402px wide. The after panel gets exactly one
+  heading node inserted above its search pill once the iframe finishes loading; its text is the
+  product's own existing "Inspo" string, not new copy.
+
+  THE NUMBER I WAS GIVEN FOR IMAGERY WAS WRONG, and I am not building on it. I was told Inspo
+  measures 0.71 percent photographic at 390x844. I ran scripts/check-geometry.mjs myself against
+  the live route (BASE_URL=http://localhost:3457 node scripts/check-geometry.mjs --floors-only
+  /de/inspo /de/salon/cuts-and-culture) with a known-answer control: the same run against the
+  benchmark page reproduced its published number exactly (34.66 percent, PASS), so the tool is
+  trustworthy. Against that same control, Inspo measured 65.43 percent photographic, comfortably
+  clearing the 33 percent floor, not failing it. I could not find where 0.71 percent came from; my
+  best guess is a measurement taken during a cold Next.js dev compile, before any photo had
+  painted, but that is a guess and I am labeling it as one. What is real and reproduced twice on my
+  own run is that Inspo's display anchor and anchor ratio both fail, and that is what this mockup
+  fixes. I am not fixing an imagery problem that is not there.
+
+  Diagnosis: F6 display anchor | measured 14px ("Styles suchen...", the search placeholder, the single largest text in Inspo's first viewport at 390x844, via scripts/check-geometry.mjs --floors-only) | violates CLAUDE.md NEVER-AGAIN floor 6 and the FLOORS LAW EMPHASIS BUDGET, which requires one on-screen text element at least 28px | target: at least 28px
+  Diagnosis: F7b anchor ratio | measured 1.17x (14px largest over roughly 12px median leaf text, same script, same run) | violates FLOORS LAW 7b, which requires the largest text be at least 1.8x the body size | target: at least 1.8x
+
+  ROOT CAUSE, not a guess: Inspo's real page title already exists as rendered text, at 25px, inside
+  Header.tsx's route-gated logo slot (isDiscover branch, Header.tsx:416-731, wraps tDiscover("title")
+  which resolves to the SAME "discover.title" key the page component below already imports via
+  useTranslations("discover")). I loaded /de/inspo in a real headless Chromium at 390 wide and read
+  that exact DOM node's computed style: fontSize 25px, and its bounding box came back zero-area,
+  meaning it was not painted at all. The row that holds it carries max-md:hidden, a DESKTOP-ONLY
+  class. On the 390px floors viewport, and on every real phone, that title never renders. Nothing
+  replaces it. Header.tsx:416's own comment says why the on-page h1 was removed in the first place
+  (V3-D410, owner): "the wordmark and the page's own big h1 that were stacking redundantly" on
+  DESKTOP. That reasoning never mentions mobile, because on mobile the header's title was already
+  hidden before the h1 was removed, so removing the h1 did not fix a mobile stacking problem, it
+  deleted mobile's only title. Per CLAUDE.md's "missing things" rule: the anchor is missing, the
+  reason is a desktop-scoped fix with an unnamed mobile side effect, and the fix that follows that
+  reason is narrow, mobile-only, and touches nothing on desktop, where V3-D410's actual concern
+  still holds.
+
+  A SEPARATE DEFECT, named, not depicted here. app/[locale]/inspo/page.tsx's category-tile row
+  (around line 670) renders a category's cover photo when the seed data has one, and otherwise
+  falls back to a bare tinted box carrying only a background color class, no icon, no initial. That
+  breaks the locked missing-photo fallback (design contract "states" row: sunken background plus
+  category icon plus initial, never slot-omission). I read this in source and it is real, but every
+  one of the five category tiles that actually renders on /de/inspo right now (Für Sie, Haare,
+  Nägel, Wimpern, Augenbrauen) already has a cover photo in the seed data, so the empty branch never
+  paints in today's live render and I have nothing honest to show side by side without inventing an
+  empty category, which the no-fabrication rule forbids. Flagging it here as a confirmed, separate,
+  cheap fix rather than folding an unproven picture of it into this mockup.
+
+  Exists-check: `npm run exists inspo` run this turn. It HIT, heavily: the /inspo route family
+  (7 routes), 20 page-inline sections including the exact V3-D410 comment this diagnosis is built
+  on, 3 API endpoints, 2 DB tables, 2 components, 5 exported symbols, and a graveyard section with
+  no entry for the page title or this header slot. `npm run exists "inspo page title"` returned 0
+  hits, confirming a mobile title node does not already exist elsewhere under a different name.
+
+  Treatment-only: one heading node, inserted once, text taken verbatim from the product's own
+  discover.title string ("Inspo", identical in de/en/fr/it, verified against all four locale
+  files). Nothing else in the page is touched: same search pill, same category pills, same filter
+  chips, same tile row, same masonry grid, same data. Single light theme, no dark mode. Every
+  label I wrote for this document is English; the page inside both panels renders its own German
+  through the product's real translations, which is exempt.
+-->
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 402px; margin: 0 auto; padding: 0 0 56px; }
+
+  .lede { padding: 28px 16px 6px; }
+  .lede h1 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 26px; font-weight: 600; line-height: 1.15; letter-spacing: -0.02em;
+  }
+  .lede p { margin-top: 10px; font-size: 14px; line-height: 1.5; color: #6B6B6B; }
+
+  .panel { margin-top: 26px; }
+  .cap { padding: 0 16px 8px; }
+  .cap h2 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 17px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em;
+  }
+  .cap p { margin-top: 3px; font-size: 13px; line-height: 1.45; color: #6B6B6B; }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  /* the real page, held at its real phone width so nothing is scaled or distorted */
+  .frame {
+    position: relative; width: 100%; height: 660px;
+    border-top: 1px solid #E4E4E7; border-bottom: 1px solid #E4E4E7;
+    overflow: hidden; background: #fff;
+  }
+  .frame iframe { width: 402px; height: 660px; border: 0; display: block; }
+  .frame .badge {
+    position: absolute; top: 10px; right: 10px; z-index: 2;
+    padding: 5px 10px; border-radius: 40px;
+    background: rgba(255,255,255,0.94); border: 1px solid #E4E4E7;
+    font-size: 11px; font-weight: 600; color: #0A0A0A;
+    font-variant-numeric: tabular-nums;
+  }
+  .frame .badge.fail { color: #DC2626; }
+  .frame .badge.pass { color: #16A34A; }
+
+  .note { padding: 22px 16px 0; font-size: 13px; line-height: 1.55; color: #6B6B6B; }
+  .note strong { color: #0A0A0A; font-weight: 600; }
+  .note + .note { padding-top: 12px; }
+  .note.correction {
+    margin: 22px 16px 0; padding: 14px 14px; border-radius: 12px;
+    background: #F4F4F5; border: 1px solid #E4E4E7;
+  }
+  .note.correction strong { display: block; margin-bottom: 4px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <h1>Give Inspo its title back on phone</h1>
+    <p>Both panels below are your real Inspo feed, live, loaded from your dev server. One heading
+       is added in the second panel. Nothing else changes.</p>
+  </div>
+
+  <div class="note correction">
+    <strong>One number I was handed was wrong, so I am not using it.</strong>
+    I was told Inspo's photo feed measures 0.71 percent photographic in the first screen. I ran the
+    measurement myself and, checked against the benchmark page as a control, Inspo actually
+    measures <span class="nums">65.43%</span>, well past the 33% floor. The real problem is
+    somewhere else: Inspo has no headline text at all on phone. The biggest text on the whole
+    screen is the 14px search placeholder.
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>Now</h2>
+      <p>No text on this screen reaches 28px. The largest is the 14px search placeholder.</p>
+    </div>
+    <div class="frame">
+      <div class="badge nums fail">14px anchor</div>
+      <iframe id="before" src="/de/inspo" scrolling="no" title="Inspo as it is today"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>With its title back</h2>
+      <p>One line reappears above the search bar: your own "Inspo" title, the same word already
+         sitting unused in the desktop header.</p>
+    </div>
+    <div class="frame">
+      <div class="badge nums pass">28px anchor</div>
+      <iframe id="after" src="/de/inspo" scrolling="no" title="Inspo with its title restored on phone"></iframe>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>Where this text has been hiding.</strong> Inspo already has a title. It renders at 25px,
+    but only inside the header, and only on desktop. On a phone, that whole row is switched off, and
+    nothing has ever taken its place. Nobody decided Inspo should have no title on phone, it is a
+    side effect of a desktop fix from a different day.
+  </div>
+  <div class="note">
+    <strong>Why the word is exactly "Inspo".</strong> It is the same string the desktop header
+    already shows, pulled from the same translation file, the same in German, English, French and
+    Italian. Nothing invented.
+  </div>
+  <div class="note">
+    <strong>What this does not touch.</strong> The search bar, the category pills, the filter
+    chips, the photo tiles, the feed below, the data. All identical between the two panels. Source
+    also shows one photo tile can render as a bare gray box when a category has no cover photo yet,
+    a separate, real, and much smaller fix, not pictured here because every tile in today's live
+    data already has a photo, so there is nothing honest to show for it side by side.
+  </div>
+
+</div>
+
+<script>
+  // The "after" panel is the SAME page as the "before" panel, not a second implementation. Once
+  // it finishes loading, exactly ONE node gets added: a heading, text taken from the product's own
+  // "Inspo" string, inserted as the first child of the page's own top-level content wrapper (the
+  // same "max-w-7xl mx-auto px-4" container app/[locale]/inspo/page.tsx already renders), so it
+  // lands directly above the real search pill. Nothing else in that document is touched.
+  var after = document.getElementById("after");
+  // Inspo is a client component, and I measured that a one-shot insert does not survive: the
+  // heading appeared for the first few seconds and then vanished for good, matching React 18 dev
+  // mode's double-render (mount, unmount, remount) plus its own reconciliation of this container
+  // once real items replace the loading skeleton. Either can detach the exact DOM node this
+  // script inserted, and a remount also orphans a MutationObserver watching the old node. Rather
+  // than chase each cause, this keeps re-checking and re-inserting on a plain interval for the
+  // whole review window, which self-heals through any of them.
+  function ensureHeading(doc, container) {
+    if (container.querySelector(".mockup-inspo-anchor")) { return; }
+    var heading = doc.createElement("h1");
+    heading.className = "mockup-inspo-anchor";
+    heading.textContent = "Inspo";
+    heading.style.cssText = [
+      "font-family:'Inter Tight',Inter,-apple-system,sans-serif",
+      "font-size:28px",
+      "font-weight:600",
+      "line-height:1.15",
+      "letter-spacing:-0.02em",
+      "color:#0A0A0A",
+      "margin:14px 0 12px",
+    ].join(";");
+    container.insertBefore(heading, container.firstChild);
+  }
+  // Inspo's own audit script (scripts/check-geometry.mjs) never waits for the browser "load"
+  // event on this route either, it settles on a fixed timer after domcontentloaded instead. I
+  // measured why while building this: the iframe's window "load" event does not fire within 4
+  // seconds on this route in this dev environment, most likely one slow/hanging photo request the
+  // "load" event waits on. So this polls for the page's own content wrapper on a plain interval
+  // instead of waiting on an event that may never come, matching the same settle strategy the
+  // real audit tool already uses on this exact page, and it keeps re-checking for the whole
+  // review window rather than stopping after the first success, which is what makes it survive
+  // React's own remount/reconciliation of this container.
+  var tries = 0;
+  var poll = setInterval(function () {
+    tries += 1;
+    try {
+      var doc = after.contentDocument;
+      var container = doc && doc.querySelector("main.min-h-screen .max-w-7xl");
+      if (container) {
+        ensureHeading(doc, container);
+      }
+      if (tries > 150) {
+        clearInterval(poll);
+      }
+    } catch (err) {
+      clearInterval(poll);
+      console.error("[floor-fix-inspo] could not restyle the after panel:", err);
+    }
+  }, 150);
+</script>
+</body>
+</html>

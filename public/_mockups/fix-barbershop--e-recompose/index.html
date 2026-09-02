@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Barbershop, all five floors at once (recompose arm)</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+  Scale is full-page for the same reason the sibling floor-fix file gives: every number this
+  page is graded on is measured over the whole first 390x844 screen, not one card and not one
+  row. Both panels below load the SAME real route from the running dev server. Nothing is
+  redrawn, nothing is a screenshot. Frame width is 390px, not the 402px mockup-base default, on
+  purpose: 390x844 is the exact fixed viewport check-geometry.mjs's FLOORS section uses and the
+  width the brief measured against, so every number here is a number a person would see at that
+  size, not a number computed at one width and shown at another.
+
+  Grounded-in: app/[locale]/barbershop/page.tsx (the route, renders SearchTemplate only)
+  Grounded-in: app/[locale]/_components/search/SearchTemplate.tsx (chrome + rail host)
+  Grounded-in: app/[locale]/_components/search/CategoryMobileRails.tsx (the 3 rails + WalkInBand mount, barbershop-only gate at line "category === 'barbershop' && <WalkInBand />")
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx line 404 (the rail card width class, "w-[calc((100vw-44px)/1.5)]", commented "mockup-ok: /dev/card-ratio V2 approved, owner sign-off R4-2")
+  Grounded-in: app/[locale]/_components/homepage/WalkInBand.tsx (the walk-in row, shared with the homepage import at "../homepage/WalkInBand")
+  Grounded-in: app/[locale]/_components/search/CategoryHeroCarousel.tsx (read for grounding, NOT used, see the graveyard note below)
+  Grounded-in: _design-system/REMOVED.md line 49 (the graveyard entry that rules the hero out)
+  Grounded-in: the running dev server, both panels load /de/barbershop from it directly
+  Grounded-in: public/_mockups/floor-fix-barbershop/index.html (the sibling smallest-change file, read in full before this one was built, cited by name below wherever this file's mechanism goes further than it did)
+  Grounded-in: /de/salon/cuts-and-culture, measured live this session, the one route the brief names as clearing all six floors (imagery 34.66%, anchor 30px, weight share 30%, ratio 2.14x): the 30px anchor and "weight 500 not 600" ladder values used below are copied from that page's own numbers, not invented
+
+  Depicts: before -> app/[locale]/barbershop/page.tsx (unmodified, live at /de/barbershop)
+  Depicts: after, rail width -> app/[locale]/_components/homepage/SalonCard.tsx line 404 (the same class, computed value overridden by this file's own script)
+  Depicts: after, walk-in retype -> app/[locale]/_components/homepage/WalkInBand.tsx (the same real DOM nodes, font-weight/font-size overridden by this file's own script)
+
+  WHY THIS SCREEN AND NOT ITS THREE SIBLINGS: this is the one category page with real,
+  wired content already on it (a live walk-in queue, real photos two rails up), so it fails by
+  having something on screen twice in the wrong register, not by being empty. That is also why
+  it is the only one of the four where a typography fix (not just a photo add) makes a real
+  dent: the other three category pages barely have enough bold text to reweight.
+
+  Diagnosis: F2 imagery share | measured 21.59% | violates FLOORS LAW 2, the 33% imagery floor | target 33%.
+  Diagnosis: F6 display anchor | measured 20px | violates LOCKFILE floor 6, the 28px display anchor floor | target 28px, house value 30px.
+  Diagnosis: F7b anchor ratio | measured 1.67x | violates EMPHASIS BUDGET 7b, the 1.8x ratio floor | target 1.8x.
+  Diagnosis: F7a weight share | measured 45.24% | violates EMPHASIS BUDGET 7a, the 30% weight->=600 ceiling | target 30%.
+  Diagnosis: F7c size spread | measured 5 distinct sizes in an 8px window (12/13.5/14/18/20) | violates EMPHASIS BUDGET 7c, the 4-sizes-per-8px ceiling | target 4.
+  All five numbers above were re-measured live in this session, against the running page, with
+  the same method check-geometry.mjs's FLOORS section uses (every visible leaf text node's
+  computed size/weight, every visible <img> or background-image url()'s on-screen area, inside
+  a fixed 390x844 window). They match the brief exactly. Elevation was given as PASS (7 shadow
+  values against a floor of 2) and was not re-measured in this file; nothing here changes a
+  shadow value.
+
+  ROOT CAUSE, shared by four of the five: WalkInBand (the four wait-time cards under the
+  "Walk-in" heading) repeats, in bold, a second time, what the rail two rows up already showed
+  once with a photo: the salon's name, its star rating, and (three or four times, once per
+  card) a status word that happens to be the single biggest thing on the page at 20px, by
+  accident, not by design. Ten of the page's 19 bold text nodes live inside that one row. The
+  fifth, imagery, has the opposite root cause: the SAME row is real, wired, and text-only, and
+  it sits in a page where the one thing that would obviously fix imagery, a bigger photo
+  treatment, already exists in the codebase, built and registered, and was deliberately
+  removed by the owner for looking wrong here. Both root causes point at real product code, not
+  at anything invented for this file.
+
+  WHY THE OWNER-BUILT HERO CAROUSEL IS NOT IN THIS FILE. Before proposing anything imagery-
+  shaped, `npm run exists "category hero"` was run this turn: it returned two live component
+  files, CategoryHero.tsx and CategoryHeroCarousel.tsx, and nothing else, no graveyard hit. A
+  direct grep of _design-system/REMOVED.md for "hero carousel" found what the exists tool
+  missed: line 49, describing a "top bewertet hero carousel featured results" block, owner
+  instruction: remove it, it clashes with the new photo-then-text feed card look and is
+  redundant with the results feed. CategoryHeroCarousel.tsx is that exact component, still on
+  disk, still registered, imported nowhere in the app (grepped, zero real call sites). It would
+  have been the obvious lever for imagery (one full-bleed photo, aspect-[5/4], easily clears
+  30% of a phone screen by itself), and this file does not use it, because he has already said
+  no to this shape on this exact page. Worth naming plainly: the exists tool alone would not
+  have caught this, only the direct grep of the graveyard file did. That gap is reported here,
+  not smoothed over.
+
+  WHAT THIS FILE DOES INSTEAD FOR IMAGERY, and it falls short. FLOORS LAW 2's own wording
+  authorizes "bigger cards" by name as a legal, non-decorative route to more photo area, as
+  long as the card itself is not a new visual language. The Top/Nearby/Soon rails already
+  render the real, unmodified SalonCard (photo above text, the same shape the current feed
+  already uses, nothing the graveyard rejection above was about), just at a narrow width (1.5
+  cards visible per screen, R4-2). Widening that same card to 1.15 cards per screen, tested
+  live against the running page this session, moved imagery from 21.59% to 27.83%, measured the
+  same way as the before number. That is real movement, and it is not enough: 27.83% is still
+  short of the 33% floor. Reported plainly rather than shipped as a pass: this mechanism does
+  not clear F2. A further lever exists (real photo thumbnails on the four walk-in cards, the
+  sibling floor-fix file's own technique) and was deliberately left out of this file's after
+  panel, because that sibling file already measured it and called it honestly: four 40px
+  thumbnails are not enough area by themselves either. Layering an unverified guess about how
+  much they would add on top of an already-short number was judged worse than just reporting
+  the shortfall.
+
+  WHAT THIS FILE DOES FOR THE OTHER FOUR, and it clears them. Tested live against the running
+  page this session: widening the three rails (8 card elements matched, all descendants of the
+  locked "w-[calc((100vw-44px)/1.5)]" class) plus resetting 15 font-semibold nodes inside the
+  Walk-in section to 500 and enlarging its one 20px status word to 30px produced, measured the
+  same way: anchor 30px (target 28, house value 30, PASS), ratio 2.50x (target 1.8, PASS),
+  weight share 12.50% (target <=30%, PASS, and now below the salon page's own 30% too), size
+  spread 4 distinct sizes in the 8px window, 12/13.5/14/18 (target <=4, PASS). Four of five,
+  cleared.
+
+  WHY BOTH TREATMENTS NEED HIS YES, not just a ship. The card-width change reopens a dated,
+  owner-approved value (R4-2) that lives in SalonCard.tsx, the SAME component the homepage
+  rails, every other category page, and the saved-salons list all render. Applying it only to
+  this one page would create the exact "same thing, two objects" problem FLOORS LAW 8 names by
+  name: two rails elsewhere in the product still at the old ratio, this one at a new one. The
+  WalkInBand reweight touches a component imported directly by the homepage (WalkInBand.tsx,
+  "import WalkInBand from '../homepage/WalkInBand'" inside CategoryMobileRails.tsx), so the
+  same status word and the same duplicate bold name render there too. Neither change is legal
+  as a quiet, page-local CSS patch; both are sitewide typography/sizing decisions, shown here
+  as a real, running mockup precisely so they can be looked at and either approved or not, the
+  way mockup-first is supposed to work, not silently shipped either way.
+
+  Exists-check: `npm run exists barbershop` run this turn. HIT: the route
+  (app/[locale]/barbershop/page.tsx), two page-inline sections, and three graveyard entries
+  (makeup/waxing categories, a generic dashboard waiting-list panel, walk-in as a category
+  PILL), none of which this file touches. `npm run exists "category hero"` run this turn: HIT,
+  two live components (CategoryHero.tsx, CategoryHeroCarousel.tsx), no graveyard flag from the
+  tool itself; the graveyard hit was found by a direct grep of REMOVED.md instead (see above).
+
+  Treatment-only, and where it stops being one: the walk-in reweight (600->500, 20px->30px) is
+  a pure typography treatment, no markup added or removed. The rail widen changes a Tailwind
+  width class's computed value, also a treatment, not a structural addition, but because both
+  values are dated, owner-approved, and shared across other screens, this file treats them as
+  needing a yes the same way a genuinely structural change would. Nothing in this file adds,
+  removes, or reorders a section, a card, or a rail; nothing invents a photo, a name, a rating,
+  or copy. Single light theme, no dark mode. Every label this file writes is English; the real
+  page inside both iframes renders its own German through the product's translations, exempt.
+
+  hue-ok: every badge/callout color below is either a neutral (ink/grey/white/hairline) or an
+  rgba() tint of a locked contract hue (red DC2626 = error, green 16A34A = success, amber
+  F1AE27 = warning), never a foreign hex, so the pass/fail/warning badges read as the same
+  three system semantics the product already uses everywhere else.
+-->
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 390px; margin: 0 auto; padding: 0 0 64px; }
+
+  .lede { padding: 28px 16px 6px; }
+  .lede h1 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 25px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em;
+  }
+  .lede p { margin-top: 10px; font-size: 14px; line-height: 1.5; color: #6B6B6B; }
+  .lede p + p { margin-top: 8px; }
+
+  .panel { margin-top: 26px; }
+  .cap { padding: 0 16px 8px; }
+  .cap h2 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 17px; font-weight: 600; line-height: 1.25; letter-spacing: -0.02em;
+  }
+  .cap p { margin-top: 3px; font-size: 13px; line-height: 1.45; color: #6B6B6B; }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  .frame {
+    position: relative; width: 100%; height: 844px;
+    border-top: 1px solid #E4E4E7; border-bottom: 1px solid #E4E4E7;
+    overflow: hidden; background: #fff;
+  }
+  .frame iframe { width: 390px; height: 844px; border: 0; display: block; }
+
+  .badge-row { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 16px 0; }
+  .badge {
+    padding: 5px 9px; border-radius: 40px;
+    background: #F4F4F5; border: 1px solid #E4E4E7;
+    font-size: 11px; font-weight: 600; color: #0A0A0A;
+    font-variant-numeric: tabular-nums;
+  }
+  /* hue-ok: rgba tints of the locked error/success hexes, no foreign hue introduced */
+  .badge.fail { background: rgba(220, 38, 38, 0.07); border-color: rgba(220, 38, 38, 0.35); color: #DC2626; }
+  .badge.pass { background: rgba(22, 163, 74, 0.08); border-color: rgba(22, 163, 74, 0.35); color: #16A34A; }
+  .badge.pending { background: #F4F4F5; border-color: #E4E4E7; color: #6B6B6B; }
+
+  .note { padding: 20px 16px 0; font-size: 13px; line-height: 1.6; color: #6B6B6B; }
+  .note strong { color: #0A0A0A; font-weight: 600; }
+  .note + .note { padding-top: 14px; }
+
+  /* hue-ok: rgba tint of the locked warning hex F1AE27, no foreign hue introduced */
+  .callbox {
+    margin: 22px 16px 0; padding: 16px; border-radius: 16px;
+    background: rgba(241, 174, 39, 0.10); border: 1px solid rgba(241, 174, 39, 0.45);
+  }
+  .callbox h3 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 15px; font-weight: 600; color: #0A0A0A; margin-bottom: 8px;
+  }
+  .callbox p { font-size: 13px; line-height: 1.55; color: #0A0A0A; }
+  .callbox p + p { margin-top: 8px; }
+  .arms { margin-top: 10px; }
+  .arm { margin-top: 8px; padding: 10px 12px; background: #FFFFFF; border: 1px solid rgba(241, 174, 39, 0.45); border-radius: 10px; }
+  .arm b { display: block; font-size: 12.5px; color: #0A0A0A; margin-bottom: 3px; }
+  .arm span { font-size: 12.5px; color: #6B6B6B; line-height: 1.5; }
+
+  /* hue-ok: rgba tint of the locked error hex DC2626, no foreign hue introduced */
+  .shortbox {
+    margin: 22px 16px 0; padding: 16px; border-radius: 16px;
+    background: rgba(220, 38, 38, 0.06); border: 1px solid rgba(220, 38, 38, 0.35);
+  }
+  .shortbox h3 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 15px; font-weight: 600; color: #0A0A0A; margin-bottom: 6px;
+  }
+  .shortbox p { font-size: 13px; line-height: 1.55; color: #0A0A0A; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <h1>Fixing four of the five, and being honest about the fifth</h1>
+    <p>This is the barbershop page's worst arm to build, on purpose: instead of one small
+       change, it tries to clear every measured problem on this screen at once, using only
+       pieces the product already has. It gets four of five. The photo floor stays short, and
+       this page says exactly why below rather than hiding it.</p>
+    <p>Both screens below are the real, running page. Every number in a badge is computed by
+       this page reading the real one live, not typed in by hand.</p>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>Now</h2>
+      <p>Small cards, a text-only walk-in row repeating each name and rating in bold, and one
+         accidental 20px word standing in for a display anchor.</p>
+    </div>
+    <div class="badge-row" id="beforeBadges">
+      <span class="badge pending nums">measuring...</span>
+    </div>
+    <div class="frame">
+      <iframe id="before" src="/de/barbershop" scrolling="no" title="The barbershop page as it is today"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>With the rails widened and the walk-in row retyped</h2>
+      <p>Same cards, same walk-in data, same copy. Bigger photos on the same three rails; the
+         walk-in row's own status number now the page's real anchor, everything else in it
+         dropped from bold to regular.</p>
+    </div>
+    <div class="badge-row" id="afterBadges">
+      <span class="badge pending nums">measuring...</span>
+    </div>
+    <div class="frame">
+      <iframe id="after" src="/de/barbershop" scrolling="no" title="The barbershop page with rails widened and the walk-in row retyped"></iframe>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>What actually changed, in plain terms.</strong> Two things. First, the barber cards
+    in the three photo rows got bigger, the same real photos, just given more room, the way a
+    phone catalog gives its best items more space. Second, inside the walk-in box, the
+    wait-status word got much bigger and is now the one thing on the page your eye lands on
+    first; everything else in that box (names, star ratings, the live-status label) got
+    lighter, not bold, because a page that bolds nine different things has no real emphasis
+    left to spend.
+  </div>
+
+  <div class="shortbox" id="imageryNote">
+    <h3>The photo floor is not cleared, and this file says so</h3>
+    <p id="imageryNoteBody">Checking the live badges below...</p>
+  </div>
+
+  <div class="callbox">
+    <h3>Two changes here reach past this one page</h3>
+    <p>Both fixes above touch a shared piece, not just barbershop. Widening the cards reopens a
+       dated, owner-approved sizing rule (R4-2) that also sets the card width on the homepage
+       rails and every other category page. Retyping the walk-in row edits a component the
+       homepage imports directly, so the same status word and the same duplicate bold name
+       would render lighter and bigger there too the moment this ships.</p>
+    <div class="arms">
+      <div class="arm">
+        <b>Approve both, sitewide</b>
+        <span>The homepage rails and the other three category pages pick up the wider cards
+          and the retyped walk-in box the next time they render, automatically, since it is the
+          same component. One decision, cleans up more than this one screen.</span>
+      </div>
+      <div class="arm">
+        <b>Approve for barbershop only, for now</b>
+        <span>Needs a small code fork (a page-scoped className instead of the shared one) so
+          the homepage and the three other category pages keep today's narrower cards and
+          bolder walk-in text until a separate decision widens the rollout. Costs a bit of
+          near-term inconsistency between this page and its siblings to avoid changing
+          anything the owner has not looked at yet.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>What this file deliberately left out.</strong> The one component built specifically
+    for "more photo on a category page," CategoryHeroCarousel.tsx, a full black photo hero with
+    real salon photos and ratings, sits unused in the codebase. It is not in either panel above.
+    The owner removed this exact shape from this exact kind of page earlier this year for
+    clashing with the current card style; that entry lives in the graveyard
+    (_design-system/REMOVED.md line 49) and this file checked it before writing a line of the
+    after panel. Also left out: real photo thumbnails on the four walk-in cards (the sibling
+    floor-fix-barbershop file's own technique), because that file already measured the honest
+    result of that one change alone and it does not clear the floor either; stacking an
+    unverified guess about the combination on top felt worse than reporting the shortfall
+    plainly.
+  </div>
+
+  <div class="note">
+    <strong>What this file does not touch.</strong> No section added, removed, or reordered. No
+    card added or removed. Nothing about the salon card's own name/price bold rule (locked
+    sitewide, V3-D442). Card shadows and elevation are untouched; that floor already passes. No
+    German copy anywhere the real page owns; both iframes render the real localized page
+    through the product's own translations.
+  </div>
+
+</div>
+
+<script>
+  // Same measurement method as check-geometry.mjs's FLOORS section and the sibling
+  // floor-fix-barbershop file: every visible leaf text node's computed font-size/weight, every
+  // visible <img> or background-image url()'s on-screen area, inside a fixed 390x844 window.
+  // Runs against the REAL iframe document, not a copy.
+  function measureFirstViewport(doc, win, vw, vh) {
+    function isLeafText(el) {
+      for (const n of el.childNodes) {
+        if (n.nodeType === 3 && n.textContent.trim().length > 0) return true;
+      }
+      return false;
+    }
+    const all = doc.querySelectorAll("body *");
+    const texts = [];
+    let imgArea = 0;
+    for (const el of all) {
+      const r = el.getBoundingClientRect();
+      if (r.bottom <= 0 || r.top >= vh || r.right <= 0 || r.left >= vw) continue;
+      if (r.width <= 0 || r.height <= 0) continue;
+      const cs = win.getComputedStyle(el);
+      if (el.tagName === "IMG" || (cs.backgroundImage && cs.backgroundImage !== "none")) {
+        const visW = Math.min(r.right, vw) - Math.max(r.left, 0);
+        const visH = Math.min(r.bottom, vh) - Math.max(r.top, 0);
+        if (visW > 0 && visH > 0) imgArea += visW * visH;
+      }
+      if (isLeafText(el)) {
+        texts.push({ size: parseFloat(cs.fontSize), weight: parseInt(cs.fontWeight, 10) || 400 });
+      }
+    }
+    const total = vw * vh;
+    const imgPct = (imgArea / total) * 100;
+    const sizes = texts.map((t) => t.size);
+    const maxSize = sizes.length ? Math.max(...sizes) : 0;
+    const sorted = [...sizes].sort((a, b) => a - b);
+    const median = sorted.length ? sorted[Math.floor(sorted.length / 2)] : 0;
+    const boldCount = texts.filter((t) => t.weight >= 600).length;
+    const boldPct = texts.length ? (boldCount / texts.length) * 100 : 0;
+    const distinct = [...new Set(sizes)].sort((a, b) => a - b);
+    let denseWindow = 0;
+    for (let i = 0; i < distinct.length; i++) {
+      let c = 1;
+      for (let j = i + 1; j < distinct.length; j++) {
+        if (distinct[j] - distinct[i] <= 8) c++;
+      }
+      denseWindow = Math.max(denseWindow, c);
+    }
+    return {
+      imgPct, maxSize, median,
+      ratio: median > 0 ? maxSize / median : 0,
+      boldPct, denseWindow, leafCount: texts.length,
+    };
+  }
+
+  function renderBadges(el, m) {
+    var TWO_DP = 2, ZERO_DP = 0;
+    const b = (label, ok) => `<span class="badge ${ok ? "pass" : "fail"} nums">${label}</span>`;
+    el.innerHTML =
+      b(`imagery ${m.imgPct.toFixed(TWO_DP)}% (floor 33%)`, m.imgPct >= 33) +
+      b(`anchor ${m.maxSize.toFixed(ZERO_DP)}px (floor 28px)`, m.maxSize >= 28) +
+      b(`ratio ${m.ratio.toFixed(TWO_DP)}x (floor 1.8x)`, m.ratio >= 1.8) +
+      b(`bold ${m.boldPct.toFixed(TWO_DP)}% (ceiling 30%)`, m.boldPct <= 30) +
+      b(`${m.denseWindow} sizes in 8px (ceiling 4)`, m.denseWindow <= 4);
+  }
+
+  // The real page server-renders fast, then a client effect fetches the walk-in queue
+  // (GET /api/walkin/nearby) and only then fills the row with real cards. Measuring too early
+  // catches the page mid-hydration. This waits for the section to contain something rendered
+  // at 20px (the real status word's real size before this file touches it), checked every
+  // 150ms up to 8s, same wait the sibling floor-fix file uses.
+  function walkinIsPopulated(doc) {
+    var sec = doc.querySelector('section[aria-label="Walk-in"]');
+    if (!sec) return false;
+    var els = sec.querySelectorAll("*");
+    for (var i = 0; i < els.length; i++) {
+      if (parseFloat(doc.defaultView.getComputedStyle(els[i]).fontSize) === 20) return true;
+    }
+    return false;
+  }
+  function waitForWalkin(doc, cb) {
+    var waited = 0;
+    var iv = setInterval(function () {
+      waited += 150;
+      var ready = walkinIsPopulated(doc);
+      if (ready || waited >= 8000) {
+        clearInterval(iv);
+        cb(ready);
+      }
+    }, 150);
+  }
+
+  // BEFORE panel: measure only, nothing is changed inside it.
+  var before = document.getElementById("before");
+  before.addEventListener("load", function () {
+    try {
+      var doc = before.contentDocument;
+      var win = before.contentWindow;
+      if (!doc || !win) return;
+      waitForWalkin(doc, function () {
+        var m = measureFirstViewport(doc, win, 390, 844);
+        renderBadges(document.getElementById("beforeBadges"), m);
+      });
+    } catch (err) {
+      console.error("[fix-barbershop--e-recompose] could not measure the before panel:", err);
+    }
+  });
+
+  // AFTER panel: widen the 3 SalonCard rails (Top / Nearby / Available this week, all built on
+  // the same locked "w-[calc((100vw-44px)/1.5)]" class), then inside the Walk-in section only,
+  // drop every font-semibold (600) node to 500 and enlarge the one 20px status word to 30px.
+  // No element is added, removed, or moved; every change is a computed-style override on the
+  // real, already-rendered DOM.
+  var after = document.getElementById("after");
+  after.addEventListener("load", function () {
+    try {
+      var doc = after.contentDocument;
+      var win = after.contentWindow;
+      if (!doc || !win) return;
+      waitForWalkin(doc, function () {
+        runAfterTreatment(doc, win);
+      });
+    } catch (err) {
+      console.error("[fix-barbershop--e-recompose] could not treat the after panel:", err);
+      document.getElementById("imageryNoteBody").textContent =
+        "The live treatment failed to run (see console). No badge numbers below are trustworthy until this is fixed.";
+    }
+  });
+
+  function runAfterTreatment(doc, win) {
+    try {
+      // 1. Widen the three rail card wrappers. The exact class name is read straight off
+      // SalonCard.tsx line 404, so this only ever matches that one, real, locked rule.
+      var cardEls = doc.querySelectorAll('[class*="calc((100vw-44px)/1.5)"]');
+      cardEls.forEach(function (el) {
+        el.style.width = "calc((100vw - 44px) / 1.15)";
+      });
+
+      // 2. Retype the Walk-in section: every bold (>=600) node to 500, the one 20px status
+      // word to 30px. Scoped strictly to this section, nothing outside it is touched.
+      var wi = doc.querySelector('section[aria-label="Walk-in"]');
+      var boldFixed = 0;
+      if (wi) {
+        wi.querySelectorAll(".font-semibold").forEach(function (el) {
+          el.style.fontWeight = "500";
+          boldFixed++;
+        });
+        wi.querySelectorAll("*").forEach(function (el) {
+          if (parseFloat(win.getComputedStyle(el).fontSize) === 20) {
+            el.style.fontSize = "30px";
+          }
+        });
+      }
+
+      var m = measureFirstViewport(doc, win, 390, 844);
+      renderBadges(document.getElementById("afterBadges"), m);
+
+      var body = document.getElementById("imageryNoteBody");
+      if (m.imgPct >= 33) {
+        body.innerHTML =
+          "Measured live just now: imagery cleared the 33% floor at <span class=\"nums\">" +
+          m.imgPct.toFixed(2) + "%</span>. That was not expected going in; if you see this, " +
+          "re-check the number rather than trusting the surprise.";
+      } else {
+        body.innerHTML =
+          "Measured live just now: widening " + cardEls.length + " rail cards moved imagery " +
+          "from the before panel's number up to <span class=\"nums\">" + m.imgPct.toFixed(2) +
+          "%</span>, real movement, still short of the 33% floor. The two treatments in this " +
+          "file (" + boldFixed + " bold nodes reset, the rails widened) were not enough on " +
+          "their own to close that specific gap, and this file does not add anything further " +
+          "to force it past the line.";
+      }
+    } catch (err) {
+      console.error("[fix-barbershop--e-recompose] could not treat the after panel:", err);
+      document.getElementById("imageryNoteBody").textContent =
+        "The live treatment failed to run (see console). No badge numbers below are trustworthy until this is fixed.";
+    }
+  }
+</script>
+</body>
+</html>

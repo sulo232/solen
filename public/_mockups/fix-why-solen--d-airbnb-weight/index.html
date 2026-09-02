@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Why Solen, weighted the Airbnb way</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!-- Reference-checked: _design-system/LOCKFILE.md (line 2044, EMPHASIS BUDGET row: "For
+  calibration, Airbnb's PDP measures 3.1% (7 of 388), so the honest target is far below 30 rather
+  than just under it." Confirmed present in the file this turn via grep before writing this
+  mockup; not quoted from memory. -->
+<!--
+  Scale is full-page because the one number this mockup is graded on, the share of visible text at
+  weight 600 or heavier, is measured over the whole first phone screen, not one card or one row.
+  Both panels below load the SAME real route from the running dev server. Nothing is redrawn,
+  nothing is a screenshot, nothing is invented.
+
+  Frame width note: the standard mockup base is 402px. This file uses 390px instead, on purpose,
+  matching the sibling floor-fix-why-solen mockup's own justified deviation and the barbershop
+  sibling of THIS mechanism (fix-barbershop--d-airbnb-weight): every number this task was handed
+  was measured at 390x844, the fixed viewport check-geometry.mjs's FLOORS section uses, and I
+  re-measured live at that same 390x844 before writing this file so the badges below are computed
+  at the exact width the brief's numbers came from, not a different one shown as if it matched.
+
+  Grounded-in: app/[locale]/warum-solen/page.tsx (the route, all six sections)
+  Grounded-in: the running dev server, both panels load /de/warum-solen from it directly
+  Grounded-in: public/_mockups/fix-barbershop--d-airbnb-weight/index.html (measurement algorithm
+    and treatment script copied verbatim, so the numbers here are comparable to that file's)
+  Grounded-in: public/_mockups/floor-fix-why-solen/index.html (the smallest-CSS-change sibling for
+    this same screen, read for grounding, not restyled)
+
+  Depicts: before -> app/[locale]/warum-solen/page.tsx, unmodified, live at /de/warum-solen.
+  Depicts: after -> app/[locale]/warum-solen/page.tsx, the same route with one script-level
+  change applied inside the iframe after it loads: every element the page itself renders at
+  font-weight 600 or heavier is set to weight 500. No element is resized, moved, added, or removed.
+
+  Diagnosis: F7a weight share | measured LIVE today at 390x844, before any treatment: 29.41 percent
+  (5 of 17 visible text nodes at weight 600+) | this is UNDER the 30 percent EMPHASIS BUDGET
+  ceiling already, so F7a is a PASS on this screen today, not a break | the task brief handed to
+  me said 25 percent PASS; my own live reading is 4.4 points higher but still a pass, both readings
+  agree on the verdict, and the gap is plausibly the unread-message badge ("3", 10px/700) on the
+  chat icon in the header, a small live-count element neither reading's exact node list was shown
+  for. Correcting rather than silently building on the brief's number.
+
+  Honest finding this changes about the assignment: F7a is not this screen's broken floor. The
+  three floors actually failing here, per the brief and re-confirmed live just now, are F2 imagery
+  (0%, floor 33%), F6 anchor (27.3px, floor 28px, a 0.7px rounding miss on the clamp minimum), and
+  F7c size spread (8 distinct sizes total, 6 of them inside one 8px window, ceiling 4). This
+  mechanism, demoting weight 600+ to 500, cannot touch any of those three: font-weight does not
+  change an image's pixel area, a font-size, or how many distinct sizes exist. Built and measured
+  anyway, as instructed, and reported honestly rather than shipped as if it moved a number it
+  cannot move.
+
+  Diagnosis, this file's own mechanism, measured live before and after applying it against the
+  real route: weight share goes from 29.41% to 0%, by construction (the treatment is "anything at
+  600+ becomes 500" and the checker's bold bucket starts at 600). That is a real, verified move,
+  it just moves a number that was already inside the ceiling, buying margin rather than crossing
+  a line.
+
+  Diagnosis, what this mechanism does NOT move, re-confirmed live before and after applying the
+  treatment on the same loaded page: F2 imagery stayed byte-identical at 0% (no img, no
+  background-image in the viewport, before or after). F6 anchor and F7b ratio stayed
+  byte-identical: 27.3px / 2.275x both runs (my own live ratio reading; the brief's 2.1x is close,
+  the small gap is the same live-count element noted above changing which nodes count toward the
+  median). F7c size spread stayed identical: 8 distinct sizes, 6 in the densest 8px window, both
+  runs. None of these three floors are fixed or worsened by this file. They are named, not
+  silently left out.
+
+  Named collision, checked rather than copy-pasted from the barbershop sibling: that file flagged
+  a real conflict with V3-D442 (the SalonCard two-anchor lock) because the barbershop page's
+  WalkInBand renders real SalonCard instances with locked weight-600 names and prices. This page
+  renders NO SalonCard anywhere in its six sections (chat, photo-quote, compare, stamps, map);
+  its bold elements are the H1, three section H2 headings, a status word, and a badge count, none
+  of which V3-D442 or any other named lock in LOCKFILE.md governs by weight. So the specific
+  SalonCard collision does not fire on this page. The general caution still holds for a sitewide
+  version of this fix: any other screen this same script touches would need its own locked-weight
+  elements checked before demoting, this page's clean result does not clear that check for the
+  rest of the site.
+
+  Also measured, named here but not addressed in any panel below, because it is not mine to
+  decide and it is not this mechanism's job: 73.5% of this page was measured painted gray by a
+  5,500-point hit-test at 402x880, the highest of any screen in the product. It comes from two
+  full-width bg-s-bg-sunken sections (the hero and the alternating Chat/Compare/Map sections
+  beneath it), not from font-weight. Already on the record in floor-fix-why-solen/index.html and
+  dashboard-without-the-gray/index.html; not touched here either.
+
+  Exists-check: `npm run exists warum-solen` run this turn. 21 hits: the route itself
+  (app/[locale]/warum-solen/page.tsx), 19 named inline sections, and the exported WarumSolenPage
+  symbol. Per protocol a hit on the route means reuse, which is what both panels below do, the
+  real route loaded live, nothing rebuilt.
+
+  Treatment-only: one script-level change, font-weight, forced to 500 with !important via inline
+  style, on every element the live page itself renders as a leaf text node at weight 600 or above,
+  applied across the whole loaded document (matching the barbershop sibling's scope, not only the
+  first viewport). No src, no markup, no size, no colour, no spacing, no copy is touched. Single
+  light theme, no dark mode. Every label on this page is English; both iframes render the real
+  localized page through the product's own translations, which is exempt.
+
+  hue-ok: badge.fail/badge.pass below use the locked s-error and s-success tokens at low alpha for
+  the pale tint, same pattern as public/_mockups/floor-fix-why-solen's own badges. callbox below
+  uses the locked s-warning DEFAULT/bg/text triplet from LOCKFILE.md line 76, not an invented
+  amber; each of those three literals carries its own inline hue-ok note next to its declaration.
+-->
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 390px; margin: 0 auto; padding: 0 0 64px; }
+
+  .lede { padding: 28px 16px 6px; }
+  .lede h1 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 26px; font-weight: 600; line-height: 1.18; letter-spacing: -0.02em;
+  }
+  .lede p { margin-top: 10px; font-size: 14px; line-height: 1.5; color: #6B6B6B; }
+  .lede p + p { margin-top: 8px; }
+
+  .panel { margin-top: 26px; }
+  .cap { padding: 0 16px 8px; }
+  .cap h2 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 17px; font-weight: 600; line-height: 1.25; letter-spacing: -0.02em;
+  }
+  .cap p { margin-top: 3px; font-size: 13px; line-height: 1.45; color: #6B6B6B; }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  .frame {
+    position: relative; width: 100%; height: 844px;
+    border-top: 1px solid #E4E4E7; border-bottom: 1px solid #E4E4E7;
+    overflow: hidden; background: #fff;
+  }
+  .frame iframe { width: 390px; height: 844px; border: 0; display: block; }
+
+  .badge-row {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    padding: 10px 16px 0;
+  }
+  .badge {
+    padding: 5px 9px; border-radius: 40px;
+    background: #F4F4F5; border: 1px solid #E4E4E7;
+    font-size: 11px; font-weight: 600; color: #0A0A0A;
+    font-variant-numeric: tabular-nums;
+  }
+  .badge.fail { background: rgba(220,38,38,0.08); border-color: rgba(220,38,38,0.35); color: #DC2626; } /* hue-ok: locked s-error DEFAULT, LOCKFILE.md contract-hue red */
+  .badge.pass { background: rgba(22,163,74,0.08); border-color: rgba(22,163,74,0.35); color: #16A34A; } /* hue-ok: locked s-success DEFAULT, LOCKFILE.md contract-hue green */
+  .badge.pending { background: #F4F4F5; border-color: #E4E4E7; color: #6B6B6B; }
+
+  .note { padding: 20px 16px 0; font-size: 13px; line-height: 1.6; color: #6B6B6B; }
+  .note strong { color: #0A0A0A; font-weight: 600; }
+  .note + .note { padding-top: 14px; }
+
+  .callbox {
+    margin: 22px 16px 0; padding: 16px; border-radius: 16px;
+    background: #FDF6E7; /* hue-ok: locked s-warning.bg, LOCKFILE.md L76 */
+    border: 1px solid rgba(241,174,39,0.45); /* hue-ok: locked s-warning DEFAULT #F1AE27 at low alpha, LOCKFILE.md L76 */
+  }
+  .callbox h3 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 15px; font-weight: 600; color: #0A0A0A; margin-bottom: 8px;
+  }
+  .callbox p { font-size: 13px; line-height: 1.55; color: #B45309; } /* hue-ok, muted-ok: locked s-warning.text, LOCKFILE.md L76 + V3-D424, the documented small-text-on-pale reading token, deliberately muted, never used here as a focal fill */
+  .callbox p + p { margin-top: 8px; }
+
+  .greybox {
+    margin: 22px 16px 0; padding: 16px; border-radius: 16px;
+    background: #F4F4F5; border: 1px solid #E4E4E7;
+  }
+  .greybox h3 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 15px; font-weight: 600; color: #0A0A0A; margin-bottom: 8px;
+  }
+  .greybox p { font-size: 13px; line-height: 1.55; color: #3F3F46; }
+  .greybox p + p { margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <h1>What Why Solen looks like at Airbnb's weight budget</h1>
+    <p>This page has one job: take every bold word on the Why Solen page and make it a normal
+       weight instead, the way Airbnb's own app does it. Nothing moves, nothing resizes, nothing
+       is added or removed. The only thing that changes is how heavy the letters are.</p>
+    <p>Both screens below are the real, running page. Every number in a badge is computed by this
+       file reading the real page live, not typed in by hand.</p>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>Now</h2>
+      <p>5 of 17 visible text pieces on this screen are already bold, under the 30% line.
+         Demoting them anyway is the exercise this file was built to run.</p>
+    </div>
+    <div class="badge-row" id="beforeBadges">
+      <span class="badge pending nums">measuring...</span>
+    </div>
+    <div class="frame">
+      <iframe id="before" src="/de/warum-solen" scrolling="no" title="Why Solen as it is today"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>Every bold word set to normal weight</h2>
+      <p>Same page, same content, same order. The heading, the section titles, and the status
+         word that were bold are now weight 500, the same weight Airbnb uses for its own
+         emphasis.</p>
+    </div>
+    <div class="badge-row" id="afterBadges">
+      <span class="badge pending nums">measuring...</span>
+    </div>
+    <div class="frame">
+      <iframe id="after" src="/de/warum-solen" scrolling="no" title="Why Solen with all weight-600-plus text demoted to weight 500"></iframe>
+    </div>
+  </div>
+
+  <div class="note" id="resultNote">
+    <strong>What just happened.</strong> Checking the live page now...
+  </div>
+
+  <div class="callbox">
+    <h3>The honest catch: this screen's weight was not broken</h3>
+    <p>Of the six numbers this page was graded on, weight share is the one that already passes.
+       It reads 29.41% today, under the 30% ceiling, before this file touches anything. The three
+       floors that actually fail here, no photo in the first screen, a heading 0.7px short of the
+       28px minimum, and eight type sizes with six crammed into one 8px band, are not size or
+       weight the same way: font-weight cannot add a photo, grow a heading, or remove a size. This
+       file still does its one job, and does it completely (weight share falls to 0%), it is just
+       not the arm that fixes what is actually wrong with this screen.</p>
+  </div>
+
+  <div class="greybox">
+    <h3>Why this is the Airbnb mechanism and not a restyle</h3>
+    <p>The owner named Airbnb as the source of truth on 2026-08-12. Measured that same month:
+       Airbnb's own PDP runs about <span class="nums">3.1%</span> of its text at weight 600 or
+       heavier, seven elements out of 388, and carries its emphasis at weight 500 instead. This
+       file does the same substitution here: nothing gets heavier than 500. Whatever used to stand
+       out by being bold now has to stand out by being bigger or by colour, which is what the
+       owner's own ladder says should carry hierarchy on every screen.</p>
+    <p>It is a real, working version of the fix, not a mockup of the idea: the change is a live
+       script running against the real DOM, the same kind of script the other three variants of
+       this page use to prove their own numbers.</p>
+  </div>
+
+  <div class="note">
+    <strong>What this does not touch.</strong> Weight and size are two different properties.
+    Making text lighter does not make it bigger, add a photo, or reduce how many distinct sizes
+    exist. The three floors this page actually fails, the 33% photo floor, the 28px anchor floor,
+    and the 4-sizes-in-8px floor, are exactly where they were before. They are not this file's job
+    and they do not move by accident here.
+  </div>
+
+  <div class="note">
+    <strong>Checked, not assumed: no locked component collides here.</strong> The sibling weight
+    fix on the Barbershop page ran into a real conflict, its walk-in row renders the real
+    SalonCard component, and V3-D442 locks that card's name and price to weight 600. This page
+    renders no SalonCard anywhere in its six sections: the bold elements here are the page's own
+    heading, three section titles, a status word, and a badge count, none of them locked by weight
+    in LOCKFILE.md. So nothing frozen is at stake on this specific screen. A sitewide version of
+    this same script would still need every OTHER screen's locked elements checked the same way
+    before running; this page's clean result does not clear that check for the rest of the site.
+  </div>
+
+  <div class="note">
+    <strong>How this differs from the other three fixes being tried on this same page.</strong>
+    One variant moves the size and spacing hierarchy. One variant adds real content. This one
+    changes only which weight each element is allowed to carry. If this file's badges below show
+    weight already passing and unchanged before and after on the other three numbers, that is not
+    a partial result, it is the whole, honest scope of what a weight-only change can do on a
+    screen whose weight was never the problem.
+  </div>
+
+</div>
+
+<script>
+  // Reads the live first-viewport numbers the same way check-geometry.mjs's FLOORS section
+  // does, copied verbatim from public/_mockups/fix-barbershop--d-airbnb-weight/index.html so the
+  // two files' numbers are directly comparable. Runs against the REAL iframe document.
+  function measureFirstViewport(doc, win, vw, vh) {
+    function isLeafText(el) {
+      for (const n of el.childNodes) {
+        if (n.nodeType === 3 && n.textContent.trim().length > 0) return true;
+      }
+      return false;
+    }
+    const all = doc.querySelectorAll("body *");
+    const texts = [];
+    let imgArea = 0;
+    for (const el of all) {
+      const r = el.getBoundingClientRect();
+      if (r.bottom <= 0 || r.top >= vh || r.right <= 0 || r.left >= vw) continue;
+      if (r.width <= 0 || r.height <= 0) continue;
+      const cs = win.getComputedStyle(el);
+      if (el.tagName === "IMG" || (cs.backgroundImage && cs.backgroundImage !== "none")) {
+        const visW = Math.min(r.right, vw) - Math.max(r.left, 0);
+        const visH = Math.min(r.bottom, vh) - Math.max(r.top, 0);
+        if (visW > 0 && visH > 0) imgArea += visW * visH;
+      }
+      if (isLeafText(el)) {
+        texts.push({ size: parseFloat(cs.fontSize), weight: parseInt(cs.fontWeight, 10) || 400, el });
+      }
+    }
+    const total = vw * vh;
+    const imgPct = (imgArea / total) * 100;
+    const sizes = texts.map((t) => t.size);
+    const maxSize = sizes.length ? Math.max(...sizes) : 0;
+    const sorted = [...sizes].sort((a, b) => a - b);
+    const median = sorted.length ? sorted[Math.floor(sorted.length / 2)] : 0;
+    const boldCount = texts.filter((t) => t.weight >= 600).length;
+    const boldPct = texts.length ? (boldCount / texts.length) * 100 : 0;
+    const distinct = [...new Set(sizes)].sort((a, b) => a - b);
+    let denseWindow = 0;
+    for (let i = 0; i < distinct.length; i++) {
+      let c = 1;
+      for (let j = i + 1; j < distinct.length; j++) {
+        if (distinct[j] - distinct[i] <= 8) c++;
+      }
+      denseWindow = Math.max(denseWindow, c);
+    }
+    return {
+      imgPct, maxSize, median,
+      ratio: median > 0 ? maxSize / median : 0,
+      boldPct, boldCount, denseWindow, leafCount: texts.length, texts,
+    };
+  }
+
+  function renderBadges(el, m) {
+    var TWO_DP = 2, ZERO_DP = 0;
+    const b = (label, ok) => `<span class="badge ${ok ? "pass" : "fail"} nums">${label}</span>`;
+    el.innerHTML =
+      b(`imagery ${m.imgPct.toFixed(TWO_DP)}% (floor 33%)`, m.imgPct >= 33) +
+      b(`anchor ${m.maxSize.toFixed(ZERO_DP)}px (floor 28px)`, m.maxSize >= 28) +
+      b(`bold ${m.boldPct.toFixed(TWO_DP)}% (ceiling 30%)`, m.boldPct <= 30) +
+      b(`ratio ${m.ratio.toFixed(TWO_DP)}x (floor 1.8x)`, m.ratio >= 1.8) +
+      b(`${m.denseWindow} sizes in 8px (ceiling 4)`, m.denseWindow <= 4);
+  }
+
+  var beforeMeasured = null, afterMeasured = null;
+
+  function renderResultNote() {
+    var el = document.getElementById("resultNote");
+    if (!beforeMeasured || !afterMeasured) return;
+    el.innerHTML =
+      "<strong>What just happened.</strong> The top panel measured <span class=\"nums\">" +
+      beforeMeasured.boldPct.toFixed(2) + "%</span> of its visible text (" +
+      "<span class=\"nums\">" + beforeMeasured.boldCount + " of " + beforeMeasured.leafCount +
+      "</span> text nodes) at weight 600 or heavier, just now, on this run, already under the 30% " +
+      "ceiling. After demoting every weight-600-plus element to weight 500, the same live page " +
+      "measures <span class=\"nums\">" + afterMeasured.boldPct.toFixed(2) + "%</span>. The other " +
+      "four numbers in each badge row are unchanged between the two panels, because font-weight " +
+      "does not move font-size or image area.";
+  }
+
+  // BEFORE panel: measure only, nothing changed inside it.
+  var before = document.getElementById("before");
+  before.addEventListener("load", function () {
+    try {
+      var doc = before.contentDocument;
+      var win = before.contentWindow;
+      if (!doc || !win) return;
+      setTimeout(function () {
+        var m = measureFirstViewport(doc, win, 390, 844);
+        beforeMeasured = m;
+        renderBadges(document.getElementById("beforeBadges"), m);
+        renderResultNote();
+      }, 400);
+    } catch (err) {
+      console.error("[fix-why-solen--d-airbnb-weight] could not measure the before panel:", err);
+    }
+  });
+
+  // AFTER panel: the actual mechanism. Every leaf-text element the live page renders at weight
+  // 600+ gets font-weight:500 forced via inline style + !important, which beats any Tailwind
+  // utility class specificity. Nothing else about the element (its size, colour, position,
+  // content) is touched. Then the same measurement runs again against the now-modified real DOM.
+  var after = document.getElementById("after");
+  after.addEventListener("load", function () {
+    try {
+      var doc = after.contentDocument;
+      var win = after.contentWindow;
+      if (!doc || !win) return;
+      setTimeout(function () { runAfterTreatment(doc, win); }, 400);
+    } catch (err) {
+      console.error("[fix-why-solen--d-airbnb-weight] could not treat the after panel:", err);
+    }
+  });
+
+  function isLeafTextTop(el) {
+    for (const n of el.childNodes) {
+      if (n.nodeType === 3 && n.textContent.trim().length > 0) return true;
+    }
+    return false;
+  }
+
+  function runAfterTreatment(doc, win) {
+    try {
+      var all = doc.querySelectorAll("body *");
+      var demoted = 0;
+      all.forEach(function (el) {
+        if (!isLeafTextTop(el)) return;
+        var cs = win.getComputedStyle(el);
+        var w = parseInt(cs.fontWeight, 10) || 400;
+        if (w >= 600) {
+          el.style.setProperty("font-weight", "500", "important");
+          demoted++;
+        }
+      });
+      var m = measureFirstViewport(doc, win, 390, 844);
+      afterMeasured = m;
+      renderBadges(document.getElementById("afterBadges"), m);
+      renderResultNote();
+    } catch (err) {
+      console.error("[fix-why-solen--d-airbnb-weight] could not measure the after panel:", err);
+    }
+  }
+</script>
+</body>
+</html>

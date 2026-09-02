@@ -1,0 +1,771 @@
+{
+  "folder": "search-results",
+  "route": "/de/basel/coiffeur",
+  "measuredAtViewport": "390x844",
+  "httpStatus": 200,
+  "settled": true,
+  "redirectedAway": false,
+  "finalUrl": "http://localhost:3457/de/basel/coiffeur",
+  "title": "Beste Coiffeur in Basel - Termin buchen | Solen",
+  "pathname": "/de/basel/coiffeur",
+  "documentHeight": 2311,
+  "screen": {
+    "distinctSizes": [
+      22,
+      18,
+      17,
+      16,
+      15,
+      14,
+      13,
+      12
+    ],
+    "distinctWeights": [
+      "700",
+      "600",
+      "400",
+      "500"
+    ],
+    "textElements": 138,
+    "boldElements": 48
+  },
+  "sections": [
+    {
+      "index": 0,
+      "tag": "header",
+      "className": "sticky top-0 left-0 right-0 z-50 transition-all duration-300 ease-glide py-5 bg-transparent",
+      "heading": null,
+      "box": {
+        "top": 0,
+        "left": 0,
+        "width": 390,
+        "height": 84
+      },
+      "surface": {
+        "background": "rgba(0, 0, 0, 0)",
+        "padding": "20px 0px",
+        "borderRadius": "0px"
+      },
+      "textRoles": [],
+      "cards": [],
+      "imagery": {
+        "imageCount": 0,
+        "imageAreaPx": 0
+      }
+    },
+    {
+      "index": 1,
+      "tag": "main",
+      "className": "isolate pb-[calc(56px+env(safe-area-inset-bottom))] md:pb-[env(safe-area-inset-bottom)]",
+      "heading": "Top Coiffeur",
+      "box": {
+        "top": 84,
+        "left": 0,
+        "width": 390,
+        "height": 1290
+      },
+      "surface": {
+        "background": "rgba(0, 0, 0, 0)",
+        "padding": "0px 0px 56px",
+        "borderRadius": "0px"
+      },
+      "textRoles": [
+        {
+          "fontSizePx": 18,
+          "fontWeight": "600",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 22.5,
+          "letterSpacing": "-0.18px",
+          "count": 2,
+          "sample": "Top Coiffeur"
+        },
+        {
+          "fontSizePx": 18,
+          "fontWeight": "600",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 21.6,
+          "letterSpacing": "-0.36px",
+          "count": 1,
+          "sample": "Häufig gestellte Fragen"
+        },
+        {
+          "fontSizePx": 16,
+          "fontWeight": "600",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 24,
+          "letterSpacing": "normal",
+          "count": 3,
+          "sample": "Wie viel kostet ein Besuch bei einem Coiffeur in Basel?"
+        },
+        {
+          "fontSizePx": 14,
+          "fontWeight": "500",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 21,
+          "letterSpacing": "normal",
+          "count": 1,
+          "sample": "Coiffeur"
+        },
+        {
+          "fontSizePx": 14,
+          "fontWeight": "600",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 17.5,
+          "letterSpacing": "normal",
+          "count": 16,
+          "sample": "Haarsalon Margot"
+        },
+        {
+          "fontSizePx": 14,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 20,
+          "letterSpacing": "normal",
+          "count": 3,
+          "sample": "Die Preise variieren je nach Salon und Service. Nutzen Sie u"
+        },
+        {
+          "fontSizePx": 12,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 18,
+          "letterSpacing": "normal",
+          "count": 16,
+          "sample": "4.8"
+        },
+        {
+          "fontSizePx": 12,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 16.2,
+          "letterSpacing": "normal",
+          "count": 48,
+          "sample": "Coiffeur"
+        },
+        {
+          "fontSizePx": 12,
+          "fontWeight": "600",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 16.2,
+          "letterSpacing": "normal",
+          "count": 16,
+          "sample": "35 CHF"
+        }
+      ],
+      "cards": [
+        {
+          "radiusPx": 22,
+          "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(50, 47, 44, 0.09) 0px 2px 8px 0px",
+          "border": "none",
+          "background": "rgb(244, 244, 245)",
+          "padding": "0px",
+          "count": 16,
+          "exampleSize": "231x185"
+        },
+        {
+          "radiusPx": 40,
+          "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(50, 47, 44, 0.12) 0px 6px 16px 0px",
+          "border": "1px solid rgb(228, 228, 231)",
+          "background": "rgb(255, 255, 255)",
+          "padding": "0px 19px",
+          "count": 1,
+          "exampleSize": "358x54"
+        },
+        {
+          "radiusPx": 16,
+          "boxShadow": "none",
+          "border": "1px solid rgb(228, 228, 231)",
+          "background": "rgb(255, 255, 255)",
+          "padding": "0px",
+          "count": 1,
+          "exampleSize": "326x244"
+        }
+      ],
+      "imagery": {
+        "imageCount": 16,
+        "imageAreaPx": 680955
+      }
+    },
+    {
+      "index": 2,
+      "tag": "section",
+      "className": "mb-6",
+      "heading": "Top Coiffeur",
+      "box": {
+        "top": 166,
+        "left": 12,
+        "width": 366,
+        "height": 303
+      },
+      "surface": {
+        "background": "rgba(0, 0, 0, 0)",
+        "padding": "0px",
+        "borderRadius": "0px"
+      },
+      "textRoles": [
+        {
+          "fontSizePx": 18,
+          "fontWeight": "600",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 22.5,
+          "letterSpacing": "-0.18px",
+          "count": 1,
+          "sample": "Top Coiffeur"
+        },
+        {
+          "fontSizePx": 14,
+          "fontWeight": "600",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 17.5,
+          "letterSpacing": "normal",
+          "count": 8,
+          "sample": "Haarsalon Margot"
+        },
+        {
+          "fontSizePx": 12,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 18,
+          "letterSpacing": "normal",
+          "count": 8,
+          "sample": "4.8"
+        },
+        {
+          "fontSizePx": 12,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 16.2,
+          "letterSpacing": "normal",
+          "count": 24,
+          "sample": "Coiffeur"
+        },
+        {
+          "fontSizePx": 12,
+          "fontWeight": "600",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 16.2,
+          "letterSpacing": "normal",
+          "count": 8,
+          "sample": "35 CHF"
+        }
+      ],
+      "cards": [
+        {
+          "radiusPx": 22,
+          "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(50, 47, 44, 0.09) 0px 2px 8px 0px",
+          "border": "none",
+          "background": "rgb(244, 244, 245)",
+          "padding": "0px",
+          "count": 8,
+          "exampleSize": "231x185"
+        }
+      ],
+      "imagery": {
+        "imageCount": 8,
+        "imageAreaPx": 340477
+      }
+    },
+    {
+      "index": 3,
+      "tag": "div",
+      "className": "mb-[14px] flex items-center justify-between gap-4",
+      "heading": "Top Coiffeur",
+      "box": {
+        "top": 166,
+        "left": 12,
+        "width": 366,
+        "height": 32
+      },
+      "surface": {
+        "background": "rgba(0, 0, 0, 0)",
+        "padding": "0px",
+        "borderRadius": "0px"
+      },
+      "textRoles": [
+        {
+          "fontSizePx": 18,
+          "fontWeight": "600",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 22.5,
+          "letterSpacing": "-0.18px",
+          "count": 1,
+          "sample": "Top Coiffeur"
+        }
+      ],
+      "cards": [],
+      "imagery": {
+        "imageCount": 0,
+        "imageAreaPx": 0
+      }
+    },
+    {
+      "index": 4,
+      "tag": "section",
+      "className": "mb-6",
+      "heading": "In der Nähe",
+      "box": {
+        "top": 493,
+        "left": 12,
+        "width": 366,
+        "height": 303
+      },
+      "surface": {
+        "background": "rgba(0, 0, 0, 0)",
+        "padding": "0px",
+        "borderRadius": "0px"
+      },
+      "textRoles": [
+        {
+          "fontSizePx": 18,
+          "fontWeight": "600",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 22.5,
+          "letterSpacing": "-0.18px",
+          "count": 1,
+          "sample": "In der Nähe"
+        },
+        {
+          "fontSizePx": 14,
+          "fontWeight": "600",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 17.5,
+          "letterSpacing": "normal",
+          "count": 8,
+          "sample": "Muse Beauty Studio"
+        },
+        {
+          "fontSizePx": 12,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 18,
+          "letterSpacing": "normal",
+          "count": 8,
+          "sample": "4.2"
+        },
+        {
+          "fontSizePx": 12,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 16.2,
+          "letterSpacing": "normal",
+          "count": 24,
+          "sample": "Coiffeur"
+        },
+        {
+          "fontSizePx": 12,
+          "fontWeight": "600",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 16.2,
+          "letterSpacing": "normal",
+          "count": 8,
+          "sample": "35 CHF"
+        }
+      ],
+      "cards": [
+        {
+          "radiusPx": 22,
+          "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(50, 47, 44, 0.09) 0px 2px 8px 0px",
+          "border": "none",
+          "background": "rgb(244, 244, 245)",
+          "padding": "0px",
+          "count": 8,
+          "exampleSize": "231x185"
+        }
+      ],
+      "imagery": {
+        "imageCount": 8,
+        "imageAreaPx": 340477
+      }
+    },
+    {
+      "index": 5,
+      "tag": "div",
+      "className": "mb-[14px] flex items-center justify-between gap-4",
+      "heading": "In der Nähe",
+      "box": {
+        "top": 493,
+        "left": 12,
+        "width": 366,
+        "height": 32
+      },
+      "surface": {
+        "background": "rgba(0, 0, 0, 0)",
+        "padding": "0px",
+        "borderRadius": "0px"
+      },
+      "textRoles": [
+        {
+          "fontSizePx": 18,
+          "fontWeight": "600",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 22.5,
+          "letterSpacing": "-0.18px",
+          "count": 1,
+          "sample": "In der Nähe"
+        }
+      ],
+      "cards": [],
+      "imagery": {
+        "imageCount": 0,
+        "imageAreaPx": 0
+      }
+    },
+    {
+      "index": 6,
+      "tag": "nav",
+      "className": "md:hidden fixed inset-x-0 bottom-0 z-[700] [body[data-overlay-open]_&]:hidden mx-3 mb-3 rounded-full overflow-hidden mb-[calc(12px+env(safe-area-inset-bottom))] transition-[margin,",
+      "heading": "Suchen",
+      "box": {
+        "top": 774,
+        "left": 12,
+        "width": 366,
+        "height": 58
+      },
+      "surface": {
+        "background": "rgba(255, 255, 255, 0.8)",
+        "padding": "0px",
+        "borderRadius": "9999px"
+      },
+      "textRoles": [
+        {
+          "fontSizePx": 12,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 12,
+          "letterSpacing": "normal",
+          "count": 4,
+          "sample": "Suchen"
+        }
+      ],
+      "cards": [],
+      "imagery": {
+        "imageCount": 0,
+        "imageAreaPx": 0
+      }
+    },
+    {
+      "index": 7,
+      "tag": "section",
+      "className": "px-5 md:px-6 lg:px-10 xl:px-20 py-12 border-t border-s-border max-w-[800px] mx-auto",
+      "heading": "Häufig gestellte Fragen",
+      "box": {
+        "top": 868,
+        "left": 12,
+        "width": 366,
+        "height": 387
+      },
+      "surface": {
+        "background": "rgba(0, 0, 0, 0)",
+        "padding": "48px 20px",
+        "borderRadius": "0px"
+      },
+      "textRoles": [
+        {
+          "fontSizePx": 18,
+          "fontWeight": "600",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 21.6,
+          "letterSpacing": "-0.36px",
+          "count": 1,
+          "sample": "Häufig gestellte Fragen"
+        },
+        {
+          "fontSizePx": 16,
+          "fontWeight": "600",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 24,
+          "letterSpacing": "normal",
+          "count": 3,
+          "sample": "Wie viel kostet ein Besuch bei einem Coiffeur in Basel?"
+        },
+        {
+          "fontSizePx": 14,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 20,
+          "letterSpacing": "normal",
+          "count": 3,
+          "sample": "Die Preise variieren je nach Salon und Service. Nutzen Sie u"
+        }
+      ],
+      "cards": [
+        {
+          "radiusPx": 16,
+          "boxShadow": "none",
+          "border": "1px solid rgb(228, 228, 231)",
+          "background": "rgb(255, 255, 255)",
+          "padding": "0px",
+          "count": 1,
+          "exampleSize": "326x244"
+        }
+      ],
+      "imagery": {
+        "imageCount": 0,
+        "imageAreaPx": 0
+      }
+    },
+    {
+      "index": 8,
+      "tag": "footer",
+      "className": "relative z-[1] bg-white",
+      "heading": "Bleib auf dem Laufenden",
+      "box": {
+        "top": 1374,
+        "left": 0,
+        "width": 390,
+        "height": 880
+      },
+      "surface": {
+        "background": "rgb(255, 255, 255)",
+        "padding": "0px",
+        "borderRadius": "0px"
+      },
+      "textRoles": [
+        {
+          "fontSizePx": 22,
+          "fontWeight": "700",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 22,
+          "letterSpacing": "normal",
+          "count": 1,
+          "sample": "Solen"
+        },
+        {
+          "fontSizePx": 17,
+          "fontWeight": "600",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 25.5,
+          "letterSpacing": "-0.425px",
+          "count": 1,
+          "sample": "Bleib auf dem Laufenden"
+        },
+        {
+          "fontSizePx": 16,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 24,
+          "letterSpacing": "normal",
+          "count": 1,
+          "sample": "E-Mail-Adresse"
+        },
+        {
+          "fontSizePx": 14,
+          "fontWeight": "700",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 21,
+          "letterSpacing": "normal",
+          "count": 4,
+          "sample": "Unternehmen"
+        },
+        {
+          "fontSizePx": 13,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 19.5,
+          "letterSpacing": "normal",
+          "count": 13,
+          "sample": "Neue Salons, Trends und Tipps. Einmal im Monat."
+        },
+        {
+          "fontSizePx": 13,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 21.13,
+          "letterSpacing": "normal",
+          "count": 1,
+          "sample": "Für Ihre Stadt. Für die Schweiz."
+        },
+        {
+          "fontSizePx": 13,
+          "fontWeight": "500",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 19.5,
+          "letterSpacing": "normal",
+          "count": 1,
+          "sample": "DE"
+        },
+        {
+          "fontSizePx": 12,
+          "fontWeight": "700",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 18,
+          "letterSpacing": "normal",
+          "count": 1,
+          "sample": "© 2026 Solen.ch Schweiz"
+        }
+      ],
+      "cards": [
+        {
+          "radiusPx": 12,
+          "boxShadow": "none",
+          "border": "1px solid rgb(228, 228, 231)",
+          "background": "rgb(255, 255, 255)",
+          "padding": "12px 48px 12px 16px",
+          "count": 1,
+          "exampleSize": "350x50"
+        }
+      ],
+      "imagery": {
+        "imageCount": 0,
+        "imageAreaPx": 0
+      }
+    },
+    {
+      "index": 9,
+      "tag": "div",
+      "className": "",
+      "heading": "Bleib auf dem Laufenden",
+      "box": {
+        "top": 1402,
+        "left": 20,
+        "width": 350,
+        "height": 47
+      },
+      "surface": {
+        "background": "rgba(0, 0, 0, 0)",
+        "padding": "0px",
+        "borderRadius": "0px"
+      },
+      "textRoles": [
+        {
+          "fontSizePx": 17,
+          "fontWeight": "600",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 25.5,
+          "letterSpacing": "-0.425px",
+          "count": 1,
+          "sample": "Bleib auf dem Laufenden"
+        },
+        {
+          "fontSizePx": 13,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 19.5,
+          "letterSpacing": "normal",
+          "count": 1,
+          "sample": "Neue Salons, Trends und Tipps. Einmal im Monat."
+        }
+      ],
+      "cards": [],
+      "imagery": {
+        "imageCount": 0,
+        "imageAreaPx": 0
+      }
+    },
+    {
+      "index": 10,
+      "tag": "form",
+      "className": "relative w-full max-w-[360px]",
+      "heading": "E-Mail-Adresse",
+      "box": {
+        "top": 1465,
+        "left": 20,
+        "width": 350,
+        "height": 50
+      },
+      "surface": {
+        "background": "rgba(0, 0, 0, 0)",
+        "padding": "0px",
+        "borderRadius": "0px"
+      },
+      "textRoles": [
+        {
+          "fontSizePx": 16,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 24,
+          "letterSpacing": "normal",
+          "count": 1,
+          "sample": "E-Mail-Adresse"
+        }
+      ],
+      "cards": [
+        {
+          "radiusPx": 12,
+          "boxShadow": "none",
+          "border": "1px solid rgb(228, 228, 231)",
+          "background": "rgb(255, 255, 255)",
+          "padding": "12px 48px 12px 16px",
+          "count": 1,
+          "exampleSize": "350x50"
+        }
+      ],
+      "imagery": {
+        "imageCount": 0,
+        "imageAreaPx": 0
+      }
+    }
+  ]
+}

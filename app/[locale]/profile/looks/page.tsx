@@ -12,6 +12,7 @@ export const dynamic = "force-dynamic";
 
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import EmptyStateDiscovery from "@/app/[locale]/_components/profile/EmptyStateDiscovery";
 
@@ -39,21 +40,23 @@ export default async function ProfileLooksPage({
       .order("average_rating", { ascending: false })
       .limit(6);
 
+  const t = await getTranslations({ locale, namespace: "looks" });
+
   return (
     <main className="max-w-2xl mx-auto px-4 sm:px-6 pt-4 pb-8">
       <span aria-hidden className="hidden" /> {/* title lives in the global header */}
       <div className="mt-2">
         <EmptyStateDiscovery
           locale={locale}
-          title="Noch keine Looks."
-          lead="Sammeln Sie Inspiration aus Salon-Profilen und Inspo, hier finden Sie sie wieder."
+          title={t("title")}
+          lead={t("lead")}
           bannerImg={topSalons?.[0]?.cover_photo_url ?? null}
-          bannerTitle="Inspo öffnen"
-          bannerSub="Frische Looks aus Basler Salons"
+          bannerTitle={t("bannerTitle")}
+          bannerSub={t("bannerSub")}
           bannerHref={`/${locale}/inspo`}
           hintIcon="bookmark"
-          hintText="Speichere Looks direkt aus dem Discovery-Feed und aus Salon-Portfolios."
-          railTitle="Top bewertet"
+          hintText={t("hintText")}
+          railTitle={t("railTitle")}
           railHref={`/${locale}/coiffeur`}
           salons={topSalons ?? []}
         />

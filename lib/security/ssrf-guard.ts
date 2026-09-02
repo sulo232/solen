@@ -115,9 +115,24 @@ export async function assertSafeFetchUrl(rawUrl: string): Promise<void> {
 
   let addresses: { address: string; family: number }[];
   try {
-    addresses = await dns.lookup(hostname, { all: true });
+    // dns.lookup() never accepted an abort/signal option, so bound it the third idiom
+    // this repo uses for calls that can't take a signal: Promise.race against a timer
+    // (precedent: app/api/salons/route.ts:138-141). 3000ms. The timer is cleared in a
+    // finally so a fast lookup does not leave a pending timer holding the process open.
+    let timer: ReturnType<typeof setTimeout>;
+    try {
+      addresses = await Promise.race([
+        dns.lookup(hostname, { all: true }),
+        new Promise<never>((_, reject) => {
+          timer = setTimeout(() => reject(new Error("dns.lookup timed out")), 3000);
+        }),
+      ]);
+    } finally {
+      clearTimeout(timer!);
+    }
   } catch {
-    // Can't resolve -> can't prove it's safe, block.
+    // Can't resolve (including a timeout above) -> can't prove it's safe, block. Fail
+    // CLOSED, which is the correct default for a security guard.
     throw new UnsafeFetchUrlError();
   }
 

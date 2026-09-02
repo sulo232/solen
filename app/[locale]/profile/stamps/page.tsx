@@ -59,6 +59,7 @@ export default async function ProfileStampsPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "profileStamps" });
   const supabase = await createServerSupabaseClient();
 
   const {
@@ -126,15 +127,15 @@ export default async function ProfileStampsPage({
         <div className="mt-2">
           <EmptyStateDiscovery
             locale={locale}
-            title="Noch keine Stempel."
-            lead="Buchen Sie bei einem Salon mit Treuekarte und sammeln Sie Stempel für Ihre nächste Belohnung."
+            title={t("title")}
+            lead={t("lead")}
             bannerImg={topSalons?.[0]?.cover_photo_url ?? null}
-            bannerTitle="So funktioniert's"
-            bannerSub="Pro Besuch ein Stempel, volle Karte = Belohnung"
+            bannerTitle={t("bannerTitle")}
+            bannerSub={t("bannerSub")}
             bannerHref={`/${locale}/coiffeur`}
             hintIcon="stamp"
-            hintText="Der Stempel kommt automatisch nach jedem abgeschlossenen Termin."
-            railTitle="Beliebt in Basel"
+            hintText={t("hintText")}
+            railTitle={t("railTitle")}
             railHref={`/${locale}/coiffeur`}
             salons={topSalons ?? []}
           />
@@ -145,7 +146,7 @@ export default async function ProfileStampsPage({
 
   return (
     <main className="max-w-2xl mx-auto px-4 sm:px-6 pt-4 pb-8">
-      <p className="font-body text-[13px] text-s-ink-2">{allCards.length} Karten</p>
+      <p className="font-body text-[13px] text-s-ink-2">{t("cardsCount", { count: allCards.length })}</p>
 
       {heroCard && heroCard.salons && (
         <div className="mt-2">
@@ -163,7 +164,7 @@ export default async function ProfileStampsPage({
       {otherActive.length > 0 && (
         <section className="mt-8">
           <h2 className="font-body text-[12px] font-bold uppercase tracking-[.22em] text-s-ink/40 mb-3">
-            Aktiv
+            {t("sectionActive")}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {otherActive.map((c) =>
@@ -187,7 +188,7 @@ export default async function ProfileStampsPage({
       {redeemed.length > 0 && (
         <section className="mt-8 opacity-70">
           <h2 className="font-body text-[12px] font-bold uppercase tracking-[.22em] text-s-ink/40 mb-3">
-            Abgeschlossen {redeemed.length}
+            {t("sectionCompleted", { count: redeemed.length })}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {redeemed.map((c) =>
@@ -207,7 +208,7 @@ export default async function ProfileStampsPage({
                     // V3-D330 (Section E lock): retired check-mark (U+2713) emoji per V3-D203 → lucide Check icon
                     className="absolute top-2 right-2 inline-flex items-center gap-1 px-2 py-[2px] rounded-full text-[12px] font-body font-bold tabular-nums uppercase tracking-[.08em] bg-s-success/10 text-s-success"
                   >
-                    <Check size={9} strokeWidth={2.5} aria-hidden /> Belohnung verfügbar
+                    <Check size={9} strokeWidth={2.5} aria-hidden /> {t("rewardAvailable")}
                   </span>
                 </div>
               ) : null

@@ -22,7 +22,8 @@
 // INTEGER Rappen (migration 20260602100000_purchase_refunds).
 
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { Redis } from "@upstash/redis";
+import type { Redis } from "@upstash/redis";
+import { createBoundedRedis } from "@/lib/redis";
 import { getStripe } from "@/lib/stripe";
 import { getRefundConfig } from "@/lib/bookings/refund-config";
 import { alertAdmin } from "@/lib/alert-admin";
@@ -33,7 +34,7 @@ function getRedis(): Redis | null {
   if (redis) return redis;
   const env = getServerEnv();
   if (!env.UPSTASH_REDIS_REST_URL || !env.UPSTASH_REDIS_REST_TOKEN) return null;
-  redis = new Redis({ url: env.UPSTASH_REDIS_REST_URL, token: env.UPSTASH_REDIS_REST_TOKEN });
+  redis = createBoundedRedis(env.UPSTASH_REDIS_REST_URL, env.UPSTASH_REDIS_REST_TOKEN);
   return redis;
 }
 
@@ -56,11 +57,27 @@ async function acquireRefundLock(
   // the holder) so two near-simultaneous requests serialize instead of one
   // silently proceeding unlocked the instant the first request holds the key.
   for (let attempt = 0; attempt < 6; attempt++) {
-    const acquired = await r.set(key, token, { nx: true, ex: 15 });
+    let acquired: Awaited<ReturnType<typeof r.set>>;
+    try {
+      acquired = await r.set(key, token, { nx: true, ex: 15 });
+    } catch (err) {
+      // A bounded r.set can now throw (timeout) instead of hanging forever. This is a
+      // MONEY path: treat a timeout the same as "still locked" (return null) rather than
+      // letting it escape as an uncaught exception, so the caller's existing null -> fail
+      // CLOSED -> CONCURRENT_RETRY path fires and a timeout can never become a second refund.
+      console.error("[issuePurchaseRefund] acquireRefundLock r.set failed:", err);
+      return null;
+    }
     if (acquired) {
       return async () => {
-        const current = await r.get(key);
-        if (current === token) await r.del(key); // drift-ok: internal Redis lock-release compare-and-delete (Redlock safe-unlock), not attacker-facing, no external party ever supplies `current` or `token`
+        try {
+          const current = await r.get(key);
+          if (current === token) await r.del(key); // drift-ok: internal Redis lock-release compare-and-delete (Redlock safe-unlock), not attacker-facing, no external party ever supplies `current` or `token`
+        } catch (err) {
+          // Release best-effort: the key's own 15s TTL (ex: 15 above) reclaims it even if
+          // this call times out, so a failed release never leaves the lock stuck forever.
+          console.error("[issuePurchaseRefund] acquireRefundLock release failed:", err);
+        }
       };
     }
     await new Promise((resolve) => setTimeout(resolve, 500));

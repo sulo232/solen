@@ -20,7 +20,21 @@ everywhere, and it is everywhere outside these mockups too."
     What PASSES and must not be "fixed": the anchor is 34px at 2.83x body, clearing both the >=28px display-anchor floor and the >=1.8x ratio floor. Do not touch it.
     A false lead worth recording so it is not chased again: 17 elements in the first viewport render a solid ink-black fill, which looked like the banned black-on-selected. Inspected, they are the collapsed sidebar's peek tooltips (`pointer-events-none absolute left-[52px]`), which are legitimately ink. Not a violation.
   - [x] ROOT CAUSE NAMED, and it is not layout. `tailwind.config.js:81` aliases the RETIRED token `s-coral` to `#0A0A0A`, plain ink. 180 references across 58 dashboard files still use it, so elements designed as coloured accents render black. That is the mechanism behind "too monochrome". The calendar's 26 of them are fixed (below); the other 154 are not.
-  - [ ] DIRECTIONS still to propose, and this is the part that needs his eye, so it is not something to decide alone. Surface the stranded Aurora V2 skin (branch bold-hellman) as one option rather than adopting it.
+  - [ ] BLOCKED ON AN OWNER PICK, one letter: D1, D2 or D3. Three directions are grounded and costed
+    below and the choice is his by name (a dashboard reskin is
+    not an indifference-band call). Nothing here is adopted.
+    **D1, take the gray off the page wrapper.** Built and rendered as a probe, see the GRAY item (b) below.
+    One CSS line on one wrapper. Does not touch layout, type or cards. Smallest possible move.
+    **D2, restore the dead token.** `tailwind.config.js:81` aliases the retired `s-coral` to plain ink
+    `#0A0A0A`, and 180 references across 58 dashboard files still point at it, so elements drawn as
+    coloured accents render black. 26 of them in the calendar are already fixed (commit `290af37f5`);
+    154 are not. This is the mechanism behind the monochrome look, so D2 changes more than D1 does.
+    **D3, the stranded Aurora V2 skin.** VERIFIED PRESENT 2026-08-27, and the plan file's branch name was
+    wrong: it is `claude/bold-hellman-b31513`, not `bold-hellman`. Seven phases, 98 files,
+    +1,899 / -953 against main, ending at `f49ff5f01`. It was finished and never merged. It is the
+    largest option and the only one that needs a real review before it could land.
+    NOT DECIDED, and deliberately not started: this is the one place in this batch where guessing costs
+    the most, because D3 rewrites 98 files.
 - [x] CALENDAR mockup honesty , RESOLVED by taking the second arm, the one he had already approved ("just FIX the dead token in code"). Committed `290af37f5` on 2026-08-27. The mockup is dropped rather than re-pointed at the desktop grid, because the mockup only existed to show a defect that is now gone.
   - [x] all 26 `s-coral` tokens across 18 lines in `app/[locale]/dashboard/calendar/page.tsx` replaced with `s-accent-bright`. Verified: 0 `s-coral` left, `s-accent-bright` occurrences 10 -> 36, which is exactly 10 + 26.
   - [x] grounded, not invented: `LOCKFILE.md:128` names the replacement for this exact retired token ("blue accent use `s-accent`") and `LOCKFILE.md:1574` makes dashboard files exempt from the sparse-blue rule while explicitly NOT exempt from the retired-token rule, naming `s-coral`. Almost every call site already carried an `s-accent-bright` border, so the fix restores an intended pairing rather than choosing a new colour.
@@ -40,7 +54,28 @@ everywhere, and it is everywhere outside these mockups too."
     **THE RESULT, share of one phone screen painted gray, first viewport unless noted:** warum-solen **73.5%** (two full-width `bg-s-bg-sunken` sections) - salon-owner dashboard **44.3%** (one `min-h-screen bg-s-bg-sunken` page wrapper) - profile/settings **12.8%** (the one identity block) - booking/lookup **8.8%** (one info box) - home at the foot **7.7%** (the newsletter block) - a salon PDP **4.2%** (3.7 of it the `bg-s-sand` Termin/Walk-in switcher, which is warm sand, not the cool sunken) - inspo 1.6% - home 1.2% - notifications 1.2% - category 1.2% - city result 1.1% - profile **0%** - bookings **0%**.
     **So "gray everywhere" is FALSE as stated and TRUE where he actually spends his own time.** Every screen a CUSTOMER browses is 0 to 4.2% gray and 42 to 88% white. The two heavy ones are the marketing page and HIS OWN dashboard, which is also the surface he called "looks ass" in the same original message. That is very likely the source of the impression, and it makes the dashboard item above and this item the same item.
     Consequence for (b): the probe should NOT start at /de/profile/settings. At 12.8% it cannot show him a difference worth judging. The probe that answers his complaint is the dashboard at 44.3%, or warum-solen at 73.5%.
-  - [ ] (b) the probe still needs building, and (c) needs the owner's eye on it. Both blocked on him by design: mockup-first binds, and reopening a LOCKFILE surface row is his call by name. RE-POINTED by (a2): build it on the dashboard, not on settings.
+  - [x] (b) PROBE BUILT AND VERIFIED 2026-08-27: `public/_mockups/dashboard-without-the-gray/index.html`.
+    Two panels, both loading the REAL `/de/dashboard` from the running server with real data. Nothing is
+    redrawn. After the second panel loads, exactly one rule is injected into it, the page wrapper's
+    `bg-s-bg-sunken` painted white. Measured after building: before panel wrapper `rgb(244, 244, 245)`,
+    after panel `rgb(255, 255, 255)`, both panels `textLen 733`, so the content is provably identical and
+    only the colour differs.
+    NOTHING IS ADDED TO COMPENSATE, and that is measured rather than assumed: all 12 of the 12 white
+    blocks over 120x40 on that screen already draw their own 1px border, `withNoBoundaryAtAll: 0`, so
+    FLOORS LAW 4 option (c) is already satisfied without the tray. A mistake made while building this is
+    recorded inside the file: the first pass read only `borderTopWidth`, concluded the 402x57 top bar had
+    no border, and injected a compensating hairline. Re-measured on all four sides it is 0/0/1/0. The
+    injection was removed and the false line deleted.
+    RE-POINTED by (a2) and this is why: settings paints 12.8% gray, too small a difference to judge. The
+    dashboard paints 44.3%.
+  - [ ] (c) BLOCKED ON AN OWNER DECISION, one word: does the dashboard go white or stay gray. He has the
+    two-panel probe from (b) in front of him. It is the only thing left in this item. Reopening a LOCKFILE surface row is his
+    by name. Two arms, both decided in advance so this is a question and not a stop:
+    ARM A, he says the white one is better -> the LOCKFILE surface row reopens and a sweep plan gets
+    written for the 349 customer-site wash sites, starting with `Header.tsx` and `SearchTemplate.tsx`
+    because those two render on nearly every page.
+    ARM B, he says keep the gray -> the tray stays, the item closes, and the dashboard's real problems
+    (10 font sizes, 4 weights, 43.1% bold, 12px body) are what get worked instead.
 - [x] AVATAR UPLOAD DELIVERED (owner 2026-07-20):
   - [x] investigated: 5 existing upload endpoints found; client-photos bucket has a documented public-URL bug -> new PUBLIC `avatars` bucket instead (service-photos family), migration backfilled.
   - [x] Avatar-URL input REPLACED: round preview + "Foto ändern" picker + client downscale -> POST /api/profile/avatar -> profiles.avatar_url. Live-tested (upload 200, public URL 200, avatar renders); looked at rendered.

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
 /**
  * CategoryTabs — V3-D138 (2026-05-25).
@@ -24,10 +25,14 @@ const TABS: Tab[] = [
   { slug: "nails",      label: "Nails" },
 ];
 
-export default function CategoryTabs() {
+export default async function CategoryTabs() {
+  // i18n sweep: aria-label was a hardcoded German literal ("Kategorien"), so it never
+  // localized on en/fr/it. Pulled from navigation.categories, matching layout.tsx's
+  // no-locale-arg getTranslations pattern (locale already established upstream).
+  const tNav = await getTranslations("navigation");
   return (
     <nav
-      aria-label="Kategorien"
+      aria-label={tNav("categories")}
       className="relative z-[1] mx-auto flex max-w-[1280px] items-center justify-center gap-8 px-4 pt-3 pb-1 md:gap-12 md:px-6"
     >
       {TABS.map(({ slug, label }) => (

@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Inspo: one anchor, four steps down</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+  Scale is full-page because the assigned mechanism is not "add one label", it is "give the screen
+  a real anchor and re-rank everything under it", which means deciding what is biggest, what is
+  second, and what recedes across the whole first viewport, not inside one isolated section. Both
+  panels below are the REAL running Inspo route, loaded live from the dev server at 402px wide, same
+  data, same layout. The only difference is a small set of font-size/font-weight values changed by a
+  script after the real page has loaded, in the second panel only. Nothing is added except one
+  heading node; nothing is removed; nothing moves position.
+
+  Grounded-in: app/[locale]/inspo/page.tsx (the route: search pill, CategoryPillRow, the quick-chip
+    filter row at line 564-636, the category tile row at line 650-685, the masonry grid, all
+    unmodified in structure)
+  Grounded-in: app/[locale]/_components/layout/Header.tsx:416-731 (the route-gated logo-slot title,
+    read to find WHERE Inspo's real title text already lives, same root cause floor-fix-inspo found)
+  Grounded-in: public/_mockups/floor-fix-inspo/index.html (the sibling mockup already on disk,
+    read in full before building this one so this file does something genuinely different, see the
+    "How this differs" note below)
+  Grounded-in: the running dev server, both panels load /de/inspo from it directly at 402px wide
+
+  Depicts:
+    BEFORE panel -> app/[locale]/inspo/page.tsx (route /de/inspo, live iframe, untouched).
+    AFTER panel -> app/[locale]/inspo/page.tsx (same real /de/inspo route, live iframe) with one
+      script injected after load that (a) inserts one heading, "Inspo", as the page's display
+      anchor, and (b) demotes the nine quick-chip filter buttons (the page's own data-driven style
+      tags) one step further down, so the screen reads in four clear steps instead of two flat
+      ones. Nothing else is touched: same search pill, same global category nav, same category
+      tile row, same masonry grid, same data.
+
+  Measured live this turn via mcp Claude Browser javascript_tool against the running dev server at
+  http://localhost:3457/de/inspo, resized to 390x844: a script walking every visible text node's
+  getBoundingClientRect + getComputedStyle (font-size, font-weight), plus every img/video/
+  background-image element's clipped on-screen area. Run twice on two separate browser tabs, both
+  confirmed loaded at /de/inspo before trusting the read.
+
+  Grounded in OUR OWN screen, not only the salon reference: our own anchor lands at 30px and our
+  own body sits at 14px, both taken from THIS page's own live measurement above, not scaled or
+  copied off the reference page. The reference page (/de/salon/cuts-and-culture) only supplies the
+  RATIO this treatment targets (2.14x), not an absolute size; every absolute number in this file's
+  Diagnosis and ladder sections is Inspo's own, measured live, this turn.
+
+  THE IMAGERY NUMBER I WAS GIVEN IS WRONG, confirmed independently, not taken on the sibling
+  mockup's word alone. Both of my own live runs read 65.43% photographic area in the first
+  viewport, not the 0.71% in the brief. That number exactly matches what public/_mockups/
+  floor-fix-inspo measured independently with a different method (scripts/check-geometry.mjs, run
+  against a known passing control page first). Two different measurements, two different tools,
+  same number: F2 imagery PASSES on Inspo today. I am not building an imagery fix that is not
+  needed, and this mechanism does not touch photo area at all in any case.
+
+  Diagnosis: F6 DISPLAY ANCHOR | measured 14px live, twice, this turn (the search placeholder text,
+    the single largest visible text in Inspo's first viewport at 390x844 once visually-hidden nodes
+    like the skip-link are excluded) | violates CLAUDE.md NEVER-AGAIN floor 6 and the FLOORS LAW
+    EMPHASIS BUDGET, which requires one on-screen text element at least 28px | target: the ladder's
+    house value, 30px
+  Diagnosis: F7b ANCHOR RATIO | measured 1.17x live, this turn (14px largest over the live page's
+    own second-most-common size, 12px; 14/12 = 1.17x, matching the figure given in the brief
+    exactly) | violates FLOORS LAW 7b, which requires the largest text be at least 1.8x the body
+    size | target: at least 1.8x, which our own new 30px anchor over our own 14px body clears at
+    2.14x, the same ratio a different Solen screen (/de/salon/cuts-and-culture) clears today
+  Diagnosis: F7c SIZE SPREAD | measured 2 distinct sizes live, this turn ({12px: 24 elements, 14px:
+    7 elements} across every visible text node in the first viewport) | this was already PASSING
+    against the 4-per-8px-window ceiling before any treatment, so this mechanism's job on F7c is
+    narrower than the brief's framing suggests: not "fix a violation" but "add a real anchor without
+    breaking a ceiling that already holds" | target: stay at or under 4 distinct sizes in the
+    densest 8px window after the anchor is added
+
+  How this differs from the sibling mockup already on disk (public/_mockups/floor-fix-inspo). That
+  file is named as the smallest-possible-CSS-change arm on purpose and it does exactly one thing:
+  insert the title heading and touch nothing else, stating so explicitly in its own notes ("What
+  this does not touch... All identical between the two panels"). This file is the HIERARCHY arm: the
+  brief's own instruction is to re-rank everything under the anchor, not only add it. So beyond the
+  anchor, this treatment also demotes one real tier: the nine quick-chip filter buttons, which today
+  sit at the exact same 12px/500 as the category tile labels and the masonry card captions below
+  them, giving the screen no way to tell "a page section" from "an optional refinement tag" by size
+  alone. Stepping those nine buttons to 11px/400 turns the screen's flat {12, 14} into a real ladder:
+  30 (anchor) > 14 (search + the global category nav, untouched) > 12 (category tile labels + card
+  captions, untouched) > 11 (the demoted chip tags). Four steps, four distinct sizes, still inside
+  the 5-size ceiling, still at most 3 sizes in the densest 8px window ([11,19) holds 11/12/14). The
+  30px anchor sits alone outside that window. Two mockups, two different mechanisms, not a restyle
+  of the same idea.
+
+  Exists-check: `npm run exists inspo` run this turn, 7 routes / 20 page-inline sections / 3 API
+    endpoints / 2 DB tables / 2 components / 5 exported symbols, including the exact V3-D410 comment
+    this diagnosis is grounded in and no graveyard entry against a mobile title or a chip-row
+    treatment. `npm run exists "fix-inspo--b-hierarchy"` run this turn, 0 hits, this mockup itself
+    is new.
+
+  Treatment-only: one heading node inserted once (text taken verbatim from the product's own
+  discover.title string, identical in de/en/fr/it), plus a font-size/font-weight change on nine
+  existing quick-chip buttons, both applied by script after the real page has loaded. No DOM node is
+  removed or moved. No copy changes anywhere except the one new heading's own text, which is not new
+  copy, it is the product's existing "Inspo" string. Same search pill, same global category nav,
+  same filter-drawer icon, same category tile row, same masonry grid, same data, single light
+  theme, no dark mode. Every label written for this document is English; the page inside both panels
+  renders its own German through the product's real translations, which is exempt.
+
+  Honesty notes:
+    - This session's browser tab pool is shared with the other agents building the sibling variants
+      of this same brief at the same time; two of my navigations got silently redirected mid-read by
+      another agent's script running in the same tab. Every number in the Diagnosis block above is
+      from a run where the loaded path was confirmed to actually be /de/inspo before trusting the
+      read, on two separate tabs, both times independently.
+    - The AFTER panel's post-treatment size histogram below (30/14/12/11) is arithmetic on the live
+      BEFORE measurement (nine 12px buttons become 11px, one new 30px node appears), not a second
+      live re-render and re-scan of the AFTER iframe, for the same reason the sibling mockup gives
+      for its own after-number: re-measuring inside a shared, actively-colliding tab would not have
+      been any more trustworthy than the arithmetic. Treat it as right by construction.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --line:#E4E4E7; --sunken:#F4F4F5;
+    --font:'Inter Tight',Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  }
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: var(--ink);
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 402px; margin: 0 auto; padding: 0 0 56px; }
+
+  .lede { padding: 28px 16px 6px; }
+  .lede h1 {
+    font-family: var(--font);
+    font-size: 26px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em;
+  }
+  .lede p { margin-top: 10px; font-size: 14px; line-height: 1.5; color: var(--ink2); }
+
+  .note.correction {
+    margin: 22px 16px 0; padding: 14px 14px; border-radius: 12px;
+    background: var(--sunken); border: 1px solid var(--line);
+  }
+  .note.correction strong { display: block; margin-bottom: 4px; color: var(--ink); }
+
+  .panel { margin-top: 26px; }
+  .cap { padding: 0 16px 8px; }
+  .cap h2 {
+    font-family: var(--font);
+    font-size: 17px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em;
+  }
+  .cap p { margin-top: 3px; font-size: 13px; line-height: 1.45; color: var(--ink2); }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  /* the real page, held at its real phone width so nothing is scaled or distorted */
+  .frame {
+    position: relative; width: 100%; height: 660px;
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    overflow: hidden; background: #fff;
+  }
+  .frame iframe { width: 402px; height: 660px; border: 0; display: block; }
+  .frame .badge {
+    position: absolute; top: 10px; right: 10px; z-index: 2;
+    padding: 5px 10px; border-radius: 40px;
+    background: rgba(255,255,255,0.94); border: 1px solid var(--line);
+    font-size: 11px; font-weight: 600; color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .frame .badge.fail { color: #DC2626; }
+  .frame .badge.pass { color: #16A34A; }
+
+  .ladder { padding: 22px 16px 0; }
+  .ladder .row {
+    display: flex; align-items: baseline; gap: 10px;
+    padding: 7px 0; border-bottom: 1px solid var(--line);
+  }
+  .ladder .row:last-child { border-bottom: none; }
+  .ladder .sz { font-family: var(--font); font-weight: 600; color: var(--ink); width: 46px; flex: none; font-variant-numeric: tabular-nums; }
+  .ladder .lbl { font-size: 13px; color: var(--ink2); line-height: 1.4; }
+  .ladder .lbl b { color: var(--ink); font-weight: 600; }
+
+  .note { padding: 22px 16px 0; font-size: 13px; line-height: 1.55; color: var(--ink2); }
+  .note strong { color: var(--ink); font-weight: 600; }
+  .note + .note { padding-top: 12px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <h1>One anchor, four clear steps</h1>
+    <p>Right now Inspo has no headline at all on your phone. The biggest text on the whole screen
+       is the 14px search placeholder. Below, one title comes back at the top, and the small style
+       tags underneath the filter row (Defined Brows, Glossy Finish, and so on) step back a little
+       so the screen reads in clear layers instead of one flat block of small text.</p>
+  </div>
+
+  <div class="note correction">
+    <strong>One number I was handed was wrong, so I checked it myself and did not build on it.</strong>
+    I was told Inspo's photo feed measures 0.71% photographic on the first screen. I measured the
+    live page myself, twice, on two different browser tabs: it actually measures
+    <span class="nums">65.43%</span>, well past the 33% floor. That matches what a sibling mockup
+    found independently with a different tool. Inspo's photos are not the problem. Its missing
+    headline is.
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>Now</h2>
+      <p>No text on this screen reaches 28px. Everything sits at 12px or 14px, flat.</p>
+    </div>
+    <div class="frame">
+      <div class="badge nums fail">biggest text: 14px</div>
+      <iframe id="before" src="/de/inspo" scrolling="no" title="Inspo as it is today"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>With a real anchor and four steps</h2>
+      <p>One title, one clear second tier, and the style tags step back to make room for it.</p>
+    </div>
+    <div class="frame">
+      <div class="badge nums pass">biggest text: 30px</div>
+      <iframe id="after" src="/de/inspo" scrolling="no" title="Inspo with a display anchor and re-ranked tiers"></iframe>
+    </div>
+  </div>
+
+  <div class="ladder">
+    <div class="row"><span class="sz nums">30px</span><span class="lbl"><b>Anchor, new.</b> The page's own title, weight 500 per the ladder's rule that emphasis is carried by size, not by piling on weight 600.</span></div>
+    <div class="row"><span class="sz nums">14px</span><span class="lbl"><b>Second, unchanged.</b> The search placeholder and the global category nav row at the top of every route.</span></div>
+    <div class="row"><span class="sz nums">12px</span><span class="lbl"><b>Body, unchanged.</b> The five category tile labels and the salon name / price under each look in the feed.</span></div>
+    <div class="row"><span class="sz nums">11px</span><span class="lbl"><b>Recedes, changed.</b> The nine quick style tags (Defined Brows, Glossy Finish...). They used to sit at the exact same size as the category labels above them with nothing telling them apart. Now they read as optional, not as a section.</span></div>
+  </div>
+
+  <div class="note">
+    <strong>What this fixes.</strong> Our own new 30px anchor over our own 14px body is
+    <span class="nums">2.14x</span>, past the <span class="nums">1.8x</span> floor and the exact
+    ratio the salon page you already like clears today. The screen now carries four distinct sizes
+    (30 / 14 / 12 / 11); the densest 8px window still holds only three (11, 12, 14), inside the
+    four-per-window ceiling.
+  </div>
+  <div class="note">
+    <strong>What this does not touch.</strong> Photo area was already passing (65.43%, corrected
+    number above) and this mechanism does not add or move a single photo. Weight share was already
+    well under the 30% ceiling before this treatment (2 of 31 visible text elements at weight 600 or
+    higher) and stays there after: the new anchor is weight 500, and the nine demoted chips move
+    from 500 to 400, neither direction touches the bold count.
+  </div>
+  <div class="note">
+    <strong>Where the title text comes from.</strong> It is the same title string the desktop
+    header already shows today, pulled from the product's own translation file, identical across
+    all four languages. Nothing invented.
+  </div>
+  <div class="note">
+    <strong>A separate, smaller defect, not pictured here.</strong> The category tile row falls back
+    to a bare tinted box with no icon and no initial when a category has zero cover photos, breaking
+    the locked missing-photo fallback. Every tile that renders on /de/inspo today already has a
+    cover photo, so there is nothing honest to show side by side for it without inventing an empty
+    category, which the no-fabrication rule forbids. Confirmed in source, not fixed here.
+  </div>
+
+</div>
+
+<script>
+  // Same technique the sibling mockup (floor-fix-inspo) proved out: the AFTER panel loads the SAME
+  // real route as the BEFORE panel, and once it settles, a script re-applies two small style changes
+  // on a plain interval rather than a one-shot pass. Inspo is a client component whose grid remounts
+  // once real items replace the loading skeleton, which detaches a one-shot insert; polling survives
+  // that the same way the sibling mockup's does.
+  var TITLE_TEXT = "Inspo";
+
+  function ensureAnchor(doc, container) {
+    if (container.querySelector(".mockup-inspo-anchor")) { return; }
+    var heading = doc.createElement("h1");
+    heading.className = "mockup-inspo-anchor";
+    heading.textContent = TITLE_TEXT;
+    heading.style.cssText = [
+      "font-family:'Inter Tight',Inter,-apple-system,sans-serif",
+      "font-size:30px",
+      "font-weight:500",
+      "line-height:1.15",
+      "letter-spacing:-0.02em",
+      "color:#0A0A0A",
+      "margin:14px 0 12px",
+    ].join(";");
+    container.insertBefore(heading, container.firstChild);
+  }
+
+  // The nine quick-chip filter buttons render with no children (just their label text as a text
+  // node), which is how they're told apart here from the category-tile buttons a few lines below
+  // them in the DOM: those also carry aria-pressed but always have two child <span> elements (the
+  // photo cover, then the label). Selecting on "no children" instead of a class name keeps this
+  // working even though Tailwind's own utility classes on the chip button are otherwise identical
+  // in shape to a dozen other pill buttons on this page.
+  function demoteChips(doc) {
+    var candidates = doc.querySelectorAll('button[aria-pressed]');
+    for (var i = 0; i < candidates.length; i++) {
+      var btn = candidates[i];
+      if (btn.children.length === 0 && btn.textContent.trim()) {
+        btn.style.fontSize = "11px";
+        btn.style.fontWeight = "400";
+      }
+    }
+  }
+
+  function applyTreatment(doc) {
+    var container = doc.querySelector("main.min-h-screen .max-w-7xl");
+    if (!container) { return; }
+    ensureAnchor(doc, container);
+    demoteChips(doc);
+  }
+
+  var after = document.getElementById("after");
+  var tries = 0;
+  var poll = setInterval(function () {
+    tries += 1;
+    try {
+      var doc = after.contentDocument;
+      if (doc) { applyTreatment(doc); }
+      if (tries > 150) { clearInterval(poll); }
+    } catch (err) {
+      clearInterval(poll);
+      console.error("[fix-inspo--b-hierarchy] could not restyle the after panel:", err);
+    }
+  }, 150);
+</script>
+</body>
+</html>

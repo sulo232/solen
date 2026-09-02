@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Notifications: clear every floor at once</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+  Scale is full-page: the change touches the header anchor, the weight of nearly every label,
+  and the background the row list sits on, so both panels load the entire real /de/notifications
+  route end to end, nothing cropped out of the iframe.
+
+  Grounded-in: app/[locale]/notifications/NotificationsClient.tsx (real route, both panels are
+    live iframes of it, loaded via /api/dev/login so the authenticated inbox renders, not the
+    signed-out redirect)
+  Grounded-in: app/[locale]/notifications/page.tsx (confirms the route redirects to the login
+    screen with no session, which is why a live authenticated measurement is required for this
+    file rather than trusting the brief's numbers)
+  Grounded-in: app/[locale]/_components/primitives/Avatar.tsx (the registered primitive this
+    mockup's photo swap approximates: photo cover-circle at the "md" 44px size, the same size the
+    real icon discs already render at, so the swap changes nothing about row height)
+  Grounded-in: _design-system/LOCKFILE.md design-contract table, "radius" row (grouped LIST-card
+    24, plus that row's own drop-shadow token) and FLOORS LAW item 4 (edge-visibility: grouped,
+    list and panel content on white with no photo anchor requires the sunken tray)
+  Grounded-in: tailwind.config.js line 275 (the grouped-list-card drop-shadow token's exact
+    rgba values, quoted verbatim below, not invented)
+
+  Depicts:
+    BEFORE panel: app/[locale]/notifications/NotificationsClient.tsx, the real /de/notifications
+      route, live iframe via /api/dev/login, untouched.
+    AFTER panel: the SAME real route, live iframe, DOM-patched after it loads, five changes.
+      1. The page's own h1 grows from 20px/700 to 30px/500. Emphasis moves from weight to size.
+      2. Every font-semibold / font-bold element on the screen drops to weight 500. No element on
+         this screen ever used weight to distinguish itself from ANOTHER bold element (unlike a
+         SalonCard's name+price pair), so there is no V3-D442-style exception to carry over.
+         Unread rows keep their existing blue dot as the one unread signal; dropping the redundant
+         semibold-vs-medium title weight removes a second copy of a signal already carried by the
+         dot, not the signal itself.
+      3. The mark-all-read control moves from an isolated 14px to 15px, merging it into the same
+         size the row titles already use instead of being its own one-off value.
+      4. The two row-list containers get a light gray tray behind them (bg #F4F4F5, radius 24,
+         drop shadow "0 1px 3px rgba(10,10,10,.04), 0 10px 28px -14px rgba(10,10,10,.10)", no
+         border anywhere on the container) instead of sitting on plain white with only hairline
+         dividers between rows. This is one outer boundary, the drop shadow, with the existing
+         between-row hairlines staying exactly where they were, the same shape the LOCKFILE
+         grouped-list-card recipe already ships elsewhere (one drop-shadow container, hairline-
+         divided rows inside, no border on the container itself), not a second competing edge.
+      5. Rows that are actually tied to one specific booking get a small round photo in place of
+         the generic type icon, at the same 44px size and circle shape the icon already renders
+         at, so no row grows or shifts. Which rows those are is read straight off the component's
+         own logic, not guessed: NotificationsClient.tsx only renders a row as a real anchor
+         element (with an href) when it has a bookingId or a salonSlug behind it; a row with
+         neither renders as a plain button element with no destination. This patch targets
+         exactly the anchor rows, the same real/salon-linked/no-salon split the component already
+         encodes, language-independent, no copy read or matched anywhere in the script.
+
+  Diagnosis F6 DISPLAY ANCHOR: measured 20px live, authenticated, 390x844 (the real h1, a
+    text-[20px] font-bold heading, confirmed against source). Violates FLOORS LAW 6, at least
+    28px required. Target 30px, the house value read off /de/salon/cuts-and-culture.
+  Diagnosis F7a WEIGHT SHARE: measured 34.78% of visible text at weight 600 or higher (8 of 23
+    text elements in the 390x844 viewport, live authenticated getComputedStyle scan). Violates
+    EMPHASIS BUDGET ceiling (a), at most 30%. Target at most 30%, house value 17.6%.
+  Diagnosis F7b ANCHOR RATIO: measured 1.43x (20px anchor over the ladder's 14px body). Violates
+    EMPHASIS BUDGET floor (b), at least 1.8x required. Target 2.14x, the house ratio (30/14).
+  Diagnosis F7c SIZE SPREAD: measured 5 distinct sizes inside one 8px band live (10, 12, 13, 14,
+    15px, all real getComputedStyle values on this route). Violates the at-most-4-inside-any-8px-
+    window rule. Target at most 4 in the densest cluster, matching the house screen's own
+    4-in-cluster number.
+  Diagnosis F2 IMAGERY: measured 0.00% photographic area in the first viewport (img tags plus
+    backgroundImage-not-none, bounding-rect, live authenticated 390x844 scan). Violates FLOORS
+    LAW 2. Target 33%. THIS PANEL DOES NOT CLEAR IT, see the honest-numbers box below.
+
+  Verified live after applying the patch: of the four rows in the current seed data, only ONE
+    actually renders as a real anchor element (bookingId present). The row reading "confirmed
+    appointment, La Belle Ongle" names a salon in its own body text but carries neither a
+    bookingId nor a salonSlug in its data payload in this seed, so it renders as a plain button
+    and correctly keeps its icon rather than being given an unearned photo. The two application-
+    rejection rows likewise carry neither. So this treatment adds exactly one 44px photo, not
+    the two this file originally assumed before checking live; the honest-numbers box below is
+    corrected to that measured count.
+
+  Correction, not a violation, ELEVATION: the brief handed to this task read "1 distinct shadow,
+    FAIL" for this route. A live authenticated measurement (getComputedStyle(el).boxShadow across
+    every visible element at 390x844, the same method scripts/check-geometry.mjs's elevation check
+    uses) found 2 distinct values already present: the header's circular icon buttons and the
+    fixed bottom nav bar. 2 already clears the floor of 2. No elevation treatment is proposed. A
+    second mockup building the same screen, public/_mockups/floor-fix-notifications, reached the
+    identical correction independently; this file reproduces the live measurement itself rather
+    than taking that finding on faith.
+
+  Correction, THE BRIEF'S OTHER THREE NUMBERS ALSO DO NOT MATCH A LIVE MEASUREMENT: the task brief
+    for this file stated the display anchor, the weight share, the ratio and the size spread all
+    already passed for this route. None of those four match the numbers measured above, live,
+    authenticated, cross-checked against the literal source in NotificationsClient.tsx (a 20px
+    bold h1; nothing in this component renders at 28px). The likely cause: this route redirects an
+    unauthenticated visitor to a login screen (confirmed by reading page.tsx), and
+    scripts/check-geometry.mjs has no login handling, so an unauthenticated run of it against this
+    URL almost certainly measured the login page's own heading instead of anything in this file.
+    This is the same root cause the sibling floor-fix-notifications mockup already named for the
+    same four numbers. Built here on the corrected, live, authenticated numbers above, not the
+    brief's stale ones.
+
+  Exists-check: npm run exists notifications, run this turn, 17 hits found, including the route,
+    NotificationsClient, both API endpoints, and the notifications DB table (6 live rows).
+    Everything this file touches already exists and is reused as-is; nothing here is new.
+    NotificationsClient.tsx's own comment says the type-icon discs were chosen over photos because
+    rows carry no imagery and rendering stock photos would be fabricated data. Read plainly: the
+    notifications TABLE has no photo column, true, but a booking-linked row's data payload already
+    carries a salon slug, the exact key SalonCard and the PDP already use to look up a salon's
+    real stored photo, two lines below that same comment in the source. So a real photo is a
+    derivable join, the same relation the rest of the product already uses, not an invented value.
+    This mockup approximates that join with a self-hosted stock placeholder standing in for the
+    row's real photo (the real build would fetch by that slug, nothing here fabricates data), the
+    same placeholder convention the sibling mockup used. Reopening the icon-vs-photo call is still
+    his to make, named below, not silently decided by this file.
+
+  Treatment-only: this is not a single treatment, it is five small ones, all listed above and all
+    composed from tokens or components this system already owns (Avatar's own size recipe, the
+    LOCKFILE grouped-list-card radius+shadow token, the existing weight/size scale, the
+    component's own anchor-vs-button distinction). No new component is created. Row order, copy,
+    destinations, and every other piece of behaviour are untouched. No German is authored or
+    quoted anywhere in this file; the real page renders its own German through the product's
+    translations, which is exempt, and the patch script below selects rows structurally (anchor
+    vs button), never by matching copy.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#52525B; --ink3:#6B6B6B; --line:#E4E4E7; --sunken:#F4F4F5;
+    --good:#16A34A; --bad:#DC2626; --accent:#276EF1;
+    --font:'Inter Tight',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fff}
+  body{
+    font-family:var(--font); color:var(--ink); -webkit-font-smoothing:antialiased;
+    -webkit-text-size-adjust:100%; text-size-adjust:100%;
+    max-width:640px; margin:0 auto; padding:22px 16px calc(32px + env(safe-area-inset-bottom));
+  }
+  h1.page-title{font-size:20px; font-weight:600; letter-spacing:-0.01em; line-height:1.3}
+  .sub{font-size:13px; color:var(--ink3); margin-top:6px; line-height:1.55}
+
+  .panel-row{margin-top:26px}
+  .panel-cap{display:flex; align-items:baseline; justify-content:space-between; gap:8px; margin-bottom:8px}
+  .panel-tag{font-size:12px; font-weight:600; color:var(--ink3)}
+  .panel-tag.after{color:var(--ink)}
+  .badge{font-size:11px; font-weight:600; color:var(--ink2); background:var(--sunken); border-radius:999px; padding:3px 9px; font-variant-numeric:tabular-nums}
+  .badge.pending{color:var(--ink3)}
+
+  .frame{border:1px solid var(--line); border-radius:16px; overflow:hidden; background:#fff; max-width:402px; margin:0 auto}
+  iframe{display:block; width:100%; height:844px; border:0}
+
+  .box{margin-top:28px; background:var(--sunken); border-radius:16px; padding:16px 16px 18px; font-size:13px; line-height:1.6; color:var(--ink2)}
+  .box b{color:var(--ink); font-weight:600}
+  .box + .box{margin-top:14px}
+  .box h2{font-size:14px; font-weight:600; color:var(--ink); margin-bottom:10px}
+  .box p + p{margin-top:8px}
+
+  .table-scroll{overflow-x:auto; -webkit-overflow-scrolling:touch}
+  table.floors{width:100%; min-width:520px; border-collapse:collapse; font-size:12.5px}
+  table.floors th, table.floors td{text-align:left; padding:7px 6px; border-bottom:1px solid var(--line); vertical-align:top}
+  table.floors th{font-size:10.5px; font-weight:600; color:var(--ink3)}
+  table.floors td.num{font-variant-numeric:tabular-nums}
+  .tag-clear{color:var(--good); font-weight:600}
+  .tag-open{color:var(--bad); font-weight:600}
+  .tag-old{color:var(--ink3); font-style:italic; font-weight:400}
+
+  .arms{margin-top:8px; padding-left:18px}
+  .arms li{margin-top:8px}
+  .foot{margin-top:20px; font-size:11px; color:var(--ink3); line-height:1.5; border-top:1px solid var(--line); padding-top:12px}
+
+  .correction{margin-top:10px; padding:10px 12px; background:#fff; border:1px solid var(--line); border-radius:10px; font-size:12.5px; line-height:1.55}
+  .correction b{color:var(--ink)}
+</style>
+</head>
+<body>
+
+  <h1 class="page-title">Clearing every floor on Notifications at once</h1>
+  <p class="sub">Two boxes below. The first is your Notifications inbox exactly as it stands now, logged in. The second is the same inbox with five changes applied live, stacked so you can scroll and compare. Both are the real page loading from your dev server, nothing here is a redrawn copy.</p>
+
+  <div class="panel-row">
+    <div class="panel-cap"><span class="panel-tag">BEFORE (live, untouched)</span></div>
+    <div class="frame"><iframe id="beforeFrame" src="/api/dev/login?to=/de/notifications" title="real notifications inbox, before"></iframe></div>
+  </div>
+
+  <div class="panel-row">
+    <div class="panel-cap"><span class="panel-tag after">AFTER (five changes applied live)</span><span class="badge pending" id="afterStatus">loading</span></div>
+    <div class="frame"><iframe id="afterFrame" src="/api/dev/login?to=/de/notifications" title="real notifications inbox, after (bigger title, one weight, gray tray, real-booking photos)"></iframe></div>
+  </div>
+
+  <div class="box">
+    <h2>What you would actually see change</h2>
+    <p><b>1. The title at the top gets bigger and calmer.</b> The page heading grows from a small 20px bold line to a real 30px heading, but drops from bold to a lighter weight. Bigger now does the job bold used to do.</p>
+    <p><b>2. Bold text calms down everywhere else too.</b> The mark-all-read control, the day headers, the unread row titles, all move to one lighter weight. The blue dot that already marks an unread row keeps doing that job on its own, it does not need the title bold as well.</p>
+    <p><b>3. Mark-all-read lines up with the row titles.</b> It sat at its own odd size before, now it matches.</p>
+    <p><b>4. The list sits inside a light gray tray</b>, the same one your salon page's service list already uses, instead of floating on plain white with only thin lines between rows. One soft shadow marks the outside of the tray, the thin lines between rows stay unchanged.</p>
+    <p><b>5. Rows tied to a real booking get a real photo.</b> Any row that already connects somewhere real, a cancellation, a confirmed appointment, anything with a real booking behind it, swaps its generic icon for a small round photo, same size, same circle, nothing else moves. Rows with no booking or salon behind them (an application update, for instance) keep the plain icon, because there is nothing to show a photo of.</p>
+  </div>
+
+  <div class="box">
+    <h2>Which floors this clears, measured live and logged in, not guessed</h2>
+    <div class="table-scroll">
+    <table class="floors">
+      <tr><th>Floor</th><th>Before</th><th>Target</th><th>After this change</th></tr>
+      <tr><td>F6 display anchor</td><td class="num">20px</td><td class="num">&ge; 28px, house 30px</td><td class="num tag-clear">clears, 30px</td></tr>
+      <tr><td>F7a weight share</td><td class="num">34.78%</td><td class="num">&le; 30%</td><td class="num tag-clear">clears, 0% (nothing left at weight &ge; 600 by design)</td></tr>
+      <tr><td>F7b anchor ratio</td><td class="num">1.43x</td><td class="num">&ge; 1.8x</td><td class="num tag-clear">clears, 2.14x (30 over the ladder's 14px body)</td></tr>
+      <tr><td>F7c size spread</td><td class="num">5 in one 8px band</td><td class="num">&le; 4 in-window</td><td class="num tag-clear">clears, one fewer once mark-all-read merges into 15px</td></tr>
+      <tr><td>Elevation</td><td class="num tag-old">brief said 1, FAIL</td><td class="num">&ge; 2</td><td class="num tag-clear">already 2, confirmed live, untouched</td></tr>
+      <tr><td>F2 imagery</td><td class="num">0.00%</td><td class="num">&ge; 33%</td><td class="num tag-open">does NOT clear, ~0.6%, see below</td></tr>
+    </table>
+    </div>
+    <div class="correction"><b>Four of the six numbers this task started from did not match the real, logged-in page.</b> The brief said the anchor, the weight share, the ratio and the size spread all already passed, and that elevation failed. Measured live and authenticated, the opposite holds true on five of six: the anchor, weight, ratio and spread all fail, and elevation already passes. The likely reason: the page sends a signed-out visitor to a login screen, and the tool that produced the brief's numbers has no way to sign in, so it almost certainly measured the login page's own heading, not this one. This mockup is built on the numbers above, measured live and signed in, not on the brief's.</div>
+  </div>
+
+  <div class="box">
+    <h2>The one honest problem: a photo the size of an icon is still the size of an icon</h2>
+    <p>Your phone screen is a fixed 844px tall. The imagery floor asks for a full third of that to be photographic. A notification row is 44px of icon, or now, 44px of photo, either way it is a small circle next to two lines of text, and that holds true of every messaging inbox in existence, not a Solen-specific miss.</p>
+    <p><b>What this change buys:</b> in today's real seed data, exactly one 44px circle, on the one row that actually carries a real booking reference. That works out to roughly <b>0.6%</b> of a 390&times;844 viewport. The floor is 33%. This treatment gets the inbox off zero, honestly, and does not pretend it cleared the floor. (A row further down names a salon in its own sentence but has no booking or salon reference stored on it, so it keeps its icon rather than getting a photo it cannot honestly earn; more rows would qualify once that data gap closes.)</p>
+    <p>Full compliance needs a bigger call than a row treatment, which is why it stays unapplied here without your go-ahead:</p>
+    <div class="arms">
+      <p><b>Two ways to actually close this, both his call, neither applied here:</b></p>
+      <ol class="arms">
+        <li><b>Name the inbox as exempt.</b> The imagery floor already names four exempt surfaces by name: forms, checkout, legal, receipts, because they are system lists, not browsing surfaces. A notification inbox is arguably the same shape: you come here to clear it, not to browse it. If you agree, the fix is a one-line addition to that exemption list, and this floor stops being a problem to solve on this screen at all.</li>
+        <li><b>Build a bigger, photo-led card format.</b> Each notification becomes a taller card with a real leading photo, closer to how a booking confirmation reads elsewhere. That is a genuinely new component this registry does not own today, its own mockup, its own registry entry, and your go-ahead before anyone builds it.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="foot">Both panels load the same live, authenticated route via /api/dev/login. The title, weight, size-merge and gray-tray changes come straight off the already-settled ladder and an existing LOCKFILE recipe, low-risk, just making this screen match the salon page you already like. The photo swap reopens a call the real component's own code comment made the other way (icon over photo), even though the data to do it for real already exists on the row; that one needs your go-ahead. So does picking between the two options above for imagery, neither applied here.</div>
+
+<script>
+  // The AFTER panel loads the SAME real, authenticated route as BEFORE. Once its data has
+  // actually finished loading (rows exist), five rules are patched into that document in place:
+  // nothing is redrawn, nothing is a second implementation.
+  function applyChange(doc) {
+    if (doc.getElementById('mockup-recompose-style')) return true;
+
+    // The loading skeleton renders the identical div.divide-y wrapper the real rows use, so
+    // checking for that wrapper alone fires this patch on the skeleton and never retries once
+    // real data lands (the guard right above would already be set). The day-label h2 only exists
+    // once the real Group sections render; the skeleton has none. That is the real readiness check.
+    if (!doc.querySelector('h2')) return false; // data fetch still pending, try again next tick
+
+    // 1. Display anchor: 20px/700 becomes 30px/500. Emphasis moves from weight to size.
+    var h1 = doc.querySelector('h1');
+    if (h1) {
+      h1.style.setProperty('font-size', '30px', 'important');
+      h1.style.setProperty('font-weight', '500', 'important');
+      h1.style.setProperty('line-height', '1.25', 'important');
+    }
+
+    // 2. Mark-all-read control: 14px becomes 15px, merging it into the row-title size cluster.
+    //    It is the one button in the header, found structurally, not by matching its label text.
+    var headerButton = doc.querySelector('header button');
+    if (headerButton) { headerButton.style.setProperty('font-size', '15px', 'important'); }
+
+    // 3. Weight ceiling: every font-semibold / font-bold element on the screen drops to 500.
+    // 4. Gray tray behind each row-list group, one soft drop shadow as the only outer edge
+    //    (border explicitly set to none). The between-row hairlines stay exactly where they
+    //    were, unchanged; this adds no second boundary, just the one shadow around the outside.
+    var style = doc.createElement('style');
+    style.id = 'mockup-recompose-style';
+    style.textContent =
+      '[class~="font-semibold"], [class~="font-bold"] { font-weight:500 !important; }\n' +
+      '.divide-y.divide-s-border {\n' +
+      '  background:#F4F4F5 !important;\n' +
+      '  border-radius:24px !important;\n' +
+      '  margin:0 16px !important;\n' +
+      '  padding:4px 0 !important;\n' +
+      '  overflow:hidden;\n' +
+      '  border:none !important;\n' +
+      '  box-shadow:0 1px 3px rgba(10,10,10,0.04), 0 10px 28px -14px rgba(10,10,10,0.10);\n' +
+      '}';
+    doc.head.appendChild(style);
+
+    // 5. Photo swap: the component itself only renders a row as a real anchor element when it
+    //    has a bookingId or a salonSlug behind it (read straight from NotificationsClient.tsx's
+    //    own href logic); a row with neither renders as a plain button. This selects the anchor
+    //    rows, the real/salon-linked split the component already encodes, no copy matched.
+    var photos = [
+      '/_mockups/_assets/salon-photos/p03.jpg',
+      '/_mockups/_assets/salon-photos/p07.jpg',
+      '/_mockups/_assets/salon-photos/p05.jpg',
+    ];
+    var linkedRows = Array.from(doc.querySelectorAll('a')).filter(function (a) {
+      return a.querySelector('span.rounded-full') && a.querySelector('p.truncate');
+    });
+    linkedRows.forEach(function (a, i) {
+      var photoSrc = photos[i];
+      if (!photoSrc) return; // best-faith sample against a finite placeholder set
+      var disc = a.querySelector('span.rounded-full');
+      if (!disc || disc.querySelector('img')) return;
+      disc.innerHTML = '';
+      disc.style.setProperty('overflow', 'hidden', 'important');
+      var img = doc.createElement('img');
+      img.src = photoSrc;
+      img.setAttribute('role', 'presentation');
+      img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block';
+      disc.appendChild(img);
+    });
+
+    return true;
+  }
+
+  var pollsLeft = 150; // countdown, never a displayed count
+  var iv = setInterval(function () {
+    pollsLeft--;
+    var f = document.getElementById('afterFrame');
+    var status = document.getElementById('afterStatus');
+    try {
+      var doc = f.contentDocument;
+      if (doc && doc.readyState === 'complete' && applyChange(doc)) {
+        clearInterval(iv);
+        if (status) { status.textContent = 'applied'; status.classList.remove('pending'); }
+      }
+    } catch (e) {
+      console.error('[fix-notifications--e-recompose] could not patch the after panel:', e);
+    }
+    if (!pollsLeft) {
+      clearInterval(iv);
+      if (status && status.textContent === 'loading') { status.textContent = 'could not confirm'; }
+    }
+  }, 200);
+</script>
+</body>
+</html>

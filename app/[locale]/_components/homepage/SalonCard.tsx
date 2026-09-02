@@ -1,7 +1,7 @@
 // DS-A4 (2026-06-11): Link from next-view-transitions so the card photo can
 // morph into the PDP hero (16.3 flagship). API-identical to next/link.
 import { Link } from "next-view-transitions";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
@@ -236,11 +236,12 @@ function CurationBadge({ type }: CurationProps) {
 }
 
 function DiscountBadge({ percentOff }: { percentOff: number }) {
+  const t = useTranslations("common");
   return (
     <span
       className={cn(discountClass, "bg-s-love-soft")}
       style={amberStyle}
-      aria-label={`${percentOff} Prozent Rabatt`}
+      aria-label={t("percentOffAria", { percent: percentOff })}
     >
       −{percentOff}%
     </span>
@@ -358,6 +359,7 @@ export function SalonCard({
   // next-intl middleware to guess a locale — which (a) could land on the wrong
   // language and (b) inserts a redirect that kills the 16.3 view transition.
   const locale = useLocale();
+  const t = useTranslations("common");
   const cat = cardCategoryColors[category];
   // V2-D48: spa cat flipped to light moss-pale bg, so this is false for all cats.
   // Kept for forward-compat when real salon photos may have dark composition.
@@ -383,7 +385,7 @@ export function SalonCard({
   return (
     <Link
       href={`/${locale}/salon/${slug}`}
-      aria-label={`${name}, Termin buchen`}
+      aria-label={t("bookWithAria", { name })}
       className={cn(
         "group flex shrink-0 flex-col snap-start",
         // V2-D60-cards-3 (2026-05-14): Airbnb-style RESPONSIVE widths.

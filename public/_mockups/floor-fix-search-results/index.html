@@ -1,0 +1,295 @@
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+Note on Scale: the task brief for this file asked for "Scale: section" (this is a one-heading,
+  section-level decision, not a whole-page redesign). The live gate here only accepts full-page or
+  component, and marking `component` while the visible copy names the salon page (the benchmark
+  this task cites) trips the gate's page-surface check. Declaring full-page is also what this repo's
+  own precedent does for the identical technique (two live iframes of a real route) even for a
+  section-level decision: public/_mockups/sweep-salon-sections/index.html cards two specific
+  sections (Team + Reviews) and still declares Scale: full-page, because the DOCUMENT renders the
+  whole real page either way, only the decision under review is narrower. Followed that precedent
+  here. The decision itself is still one line, not a page redesign; see Treatment-only below.
+
+Grounded-in: app/[locale]/[city]/[category]/page.tsx (route) -> app/[locale]/_components/search/SearchTemplate.tsx
+  -> app/[locale]/_components/search/CategoryMobileRails.tsx (the mobile rail grid the real route renders).
+  Both panels below are the SAME real route, http://localhost:3457/de/basel/coiffeur, in an iframe.
+
+Depicts: before panel -> app/[locale]/[city]/[category]/page.tsx (real route /de/basel/coiffeur, untouched)
+Depicts: after panel -> app/[locale]/[city]/[category]/page.tsx (same route, one <h1> injected client-side onto the loaded DOM; see Treatment-only below for exactly what the script adds)
+
+Diagnosis: results-page display anchor | measured 18px | violates LOCKFILE EMPHASIS BUDGET F6 / CLAUDE.md NEVER-AGAIN floor 6 | target 28px
+Diagnosis: results-page anchor-to-body ratio | measured 1.50x | violates LOCKFILE EMPHASIS BUDGET F7b | target 1.8x
+
+Both numbers above were measured LIVE on http://localhost:3457/de/basel/coiffeur at 390x844, after
+settle (getBoundingClientRect + getComputedStyle on every visible leaf text node, this session,
+logged in as the seed QA account). The tallest text in the first viewport is the rail heading "Top
+Coiffeur" at 18px; the page's median text size is 12px; 18/12 = 1.50x.
+
+Root cause: SearchTemplate.tsx destructures a `hero: { title, subtitle }` prop (line ~139) and the
+category route already builds it with the real city + category name (page.tsx builds hero title as
+categoryName + " in " + cityName). Grepping the whole 2546-line file for `hero.` returns ZERO render
+sites. The heading was written and wired with real data and never rendered. Same shape as this
+project's own "no decoration" rule, in reverse: not fabricated copy shown nowhere, but real copy
+computed and shown nowhere. The page also renders zero <h1> elements today
+(document.querySelectorAll('h1').length === 0, checked live), so this is also the page's first
+heading of any level, not just a bigger one.
+
+Additional finding, worth surfacing rather than quietly building past: the brief that produced this
+task cites imagery 0% and a 14px anchor for this route. Measured live at 390x844, settled (after
+the 4 to 6 seconds a real fetch takes), this session got imagery at 41.4% of the first viewport
+(PASSES the 33% floor; two full salon photos already render above the fold via the SalonCard rail)
+and the anchor at 18px, not 14px (still FAILS 28px, just by a different margin). Weight share
+measured 33.3% (9 of 27 visible leaf text nodes at weight >= 600), over the 30% ceiling, not the
+"0% PASS" the brief states. This session could not run scripts/check-geometry.mjs itself: Bash
+networking to localhost is sandboxed here (curl to 127.0.0.1:3457 returns "Operation not
+permitted"), confirmed live, not assumed. The live-browser numbers above use the same methodology
+the script documents (leaf text nodes, getComputedStyle, the 390x844 FLOORS viewport) but are not a
+re-run of the script, and they disagree with two of the six numbers given. The F6/F7b failure
+direction is confirmed either way, which is what this mockup's fix targets; F2/F7a's PASS/FAIL
+reads differently depending on which numbers are used, so neither is claimed fixed here.
+
+Also true today, not fixed by this mockup, named per the brief: landing on this route directly (not
+via in-app navigation) renders a HOME icon top-left, not a back control (checked live). That is a
+code fix (routing/header logic), not a treatment this file can show.
+
+Exists-check: `npm run exists "SearchTemplate hero"` and `npm run exists "category results heading"`
+  both returned 0 matches ("Likely safe to build new"), ran again this same turn. The `hero` PROP
+  already exists (SearchTemplate.tsx line 139, page.tsx already builds it); what does not exist
+  anywhere is a render site for it, which is what this mockup adds.
+
+Treatment-only: adds exactly one <h1> above the first rail, reusing the real, LOCKED H1 class string
+  from app/[locale]/_components/salon/SalonHeader.tsx verbatim (font-display text-[clamp(30px,2.8vw,34px)]
+  font-semibold leading-[1.1] tracking-[-0.02em] text-s-ink) so nothing about this treatment is
+  invented, and filling it with the real city + category name read live off the page's own <title>
+  tag (same string page.tsx already computes server-side for hero.title). Nothing else moves: no
+  card resize, no reorder, no new photos, no copy invented. One cost this does NOT hide: the new
+  line is weight 600 (semibold), same as the benchmark's own H1, and by this session's own
+  measurement that nudges the page's weight-share number up (33.3% before, roughly 36% after,
+  both over the 30% ceiling) rather than down. A same-size heading at a lighter weight would avoid
+  that, but nothing in this codebase's locked components uses a 28px+ heading below font-semibold,
+  so that would be inventing a treatment, not grounding one. Left for the founder to weigh, not
+  decided here.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Search results anchor fix</title>
+<style>
+  :root{
+    --ink:#0A0A0A;
+    --ink2:#52525B;
+    --sunken:#F4F4F5;
+    --hairline:#E4E4E7;
+    --accent:#276EF1;
+    --font:'Inter Tight',system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fff;color:var(--ink)}
+  body{
+    font-family:var(--font);
+    -webkit-font-smoothing:antialiased;
+    padding:28px 16px 64px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:20px;
+  }
+  .intro{
+    max-width:402px;
+    width:100%;
+  }
+  .intro h1{
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:-0.01em;
+    line-height:1.25;
+    margin-bottom:10px;
+  }
+  .intro p{
+    font-size:15px;
+    line-height:1.5;
+    color:var(--ink2);
+    margin-bottom:10px;
+  }
+  .intro p strong{color:var(--ink)}
+  .cost-note{
+    background:var(--sunken);
+    border-radius:12px;
+    padding:12px 14px;
+    font-size:13.5px;
+    line-height:1.5;
+    color:var(--ink2);
+    margin-top:4px;
+  }
+  .cost-note strong{color:var(--ink)}
+  .panel{
+    width:402px;
+    max-width:100%;
+    position:relative;
+  }
+  .panel-label{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 2px 8px;
+  }
+  .panel-label .tag{
+    font-size:11px;
+    font-weight:700;
+    text-transform:none;
+    letter-spacing:0;
+    padding:4px 10px;
+    border-radius:999px;
+    background:var(--ink);
+    color:#fff;
+  }
+  .panel-label .tag.after{background:#16A34A}
+  .panel-label .cap{
+    font-size:12.5px;
+    color:var(--ink2);
+    text-align:right;
+    max-width:250px;
+  }
+  .frame-wrap{
+    width:402px;
+    max-width:100%;
+    height:660px;
+    border:1px solid var(--hairline);
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 1px 2px rgba(10,10,10,.04), 0 10px 30px -18px rgba(10,10,10,.12);
+    background:#fff;
+  }
+  iframe{
+    width:402px;
+    height:844px;
+    border:0;
+    display:block;
+  }
+  .badge{
+    position:absolute;
+    top:8px;
+    left:8px;
+    background:rgba(22,163,74,.95);
+    color:#fff;
+    font-size:11px;
+    font-weight:700;
+    padding:4px 10px;
+    border-radius:999px;
+    z-index:5;
+    pointer-events:none;
+  }
+</style>
+</head>
+<body>
+
+  <div class="intro">
+    <h1>What he lands on after searching, fixed one line at a time</h1>
+    <p>This is the real Coiffeur results page for Basel. Both copies below load the actual route,
+    live, and can be scrolled like the real page. Nothing is drawn from scratch.</p>
+    <p>The problem: after the search bar, the page jumps straight into "Top Coiffeur" at a size
+    that reads as a small label, not a page title. There is no page heading at all today, and the
+    photos and cards themselves are already fine.</p>
+    <p>The fix: <strong>one heading line</strong>, "Coiffeur in Basel", sized and weighted exactly
+    like the benchmark's own title (the salon profile page you already like). It sits above the
+    first row of results, in the same column, and nothing else on the page moves.</p>
+    <div class="cost-note">
+      <strong>One thing to weigh before approving:</strong> this new line is bold, same as the
+      benchmark's heading. That nudges the page's "how much text is bold" share up, not down, on a
+      page that is already slightly over that budget. Making the line lighter would dodge that, but
+      nothing else on the site uses a big heading that isn't bold, so that would be a new, unproven
+      style rather than the one you've already approved elsewhere.
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-label">
+      <span class="tag">Before, live</span>
+      <span class="cap">The real page today. No heading above "Top Coiffeur".</span>
+    </div>
+    <div class="frame-wrap">
+      <iframe id="beforeFrame" src="/de/basel/coiffeur" title="Search results, before, real page"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-label">
+      <span class="tag after">After, one new line</span>
+      <span class="cap">Same real page. "Coiffeur in Basel" added above the first row.</span>
+    </div>
+    <div class="frame-wrap">
+      <span class="badge">+1 heading, nothing else changed</span>
+      <iframe id="afterFrame" src="/de/basel/coiffeur" title="Search results, after, real page"></iframe>
+    </div>
+  </div>
+
+<script>
+  // Grounded in app/[locale]/_components/salon/SalonHeader.tsx line 96, copied verbatim so the
+  // new heading is not an invented size/weight. Only the color-scheme-adjacent classes are kept;
+  // this file adds no color of its own.
+  var H1_CLASS = "font-display text-[clamp(30px,2.8vw,34px)] font-semibold leading-[1.1] tracking-[-0.02em] text-s-ink";
+
+  // The FAQ section at the BOTTOM of the real page also renders an <h2> (server-rendered,
+  // present immediately). The rail heading ("Top Coiffeur") only appears once the client-side
+  // salons fetch resolves, a few seconds later. A bare "first h2 in the doc" watcher catches the
+  // FAQ heading first and inserts the new line in the wrong place. Only match an h2 whose section
+  // actually contains a photo, which is true for a rail and false for the FAQ.
+  function findRailHeading(doc) {
+    var h2s = doc.querySelectorAll("h2");
+    for (var i = 0; i < h2s.length; i++) {
+      var h2 = h2s[i];
+      var sec = h2.closest("section") || h2.parentElement;
+      if (sec && sec.querySelector("img")) return h2;
+    }
+    return null;
+  }
+
+  function applyChange(doc) {
+    if (doc.getElementById("sweep-hero-h1")) return true; // already applied
+    var h2 = findRailHeading(doc);
+    if (!h2) return false;
+    var anchor = h2.closest("section") || h2.parentElement;
+    if (!anchor || !anchor.parentElement) return false;
+
+    // Read the real, already-computed city + category name off the page's own <title>, which
+    // page.tsx builds server-side as the metadata title (see SearchTemplate.tsx's unused
+    // hero.title prop for the same string, computed the same way). Nothing here is invented
+    // copy. Falls back to this route's own known real value if the title shape ever changes.
+    var m = /^Beste (.+?) in (.+?) - /.exec(doc.title || "");
+    var headingText = m ? (m[1] + " in " + m[2]) : "Coiffeur in Basel";
+
+    var h1 = doc.createElement("h1");
+    h1.id = "sweep-hero-h1";
+    h1.className = H1_CLASS;
+    h1.style.marginBottom = "16px";
+    h1.textContent = headingText;
+
+    anchor.parentElement.insertBefore(h1, anchor);
+    return true;
+  }
+
+  function startWatching(frameId) {
+    var f = document.getElementById(frameId);
+    var tries = 0;
+    var iv = setInterval(function () {
+      tries++;
+      try {
+        var doc = f.contentDocument;
+        if (doc && findRailHeading(doc)) {
+          if (applyChange(doc)) clearInterval(iv);
+        }
+      } catch (e) {}
+      if (tries > 150) clearInterval(iv);
+    }, 200);
+  }
+
+  document.getElementById("afterFrame").addEventListener("load", function () {
+    startWatching("afterFrame");
+  });
+  startWatching("afterFrame");
+</script>
+</body>
+</html>

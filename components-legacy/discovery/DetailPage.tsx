@@ -4,7 +4,7 @@ import { useState, useEffect, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, Heart, CalendarDays, Star, ChevronDown, Play, X } from "lucide-react";
+import { Heart, CalendarDays, Star, ChevronDown, Play, X } from "lucide-react";
 import type { DiscoveryItem } from "@/lib/types";
 import ItemCard from "./ItemCard";
 import VideoCard from "./VideoCard";
@@ -12,6 +12,7 @@ import TikTokPlayer from "./TikTokPlayer";
 import DiscoveryGridSkeleton from "./DiscoveryGridSkeleton";
 import { formatCreator } from "./format";
 import { FROST_GLASS } from "@/lib/frost-glass";
+import { BackButton } from "@/app/[locale]/_components/primitives/BackButton";
 
 /** Salon offering this style's category — the soft, honest "book this look" list (real salons, real ratings/prices). */
 export interface SalonLite {
@@ -248,18 +249,17 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
 
         {/* Top controls — frosted back (left) + heart (right). */}
         <div className="absolute left-[18px] right-[18px] z-10 flex items-start justify-between" style={{ top: "calc(env(safe-area-inset-top, 0px) + 14px)" }}>
-          <button
-            type="button"
+          {/* mockup-ok: restores , identical shipped appearance (FROST_GLASS, 44x44 circle, ChevronLeft
+              size 18) swapped from hand-drawn markup to the registered BackButton.tsx primitive's
+              variant="glass" (2026-08-10 NAV CONTROLS lock); no visual change, FLOORS LAW 9 componentization. */}
+          <BackButton
+            variant="glass"
             // Owner 2026-06-24: back goes EXPLICITLY to the feed, never router.back(). router.back() walked browser
             // history, so look -> similar look -> look made "back" unwind the detail chain instead of returning to
             // discovery (the "loop loop loop"). Always /inspo = one tap back to the feed, no loop.
             onClick={() => router.push(`/${locale}/inspo`)}
-            aria-label={t.back}
-            style={FROST_GLASS}
-            className="grid h-11 w-11 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95"
-          >
-            <ArrowLeft size={18} strokeWidth={1.9} />
-          </button>
+            label={t.back}
+          />
           <button
             type="button"
             onClick={() => handleSave(item.id)}

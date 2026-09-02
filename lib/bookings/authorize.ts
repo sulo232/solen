@@ -1,6 +1,8 @@
-import type { NextRequest } from "next/server";
-import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { NextResponse, type NextRequest } from "next/server";
+import { createAdminSupabaseClient } from "@/lib/supabase";
 import { readGuestCookie, verifyAccessToken } from "@/lib/bookings/guest-access";
+import { applyRateLimit, bearerVerifyLimiter, getClientIp } from "@/lib/ratelimit";
+import { resolveRequestUser } from "@/lib/auth/request-user";
 
 /**
  * Central booking authorization — master plan §10a / §10b.7.
@@ -63,13 +65,34 @@ export async function resolveBookingActor(
 
   if (!booking) return NONE; // unknown id → caller returns 404
 
-  // Identity (customer / salon / admin). getUser() verifies the JWT against the
-  // Supabase Auth server rather than trusting the client-supplied cookie's claims
-  // (getSession() would let a forged cookie with any user.id resolve as that user).
-  const supabase = await createServerSupabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // Identity (customer / salon / admin). resolveRequestUser (lib/auth/request-user.ts)
+  // resolves the caller from EITHER the web session cookie, unchanged (getUser() verifies
+  // the JWT against the Supabase Auth server rather than trusting the client-supplied
+  // cookie's claims, so a forged cookie with any user.id can't resolve as that user), or an
+  // iOS `Authorization: Bearer <token>` header, itself verified server-side against the
+  // Supabase Auth server. Verifying a Bearer token costs a network round trip that any
+  // caller can force with a garbage header and no credentials, so it is throttled by IP
+  // BEFORE the resolve, same ordering as app/api/bookings/route.ts POST.
+  //
+  // This resolver's return type (BookingActorResult) has no NextResponse branch: the seven
+  // downstream sub-routes (booking detail, cancel, confirm, dispute, report, escalate,
+  // reschedule) destructure it directly and are out of this change's scope, so a
+  // rate-limited or present-but-invalid/expired Bearer token cannot surface its own
+  // 401/429 here. It fails to the SAME identity-absent shape this resolver already produced
+  // before this change ("5. Nobody" below: actor null, the REAL booking object kept, no
+  // userId), and returns immediately, without falling through to the guest-cookie branch
+  // below. An invalid Bearer credential must never be treated as though it were a valid,
+  // independently-verified guest access token. This intentionally does NOT reuse the shared
+  // `NONE` constant, which also zeroes `booking`, that shape is reserved for "the id doesn't
+  // exist" (line 66); reusing it here would make an EXISTING booking look nonexistent to a
+  // caller that branches on `booking` before `actor`.
+  if (req.headers.get("Authorization")) {
+    const authFlood = await applyRateLimit(bearerVerifyLimiter, { ip: getClientIp(req) });
+    if (authFlood) return { actor: null, booking, userId: null };
+  }
+  const resolvedUser = await resolveRequestUser(req);
+  if (resolvedUser instanceof NextResponse) return { actor: null, booking, userId: null };
+  const { user } = resolvedUser;
 
   if (user) {
     // 1. Booking owner (logged-in customer).

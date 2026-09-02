@@ -1,0 +1,596 @@
+{
+  "folder": "booking-service",
+  "route": "/de/salon/cuts-and-culture/booking",
+  "measuredAtViewport": "390x844",
+  "httpStatus": 200,
+  "settled": true,
+  "redirectedAway": false,
+  "finalUrl": "http://localhost:3457/de/salon/cuts-and-culture/booking",
+  "title": "Book your appointment | Solen",
+  "pathname": "/de/salon/cuts-and-culture/booking",
+  "documentHeight": 1906,
+  "screen": {
+    "distinctSizes": [
+      20,
+      16.5,
+      16,
+      15,
+      14,
+      13,
+      12
+    ],
+    "distinctWeights": [
+      "700",
+      "600",
+      "400"
+    ],
+    "textElements": 63,
+    "boldElements": 48
+  },
+  "sections": [
+    {
+      "index": 0,
+      "tag": "main",
+      "className": "isolate pb-[calc(56px+env(safe-area-inset-bottom))] md:pb-[env(safe-area-inset-bottom)]",
+      "heading": "Services auswählen",
+      "box": {
+        "top": 0,
+        "left": 0,
+        "width": 390,
+        "height": 1906
+      },
+      "surface": {
+        "background": "rgba(0, 0, 0, 0)",
+        "padding": "0px 0px 56px",
+        "borderRadius": "0px"
+      },
+      "textRoles": [
+        {
+          "fontSizePx": 20,
+          "fontWeight": "700",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 20,
+          "letterSpacing": "normal",
+          "count": 2,
+          "sample": "CHF"
+        },
+        {
+          "fontSizePx": 16.5,
+          "fontWeight": "600",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 24.75,
+          "letterSpacing": "-0.165px",
+          "count": 1,
+          "sample": "Services auswählen"
+        },
+        {
+          "fontSizePx": 16,
+          "fontWeight": "600",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "capitalize",
+          "lineHeightPx": 24,
+          "letterSpacing": "-0.16px",
+          "count": 4,
+          "sample": "Bart"
+        },
+        {
+          "fontSizePx": 15,
+          "fontWeight": "600",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 22.5,
+          "letterSpacing": "normal",
+          "count": 11,
+          "sample": "Bart trimmen"
+        },
+        {
+          "fontSizePx": 15,
+          "fontWeight": "700",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 22.5,
+          "letterSpacing": "normal",
+          "count": 11,
+          "sample": "ab"
+        },
+        {
+          "fontSizePx": 15,
+          "fontWeight": "700",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 22.5,
+          "letterSpacing": "normal",
+          "count": 11,
+          "sample": "28 CHF"
+        },
+        {
+          "fontSizePx": 14,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 21,
+          "letterSpacing": "normal",
+          "count": 11,
+          "sample": "20 Min"
+        },
+        {
+          "fontSizePx": 14,
+          "fontWeight": "600",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(255, 255, 255)",
+          "textTransform": "none",
+          "lineHeightPx": 20,
+          "letterSpacing": "normal",
+          "count": 1,
+          "sample": "Weiter"
+        },
+        {
+          "fontSizePx": 13,
+          "fontWeight": "600",
+          "fontFamily": "Inter",
+          "color": "rgb(255, 255, 255)",
+          "textTransform": "capitalize",
+          "lineHeightPx": 19.5,
+          "letterSpacing": "normal",
+          "count": 1,
+          "sample": "Bart"
+        },
+        {
+          "fontSizePx": 13,
+          "fontWeight": "600",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "capitalize",
+          "lineHeightPx": 19.5,
+          "letterSpacing": "normal",
+          "count": 3,
+          "sample": "Extras"
+        },
+        {
+          "fontSizePx": 12,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 16,
+          "letterSpacing": "normal",
+          "count": 2,
+          "sample": "0 Artikel Min"
+        }
+      ],
+      "cards": [
+        {
+          "radiusPx": 24,
+          "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(10, 10, 10, 0.04) 0px 1px 3px 0px, rgba(10, 10, 10, 0.1) 0px 10px 28px -14px",
+          "border": "1px solid rgb(228, 228, 231)",
+          "background": "rgb(255, 255, 255)",
+          "padding": "0px",
+          "count": 4,
+          "exampleSize": "358x358"
+        },
+        {
+          "radiusPx": 9999,
+          "boxShadow": "none",
+          "border": "1px solid rgb(228, 228, 231)",
+          "background": "rgb(255, 255, 255)",
+          "padding": "0px 12px",
+          "count": 3,
+          "exampleSize": "66x44"
+        },
+        {
+          "radiusPx": 99,
+          "boxShadow": "none",
+          "border": "none",
+          "background": "rgb(10, 10, 10)",
+          "padding": "12px 24px",
+          "count": 1,
+          "exampleSize": "113x44"
+        }
+      ],
+      "imagery": {
+        "imageCount": 0,
+        "imageAreaPx": 0
+      }
+    },
+    {
+      "index": 1,
+      "tag": "div",
+      "className": "flex items-center justify-between pt-1 pb-1",
+      "heading": "Services auswählen",
+      "box": {
+        "top": 12,
+        "left": 16,
+        "width": 358,
+        "height": 52
+      },
+      "surface": {
+        "background": "rgba(0, 0, 0, 0)",
+        "padding": "4px 0px",
+        "borderRadius": "0px"
+      },
+      "textRoles": [
+        {
+          "fontSizePx": 16.5,
+          "fontWeight": "600",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 24.75,
+          "letterSpacing": "-0.165px",
+          "count": 1,
+          "sample": "Services auswählen"
+        }
+      ],
+      "cards": [],
+      "imagery": {
+        "imageCount": 0,
+        "imageAreaPx": 0
+      }
+    },
+    {
+      "index": 2,
+      "tag": "section",
+      "className": "scroll-mt-[120px]",
+      "heading": "Bart",
+      "box": {
+        "top": 145,
+        "left": 16,
+        "width": 358,
+        "height": 394
+      },
+      "surface": {
+        "background": "rgba(0, 0, 0, 0)",
+        "padding": "0px",
+        "borderRadius": "0px"
+      },
+      "textRoles": [
+        {
+          "fontSizePx": 16,
+          "fontWeight": "600",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "capitalize",
+          "lineHeightPx": 24,
+          "letterSpacing": "-0.16px",
+          "count": 1,
+          "sample": "Bart"
+        },
+        {
+          "fontSizePx": 15,
+          "fontWeight": "600",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 22.5,
+          "letterSpacing": "normal",
+          "count": 3,
+          "sample": "Bart trimmen"
+        },
+        {
+          "fontSizePx": 15,
+          "fontWeight": "700",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 22.5,
+          "letterSpacing": "normal",
+          "count": 3,
+          "sample": "ab"
+        },
+        {
+          "fontSizePx": 15,
+          "fontWeight": "700",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 22.5,
+          "letterSpacing": "normal",
+          "count": 3,
+          "sample": "28 CHF"
+        },
+        {
+          "fontSizePx": 14,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 21,
+          "letterSpacing": "normal",
+          "count": 3,
+          "sample": "20 Min"
+        }
+      ],
+      "cards": [
+        {
+          "radiusPx": 24,
+          "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(10, 10, 10, 0.04) 0px 1px 3px 0px, rgba(10, 10, 10, 0.1) 0px 10px 28px -14px",
+          "border": "1px solid rgb(228, 228, 231)",
+          "background": "rgb(255, 255, 255)",
+          "padding": "0px",
+          "count": 1,
+          "exampleSize": "358x358"
+        }
+      ],
+      "imagery": {
+        "imageCount": 0,
+        "imageAreaPx": 0
+      }
+    },
+    {
+      "index": 3,
+      "tag": "section",
+      "className": "scroll-mt-[120px]",
+      "heading": "Extras",
+      "box": {
+        "top": 571,
+        "left": 16,
+        "width": 358,
+        "height": 275
+      },
+      "surface": {
+        "background": "rgba(0, 0, 0, 0)",
+        "padding": "0px",
+        "borderRadius": "0px"
+      },
+      "textRoles": [
+        {
+          "fontSizePx": 16,
+          "fontWeight": "600",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "capitalize",
+          "lineHeightPx": 24,
+          "letterSpacing": "-0.16px",
+          "count": 1,
+          "sample": "Extras"
+        },
+        {
+          "fontSizePx": 15,
+          "fontWeight": "600",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 22.5,
+          "letterSpacing": "normal",
+          "count": 2,
+          "sample": "Augenbrauen"
+        },
+        {
+          "fontSizePx": 15,
+          "fontWeight": "700",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 22.5,
+          "letterSpacing": "normal",
+          "count": 2,
+          "sample": "ab"
+        },
+        {
+          "fontSizePx": 15,
+          "fontWeight": "700",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 22.5,
+          "letterSpacing": "normal",
+          "count": 2,
+          "sample": "15 CHF"
+        },
+        {
+          "fontSizePx": 14,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 21,
+          "letterSpacing": "normal",
+          "count": 2,
+          "sample": "10 Min"
+        }
+      ],
+      "cards": [
+        {
+          "radiusPx": 24,
+          "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(10, 10, 10, 0.04) 0px 1px 3px 0px, rgba(10, 10, 10, 0.1) 0px 10px 28px -14px",
+          "border": "1px solid rgb(228, 228, 231)",
+          "background": "rgb(255, 255, 255)",
+          "padding": "0px",
+          "count": 1,
+          "exampleSize": "358x239"
+        }
+      ],
+      "imagery": {
+        "imageCount": 0,
+        "imageAreaPx": 0
+      }
+    },
+    {
+      "index": 4,
+      "tag": "section",
+      "className": "scroll-mt-[120px]",
+      "heading": "Haarschnitt",
+      "box": {
+        "top": 878,
+        "left": 16,
+        "width": 358,
+        "height": 513
+      },
+      "surface": {
+        "background": "rgba(0, 0, 0, 0)",
+        "padding": "0px",
+        "borderRadius": "0px"
+      },
+      "textRoles": [
+        {
+          "fontSizePx": 16,
+          "fontWeight": "600",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "capitalize",
+          "lineHeightPx": 24,
+          "letterSpacing": "-0.16px",
+          "count": 1,
+          "sample": "Haarschnitt"
+        },
+        {
+          "fontSizePx": 15,
+          "fontWeight": "600",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 22.5,
+          "letterSpacing": "normal",
+          "count": 4,
+          "sample": "Herrenschnitt"
+        },
+        {
+          "fontSizePx": 15,
+          "fontWeight": "700",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 22.5,
+          "letterSpacing": "normal",
+          "count": 4,
+          "sample": "ab"
+        },
+        {
+          "fontSizePx": 15,
+          "fontWeight": "700",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 22.5,
+          "letterSpacing": "normal",
+          "count": 4,
+          "sample": "45 CHF"
+        },
+        {
+          "fontSizePx": 14,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 21,
+          "letterSpacing": "normal",
+          "count": 4,
+          "sample": "30 Min"
+        }
+      ],
+      "cards": [
+        {
+          "radiusPx": 24,
+          "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(10, 10, 10, 0.04) 0px 1px 3px 0px, rgba(10, 10, 10, 0.1) 0px 10px 28px -14px",
+          "border": "1px solid rgb(228, 228, 231)",
+          "background": "rgb(255, 255, 255)",
+          "padding": "0px",
+          "count": 1,
+          "exampleSize": "358x477"
+        }
+      ],
+      "imagery": {
+        "imageCount": 0,
+        "imageAreaPx": 0
+      }
+    },
+    {
+      "index": 5,
+      "tag": "section",
+      "className": "scroll-mt-[120px]",
+      "heading": "Kombi",
+      "box": {
+        "top": 1423,
+        "left": 16,
+        "width": 358,
+        "height": 275
+      },
+      "surface": {
+        "background": "rgba(0, 0, 0, 0)",
+        "padding": "0px",
+        "borderRadius": "0px"
+      },
+      "textRoles": [
+        {
+          "fontSizePx": 16,
+          "fontWeight": "600",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "capitalize",
+          "lineHeightPx": 24,
+          "letterSpacing": "-0.16px",
+          "count": 1,
+          "sample": "Kombi"
+        },
+        {
+          "fontSizePx": 15,
+          "fontWeight": "600",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 22.5,
+          "letterSpacing": "normal",
+          "count": 2,
+          "sample": "Coupe & Bart"
+        },
+        {
+          "fontSizePx": 15,
+          "fontWeight": "700",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 22.5,
+          "letterSpacing": "normal",
+          "count": 2,
+          "sample": "ab"
+        },
+        {
+          "fontSizePx": 15,
+          "fontWeight": "700",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 22.5,
+          "letterSpacing": "normal",
+          "count": 2,
+          "sample": "68 CHF"
+        },
+        {
+          "fontSizePx": 14,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 21,
+          "letterSpacing": "normal",
+          "count": 2,
+          "sample": "45 Min"
+        }
+      ],
+      "cards": [
+        {
+          "radiusPx": 24,
+          "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(10, 10, 10, 0.04) 0px 1px 3px 0px, rgba(10, 10, 10, 0.1) 0px 10px 28px -14px",
+          "border": "1px solid rgb(228, 228, 231)",
+          "background": "rgb(255, 255, 255)",
+          "padding": "0px",
+          "count": 1,
+          "exampleSize": "358x239"
+        }
+      ],
+      "imagery": {
+        "imageCount": 0,
+        "imageAreaPx": 0
+      }
+    }
+  ]
+}

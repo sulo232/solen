@@ -608,4 +608,4 @@ jobs:
         if: steps.secrets-check.outputs.has-secrets == 'true'
         run: npm run gate:floors
         env:
-          BASE_URL: http://localhost:3001
+          BASE_URL: http://localhost:3002  # 3002, not 3001: this job serves on 3002 (see `next start -p 3002` above). It said 3001 from the commit that wired it (3f3d09a2a, 2026-07-28), so the checker reached nothing and reported GATE: PASSED for 30 days.

@@ -2,6 +2,26 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "Tunnel (worktree 3457)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:3457 --metrics localhost:20262 --no-autoupdate"
+      ],
+      "port": 20262,
+      "autoPort": false
+    },
+    {
+      "name": "Next dev (this worktree on 3457)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "npx next dev -p 3457"
+      ],
+      "port": 3457,
+      "autoPort": false
+    },
+    {
       "name": "Next dev (MAIN on 3000)",
       "runtimeExecutable": "bash",
       "runtimeArgs": [

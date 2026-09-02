@@ -3,10 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { Share, Star, X, ArrowLeft, Instagram, ChevronLeft, ChevronRight, Check } from "lucide-react";
+import { Share, Star, X, Instagram, ChevronLeft, ChevronRight, Check } from "lucide-react";
 import { Avatar, RatingStars, SeeAllButton } from "@/app/[locale]/_components/primitives";
+import { BackButton } from "@/app/[locale]/_components/primitives/BackButton";
 import { formatReviewDate } from "@/app/[locale]/_components/salon/_shared";
 import Spinner from "@/components-legacy/ui/Spinner";
 import StaffReviewsSheet from "@/components-legacy/staff/StaffReviewsSheet";
@@ -76,6 +77,7 @@ export default function StaffProfilePage({
   onSelect?: (staffId: string) => void;
 }) {
   const locale = useLocale();
+  const t = useTranslations("common");
   const router = useRouter();
   // Back goes BACK in history (the old <Link> PUSHED the salon page, so the
   // salon's back returned here — endless ping-pong, owner 2026-06-12).
@@ -212,13 +214,12 @@ export default function StaffProfilePage({
       {/* Top bar — back (left) + name on scroll */}
       <div className="sticky top-0 z-20 flex items-center gap-2 border-b border-s-border bg-white px-3 py-2.5">
         {onClose ? (
-          <button type="button" onClick={onClose} aria-label="Schliessen" className="grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-s-bg-sunken">
+          <button type="button" onClick={onClose} aria-label={t("close")} className="grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-s-bg-sunken">
             <X size={20} strokeWidth={2.2} className="text-s-ink" />
           </button>
         ) : (
-          <button type="button" onClick={handleBack} aria-label="Zurück" className="grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-s-bg-sunken">
-            <ArrowLeft size={20} strokeWidth={2.2} className="text-s-ink" />
-          </button>
+          // mockup-ok: public/_mockups/back-arrow-to-the-lock/index.html (on-white swatch) , composing the registered BackButton primitive at its locked flat treatment; this top bar is bg-white with no photo behind the control
+          <BackButton variant="flat" label={t("back")} onClick={handleBack} className="shrink-0" />
         )}
         <div className={`flex min-w-0 items-center gap-2 transition-opacity duration-200 ${condensed ? "opacity-100" : "opacity-0"}`}>
           <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded-full bg-s-bg-sunken">
@@ -233,7 +234,7 @@ export default function StaffProfilePage({
         {/* Mockup 18 (approved 2026-06-11): share, native share with clipboard fallback */}
         <button
           type="button"
-          aria-label="Teilen"
+          aria-label={t("share")}
           onClick={() => shareOrCopy(staff.name, window.location.href)}
           className="ml-auto grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-s-bg-sunken"
         >
@@ -248,7 +249,7 @@ export default function StaffProfilePage({
         {langRole && <p className="mt-1 text-[14px] text-s-ink-2">{langRole}</p>}
         <div className="mt-2 flex items-center gap-3">
           {staff.average_rating > 0 && (
-            <button type="button" onClick={() => goTo("reviews")} className="inline-flex items-center gap-1 text-[14px] transition-opacity hover:opacity-80" aria-label={`${staff.review_count} Bewertungen ansehen`}>
+            <button type="button" onClick={() => goTo("reviews")} className="inline-flex items-center gap-1 text-[14px] transition-opacity hover:opacity-80" aria-label={t("viewReviewsCountAria", { count: staff.review_count })}>
               <RatingStars value={staff.average_rating} size="lg" className="font-semibold text-s-ink" />
               <span className="text-s-accent underline-offset-2 hover:underline">({staff.review_count})</span>
             </button>
@@ -401,7 +402,7 @@ export default function StaffProfilePage({
 
       {/* Bewertungen */}
       <section ref={setRef("reviews")} data-tab="reviews" className="scroll-mt-[112px] px-5 pb-2 pt-9">
-        <p className="mb-4 font-heading text-[18px] font-bold text-s-ink">Bewertungen</p>
+        <p className="mb-4 font-heading text-[18px] font-bold text-s-ink">{t("reviews")}</p>
         <div className="mb-6 flex items-baseline gap-2.5">
           <div className="flex items-center gap-0.5">
             {[0, 1, 2, 3, 4].map((i) => (
@@ -412,7 +413,7 @@ export default function StaffProfilePage({
           <span className="text-[14px] text-s-accent">({staff.review_count})</span>
         </div>
         {reviews.length === 0 ? (
-          <p className="text-[14px] italic text-s-ink-2">Noch keine Bewertungen.</p>
+          <p className="text-[14px] italic text-s-ink-2">{t("noReviewsModeration")}</p>
         ) : (
           <>
             <div className="space-y-7">
@@ -438,7 +439,7 @@ export default function StaffProfilePage({
               // default "pill" (gray sunken) treatment, centred under the list like every
               // other see-all (SalonServices.tsx is the same centering pattern).
               <div className="mt-6 flex justify-center">
-                <SeeAllButton label="Alle ansehen" onClick={() => setShowReviews(true)} />
+                <SeeAllButton label={t("viewAll")} onClick={() => setShowReviews(true)} />
               </div>
             )}
           </>
@@ -448,16 +449,16 @@ export default function StaffProfilePage({
       {/* Portfolio lightbox */}
       {lightboxIndex !== null && portfolio[lightboxIndex] && (
         <div className="fixed inset-0 z-[120] flex items-center justify-center bg-s-ink/80 backdrop-blur-sm" onClick={() => setLightboxIndex(null)}>
-          <button type="button" onClick={(e) => { e.stopPropagation(); setLightboxIndex(null); }} aria-label="Schließen" className="absolute right-4 top-4 text-white/80 hover:text-white">
+          <button type="button" onClick={(e) => { e.stopPropagation(); setLightboxIndex(null); }} aria-label={t("closeOverlay")} className="absolute right-4 top-4 text-white/80 hover:text-white">
             <X size={24} strokeWidth={2.4} />
           </button>
           {lightboxIndex > 0 && (
-            <button type="button" onClick={(e) => { e.stopPropagation(); setLightboxIndex(lightboxIndex - 1); }} aria-label="Zurück" className="absolute left-4 text-white/80 hover:text-white">
+            <button type="button" onClick={(e) => { e.stopPropagation(); setLightboxIndex(lightboxIndex - 1); }} aria-label={t("back")} className="absolute left-4 text-white/80 hover:text-white">
               <ChevronLeft size={32} />
             </button>
           )}
           {lightboxIndex < portfolio.length - 1 && (
-            <button type="button" onClick={(e) => { e.stopPropagation(); setLightboxIndex(lightboxIndex + 1); }} aria-label="Weiter" className="absolute right-4 text-white/80 hover:text-white">
+            <button type="button" onClick={(e) => { e.stopPropagation(); setLightboxIndex(lightboxIndex + 1); }} aria-label={t("next")} className="absolute right-4 text-white/80 hover:text-white">
               <ChevronRight size={32} />
             </button>
           )}

@@ -8,6 +8,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence, type PanInfo } from "motion/react";
+import { useTranslations } from "next-intl";
 import { X } from "lucide-react";
 import TipFlow, { type TipFlowProps } from "./TipFlow";
 
@@ -17,6 +18,7 @@ type TipSheetProps = Omit<TipFlowProps, "onClose"> & {
 };
 
 export default function TipSheet({ open, onClose, ...tipProps }: TipSheetProps) {
+  const t = useTranslations("common");
   // Portal to <body> so the sheet escapes the page's stacking context. Without this its z-index is
   // capped by an ancestor and the cookie banner (portaled to body, z-700) renders on top of it.
   const [mounted, setMounted] = useState(false);
@@ -56,7 +58,7 @@ export default function TipSheet({ open, onClose, ...tipProps }: TipSheetProps) 
               <button
                 type="button"
                 onClick={onClose}
-                aria-label="Schliessen"
+                aria-label={t("close")}
                 className="absolute right-3 top-2.5 grid h-8 w-8 place-items-center rounded-full text-s-ink-2 transition active:scale-90"
               >
                 <X size={20} strokeWidth={2.2} />

@@ -3,8 +3,9 @@
 import * as React from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Share } from "lucide-react";
+import { Share } from "lucide-react";
 import { HeartButton } from "../homepage/HeartButton";
+import { BackButton } from "@/app/[locale]/_components/primitives/BackButton";
 import { TAB_SECTIONS, type TabKey, type SalonDetail } from "./_shared";
 import { cn } from "@/lib/utils";
 import { shareOrCopy } from "@/lib/share";
@@ -179,14 +180,16 @@ export function SalonStickyTabNav({
             tabs. The hero's own floating icons scroll away above this; on desktop the global
             site header carries these, so the row is mobile-only. */}
         <div className="flex items-center gap-3 py-2 md:hidden">
-          <button
-            type="button"
-            aria-label={tBack("back")}
+          {/* mockup-ok: restores the NAV CONTROLS lock (_design-system/LOCKFILE.md#L2096,
+              owner-measured 2026-08-10). This exact control was the bare-glyph regression the
+              lock names verbatim ("no fill, no border and no shadow"); composing BackButton
+              variant="flat" here restores the locked white+shadow circle, not a new choice. */}
+          <BackButton
+            variant="flat"
+            label={tBack("back")}
             onClick={() => router.back()}
-            className="-ml-1 grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink transition-transform active:scale-95 active:duration-[80ms] active:ease-glide"
-          >
-            <ArrowLeft size={20} strokeWidth={2.2} aria-hidden />
-          </button>
+            className="-ml-1 shrink-0"
+          />
           {/* mockup-ok: RANGE LAW A1/A3 (2026-07-25), owner-approved via /dev/flatness
               ("go apply evrth"). 16/600 -> 14/500: this is a secondary echo of the salon
               name (the mini scroll header), not the page's one display anchor (that's
@@ -198,7 +201,7 @@ export function SalonStickyTabNav({
           </span>
           <button
             type="button"
-            aria-label="Salon teilen"
+            aria-label={tr("shareProfile")}
             onClick={shareSalon}
             className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink transition-transform active:scale-95 active:duration-[80ms] active:ease-glide"
           >

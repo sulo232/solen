@@ -1,0 +1,411 @@
+{
+  "folder": "de-profile-favorites",
+  "route": "/de/profile/favorites",
+  "measuredAtViewport": "390x844",
+  "httpStatus": 200,
+  "settled": true,
+  "redirectedAway": false,
+  "finalUrl": "http://localhost:3457/de/profile/favorites",
+  "title": "solen.ch — Salons in Basel",
+  "pathname": "/de/profile/favorites",
+  "documentHeight": 1024,
+  "screen": {
+    "distinctSizes": [
+      18,
+      16,
+      15,
+      14,
+      13,
+      12
+    ],
+    "distinctWeights": [
+      "700",
+      "400",
+      "600"
+    ],
+    "textElements": 21,
+    "boldElements": 7
+  },
+  "sections": [
+    {
+      "index": 0,
+      "tag": "header",
+      "className": "sticky top-0 left-0 right-0 z-50 transition-all duration-300 ease-glide py-5 bg-transparent",
+      "heading": "Favoriten",
+      "box": {
+        "top": 0,
+        "left": 0,
+        "width": 390,
+        "height": 84
+      },
+      "surface": {
+        "background": "rgba(0, 0, 0, 0)",
+        "padding": "20px 0px",
+        "borderRadius": "0px"
+      },
+      "textRoles": [
+        {
+          "fontSizePx": 18,
+          "fontWeight": "700",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 27,
+          "letterSpacing": "-0.18px",
+          "count": 1,
+          "sample": "Favoriten"
+        }
+      ],
+      "cards": [],
+      "imagery": {
+        "imageCount": 0,
+        "imageAreaPx": 0
+      }
+    },
+    {
+      "index": 1,
+      "tag": "main",
+      "className": "isolate pb-[calc(56px+env(safe-area-inset-bottom))] md:pb-[env(safe-area-inset-bottom)]",
+      "heading": "Old Town Barbers",
+      "box": {
+        "top": 84,
+        "left": 0,
+        "width": 390,
+        "height": 940
+      },
+      "surface": {
+        "background": "rgba(0, 0, 0, 0)",
+        "padding": "0px 0px 56px",
+        "borderRadius": "0px"
+      },
+      "textRoles": [
+        {
+          "fontSizePx": 15,
+          "fontWeight": "400",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 16.5,
+          "letterSpacing": "normal",
+          "count": 2,
+          "sample": "Old Town Barbers"
+        },
+        {
+          "fontSizePx": 14,
+          "fontWeight": "600",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 24,
+          "letterSpacing": "normal",
+          "count": 2,
+          "sample": "4.3"
+        },
+        {
+          "fontSizePx": 14,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 20,
+          "letterSpacing": "normal",
+          "count": 4,
+          "sample": "Barbershop Grossbasel"
+        },
+        {
+          "fontSizePx": 13,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 19.5,
+          "letterSpacing": "normal",
+          "count": 1,
+          "sample": "2 Salons"
+        },
+        {
+          "fontSizePx": 12,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 16,
+          "letterSpacing": "normal",
+          "count": 2,
+          "sample": "( 12 )"
+        }
+      ],
+      "cards": [
+        {
+          "radiusPx": 16,
+          "boxShadow": "rgba(50, 47, 44, 0.04) 0px 1px 3px 0px, rgba(50, 47, 44, 0.03) 0px 1px 2px 0px",
+          "border": "none",
+          "background": "rgb(255, 255, 255)",
+          "padding": "0px",
+          "count": 2,
+          "exampleSize": "358x388"
+        },
+        {
+          "radiusPx": 16,
+          "boxShadow": "none",
+          "border": "none",
+          "background": "rgba(0, 0, 0, 0)",
+          "padding": "0px",
+          "count": 2,
+          "exampleSize": "358x286"
+        }
+      ],
+      "imagery": {
+        "imageCount": 2,
+        "imageAreaPx": 205056
+      }
+    },
+    {
+      "index": 2,
+      "tag": "section",
+      "className": "mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4",
+      "heading": "Old Town Barbers",
+      "box": {
+        "top": 144,
+        "left": 16,
+        "width": 358,
+        "height": 793
+      },
+      "surface": {
+        "background": "rgba(0, 0, 0, 0)",
+        "padding": "0px",
+        "borderRadius": "0px"
+      },
+      "textRoles": [
+        {
+          "fontSizePx": 15,
+          "fontWeight": "400",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 16.5,
+          "letterSpacing": "normal",
+          "count": 2,
+          "sample": "Old Town Barbers"
+        },
+        {
+          "fontSizePx": 14,
+          "fontWeight": "600",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 24,
+          "letterSpacing": "normal",
+          "count": 2,
+          "sample": "4.3"
+        },
+        {
+          "fontSizePx": 14,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 20,
+          "letterSpacing": "normal",
+          "count": 4,
+          "sample": "Barbershop Grossbasel"
+        },
+        {
+          "fontSizePx": 12,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 16,
+          "letterSpacing": "normal",
+          "count": 2,
+          "sample": "( 12 )"
+        }
+      ],
+      "cards": [
+        {
+          "radiusPx": 16,
+          "boxShadow": "rgba(50, 47, 44, 0.04) 0px 1px 3px 0px, rgba(50, 47, 44, 0.03) 0px 1px 2px 0px",
+          "border": "none",
+          "background": "rgb(255, 255, 255)",
+          "padding": "0px",
+          "count": 2,
+          "exampleSize": "358x388"
+        },
+        {
+          "radiusPx": 16,
+          "boxShadow": "none",
+          "border": "none",
+          "background": "rgba(0, 0, 0, 0)",
+          "padding": "0px",
+          "count": 2,
+          "exampleSize": "358x286"
+        }
+      ],
+      "imagery": {
+        "imageCount": 2,
+        "imageAreaPx": 205056
+      }
+    },
+    {
+      "index": 3,
+      "tag": "div",
+      "className": "flex items-start justify-between gap-2",
+      "heading": "Old Town Barbers",
+      "box": {
+        "top": 444,
+        "left": 32,
+        "width": 326,
+        "height": 24
+      },
+      "surface": {
+        "background": "rgba(0, 0, 0, 0)",
+        "padding": "0px",
+        "borderRadius": "0px"
+      },
+      "textRoles": [
+        {
+          "fontSizePx": 15,
+          "fontWeight": "400",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 16.5,
+          "letterSpacing": "normal",
+          "count": 1,
+          "sample": "Old Town Barbers"
+        },
+        {
+          "fontSizePx": 14,
+          "fontWeight": "600",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 24,
+          "letterSpacing": "normal",
+          "count": 1,
+          "sample": "4.3"
+        },
+        {
+          "fontSizePx": 12,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 16,
+          "letterSpacing": "normal",
+          "count": 1,
+          "sample": "( 12 )"
+        }
+      ],
+      "cards": [],
+      "imagery": {
+        "imageCount": 0,
+        "imageAreaPx": 0
+      }
+    },
+    {
+      "index": 4,
+      "tag": "nav",
+      "className": "md:hidden fixed inset-x-0 bottom-0 z-[700] [body[data-overlay-open]_&]:hidden mx-3 mb-3 rounded-full overflow-hidden mb-[calc(12px+env(safe-area-inset-bottom))] transition-[margin,",
+      "heading": "Suchen",
+      "box": {
+        "top": 774,
+        "left": 12,
+        "width": 366,
+        "height": 58
+      },
+      "surface": {
+        "background": "rgba(255, 255, 255, 0.8)",
+        "padding": "0px",
+        "borderRadius": "9999px"
+      },
+      "textRoles": [
+        {
+          "fontSizePx": 12,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 12,
+          "letterSpacing": "normal",
+          "count": 3,
+          "sample": "Suchen"
+        },
+        {
+          "fontSizePx": 12,
+          "fontWeight": "600",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 12,
+          "letterSpacing": "normal",
+          "count": 1,
+          "sample": "Profil"
+        }
+      ],
+      "cards": [],
+      "imagery": {
+        "imageCount": 0,
+        "imageAreaPx": 0
+      }
+    },
+    {
+      "index": 5,
+      "tag": "div",
+      "className": "flex items-start justify-between gap-2",
+      "heading": "Muse Beauty Studio",
+      "box": {
+        "top": 848,
+        "left": 32,
+        "width": 326,
+        "height": 24
+      },
+      "surface": {
+        "background": "rgba(0, 0, 0, 0)",
+        "padding": "0px",
+        "borderRadius": "0px"
+      },
+      "textRoles": [
+        {
+          "fontSizePx": 15,
+          "fontWeight": "400",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 16.5,
+          "letterSpacing": "normal",
+          "count": 1,
+          "sample": "Muse Beauty Studio"
+        },
+        {
+          "fontSizePx": 14,
+          "fontWeight": "600",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 24,
+          "letterSpacing": "normal",
+          "count": 1,
+          "sample": "4.2"
+        },
+        {
+          "fontSizePx": 12,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 16,
+          "letterSpacing": "normal",
+          "count": 1,
+          "sample": "( 11 )"
+        }
+      ],
+      "cards": [],
+      "imagery": {
+        "imageCount": 0,
+        "imageAreaPx": 0
+      }
+    }
+  ]
+}

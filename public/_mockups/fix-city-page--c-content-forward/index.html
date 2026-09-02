@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Basel city page, salons pushed higher</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!-- geometry-only: this is a floor-measurement before/after, not a finished-screen pitch, so the
+     five-item finished-screen "floors:" note does not apply here. -->
+<!--
+  Grounded-in: app/[locale]/[city]/page.tsx
+  Grounded-in: components-legacy/CityPage.tsx (the real component both panels load, unmodified source)
+  Grounded-in: the running dev server at http://localhost:3457, both panels load /de/basel from it directly, live, with the real seeded Basel salons in it
+  Grounded-in: public/_mockups/floor-fix-city-page/index.html for the two-stacked-iframe shape. The brief pointed at
+    public/_mockups/dashboard-without-the-gray/index.html; `find . -iname "*dashboard-without-the-gray*"` from the repo
+    root returns nothing, that file does not exist on disk. floor-fix-city-page is the real, on-disk sibling that
+    already uses the identical technique against this identical route, so it is what this file's shape is grounded in.
+
+  Depicts: the Basel city page, now -> app/[locale]/[city]/page.tsx via components-legacy/CityPage.tsx, loaded live at /de/basel, unmodified
+  Depicts: the Basel city page, heading block and filter row compressed -> app/[locale]/[city]/page.tsx via components-legacy/CityPage.tsx, loaded live at /de/basel with three CSS rules injected after load, so the real salon grid begins its content 70px higher in the same 402x844 frame
+
+  Diagnosis: imagery | measured 0% cold, my own repeat runs of the project's script then settle at 43 to 47% once the client-fetched salon list finishes loading | violates FLOORS LAW F2, the imagery floor (LOCKFILE: >= 33% of the first viewport is photographic, from real salon content) at the instant it is measured cold | target >= 33%, and see the correction note below, this is the one floor my own remeasurement disagrees with the brief on
+  Diagnosis: weight share | measured 54.55% (6/11 leaves) cold, settling to 43.75-61.54% depending on how many salon cards have rendered when measured | violates FLOORS LAW F7a, the emphasis-budget weight-share ceiling (<= 30% of visible text at weight >= 600) | target <= 30%, unchanged by this mechanism, out of scope for this arm
+  Diagnosis: display anchor | measured 25px, stable across every run | violates NEVER-AGAIN floor 6 (>= 28px) | target 28px, unchanged by this mechanism, out of scope for this arm
+  Diagnosis: anchor ratio | measured 1.79x, stable across every run | violates FLOORS LAW F7b (>= 1.8x) | target 1.8x, unchanged by this mechanism, out of scope for this arm
+
+  HOW MEASURED. Ran the project's own gate script against the live dev server:
+  `node scripts/check-geometry.mjs --base-url http://localhost:3457 --floors-only /de/basel`. First run after this
+  server had been sitting idle: imagery=0%(FAIL) displayAnchor=25px(FAIL) weightShare=54.55%(6/11)(FAIL)
+  anchorRatio=1.79x(FAIL), matching the brief exactly, digit for digit. Every run immediately after that first one,
+  same command, same route, no server restart: imagery=43.18%(PASS) weightShare=43.75%(7/16)(FAIL), displayAnchor
+  and anchorRatio unchanged. I then reproduced the same instability independently, by hand, without the project
+  script: opened /de/basel at 390x844 in a real browser tab, dropped it into an iframe the same way this mockup
+  does, waited for the salon cards to finish loading, and ran the script's own F2/F6/F7a/F7b algorithm (copied
+  line for line from scripts/check-geometry.mjs, not rewritten from memory) directly against that live DOM. Settled
+  reading: imagery=46.87%, weightShare=61.54%(8/13), displayAnchor=25px, anchorRatio=1.79x. Three independently-run
+  measurements (the script cold, the script warm, my own live DOM read) agree on F6 and F7b every time, and agree
+  that F2 is only 0% in the first instant, never once it settles. sizeSpread and elevation were not in scope for
+  this brief and were not re-measured.
+
+  CORRECTION, and this is the important one. I was handed imagery=0% as the number to fix. My own remeasurement,
+  three separate ways, says that number is real only for a fraction of a second, not the steady state a customer
+  actually stands on. The cause: CityPage.tsx fetches the salon list client-side (`fetch("/api/salons?...")` inside
+  a useEffect), and while `loading` is true it renders <SkeletonCard> placeholders, which are plain grey boxes with
+  no <img> and no background-image, so they measure as 0% photographic no matter how much space they take up. The
+  0% figure is what you get if you measure inside that window. My best explanation for why the cold run and every
+  later run disagreed (tier: expect, not verified, I did not spin up a production build to confirm this) is that
+  this is a Next.js DEV SERVER artifact: the very first request to a route the dev server has not compiled yet pays
+  a real compile tax before it can even start sending JS to the browser, which is long enough to blow through the
+  loading window on that one request only. A production build ships pre-compiled, so a real customer very likely
+  never sees the request that took 0%, only the ones that behave like every run after the first. I am NOT
+  claiming this as verified fact, only as the explanation that fits everything I measured.
+
+  WHAT THIS MEANS FOR THE FIX I WAS ASKED TO BUILD. My mechanism is spacing and layout, not data-fetching. It
+  cannot make the skeleton frame show photographs that have not arrived yet, and it does not try to, that would
+  need the salon list rendered on the server instead of fetched after the page appears, which is a data change, not
+  a treatment. So, plainly: THIS MECHANISM DOES NOT MOVE F2 FROM FAIL TO PASS, because in the state a customer
+  actually stands on, long enough to see anything, F2 was not failing to begin with. What it DOES do, measured the
+  same way as everything above: it removes 70px of heading-and-filter padding with zero content deleted, so the
+  real salon grid's top edge moves from 309px to 239px from the top of the frame, and the same live-DOM measurement
+  that read 46.87% before reads 54.74% after, a +7.87 point gain in real photographic share in the exact same
+  402x844 frame. That is "higher and bigger" doing its actual job: more genuine salon content earlier, with real
+  headroom instead of a bare pass.
+
+  Exists-check: `npm run exists "city page"` run this turn. 1 hit: CityPage -> components-legacy/CityPage.tsx. Per
+  protocol a hit means reuse, and that is exactly what this mockup does, both panels load the real route rather
+  than rebuilding any part of it. No component is created or modified.
+
+  Treatment-only: three CSS rules, injected into the "after" panel's iframe after it loads, targeting the header
+  section's own padding and the filter section's own bottom padding. Nothing else, no component touched, no photo
+  added, no copy changed, no card resized. Single light theme, no dark mode anywhere in this file. Every label I
+  wrote here is English; the city page inside both panels renders its own German through the product's
+  translations, which is the real page and is exempt.
+-->
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 402px; margin: 0 auto; padding: 0 0 56px; }
+
+  .lede { padding: 28px 16px 6px; }
+  .lede h1 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 26px; font-weight: 600; line-height: 1.18; letter-spacing: -0.02em;
+  }
+  .lede p { margin-top: 10px; font-size: 14px; line-height: 1.5; color: #6B6B6B; }
+
+  .panel { margin-top: 26px; }
+  .cap { padding: 0 16px 8px; }
+  .cap h2 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 18px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em;
+  }
+  .cap p { margin-top: 3px; font-size: 13px; line-height: 1.45; color: #6B6B6B; }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  /* the real page, held at its real phone width so nothing is scaled or distorted */
+  .frame {
+    position: relative; width: 100%; height: 700px;
+    border-top: 1px solid #E4E4E7; border-bottom: 1px solid #E4E4E7;
+    overflow: hidden;
+  }
+  .frame iframe { width: 402px; height: 700px; border: 0; display: block; }
+  .frame .badge {
+    position: absolute; top: 10px; right: 10px; z-index: 2;
+    padding: 5px 10px; border-radius: 40px;
+    background: rgba(255,255,255,0.92); border: 1px solid #E4E4E7;
+    font-size: 11px; font-weight: 600; color: #0A0A0A;
+    font-variant-numeric: tabular-nums;
+  }
+  .frame .badge.neutral { color: #6B6B6B; }
+  .frame .badge.good { color: #16A34A; }
+
+  .note { padding: 22px 16px 0; font-size: 13px; line-height: 1.55; color: #6B6B6B; }
+  .note strong { color: #0A0A0A; font-weight: 600; }
+  .note + .note { padding-top: 12px; }
+  .note.flag { border-left: 2px solid #E4E4E7; padding-left: 14px; margin: 22px 16px 0; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <h1>Basel salons, moved up 70 pixels</h1>
+    <p>Both panels below are your real Basel page, live, with your real salons in it. In the second
+       one, the heading and the filter row take up less room, nothing else changed, so the salon
+       grid opens noticeably sooner.</p>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>Now</h2>
+      <p>The heading and the filter row sit at their normal padding. The salon grid opens 309px
+         down the screen.</p>
+    </div>
+    <div class="frame">
+      <div class="badge nums neutral">47% photos</div>
+      <iframe id="before" src="/de/basel" scrolling="no" title="The Basel page as it is today"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>Moved up</h2>
+      <p>Same heading, same filter row, same words, just less air around them. The salon grid now
+         opens 239px down the screen, 70px sooner.</p>
+    </div>
+    <div class="frame">
+      <div class="badge nums good">55% photos</div>
+      <iframe id="after" src="/de/basel" scrolling="no" title="The Basel page with the heading and filter row compressed"></iframe>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>What actually changes.</strong> Three spacing rules on the top two blocks of the page.
+    The space above and below the "Salons in Basel" heading shrinks, the small gap between the
+    location line and the heading shrinks, and the empty strip under the category buttons shrinks.
+    <span class="nums">70px</span> of that, all air, comes back, and the real salon photos move up
+    into it. Nothing is deleted, resized, or reworded.
+  </div>
+
+  <div class="note flag">
+    <strong>About the 0% figure I was handed for this screen.</strong> I could not reproduce it as
+    the steady state. I measured this three separate ways, the project's own check script cold, the
+    same script run again a moment later, and my own read of the live page in a browser, and every
+    read after the very first one landed between <span class="nums">43%</span> and
+    <span class="nums">47%</span> photographic, already past the <span class="nums">33%</span> floor.
+    The salon list on this page loads a moment after the page appears, and while it is loading you
+    see grey placeholder cards with no photos in them at all, that is where a <span class="nums">0%</span>
+    reading comes from. My best explanation, not confirmed, is that this only shows up on the very
+    first hit to this route on a dev server that has not compiled it yet. Because of that, this fix
+    does not carry the imagery floor from failing to passing, there was nothing failing once the page
+    actually settles. What it does do, measured directly: it makes that settled photo share
+    noticeably bigger, from <span class="nums">47%</span> to <span class="nums">55%</span> in the
+    same frame, which is what "push it up and make it bigger" should produce even when the floor was
+    not the real problem.
+  </div>
+
+  <div class="note">
+    <strong>What this does not touch.</strong> The salon cards, the photos, the search, the category
+    icons, the colors, all the copy, and the two other broken numbers on this screen, the heading
+    size and the bold category buttons. Those need a different fix than spacing; this file only
+    proves the one mechanism it was asked to prove.
+  </div>
+
+</div>
+
+<script>
+  // The "after" panel is the SAME page as the "before" panel, loaded from the same real route.
+  // After it loads, exactly THREE rules are added inside it, all verified live before this file was
+  // written (injected into the running page, then re-measured with the project's own F2/F6/F7a/F7b
+  // algorithm copied line for line): the heading section's own padding, the eyebrow-to-heading gap,
+  // and the filter section's own bottom padding. Nothing else in that document is touched.
+  var after = document.getElementById("after");
+  var HEADING_SECTION_SELECTOR = "main.min-h-screen > section:nth-of-type" + "(1)";
+  var EYEBROW_ROW_SELECTOR = HEADING_SECTION_SELECTOR + " > div.mb-2";
+  var FILTER_SECTION_SELECTOR = "main.min-h-screen > section:nth-of-type" + "(2)";
+  after.addEventListener("load", function () {
+    try {
+      var doc = after.contentDocument;
+      if (!doc) { return; }
+      var style = doc.createElement("style");
+      style.textContent =
+        HEADING_SECTION_SELECTOR + " { padding-top: 22px !important; padding-bottom: 10px !important; }\n" +
+        EYEBROW_ROW_SELECTOR + " { margin-bottom: 4px !important; }\n" +
+        FILTER_SECTION_SELECTOR + " { padding-bottom: 6px !important; }";
+      doc.head.appendChild(style);
+    } catch (err) {
+      console.error("[fix-city-page--c-content-forward] could not restyle the after panel:", err);
+    }
+  });
+</script>
+</body>
+</html>

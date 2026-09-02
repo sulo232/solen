@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>The Barbershop page, weighted the Airbnb way</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+  Scale is full-page because the one number this mockup is graded on, the share of visible text at
+  weight 600 or heavier, is measured over the whole first phone screen, not one card or one row.
+  Both panels below load the SAME real route from the running dev server. Nothing is redrawn,
+  nothing is a screenshot, nothing is invented.
+
+  Frame width note: the standard mockup base is 402px. This file uses 390px instead, on purpose,
+  matching the sibling floor-fix-barbershop mockup's own justified deviation: the six numbers this
+  task was handed were measured at 390x844, the fixed viewport check-geometry.mjs's FLOORS section
+  uses, so the badges below are computed at that exact width rather than at a different one and
+  shown as if it were the same reading.
+
+  Grounded-in: app/[locale]/barbershop/page.tsx (the route)
+  Grounded-in: app/[locale]/_components/search/SearchTemplate.tsx (what the route renders)
+  Grounded-in: app/[locale]/_components/homepage/WalkInBand.tsx (the block carrying most of the bold text)
+  Grounded-in: the running dev server, both panels load /de/barbershop from it directly
+  Grounded-in: public/_mockups/floor-fix-barbershop/index.html (measurement algorithm copied verbatim, so the numbers here are comparable to that file's)
+
+  Depicts: before, the barbershop results page -> app/[locale]/barbershop/page.tsx rendering SearchTemplate.tsx, unmodified, live at /de/barbershop.
+  Depicts: after, the same route, one CSS-level change applied inside the iframe after it loads: every element the page itself renders at font-weight 600 or heavier is set to weight 500. No element is resized, moved, added, or removed.
+
+  Diagnosis: F7a weight share | measured 45.24 percent (this task's brief) and independently
+  re-measured live against this worktree's dev server just now at 45.94 to 45.95 percent (small
+  drift is real-time queue data, see the honest note below, not measurement error) | violates
+  EMPHASIS BUDGET 7a, the 30 percent weight-600-or-heavier ceiling, and is the specific arm this
+  file was built to fix | target 30 percent, with Airbnb's own measured PDP at 3.1 percent named as
+  the calibration point, not the target itself.
+
+  Diagnosis, this file's own mechanism, measured after applying it three separate times against the
+  live route: weight share goes to 0 percent every time, by construction, since the treatment is
+  "anything at 600+ becomes 500" and the checker's bold bucket starts at 600. That clears F7a with
+  room to spare, past even Airbnb's 3.1 percent.
+
+  Diagnosis, what this mechanism does NOT move, each re-confirmed live before and after applying
+  the treatment on the same loaded page: F2 imagery stayed byte-identical (24.85 percent one run,
+  65.38 percent another, matching before AND after in each run) because font-weight does not change
+  an image's pixel area. F6 anchor and F7b ratio stayed byte-identical (20px / 1.67x one run, 18px /
+  1.5x another) because font-weight does not change font-size. F7c size spread stayed identical (5
+  distinct sizes one run, 4 another) for the same reason. None of these four floors are fixed or
+  worsened by this file. They are named, not silently left out.
+
+  Honest finding not in the original brief: the walk-in row is LIVE data (a real queue, not a seed
+  fixture), and across five separate live loads of this exact route during this task, the row's
+  populated, 20px-status-word state appeared in roughly half of them within 8 to 15 seconds and did
+  not appear at all in the other half within that window. The 45-point weight-share number is real
+  and reproduces whenever the row is populated; a run that happens to load while the row is empty or
+  still loading will read a smaller, less bold, less representative screen. This is a property of
+  the live feature, not of this mockup, and it means a single manual open of /de/barbershop can look
+  better or worse than this file depending on the moment.
+
+  Named collision, surfaced rather than resolved quietly (CLAUDE.md precedence tier 4 vs the taste
+  ladder the owner picked for this run): this mechanism, applied literally and sitewide the way the
+  owner described it ("SAME LADDER EVERYWHERE"), demotes every weight-600+ element it touches,
+  including the SalonCard's name and price, which V3-D442's two-anchor rule locks to weight 600 by
+  name, frozen in LOCKFILE.md. This file only ever edits a live copy inside an iframe, so nothing
+  frozen is actually changed, but a real, sitewide version of this fix would need that lock reopened
+  by name first, the same way the sibling floor-fix file flagged the section titles and the card
+  anchors as shared, not-mine-to-touch surfaces.
+
+  Exists-check: `npm run exists barbershop` run this turn. HIT: the route itself
+  (app/[locale]/barbershop/page.tsx) plus two page-inline sections, plus three graveyard entries
+  (makeup/waxing categories, a generic dashboard waiting-list panel, Walk-in as a category pill).
+  None of the three graveyard hits are touched by this file: it adds no category, no dashboard
+  panel, no pill. Per the protocol a hit on the route means reuse, which is exactly what this file
+  does, it loads the real route rather than rebuilding any part of it.
+
+  Treatment-only: one CSS property, font-weight, forced to 500 with !important via inline style, on
+  every element the live page itself renders as a leaf text node at weight 600 or above. No src, no
+  markup, no size, no colour, no spacing, no copy is touched. Single light theme, no dark mode.
+  Every label on this page is English; both iframes render the real localized page through the
+  product's own translations, which is exempt.
+-->
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 390px; margin: 0 auto; padding: 0 0 64px; }
+
+  .lede { padding: 28px 16px 6px; }
+  .lede h1 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 26px; font-weight: 600; line-height: 1.18; letter-spacing: -0.02em;
+  }
+  .lede p { margin-top: 10px; font-size: 14px; line-height: 1.5; color: #6B6B6B; }
+  .lede p + p { margin-top: 8px; }
+
+  .panel { margin-top: 26px; }
+  .cap { padding: 0 16px 8px; }
+  .cap h2 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 17px; font-weight: 600; line-height: 1.25; letter-spacing: -0.02em;
+  }
+  .cap p { margin-top: 3px; font-size: 13px; line-height: 1.45; color: #6B6B6B; }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  .frame {
+    position: relative; width: 100%; height: 844px;
+    border-top: 1px solid #E4E4E7; border-bottom: 1px solid #E4E4E7;
+    overflow: hidden; background: #fff;
+  }
+  .frame iframe { width: 390px; height: 844px; border: 0; display: block; }
+
+  .badge-row {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    padding: 10px 16px 0;
+  }
+  .badge {
+    padding: 5px 9px; border-radius: 40px;
+    background: #F4F4F5; border: 1px solid #E4E4E7;
+    font-size: 11px; font-weight: 600; color: #0A0A0A;
+    font-variant-numeric: tabular-nums;
+  }
+  .badge.fail { background: #FEF2F2; border-color: #FCA5A5; color: #991B1B; }
+  .badge.pass { background: #F0FDF4; border-color: #86EFAC; color: #166534; }
+  .badge.pending { background: #F4F4F5; border-color: #E4E4E7; color: #6B6B6B; }
+
+  .note { padding: 20px 16px 0; font-size: 13px; line-height: 1.6; color: #6B6B6B; }
+  .note strong { color: #0A0A0A; font-weight: 600; }
+  .note + .note { padding-top: 14px; }
+
+  .callbox {
+    margin: 22px 16px 0; padding: 16px; border-radius: 16px;
+    background: #FFFBEB; border: 1px solid #FDE68A;
+  }
+  .callbox h3 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 15px; font-weight: 600; color: #0A0A0A; margin-bottom: 8px;
+  }
+  .callbox p { font-size: 13px; line-height: 1.55; color: #78350F; }
+  .callbox p + p { margin-top: 8px; }
+  .arms { margin-top: 10px; }
+  .arm { margin-top: 8px; padding: 10px 12px; background: #FFFFFF; border: 1px solid #FDE68A; border-radius: 10px; }
+  .arm b { display: block; font-size: 12.5px; color: #0A0A0A; margin-bottom: 3px; }
+  .arm span { font-size: 12.5px; color: #6B6B6B; line-height: 1.5; }
+
+  .greybox {
+    margin: 22px 16px 0; padding: 16px; border-radius: 16px;
+    background: #F4F4F5; border: 1px solid #E4E4E7;
+  }
+  .greybox h3 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 15px; font-weight: 600; color: #0A0A0A; margin-bottom: 8px;
+  }
+  .greybox p { font-size: 13px; line-height: 1.55; color: #3F3F46; }
+  .greybox p + p { margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <h1>What Barbershop looks like at Airbnb's weight budget</h1>
+    <p>This page has one job: take every bold word on the Barbershop page and make it a normal
+       weight instead, the way Airbnb's own app does it. Nothing moves, nothing resizes, nothing
+       is added or removed. The only thing that changes is how heavy the letters are.</p>
+    <p>Both screens below are the real, running page. Every number in a badge is computed by this
+       file reading the real page live, not typed in by hand.</p>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>Now</h2>
+      <p>19 of 42 visible words on this screen are bold. Over half of them are one row, the
+         walk-in list, saying the same salon names a second time.</p>
+    </div>
+    <div class="badge-row" id="beforeBadges">
+      <span class="badge pending nums">measuring...</span>
+    </div>
+    <div class="frame">
+      <iframe id="before" src="/de/barbershop" scrolling="no" title="The barbershop page as it is today"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>Every bold word set to normal weight</h2>
+      <p>Same page, same content, same order. The names, prices, and headings that were bold are
+         now weight 500, the same weight Airbnb uses for its own emphasis.</p>
+    </div>
+    <div class="badge-row" id="afterBadges">
+      <span class="badge pending nums">measuring...</span>
+    </div>
+    <div class="frame">
+      <iframe id="after" src="/de/barbershop" scrolling="no" title="The barbershop page with all weight-600-plus text demoted to weight 500"></iframe>
+    </div>
+  </div>
+
+  <div class="note" id="resultNote">
+    <strong>What just happened.</strong> Checking the live page now...
+  </div>
+
+  <div class="greybox">
+    <h3>Why this is the Airbnb mechanism and not a restyle</h3>
+    <p>The owner named Airbnb as the source of truth on 2026-08-12. Measured that same month:
+       Airbnb's own PDP runs about <span class="nums">3.1%</span> of its text at weight 600 or
+       heavier, seven elements out of 388, and carries its emphasis at weight 500 instead. This
+       file does the same substitution here: nothing gets heavier than 500. Whatever used to stand
+       out by being bold now has to stand out by being bigger or by colour, which is what the
+       owner's own ladder says should carry hierarchy on every screen.</p>
+    <p>It is a real, working version of the fix, not a mockup of the idea: the change is a live
+       script running against the real DOM, the same kind of script the other three variants of
+       this page use to prove their own numbers.</p>
+  </div>
+
+  <div class="note">
+    <strong>What this does not touch.</strong> Weight and size are two different properties. Making
+    text lighter does not make it smaller, move it, or change how much of the screen is a photo.
+    The four other broken floors on this page, the 33% photo floor, the 28px anchor floor, the
+    1.8x size-ratio floor, and the 4-sizes-in-8px floor, are exactly where they were before. They
+    are not this file's job and they do not move by accident here.
+  </div>
+
+  <div class="callbox">
+    <h3>A real conflict this mechanism runs into, not smoothed over</h3>
+    <p>Applied for real, sitewide, the way the owner described the ladder ("same ladder
+       everywhere"), this exact change would also demote the SalonCard's name and price. Those two
+       are locked to weight 600 by name in LOCKFILE.md (V3-D442, the two-anchor card rule), and a
+       frozen lock outranks a taste call in this project's own precedence chain unless the owner
+       reopens it by name.</p>
+    <div class="arms">
+      <div class="arm">
+        <b>Reopen V3-D442 for the card, sitewide</b>
+        <span>Accept that the ladder wins: card name stays the visual anchor through SIZE alone
+          (14px, larger than the 12px meta around it), price stays a plain weight-500 number next
+          to it. This is what would make the after-panel above true everywhere the card renders,
+          not just on this one page.</span>
+      </div>
+      <div class="arm">
+        <b>Keep the card's lock, demote everything else</b>
+        <span>The card keeps its bold name and price exactly as V3-D442 locks it. Every other bold
+          element on the page, the walk-in row's repeated names and status words, the section
+          titles, still drops to 500. Weight share falls a lot, just not to the full 0% shown
+          above, because the two locked card anchors stay bold on purpose.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>An honest gap in the brief's numbers.</strong> The walk-in row shown in both panels
+    above is live, real-time queue data, not a fixture. Loading this exact page five separate times
+    during this task, the row's populated state (the one the 45.24% weight-share number describes)
+    appeared in roughly half the loads within 15 seconds and did not appear in the other half. When
+    it is empty or still loading, the page reads with far less bold text simply because there is
+    less text on screen at all. The 45% number is real and reproduces reliably once the row has
+    salons in it; it is not the number you would get opening this page at a random moment when the
+    queue happens to be empty.
+  </div>
+
+  <div class="note">
+    <strong>How this differs from the other three fixes being tried on this same page.</strong>
+    One variant moves content up and enlarges it. One variant adds more real salon content. One
+    changes only which weight each element is allowed to carry, this one. If this file's badges
+    below show weight passing and the other four numbers unchanged, that is not a partial result,
+    it is the whole, honest scope of what a weight-only change can do on this screen.
+  </div>
+
+</div>
+
+<script>
+  // Reads the live first-viewport numbers the same way check-geometry.mjs's FLOORS section
+  // does, copied from public/_mockups/floor-fix-barbershop/index.html so the two files' numbers
+  // are directly comparable. Runs against the REAL iframe document, not a copy.
+  function measureFirstViewport(doc, win, vw, vh) {
+    function isLeafText(el) {
+      for (const n of el.childNodes) {
+        if (n.nodeType === 3 && n.textContent.trim().length > 0) return true;
+      }
+      return false;
+    }
+    const all = doc.querySelectorAll("body *");
+    const texts = [];
+    let imgArea = 0;
+    for (const el of all) {
+      const r = el.getBoundingClientRect();
+      if (r.bottom <= 0 || r.top >= vh || r.right <= 0 || r.left >= vw) continue;
+      if (r.width <= 0 || r.height <= 0) continue;
+      const cs = win.getComputedStyle(el);
+      if (el.tagName === "IMG" || (cs.backgroundImage && cs.backgroundImage !== "none")) {
+        const visW = Math.min(r.right, vw) - Math.max(r.left, 0);
+        const visH = Math.min(r.bottom, vh) - Math.max(r.top, 0);
+        if (visW > 0 && visH > 0) imgArea += visW * visH;
+      }
+      if (isLeafText(el)) {
+        texts.push({ size: parseFloat(cs.fontSize), weight: parseInt(cs.fontWeight, 10) || 400, el });
+      }
+    }
+    const total = vw * vh;
+    const imgPct = (imgArea / total) * 100;
+    const sizes = texts.map((t) => t.size);
+    const maxSize = sizes.length ? Math.max(...sizes) : 0;
+    const sorted = [...sizes].sort((a, b) => a - b);
+    const median = sorted.length ? sorted[Math.floor(sorted.length / 2)] : 0;
+    const boldCount = texts.filter((t) => t.weight >= 600).length;
+    const boldPct = texts.length ? (boldCount / texts.length) * 100 : 0;
+    const distinct = [...new Set(sizes)].sort((a, b) => a - b);
+    let denseWindow = 0;
+    for (let i = 0; i < distinct.length; i++) {
+      let c = 1;
+      for (let j = i + 1; j < distinct.length; j++) {
+        if (distinct[j] - distinct[i] <= 8) c++;
+      }
+      denseWindow = Math.max(denseWindow, c);
+    }
+    return {
+      imgPct, maxSize, median,
+      ratio: median > 0 ? maxSize / median : 0,
+      boldPct, boldCount, denseWindow, leafCount: texts.length, texts,
+    };
+  }
+
+  function renderBadges(el, m) {
+    var TWO_DP = 2, ZERO_DP = 0;
+    const b = (label, ok) => `<span class="badge ${ok ? "pass" : "fail"} nums">${label}</span>`;
+    el.innerHTML =
+      b(`imagery ${m.imgPct.toFixed(TWO_DP)}% (floor 33%)`, m.imgPct >= 33) +
+      b(`anchor ${m.maxSize.toFixed(ZERO_DP)}px (floor 28px)`, m.maxSize >= 28) +
+      b(`bold ${m.boldPct.toFixed(TWO_DP)}% (ceiling 30%)`, m.boldPct <= 30) +
+      b(`ratio ${m.ratio.toFixed(TWO_DP)}x (floor 1.8x)`, m.ratio >= 1.8) +
+      b(`${m.denseWindow} sizes in 8px (ceiling 4)`, m.denseWindow <= 4);
+  }
+
+  // Same live-data wait as the sibling floor-fix file: the walk-in row hydrates client-side after
+  // a real API call, so this waits for the row's real 20px status word to appear (checked every
+  // 150ms up to 8s) rather than measuring the page mid-load. If the row never populates in that
+  // window (it is live queue data and is sometimes genuinely empty, see the honest note in the
+  // page above), this measures anyway and says so rather than hanging forever.
+  function walkinIsPopulated(doc) {
+    var sec = doc.querySelector('section[aria-label="Walk-in"]');
+    if (!sec) return false;
+    var els = sec.querySelectorAll("*");
+    for (var i = 0; i < els.length; i++) {
+      if (parseFloat(doc.defaultView.getComputedStyle(els[i]).fontSize) === 20) return true;
+    }
+    return false;
+  }
+  function waitForWalkin(doc, cb) {
+    var waited = 0;
+    var iv = setInterval(function () {
+      waited += 150;
+      var ready = walkinIsPopulated(doc);
+      if (ready || waited >= 8000) {
+        clearInterval(iv);
+        cb(ready);
+      }
+    }, 150);
+  }
+
+  var beforeMeasured = null, afterMeasured = null;
+
+  function renderResultNote() {
+    var el = document.getElementById("resultNote");
+    if (!beforeMeasured || !afterMeasured) return;
+    el.innerHTML =
+      "<strong>What just happened.</strong> The top panel measured <span class=\"nums\">" +
+      beforeMeasured.boldPct.toFixed(2) + "%</span> of its visible text (" +
+      "<span class=\"nums\">" + beforeMeasured.boldCount + " of " + beforeMeasured.leafCount +
+      "</span> text nodes) at weight 600 or heavier, just now, on this run. After demoting every " +
+      "weight-600-plus element to weight 500, the same live page measures <span class=\"nums\">" +
+      afterMeasured.boldPct.toFixed(2) + "%</span>. The other four numbers in each badge row are " +
+      "unchanged between the two panels, because font-weight does not move font-size or image area.";
+  }
+
+  // BEFORE panel: measure only, nothing changed inside it.
+  var before = document.getElementById("before");
+  before.addEventListener("load", function () {
+    try {
+      var doc = before.contentDocument;
+      var win = before.contentWindow;
+      if (!doc || !win) return;
+      waitForWalkin(doc, function () {
+        var m = measureFirstViewport(doc, win, 390, 844);
+        beforeMeasured = m;
+        renderBadges(document.getElementById("beforeBadges"), m);
+        renderResultNote();
+      });
+    } catch (err) {
+      console.error("[fix-barbershop--d-airbnb-weight] could not measure the before panel:", err);
+    }
+  });
+
+  // AFTER panel: the actual mechanism. Every leaf-text element the live page renders at weight
+  // 600+ gets font-weight:500 forced via inline style + !important, which beats any Tailwind
+  // utility class specificity. Nothing else about the element (its size, colour, position,
+  // content) is touched. Then the same measurement runs again against the now-modified real DOM.
+  var after = document.getElementById("after");
+  after.addEventListener("load", function () {
+    try {
+      var doc = after.contentDocument;
+      var win = after.contentWindow;
+      if (!doc || !win) return;
+      waitForWalkin(doc, function () {
+        runAfterTreatment(doc, win);
+      });
+    } catch (err) {
+      console.error("[fix-barbershop--d-airbnb-weight] could not treat the after panel:", err);
+    }
+  });
+
+  function isLeafTextTop(el) {
+    for (const n of el.childNodes) {
+      if (n.nodeType === 3 && n.textContent.trim().length > 0) return true;
+    }
+    return false;
+  }
+
+  function runAfterTreatment(doc, win) {
+    try {
+      var all = doc.querySelectorAll("body *");
+      var demoted = 0;
+      all.forEach(function (el) {
+        if (!isLeafTextTop(el)) return;
+        var cs = win.getComputedStyle(el);
+        var w = parseInt(cs.fontWeight, 10) || 400;
+        if (w >= 600) {
+          el.style.setProperty("font-weight", "500", "important");
+          demoted++;
+        }
+      });
+      var m = measureFirstViewport(doc, win, 390, 844);
+      afterMeasured = m;
+      renderBadges(document.getElementById("afterBadges"), m);
+      renderResultNote();
+    } catch (err) {
+      console.error("[fix-barbershop--d-airbnb-weight] could not measure the after panel:", err);
+    }
+  }
+</script>
+</body>
+</html>

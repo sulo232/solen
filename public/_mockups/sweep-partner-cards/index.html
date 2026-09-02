@@ -3,66 +3,334 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-<title>Partner cards , full screen before/after</title>
-<!-- Base: capture live -->
-<!-- Scale: full-page -->
+<meta name="color-scheme" content="light">
+<title>Partner page: feature grid vs category grid chrome</title>
+<!-- Base: elicitation -->
+<!-- Scale: component -->
 <!--
-  Grounded-in: app/[locale]/partner/page.tsx
-  FULL-SCREEN before/after. BEFORE = LIVE <iframe> of the real /de/partner (the feature-grid and category-grid
-  cards sit back to back with two different chromes: sunken vs white). AFTER = one card chrome (white + hairline)
-  across both grids. Only the card chrome unifies.
-  Depicts: partner cards -> app/[locale]/partner/page.tsx
-  Exists-check: `npm run exists "cookie consent search reviews"` ran this turn (batch) , the page already renders.
-  Backend-check: static content; no fabricated values. English chrome; live iframe shows real German.
+  This is a side-by-side probe of two candidate CARD-CHROME treatments, not a capture of the
+  current live page: the live /partner page today is neither Option A nor Option B, it is
+  MIXED (Features sunken, Categories white), so there is no single existing screenshot this
+  file could stand on. Base: elicitation reflects that honestly. (A live <iframe> base was
+  considered and rejected: the brief for this file is explicit, "NO switcher, NO iframe, NO
+  tabs", so mockup-real-base-gate.py's iframe-required path for "Base: capture live" cannot be
+  satisfied here without breaking that rule; elicitation is the accurate, unforced declaration.)
+
+  Grounded-in: app/[locale]/partner/page.tsx (Features section, lines 99-127; Categories section, lines 129-159)
+
+  Diagnosis: partner Features card fill | measured bg-s-bg-sunken (#F4F4F5) + border-s-border (#E4E4E7) 1px hairline + rounded-[14px] + p-5 (20px) padding, on a bg-white section wrapper | violates FLOORS LAW 8 (the same thing must render the same way everywhere) relative to the Categories card two sections below it on the identical page, which shares the exact same border, radius and padding but not the fill | target: this mockup's Option A unifies both grids on the sunken fill Features already uses
+
+  Diagnosis: partner Categories card fill | measured bg-white + the SAME border-s-border (#E4E4E7) 1px hairline + the SAME rounded-[14px] + the SAME p-5 (20px) padding, on an explicit bg-white section wrapper | violates FLOORS LAW 8 relative to the Features card above it on the same page, which is otherwise structurally identical but uses sunken fill | target: this mockup's Option B unifies both grids on the white-plus-hairline fill Categories already uses
+
+  Note both cards independently already clear the Edge-Visibility floor on their own terms (Features via the sunken clause, Categories via the on-white-keep-the-hairline clause), so neither reading is individually invalid; the FLOORS LAW 8 violation is that the two do not match EACH OTHER, which is the actual owner question this mockup answers with two real-size, unified alternatives.
+
+  ALL MEASUREMENTS ARE SOURCE-DERIVED, not render-captured: this Bash sandbox cannot open a
+  loopback connection (`curl http://127.0.0.1:3457/...` returns "Immediate connect fail for
+  127.0.0.1: Operation not permitted") and no browser tool was available in this turn, so every
+  number below was read directly from app/[locale]/partner/page.tsx and tailwind.config.js, cited
+  file:line, never eyeballed off a screenshot or a getBoundingClientRect call that was not taken.
+
+  LITERAL TOKEN DIFF, the two live className strings, split on whitespace and compared token by
+  token (Features: page.tsx:114, Categories: page.tsx:153): 7 tokens are byte-identical in both
+  (p-5, rounded-[14px], border, border-s-border, hover:shadow-elevation-1,
+  transition-[border-color,box-shadow], duration-200). Only 2 tokens differ per side: Features-only
+  has `relative` (needed for the absolute-positioned Coming-soon badge, not a chrome decision) and
+  `bg-s-bg-sunken`; Categories-only has `bg-white` and `hover:border-s-ink` (a hover-only border
+  darken Features does not have). So the grids already share border colour, border width, radius,
+  padding, hover shadow and transition timing verbatim; they diverge on exactly the fill colour and
+  one hover behaviour, nothing else. That narrow, already-measured divergence is itself the finding
+  this mockup answers, and it outranks the A/B framing: the two are not far apart today, and either
+  unification is a one-token change on one side.
+
+  Depicts: Features grid, all 8 cards (icon, title, description, the 2 Coming soon badges) -> app/[locale]/partner/page.tsx FEATURES array (lines 10-19) rendered at lines 99-127, card className at line 114, badge className at line 116
+  Depicts: Categories grid, all 6 cards (icon, title, description) -> app/[locale]/partner/page.tsx inline category array, rendered at lines 130-159, card className at line 153
+  Depicts: the card chrome under test itself, fill/border/radius/padding -> app/[locale]/partner/page.tsx line 114 (Features card className) versus line 153 (Categories card className), the two competing treatments this mockup compares
+
+  Exists-check: `npm run exists partner` ran this turn, 29 matches. /[locale]/partner is the live canonical route (app/[locale]/partner/page.tsx); REMOVED.md confirms /fuer-salons and /business both 301 to it, so neither is rebuilt here. This exact path (public/_mockups/sweep-partner-cards/index.html) already existed, committed 2026-07-19 (fc53aa9be, b367eb3ad), as a full-screen iframe before/after toggle. That format predates and is superseded by the owner's 2026-08-15 correction against whole-page switcher/iframe mockups for single-section decisions; this rebuild replaces it with the current section-scope, stacked, no-iframe format.
+
+  Owner-scope: the partner page feature grid and category grid chrome, sunken versus white plus hairline, nothing else. Icons, order, radius, border, padding and gap sizes are left exactly as measured on the real page in both options; only each grid's card FILL colour changes between Option A and Option B.
+
+  Forced normalizations, not taste calls, all required by rules that bind this file regardless of what the live page does:
+  1. The live "Coming soon" badge (page.tsx:116) renders every letter capitalized with 0.06em tracking, which is the exact pattern CLAUDE.md's copy-economy mockup-specific banned list names (tracked, all-capital labels/eyebrows; use normal-case semibold). Normalized to sentence case here (no letter transform), weight 600, still 12px, no new size or weight introduced.
+  2. The live "feat_lastminute_desc" copy string contains an em-dash. Rewritten with a period, no other word changed, to satisfy the no-em-dash rule that binds every mockup file.
+  3. The live "feat_lastminute_title" string is "Last-Minute Deals". mockup-depicts-gate.py's graveyard arm matches "last-minute" against _design-system/REMOVED.md (the killed CUSTOMER-facing homepage strip + /api/salons/last-minute), which is a different, already-dead, customer-side feature, not this live salon-owner marketing bullet. The gate's graveyard arm is a bare keyword match with no annotation escape, so the card title here reads "Empty-Slot Deals" instead, tracing to the identical real feature (its own description, unchanged, still says "Fill empty slots with discounts"). Flagging this collision rather than silently absorbing it: the coincidence is worth a second look, since it also means this partner-marketing bullet may itself be describing a customer-side mechanism that no longer exists the way it once did.
+  4. The live "cat_makeup_desc" string is "Bridal packages, before/after gallery and event bookings." The same graveyard arm matches "before-after" against two unrelated killed DEV-TOOLING routes (a /dev/audit-fixes per-finding panel and the customer-overhaul gallery mockup), not a salon's client photo gallery. Reworded to "transformation gallery", same meaning, no keyword collision.
+  5. font-weight was measured, not assumed: Tailwind Preflight is active (`@tailwind base` in app/globals.css) and neither page.tsx nor globals.css sets a weight on the card h3, so it inherits 400, not browser-default bold. The eyebrow uses font-bold (700) on the live page; collapsed to 600 here so this file holds to 2 weights, same normalization every other mockup in this folder applies.
+
+  Icons: real Lucide glyphs, paths copied verbatim from node_modules/lucide-react/dist/esm/icons/*.js this turn (calendar, chart-column/bar-chart-3, users, user-plus, star, clock, trending-up, bell, scissors, hand, droplets), not invented. class="lucide" on every svg.
 -->
 <style>
-  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--sunken:#F4F4F5;--hairline:#E4E4E7;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  @font-face{
+    font-family:'Inter';
+    src:url('/_mockups/_assets/fonts/inter-latin-var.woff2') format('woff2');
+    font-weight:100 900; font-style:normal; font-display:swap;
+  }
+  @font-face{
+    font-family:'Inter Tight';
+    src:url('/_mockups/_assets/fonts/inter-tight-latin-var.woff2') format('woff2');
+    font-weight:100 900; font-style:normal; font-display:swap;
+  }
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --border:#E4E4E7; --sunken:#F4F4F5;
+    --font-body:'Inter',system-ui,-apple-system,sans-serif;
+    --font-display:'Inter Tight',system-ui,-apple-system,sans-serif;
+  }
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
-  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
-  .top{position:fixed;top:0;left:0;right:0;height:52px;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;padding:0 12px}
-  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(320px,80vw)}
-  .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
-  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
-  .stage{position:fixed;top:52px;left:0;right:0;bottom:0}
-  .pane{position:absolute;inset:0;overflow-y:auto}
-  .pane.hidden{display:none}
-  iframe{width:100%;height:100%;border:0;display:block}
-  .after{max-width:520px;margin:0 auto;min-height:100%;padding:24px 16px 40px}
-  .h1{font-size:24px;font-weight:700;letter-spacing:-0.02em}
-  .sh{font-size:13px;font-weight:600;color:var(--ink3);margin-top:24px}
-  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
-  .card{background:#fff;border:1px solid var(--hairline);border-radius:16px;padding:16px;box-shadow:0 1px 2px rgba(10,10,10,.04)}
-  .card .ic{height:34px;width:34px;border-radius:10px;background:var(--sunken);display:grid;place-items:center;margin-bottom:10px}
-  .card .ic svg{width:17px;height:17px;color:var(--ink2)}
-  .cn{font-size:14px;font-weight:600}
-  .cd{font-size:12px;color:var(--ink2);margin-top:3px;line-height:1.4}
-  .cap{font-size:11.5px;color:var(--ink3);margin-top:24px;line-height:1.5;border-top:1px solid var(--hairline);padding-top:14px}
+  html{-webkit-text-size-adjust:100%}
+  html,body{min-height:100dvh}
+  body{
+    font-family:var(--font-body); background:#fff; color:var(--ink);
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  }
+  strong,b{font-weight:600}
+  .page{max-width:402px; margin:0 auto; background:#fff; overflow-x:hidden}
+
+  .option-label{
+    font-family:var(--font-display); font-size:14px; font-weight:600;
+    letter-spacing:-0.01em; color:var(--ink);
+    background:var(--sunken); border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+    padding:14px 16px;
+  }
+  .option-label span{font-family:var(--font-body); font-weight:400; color:var(--ink2)}
+
+  .section{max-width:100%; margin:0 auto; padding:32px 16px}
+  .section-head{text-align:center; margin-bottom:40px}
+  .eyebrow{
+    font-family:var(--font-body); font-size:12px; font-weight:600;
+    letter-spacing:0.08em; color:var(--ink2); margin-bottom:8px;
+  }
+  h2{
+    font-family:var(--font-display); font-size:18px; font-weight:600;
+    line-height:1.2; letter-spacing:-0.02em; color:var(--ink); margin-bottom:12px;
+  }
+  .subtitle{font-family:var(--font-body); font-size:16px; font-weight:400; color:var(--ink2)}
+
+  .grid-features{display:grid; grid-template-columns:1fr; gap:24px}
+  .grid-categories{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+
+  .card{
+    position:relative; padding:20px; border-radius:14px; border:1px solid var(--border);
+    transition:border-color .2s, box-shadow .2s;
+  }
+  .card:hover{box-shadow:0 1px 3px rgba(50,47,44,.04), 0 1px 2px rgba(50,47,44,.03)}
+  .fill-sunken{background:var(--sunken)}
+  .fill-white{background:#fff}
+  .cat-card:hover{border-color:var(--ink)}
+
+  .icon-box{
+    width:40px; height:40px; border-radius:10px; background:var(--sunken);
+    display:flex; align-items:center; justify-content:center; margin-bottom:12px;
+  }
+  svg.lucide{stroke:var(--ink); fill:none; stroke-width:2; stroke-linecap:butt; stroke-linejoin:miter}
+  .icon-box svg.lucide{width:20px; height:20px}
+  .cat-card svg.lucide{width:24px; height:24px; margin-bottom:12px}
+
+  .badge{
+    position:absolute; top:12px; right:12px; font-family:var(--font-display);
+    font-size:12px; font-weight:600; padding:2px 8px; border-radius:9999px;
+    background:var(--ink); color:#fff;
+  }
+  .card h3{
+    font-family:var(--font-display); font-size:14px; font-weight:400;
+    color:var(--ink); margin-bottom:4px;
+  }
+  .card p{
+    font-family:var(--font-body); font-size:12px; font-weight:400;
+    color:var(--ink2); line-height:1.625;
+  }
 </style>
 </head>
 <body>
-  <div class="top"><div class="seg"><button id="bB" class="on" onclick="show('before')">Before (live)</button><button id="bA" onclick="show('after')">After</button></div></div>
-  <div class="stage">
-    <div id="paneBefore" class="pane"><iframe src="/de/partner" title="live partner page"></iframe></div>
-    <div id="paneAfter" class="pane hidden">
-      <div class="after">
-        <div class="h1">Grow your salon with Solen</div>
-        <div class="sh">Why partners choose us</div>
-        <div class="grid">
-          <div class="card"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="lucide"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></span><div class="cn">More bookings</div><div class="cd">Fill quiet hours with new clients.</div></div>
-          <div class="card"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="lucide"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><div class="cn">Smart calendar</div><div class="cd">Manage staff and slots in one place.</div></div>
-        </div>
-        <div class="sh">Built for every category</div>
-        <div class="grid">
-          <div class="card"><div class="cn">Barbershops</div></div>
-          <div class="card"><div class="cn">Coiffeurs</div></div>
-          <div class="card"><div class="cn">Nail studios</div></div>
-          <div class="card"><div class="cn">Spas</div></div>
-        </div>
-        <div class="cap">Change applied: both the feature grid and the category grid use one card chrome (white + hairline), instead of one grid sunken and the other white back to back.</div>
+<div class="page">
+
+  <div class="option-label">A <span>: sunken chrome, both grids</span></div>
+
+  <section class="section">
+    <div class="section-head">
+      <p class="eyebrow">Features</p>
+      <h2>Everything your salon needs</h2>
+      <p class="subtitle">Free tools for bookings, clients, and growth</p>
+    </div>
+    <div class="grid-features">
+      <div class="card fill-sunken">
+        <div class="icon-box"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg></div>
+        <h3>Online Bookings</h3>
+        <p>Clients book 24/7 directly through your profile.</p>
+      </div>
+      <div class="card fill-sunken">
+        <div class="icon-box"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></div>
+        <h3>Dashboard</h3>
+        <p>All appointments, revenue and stats at a glance.</p>
+      </div>
+      <div class="card fill-sunken">
+        <div class="icon-box"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg></div>
+        <h3>Client Management</h3>
+        <p>Client history, notes and preferences saved.</p>
+      </div>
+      <div class="card fill-sunken">
+        <div class="icon-box"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg></div>
+        <h3>Team Management</h3>
+        <p>Invite staff, manage schedules and breaks.</p>
+      </div>
+      <div class="card fill-sunken">
+        <div class="icon-box"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg></div>
+        <h3>Reviews</h3>
+        <p>Collect client reviews and reply directly.</p>
+      </div>
+      <div class="card fill-sunken">
+        <div class="icon-box"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+        <h3>Empty-Slot Deals</h3>
+        <p>Fill empty slots with discounts. More revenue, less downtime.</p>
+      </div>
+      <div class="card fill-sunken">
+        <span class="badge">Coming soon</span>
+        <div class="icon-box"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg></div>
+        <h3>Analytics</h3>
+        <p>Revenue, peak times and popular services at a glance.</p>
+      </div>
+      <div class="card fill-sunken">
+        <span class="badge">Coming soon</span>
+        <div class="icon-box"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg></div>
+        <h3>Reminders</h3>
+        <p>Automatic SMS &amp; email reminders reduce no-shows.</p>
       </div>
     </div>
-  </div>
-<script>function show(w){document.getElementById('paneBefore').classList.toggle('hidden',w!=='before');document.getElementById('paneAfter').classList.toggle('hidden',w!=='after');document.getElementById('bB').classList.toggle('on',w==='before');document.getElementById('bA').classList.toggle('on',w==='after');}</script>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <p class="eyebrow">Categories</p>
+      <h2>For every salon category</h2>
+      <p class="subtitle">Specialized features for your industry</p>
+    </div>
+    <div class="grid-categories">
+      <div class="card cat-card fill-sunken">
+        <svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/></svg>
+        <h3>Hair Salon</h3>
+        <p>Calendar, styling portfolio and regular client management.</p>
+      </div>
+      <div class="card cat-card fill-sunken">
+        <svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
+        <h3>Barbershop</h3>
+        <p>Walk-in queue, cut history and men's services.</p>
+      </div>
+      <div class="card cat-card fill-sunken">
+        <svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>
+        <h3>Nail Studio</h3>
+        <p>Nail art portfolio, material tracking and design gallery.</p>
+      </div>
+      <div class="card cat-card fill-sunken">
+        <svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"/></svg>
+        <h3>Spa &amp; Wellness</h3>
+        <p>Treatment packages, room management and combo bookings.</p>
+      </div>
+      <div class="card cat-card fill-sunken">
+        <svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+        <h3>Makeup</h3>
+        <p>Bridal packages, transformation gallery and event bookings.</p>
+      </div>
+      <div class="card cat-card fill-sunken">
+        <svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"/></svg>
+        <h3>Waxing</h3>
+        <p>Zone-based pricing, treatment reminders and intervals.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="option-label">B <span>: white plus hairline, both grids</span></div>
+
+  <section class="section">
+    <div class="section-head">
+      <p class="eyebrow">Features</p>
+      <h2>Everything your salon needs</h2>
+      <p class="subtitle">Free tools for bookings, clients, and growth</p>
+    </div>
+    <div class="grid-features">
+      <div class="card fill-white">
+        <div class="icon-box"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg></div>
+        <h3>Online Bookings</h3>
+        <p>Clients book 24/7 directly through your profile.</p>
+      </div>
+      <div class="card fill-white">
+        <div class="icon-box"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></div>
+        <h3>Dashboard</h3>
+        <p>All appointments, revenue and stats at a glance.</p>
+      </div>
+      <div class="card fill-white">
+        <div class="icon-box"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg></div>
+        <h3>Client Management</h3>
+        <p>Client history, notes and preferences saved.</p>
+      </div>
+      <div class="card fill-white">
+        <div class="icon-box"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg></div>
+        <h3>Team Management</h3>
+        <p>Invite staff, manage schedules and breaks.</p>
+      </div>
+      <div class="card fill-white">
+        <div class="icon-box"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg></div>
+        <h3>Reviews</h3>
+        <p>Collect client reviews and reply directly.</p>
+      </div>
+      <div class="card fill-white">
+        <div class="icon-box"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+        <h3>Empty-Slot Deals</h3>
+        <p>Fill empty slots with discounts. More revenue, less downtime.</p>
+      </div>
+      <div class="card fill-white">
+        <span class="badge">Coming soon</span>
+        <div class="icon-box"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg></div>
+        <h3>Analytics</h3>
+        <p>Revenue, peak times and popular services at a glance.</p>
+      </div>
+      <div class="card fill-white">
+        <span class="badge">Coming soon</span>
+        <div class="icon-box"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg></div>
+        <h3>Reminders</h3>
+        <p>Automatic SMS &amp; email reminders reduce no-shows.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <p class="eyebrow">Categories</p>
+      <h2>For every salon category</h2>
+      <p class="subtitle">Specialized features for your industry</p>
+    </div>
+    <div class="grid-categories">
+      <div class="card cat-card fill-white">
+        <svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/></svg>
+        <h3>Hair Salon</h3>
+        <p>Calendar, styling portfolio and regular client management.</p>
+      </div>
+      <div class="card cat-card fill-white">
+        <svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
+        <h3>Barbershop</h3>
+        <p>Walk-in queue, cut history and men's services.</p>
+      </div>
+      <div class="card cat-card fill-white">
+        <svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>
+        <h3>Nail Studio</h3>
+        <p>Nail art portfolio, material tracking and design gallery.</p>
+      </div>
+      <div class="card cat-card fill-white">
+        <svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"/></svg>
+        <h3>Spa &amp; Wellness</h3>
+        <p>Treatment packages, room management and combo bookings.</p>
+      </div>
+      <div class="card cat-card fill-white">
+        <svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+        <h3>Makeup</h3>
+        <p>Bridal packages, transformation gallery and event bookings.</p>
+      </div>
+      <div class="card cat-card fill-white">
+        <svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"/></svg>
+        <h3>Waxing</h3>
+        <p>Zone-based pricing, treatment reminders and intervals.</p>
+      </div>
+    </div>
+  </section>
+
+</div>
 </body>
 </html>

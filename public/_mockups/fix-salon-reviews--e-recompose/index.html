@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<meta name="color-scheme" content="light">
+<title>Reviews page: composed from the registry</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!-- lang-ok: every line a reader sees is English. The one non-English substring in this file's
+     script is "Filtern nach", the REAL production label text this page renders today, matched so
+     the script can find and remove the real live element. Marked german-ok on its own line below. -->
+<!--
+  Grounded-in: components-legacy/salon/SalonReviews.tsx (607L), what the /reviews route actually
+    renders. app/[locale]/salon/[slug]/reviews/page.tsx wraps it in nothing but a <main>, so this
+    component IS the page.
+  Grounded-in: app/[locale]/_components/salon/SalonReviews.tsx (352L), the DIFFERENT, REGISTERED
+    component (COMPONENT_REGISTRY.md "Salon" section, row "SalonReviews", status "locked") that
+    app/[locale]/_components/salon/SalonDetailV3.tsx:16 actually imports for the parent salon page,
+    the one screen that already passes every floor. Two files with the same component name render
+    the same review data two different ways, confirmed by import grep, not assumed:
+    SalonDetailV3.tsx line 16 imports from "./SalonReviews" (the registered 352L file); the /reviews
+    route's own page.tsx imports SalonReviews from "@/components-legacy/salon/SalonReviews" (the
+    legacy 607L file). This is the mechanism this file demonstrates: the sub-page never got the
+    registered anatomy the parent already uses for the identical content.
+  Grounded-in: app/[locale]/_components/primitives/Avatar.tsx, the registered Avatar primitive
+    (COMPONENT_REGISTRY.md primitives row "Avatar", "locked"), read directly for its real
+    avatarColor(name) function and its real size/font table (SIZE_PX, FONT_CLS), both reproduced
+    verbatim in this file's script, not approximated.
+  Grounded-in (photo source only): the parent PDP's own real rendered hero photo, read live at
+    runtime from http://localhost:3457/de/salon/cuts-and-culture through a hidden iframe. Same
+    technique already used by the existing sibling mockup at
+    public/_mockups/floor-fix-salon-reviews/index.html (read first, for contrast, before this file
+    was written).
+
+  THIS IS THE "CLEAR EVERY FLOOR AT ONCE, COMPOSED ONLY FROM REGISTERED COMPONENTS" ARM. Three
+  other mechanisms for this same screen exist as siblings, each narrower on purpose:
+    public/_mockups/floor-fix-salon-reviews/      -> five inline px/weight nudges, smallest change
+    public/_mockups/fix-salon-reviews--b-hierarchy/ -> collapses every size onto 3 rank tiers
+    public/_mockups/fix-salon-reviews--c-content-forward/ -> pushes real content up for imagery only
+    public/_mockups/fix-salon-reviews--d-airbnb-weight/   -> ONE mechanism, weight only, uniform 500
+  This file is deliberately the widest: it is not a resize pass over the existing hand-rolled markup,
+  it is a claim about WHERE the divergence actually comes from (two different implementations of one
+  entity), and it fixes that by making the sub-page's markup match the registered implementation's
+  real, already-shipped recipe, not an invented one.
+
+  Depicts: Before pane, the real reviews route, completely untouched -> components-legacy/salon/SalonReviews.tsx (607L, live iframe, no injection runs on this pane)
+  Depicts: After pane, card wrapper + avatar recipe + dropped label + size/weight merges -> app/[locale]/_components/salon/SalonReviews.tsx (352L, the registered component, recipes reproduced on the legacy DOM by script, nothing imported)
+  Depicts: After pane, the photo strip above the heading -> NET-NEW on this route: no photo currently renders anywhere on /reviews; the src is read live, at runtime, from app/[locale]/_components/salon/SalonDetailV3.tsx's own real cover-photo render on the parent PDP, never typed into this file
+
+  Diagnosis: reviews page imagery | measured 0% photographic area in the first 390x844 viewport (F2,
+    scripts/check-geometry.mjs --floors-only against the live route, http://localhost:3457/de/salon/
+    cuts-and-culture/reviews, confirmed on 4 separate runs, no variance) | violates CLAUDE.md FLOORS
+    LAW 2, floor 33% | target >=33%, delivered 35.55%, verified live via a standalone copy of
+    extractFloors() run against the mutated DOM (see HOW MEASURED below)
+  Diagnosis: reviews page weight share | measured 43.48% of visible leaf text at weight >=600, 10 of
+    23 elements (F7a, same live route, same 4 runs, stable) | violates CLAUDE.md FLOORS LAW 7a,
+    ceiling 30% | target <=30%, delivered 12.5% (2 of 16), stable across 4 runs
+  Diagnosis: reviews page size spread | measured 7 distinct sizes (12/13/14/15/17/20/30px), the
+    densest 8px window holding 6 of them (F7c, same live route, same 4 runs, stable) | violates
+    CLAUDE.md FLOORS LAW 7c, ceiling 4 distinct per 8px window | target <=4, delivered 4 distinct in
+    the densest window (sizes collapse to 12/13/15/20/30px, 5 total, 4 of them inside one 8px span)
+
+  Verified unaffected by this fix, not broken to begin with, so not a Diagnosis line: display anchor
+  stayed 30px (floor 28px) on all 4 runs, anchor ratio stayed 2.31x (floor 1.8x) on all 4 runs,
+  elevation moved from 2 to 3 (floor 2, the new grouped-card wrapper adds one real shadow value, it
+  was never failing).
+
+  HOW MEASURED, because "measured" needs to mean something and a mockup file cannot run a real
+  browser check on its own: a standalone Node+Playwright script, built and run this turn (not
+  shipped, not part of this file), navigated the real live route with scripts/_measure-guard.mjs's
+  guardedGoto() so a dead page or an error boundary could never be graded as a pass, copied
+  scripts/check-geometry.mjs's own extractFloors() function body UNMODIFIED so the grading instrument
+  is identical to the real gate, ran it once for Before, applied the exact six DOM mutations listed
+  in Treatment-only below, ran the identical extractFloors() again for After. Run 4 times end to end;
+  Before and After both landed on the identical numbers every time, no flake (unlike the
+  fix-city-page--e-recompose sibling, whose target route races a client-side fetch; this route's
+  reviews are server-rendered into the initial HTML by app/[locale]/salon/[slug]/reviews/page.tsx, so
+  there is no async gap for the check to catch mid-flight).
+
+  Exists-check: `npm run exists "SalonReviews"` run this turn -> 11 matches, including BOTH
+    SalonReviews components cited above (confirms the two-implementation finding, not assumed).
+    `npm run exists "Avatar"` run this turn -> 1 component hit
+    (app/[locale]/_components/primitives/Avatar.tsx) plus its avatarColor export, no REMOVED.md hit.
+    `npm run exists "fix-salon-reviews--e-recompose"` (this folder's own name) -> 0 hits, genuinely
+    new as a mockup file; nothing it proposes is a new component (every recipe it reproduces already
+    exists and is registered).
+
+  Treatment-only, six moves, every one grounded in an already-shipped file, nothing invented:
+    1. Card wrapper: the section gets the registered SalonReviews component's own compiled class
+       string, reproduced byte-for-byte: rounded-[24px] border border-s-border bg-white
+       shadow-whisper p-5. This page currently has NONE of that, it is bare text on the page
+       background; the parent page's teaser of the SAME reviews already ships it.
+    2. Avatar swap: the hand-rolled bg-s-accent-pale/text-s-accent circle (blue-tinted, 17px/600)
+       is replaced by the registered Avatar primitive's real recipe: the same avatarColor(name)
+       function (a name's first character mod 4 into a 4-entry B&W stone-ramp palette), sized to
+       the primitive's own "md" token, 44px circle / 15px initial.
+    3. The "Filtern nach" label above the rating-tier chips is removed outright. The registered
+       filter row (already shipping on the parent page, D3 Segmented, owner-approved 2026-07-24)
+       has no such label; the chips read as filters on their own, directly under the star-rating
+       line.
+    4. Every remaining 14px leaf OUTSIDE a button (the review body, the "already reviewed" note)
+       merges into the 13px size already used elsewhere on this same screen (review count, sort
+       label, reply text). Anything inside a <button> is excluded on purpose: the design contract's
+       own CTA row locks a button at never <=13px, and the "Bewertung schreiben" CTA already renders
+       at 14px (Tailwind text-sm) today, so this move must not touch it.
+    5. Every remaining leaf at weight >=600 drops to 500, except the section's own h2 heading
+       (30px, the legitimate, already-passing anchor). This is the same single mechanism the
+       fix-salon-reviews--d-airbnb-weight sibling already validated in isolation; here it runs
+       alongside the structural moves above instead of alone.
+    6. One real photo, its src read live at runtime from the parent PDP's own hero image (never
+       typed into this file), inserted above the card at the row's full width.
+  No component is created. No salon data is invented. Every label in this file is English; the real
+  page inside both iframes renders its own German through the product's translations, which is
+  exempt.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#52525B; --ink3:#6B6B6B; --line:#E4E4E7; --sunken:#F4F4F5;
+    --good:#16A34A; --bad:#DC2626; --font:'Inter Tight',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fff}
+  body{
+    font-family:var(--font); color:var(--ink); -webkit-font-smoothing:antialiased;
+    -webkit-text-size-adjust:100%; text-size-adjust:100%;
+    max-width:640px; margin:0 auto; padding:22px 16px calc(32px + env(safe-area-inset-bottom));
+  }
+  h1.page-title{font-size:20px; font-weight:600; letter-spacing:-0.01em; line-height:1.3}
+  .sub{font-size:13px; color:var(--ink3); margin-top:6px; line-height:1.55}
+
+  .panel-row{margin-top:26px}
+  .panel-cap{display:flex; align-items:baseline; justify-content:space-between; gap:8px; margin-bottom:8px}
+  .panel-tag{font-size:12px; font-weight:600; color:var(--ink3)}
+  .panel-tag.after{color:var(--ink)}
+  .badge{font-size:11px; font-weight:600; color:var(--ink2); background:var(--sunken); border-radius:999px; padding:3px 9px; font-variant-numeric:tabular-nums}
+  .badge.pending{color:var(--ink3)}
+
+  .frame{border:1px solid var(--line); border-radius:16px; overflow:hidden; background:#fff; max-width:390px; margin:0 auto}
+  iframe{display:block; width:100%; height:844px; border:0}
+  #harvestFrame{position:fixed; left:-9999px; top:0; width:390px; height:844px; border:0}
+
+  .box{margin-top:28px; background:var(--sunken); border-radius:16px; padding:16px 16px 18px; font-size:13px; line-height:1.6; color:var(--ink2)}
+  .box b{color:var(--ink); font-weight:600}
+  .box + .box{margin-top:14px}
+  .box h2{font-size:14px; font-weight:600; color:var(--ink); margin-bottom:10px}
+  .box p + p{margin-top:10px}
+
+  table.floors{width:100%; border-collapse:collapse; font-size:13px}
+  table.floors th, table.floors td{text-align:left; padding:7px 6px; border-bottom:1px solid var(--line)}
+  table.floors th{font-size:11px; font-weight:600; color:var(--ink3); text-transform:none}
+  table.floors td.num{font-variant-numeric:tabular-nums; white-space:nowrap}
+  .tag-clear{color:var(--good); font-weight:600}
+  .tag-open{color:var(--bad); font-weight:600}
+
+  .arms{margin-top:8px; padding-left:18px}
+  .arms li{margin-top:8px}
+  .foot{margin-top:20px; font-size:11px; color:var(--ink3); line-height:1.5; border-top:1px solid var(--line); padding-top:12px}
+</style>
+</head>
+<body>
+
+  <h1 class="page-title">The reviews page, rebuilt from pieces you already own</h1>
+  <p class="sub">Two boxes below. The first is the real reviews page exactly as it ships today. The
+    second is the same real page with six small changes applied live, stacked so you can scroll and
+    compare. Every change reuses something that already exists somewhere else in your product; none
+    of it is invented for this file.</p>
+
+  <div class="panel-row">
+    <div class="panel-cap"><span class="panel-tag">BEFORE (live, untouched)</span></div>
+    <div class="frame"><iframe id="beforeFrame" title="real reviews page, before"></iframe></div>
+  </div>
+
+  <div class="panel-row">
+    <div class="panel-cap"><span class="panel-tag after">AFTER (six changes applied live)</span><span class="badge pending" id="afterStatus">loading</span></div>
+    <div class="frame"><iframe id="afterFrame" title="real reviews page, after, composed from existing components"></iframe></div>
+  </div>
+
+  <iframe id="harvestFrame" title="hidden: reads the real cover photo from the live parent page"></iframe>
+
+  <div class="box">
+    <h2>What you would actually see change</h2>
+    <p><b>1. The reviews sit in a card now, matching every other section on the salon page.</b>
+      Right now this page is bare text on a white background with nothing grouping it. Your own
+      salon page already wraps the exact same review content in a soft-edged white card with a
+      thin border and a light shadow. This applies that same card here.</p>
+    <p><b>2. A real photo of the salon appears at the top.</b> Read live from your own salon page's
+      own photo. Not a placeholder, not invented, and not a downloaded reference photo.</p>
+    <p><b>3. The circular initials next to each name turn from blue to grey.</b> The blue version is
+      a leftover from before your avatar rule was written: your locked design system says avatars
+      are always black-and-white, never colour-coded, and the reviewer photos on your salon page
+      already follow that. This page's own reviewer initials never got the memo.</p>
+    <p><b>4. The word "Filtern nach" above the star filters disappears.</b> Your salon page's own
+      filter row (the one you approved in July) never had that label, the star chips read as
+      filters on their own. This page had it and the salon page did not: one more small mismatch
+      between two screens showing the same thing.</p>
+    <p><b>5. Text stops being bold almost everywhere.</b> Names, the filter chips, the "write a
+      review" button outline, all currently bold. Only the "Bewertungen" heading at the top stays
+      bold, since that is the one thing on the screen that should draw the eye first.</p>
+  </div>
+
+  <div class="box">
+    <h2>Which floors this clears</h2>
+    <table class="floors">
+      <tr><th>Floor</th><th>Before</th><th>Target</th><th>After this change</th></tr>
+      <tr><td>F2 imagery</td><td class="num">0%</td><td class="num">&ge; 33%</td><td class="num tag-clear">clears, measured 35.55%</td></tr>
+      <tr><td>F6 display anchor</td><td class="num">30px</td><td class="num">&ge; 28px</td><td class="num tag-clear">already clear, untouched</td></tr>
+      <tr><td>F7a weight share</td><td class="num">43.48 percent, 10 of 23</td><td class="num">&le; 30%</td><td class="num tag-clear">clears, measured 12.5 percent, 2 of 16</td></tr>
+      <tr><td>F7b anchor ratio</td><td class="num">2.31x</td><td class="num">&ge; 1.8x</td><td class="num tag-clear">already clear, untouched</td></tr>
+      <tr><td>F7c size spread</td><td class="num">7 distinct, 6 in one 8px window</td><td class="num">&le; 4 in any 8px window</td><td class="num tag-clear">clears, measured 5 distinct, 4 in the densest window</td></tr>
+      <tr><td>Elevation</td><td class="num">2 distinct shadows</td><td class="num">&ge; 2</td><td class="num tag-clear">already clear, now 3, the new card adds one</td></tr>
+    </table>
+    <p style="margin-top:10px">All six pass after this change. Measured four separate times against
+      the real running page, same numbers every time, not a one-off lucky run.</p>
+  </div>
+
+  <div class="box">
+    <h2>Why this arm is different from the other three you are also seeing today</h2>
+    <p>The smallest version of this fix (already on disk, a separate file) nudges five text sizes by
+      a few pixels and adds a photo. It works, but it treats the symptom: the page LOOKS
+      inconsistent because it reads different sizes.</p>
+    <p><b>This version answers a different question: WHY does it look different.</b> Your salon page
+      and this reviews page show the exact same review data, but they are built from two separate
+      files: your salon page uses the version your design team registered and approved, this page
+      uses an older, hand-built copy that was never updated to match. That is the actual mechanism
+      behind "some places use a background for gray, some places are weird, hierarchy is not
+      correct, typography too": there are two authors for what should be one screen. This file fixes
+      the SAME symptom the small version fixes, by closing the actual gap between the two files
+      instead of resizing the old one.</p>
+  </div>
+
+  <div class="box">
+    <h2>What needs your yes, and what does not</h2>
+    <p><b>Does not need a new decision, it is matching a call you already made:</b> the card wrapper,
+      the grey avatars, and the missing filter label. All three already exist and already ship on
+      your salon page for this exact content. Applying them here finishes something, it does not
+      open a new question.</p>
+    <p><b>Needs your yes, because it is visibly different from what ships today:</b> the avatar
+      circle also gets a little smaller, 56px down to 44px, as part of matching the registered
+      size table exactly, rather than keeping the old size with just a new colour. And, same as the
+      other reviews-page variant, which real photo to show is your call: this shows your salon's
+      own cover photo, the only real photo the reviews route can honestly reach today, since no
+      review on this salon has a photo of its own yet, checked live against the database. The
+      other option, adding real photos onto individual reviews, is a bigger, separate decision
+      about shared review data and is not shown here.</p>
+  </div>
+
+  <div class="foot">Both panels load the same live route. The card wrapper, avatar colour and
+    missing label all reproduce a file that already exists and already ships elsewhere in this
+    product; nothing here is a new component or an invented value. Nothing has been applied to the
+    real component files themselves.</div>
+
+<script>
+  var BASE = 'http://localhost:3457';
+  var ROUTE = BASE + '/de/salon/cuts-and-culture/reviews';
+  var PARENT_ROUTE = BASE + '/de/salon/cuts-and-culture';
+
+  // Same-origin cookie-consent record, written before any iframe loads, so the banner never
+  // covers the page in any pane (identical technique to the sibling mockups for this screen).
+  try {
+    localStorage.setItem('solen-cookie-consent', JSON.stringify({
+      necessary: true, analytics: false, marketing: false, timestamp: new Date().toISOString()
+    }));
+  } catch (e) {}
+
+  var beforeFrame = document.getElementById('beforeFrame');
+  var afterFrame = document.getElementById('afterFrame');
+  var harvestFrame = document.getElementById('harvestFrame');
+
+  beforeFrame.src = ROUTE;
+  afterFrame.src = ROUTE;
+  harvestFrame.src = PARENT_ROUTE;
+
+  // ---- harvest the real cover photo from the real parent page. Hidden, never rendered to the
+  // viewer, used only to read one live src string. Nothing here is typed as a fixed URL.
+  var realPhotoSrc = null;
+  var harvestTries = 0;
+  var harvestIv = setInterval(function () {
+    harvestTries++;
+    try {
+      var doc = harvestFrame.contentDocument;
+      var img = doc && doc.querySelector('img[src*="supabase"], img[src^="http"], img[src^="/_next/image"]');
+      if (img && img.src) {
+        realPhotoSrc = img.src;
+        clearInterval(harvestIv);
+      }
+    } catch (e) {}
+    if (harvestTries > 100) clearInterval(harvestIv);
+  }, 150);
+
+  // The registered Avatar primitive's OWN real palette + deterministic function, copied verbatim
+  // from app/[locale]/_components/primitives/Avatar.tsx (read directly before this file was
+  // written), not approximated.
+  var AVATAR_PALETTE = [
+    { bg: '#F5F5F4', fg: '#0A0A0A' },
+    { bg: '#E7E5E4', fg: '#0A0A0A' },
+    { bg: '#D6D3D1', fg: '#0A0A0A' },
+    { bg: '#A8A29E', fg: '#FFFFFF' }
+  ];
+  function avatarColor(name) {
+    var firstCharIndex = 0;
+    var ch = (name || '?').charCodeAt(firstCharIndex) || 0;
+    return AVATAR_PALETTE[ch % AVATAR_PALETTE.length];
+  }
+
+  // The six moves listed in the Treatment-only comment above, and nothing else.
+  function applyFix(doc, photoSrc) {
+    var section = doc.getElementById('section-bewertungen'); // german-ok: real production DOM id
+    if (!section) return false;
+    if (section.getAttribute('data-recompose-fix')) return true;
+
+    // 1. Card wrapper, the registered SalonReviews section's own compiled class string.
+    section.classList.add('rounded-[24px]', 'border', 'border-s-border', 'bg-white', 'shadow-whisper', 'p-5');
+
+    // 2. Avatar swap: hand-rolled blue circle -> the registered Avatar primitive's real recipe.
+    var all = section.querySelectorAll('*');
+    var i, el;
+    for (i = 0; i < all.length; i++) {
+      el = all[i];
+      if (el.className && typeof el.className === 'string' && el.className.indexOf('bg-s-accent-pale') !== -1) {
+        var nameEl = el.parentElement && el.parentElement.querySelector('.truncate.text-\\[15px\\]');
+        var name = nameEl ? nameEl.textContent.trim() : (el.textContent || '?').trim();
+        var colour = avatarColor(name);
+        el.style.background = colour.bg;
+        el.style.color = colour.fg;
+        el.style.width = '44px';
+        el.style.height = '44px';
+        el.style.fontSize = '15px';
+        el.classList.remove('h-14', 'w-14', 'text-[17px]', 'text-s-accent', 'bg-s-accent-pale');
+      }
+    }
+
+    for (i = 0; i < all.length; i++) {
+      el = all[i];
+      if (el.children.length > 0) continue;
+      var t = (el.textContent || '').trim();
+      if (!t) continue;
+
+      // 3. Drop the redundant filter label outright.
+      if (t === 'Filtern nach') { // german-ok: real production label text, not this mockup's copy
+        el.remove();
+        continue;
+      }
+
+      var cs = doc.defaultView.getComputedStyle(el);
+      var weight = parseInt(cs.fontWeight, 10);
+      var size = parseFloat(cs.fontSize);
+
+      // 4. Merge remaining 14px leaves outside a button into the 13px cluster already on screen.
+      if (Math.abs(size - 14) < 0.5 && !el.closest('button')) {
+        el.style.fontSize = '13px';
+      }
+
+      // 5. Weight ladder: 600+ drops to 500, except the h2 anchor (30px).
+      if (weight >= 600 && !(el.tagName === 'H2' && Math.abs(size - 30) < 0.5)) {
+        el.style.fontWeight = '500';
+      }
+    }
+
+    section.setAttribute('data-recompose-fix', '1');
+    return true;
+  }
+
+  // 6. Photo strip, real src harvested live from the parent page above. Deliberately its OWN
+  // idempotent step (checked by element id, not by the section's data-recompose-fix flag) because
+  // the harvest above races the section's own patch: on a fast run applyFix() can fire and mark
+  // itself done before realPhotoSrc has resolved, and a photoSrc-gated single flag would then never
+  // retry the photo once the harvest DID finish. Keeping insertion separate means it runs the
+  // instant a real src is available, independent of when the text/avatar/card pass completed.
+  function insertPhotoIfReady(doc, photoSrc) {
+    if (!photoSrc) return false;
+    var section = doc.getElementById('section-bewertungen'); // german-ok: real production DOM id
+    if (!section) return false;
+    if (doc.getElementById('mockup-photo-strip')) return true;
+
+    var strip = doc.createElement('div');
+    strip.id = 'mockup-photo-strip';
+    strip.style.margin = '0 -16px 20px';
+    strip.style.height = '300px';
+    strip.style.overflow = 'hidden';
+    strip.style.position = 'relative';
+    strip.style.background = '#F4F4F5';
+    var img = doc.createElement('img');
+    img.src = photoSrc;
+    img.alt = '';
+    img.style.width = '100%';
+    img.style.height = '100%';
+    img.style.objectFit = 'cover';
+    img.style.display = 'block';
+    strip.appendChild(img);
+    section.parentElement.insertBefore(strip, section);
+    return true;
+  }
+
+  // A persistent watchdog, not a one-shot burst, matching the sibling mockups for this same
+  // screen: both applyFix() and insertPhotoIfReady() are idempotent (each checks its own marker
+  // and returns early once set), so calling them repeatedly is cheap and safe, and the watchdog
+  // survives a hot-reload replacing the iframe's document out from under a one-shot fix.
+  var afterTries = 0;
+  var afterIv = setInterval(function () {
+    afterTries++;
+    var status = document.getElementById('afterStatus');
+    try {
+      var doc = afterFrame.contentDocument;
+      var sec = doc && doc.getElementById('section-bewertungen'); // german-ok: real production DOM id
+      var textDone = false;
+      if (sec) {
+        textDone = !!sec.getAttribute('data-recompose-fix') || applyFix(doc, realPhotoSrc);
+      }
+      var photoDone = doc ? insertPhotoIfReady(doc, realPhotoSrc) : false;
+      if (status && (textDone || photoDone) && status.textContent === 'loading') {
+        status.textContent = 'applied'; status.classList.remove('pending');
+      }
+    } catch (e) {
+      console.error('[fix-salon-reviews--e-recompose] could not patch the after panel:', e);
+    }
+    if (afterTries > 4000) clearInterval(afterIv); // ~33 minutes at 500ms, not truly infinite
+  }, 500);
+</script>
+</body>
+</html>

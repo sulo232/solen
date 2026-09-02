@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Profile and settings: real favorites, pulled up</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/profile/page.tsx (real /de/profile route, this file's two Profile panels are
+    live iframes of it), app/[locale]/_components/profile/AccountHub.tsx (the real hub, read in
+    full, including its own header comment documenting the 2026-08-02 rebuild), app/[locale]/
+    profile/settings/page.tsx (real /de/profile/settings route, both Settings panels are live
+    iframes of it), app/[locale]/profile/favorites/page.tsx + FavoritesList.tsx (the ONLY place
+    this account already renders real salon photos, used here as the source of real content to
+    pull up, never as a page of its own), components-legacy/SalonCard.tsx (the real card being
+    reused untouched, `.card-listing` root, `aspect-[5/4]` photo).
+
+  Depicts:
+    Panel 1: app/[locale]/profile/page.tsx, real /de/profile route, live iframe, untouched.
+    Panel 2: the same real /de/profile route, live iframe, with real DOM nodes copied in from
+      a hidden third iframe of the real /de/profile/favorites route (same account, same session,
+      real photos, real names), inserted directly under the name, plus the header's own padding
+      tightened so the real cards start higher.
+    Panel 3: app/[locale]/profile/settings/page.tsx, real /de/profile/settings route, live
+      iframe, untouched.
+    Panel 4: the same real /de/profile/settings route, live iframe, with the identical real
+      favorites splice inserted under the identity card.
+
+  Mechanism: this is the "push real content up and make it bigger" lever, not the "reduce
+    chrome" lever and not the "match Airbnb's weight" lever (the three sibling mockups building
+    right now). Both real screens here render ZERO salon photos today, confirmed by reading
+    AccountHub.tsx and settings/page.tsx end to end: they are pure icon+label navigation rows,
+    nothing photographic anywhere in the DOM. So "push content up" cannot mean resizing an
+    existing card, the way it does on the home page's sibling mockup, because there is no card
+    on this screen to resize. The only real, non-fabricated photographic content this account
+    has anywhere is the user's own favorites, one hop away at /profile/favorites. This mockup's
+    mechanism is: stop making that content one more tap away, surface it directly under the
+    name, at real size, using the real SalonCard component and this real session's real
+    favorites, nothing invented.
+
+  THIS MECHANISM COLLIDES WITH A NAMED, DATED OWNER DECISION, and that is reported here rather
+    than built quietly. `npm run exists AccountHub` (run this turn) returned three graveyard
+    hits, all pointing at the same fact: a salon-photo grid on this exact screen was removed
+    TWICE by name. 2026-07-21: the Pinterest-tabs /profile hub carried "a bespoke 3-photo
+    CollageTile grid." 2026-08-02, owner verbatim via the graveyard record: "konto hub better",
+    picking the plain grouped-row hub over it. The stated reasons were FLOORS LAW 10 (a search
+    bar was cut because "nobody searches their own saved list from the account hub") and FLOORS
+    LAW 8/9 (a store should never render as a bespoke grid when the real SalonCard already
+    exists). Per the exists-check protocol, a graveyard hit means do not re-propose without an
+    explicit owner yes, so what follows is shown as a proposal for that yes, not applied.
+    My own read: FLOORS LAW 10's actual complaint was the SEARCH BAR and the bespoke grid
+    component, a browsing UI bolted onto a screen whose job is "get to a sub-page fast", not
+    photographic content itself. What this mockup adds is neither: no search, no bespoke
+    component, one real SalonCard reused exactly as built. But that is my argument, not a
+    settled fact, and the owner rejected photography here twice on purpose. This is exactly the
+    "profile hub is none of the four named exemptions" case the brief asked me to argue rather
+    than skip, and it should be read as a live collision, not a quiet override.
+
+  A NUMBER IN THE BRIEF WAS WRONG, checked live this turn (Rule 15a / Rule 18). The brief states
+    "display anchor 18px" and "anchor ratio 1.5x" measured on this screen, and that /profile and
+    /profile/settings "measured identical on all six floors." Live getComputedStyle on the real
+    running page, this session:
+      /de/profile      real h1 ("QA Test") = 28px, weight 600. AccountHub.tsx's own comment says
+        why: "bumped to the floor value" on 2026-08-02, specifically because 24px sat under the
+        1.8x ratio. 28/14 = 2.0x. Both F6 and F7b already PASS on this screen, today, contrary
+        to the brief.
+      /de/profile/settings   real name text ("QA Test") = 20px, in IdentityBlock. 20/14 = 1.43x.
+        F6 and F7b genuinely FAIL here, same shape the brief described, just not on both routes
+        the way "measured identical" claimed, and not at 18px.
+    Neither number is close to made up: 28 vs 18 and 20 vs 18 are both real CSS pixel values I
+    read off the live DOM, not an estimate. I did not re-measure F7a (weight share) or F7c (size
+    spread) with the official first-viewport area-weighted method check-geometry.mjs uses; a
+    rough leaf-node count on /profile came out under the brief's 40% figure too, but that method
+    is not the same one, so I am not asserting F7a is wrong, only that F6/F7b/"identical" are,
+    with a live number behind each. This mockup does not attempt to fix F6 or F7b because,
+    on /profile, there is nothing to fix.
+
+  Diagnosis: F2 IMAGERY (profile) | measured 1.06% of the first viewport, live getBoundingClientRect on the one 60x60 avatar image, this session | violates FLOORS LAW 2 / LOCKFILE imagery row | target 33%
+  Diagnosis: F2 IMAGERY (settings) | measured 1.21% of the first viewport, live getBoundingClientRect on the one 64x64 avatar image, this session | violates FLOORS LAW 2 / LOCKFILE imagery row | target 33%
+  Diagnosis: F6 DISPLAY ANCHOR (settings only) | measured 20px, live getComputedStyle on the real IdentityBlock name | violates FLOORS LAW 6 | target 28px, NOT addressed by this mockup, different lever (typography, not content-forward)
+
+  Exists-check: `npm run exists "profile favorites salon card"` ran this turn, 0 hits (the
+    combined phrase is not a tracked surface name). `npm run exists profile` ran earlier this
+    turn and surfaced the real components reused below (AccountHub, FavoritesList) plus every
+    real route this file links to, nothing new proposed there. `npm run exists AccountHub` ran
+    this turn (re-run right before this write) and returned the three graveyard hits quoted
+    above, which is the actual finding this mockup is built around, not a clean "safe to build"
+    result. The favorites list itself (FavoritesList.tsx composing the real SalonCard) is reused
+    exactly as it exists, not rebuilt. Separately, an unrelated graveyard entry for a killed,
+    orphaned `/account/saved` route exists too (removed 2026-06-13 as a duplicate of
+    /profile/favorites); this file never names or links that dead route, only the real, live
+    /profile/favorites one, so that entry does not apply here.
+
+  Treatment-only, and where this one is honestly structural, said so rather than hidden as CSS:
+    1. True treatment: the header block's own top padding and eyebrow margin are tightened by a
+       few pixels on both Profile-after and Settings-after (inline style only, same values the
+       sibling home-page mockup uses for the identical "make room" move).
+    2. Structural, named as such: a new block is inserted directly under the name/identity card
+       on each "after" panel. Its cards are not drawn or faked, they are real DOM nodes cloned
+       at runtime from a hidden third iframe of the real, live /de/profile/favorites route (this
+       session's real favorites), copied in with the browser's own importNode, so the photo src,
+       the salon name, the rating are whatever that real route actually rendered a moment
+       earlier, never authored by this file. My own English label above them ("Your favorites")
+       and the "See all" link are the only text this file writes itself.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#52525B; --line:#E4E4E7; --sunken:#F4F4F5; --accent:#276EF1;
+    --font:'Inter Tight',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fff}
+  body{
+    font-family:var(--font); color:var(--ink); -webkit-font-smoothing:antialiased;
+    -webkit-text-size-adjust:100%; text-size-adjust:100%;
+    max-width:640px; margin:0 auto; padding:20px 16px calc(28px + env(safe-area-inset-bottom));
+  }
+  h1{font-size:19px; font-weight:600; letter-spacing:-0.01em; line-height:1.3}
+  .sub{font-size:13px; color:var(--ink2); margin-top:6px; line-height:1.5}
+  .row{display:flex; align-items:center; justify-content:space-between; margin-top:24px; margin-bottom:8px}
+  .tag{font-size:12px; font-weight:600; color:var(--ink2)}
+  .tag.after{color:var(--ink)}
+  .badge{font-size:11px; font-weight:600; color:var(--ink2); background:var(--sunken); border-radius:999px; padding:3px 9px}
+  .frame{border:1px solid var(--line); border-radius:16px; overflow:hidden; background:#fff}
+  iframe{display:block; width:100%; height:760px; border:0}
+  .note{margin-top:22px; background:var(--sunken); border-radius:16px; padding:16px; font-size:13px; line-height:1.55; color:var(--ink2)}
+  .note b{color:var(--ink); font-weight:600}
+  .note .call{margin-top:12px; padding-top:12px; border-top:1px solid var(--line)}
+  .note.warn{background:var(--sunken); border:1px solid var(--ink)}
+  .note.warn b{color:var(--ink)}
+  .stat{margin-top:14px; padding-top:14px; border-top:1px solid var(--line); display:flex; gap:16px; flex-wrap:wrap}
+  .stat div{flex:1; min-width:110px}
+  .stat .n{font-size:20px; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums}
+  .stat .l{font-size:11px; color:var(--ink2); margin-top:2px}
+  .foot{margin-top:20px; font-size:11px; color:var(--ink2); line-height:1.5; border-top:1px solid var(--line); padding-top:12px}
+  .divider{margin-top:36px; padding-top:20px; border-top:2px solid var(--ink)}
+</style>
+</head>
+<body>
+  <h1>Putting your favorites where you can see them</h1>
+  <p class="sub">Four boxes below load the real app, live, in your browser. Two show your profile page as it is today, two show it with your favorites moved up under your name. Scroll inside a box to see the rest of it.</p>
+
+  <div class="row"><span class="tag">PANEL 1: Profile, live, untouched</span></div>
+  <div class="frame"><iframe id="p1" src="/de/profile" title="real profile page, untouched"></iframe></div>
+
+  <div class="row"><span class="tag after">PANEL 2: Profile, favorites moved up</span><span class="badge" id="p2Status">loading</span></div>
+  <div class="frame"><iframe id="p2" src="/de/profile" title="real profile page, favorites pulled up"></iframe></div>
+
+  <div class="stat">
+    <div><div class="n">1.1% &rarr; ~62%</div><div class="l">real photo area, first screen (this session's 2 favorites)</div></div>
+    <div><div class="n">28px</div><div class="l">your name, unchanged, already meets the 28px floor</div></div>
+  </div>
+
+  <div class="note warn">
+    <b>This reopens a decision you already made twice.</b> A photo grid on this exact page got removed on 2026-07-21 and again on 2026-08-02, when you picked the plain list over a version with a photo grid on it ("konto hub better"). The reason on file: a search bar and a one-off card style that did not belong, not photos themselves, so I think there is a real difference between what got removed and what is shown below, one real card, no search, no new component. But that is my read, not your call, and I am not shipping this quietly. It needs your yes, same as it did those two times.
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="row"><span class="tag">PANEL 3: Settings, live, untouched</span></div>
+  <div class="frame"><iframe id="p3" src="/de/profile/settings" title="real settings page, untouched"></iframe></div>
+
+  <div class="row"><span class="tag after">PANEL 4: Settings, favorites moved up</span><span class="badge" id="p4Status">loading</span></div>
+  <div class="frame"><iframe id="p4" src="/de/profile/settings" title="real settings page, favorites pulled up"></iframe></div>
+
+  <div class="stat">
+    <div><div class="n">1.2% &rarr; ~55%</div><div class="l">real photo area, first screen (same 2 favorites)</div></div>
+    <div><div class="n">20px</div><div class="l">your name here is smaller than on Profile, still under the 28px floor, a different problem this mockup does not fix</div></div>
+  </div>
+
+  <div class="note">
+    <b>What changed:</b> nothing here is invented. The cards you see in panels 2 and 4 are copied, live, from your real favorites page (the one behind the heart icon), the same real component, same real photos, same real names. The page above them lost a little of its own top padding so the cards start sooner.
+    <div class="call">
+      <b>Two honest costs.</b> First, the graveyard collision above. Second, this only works because this test account has 2 favorites right now, a brand-new customer with 0 favorites would see nothing here and still fail the photo floor, that case needs its own real fallback (your top-rated salons, the same pattern the empty favorites page already uses), which this file does not build.
+    </div>
+  </div>
+
+  <div class="foot">
+    Numbers on this page came from two places. The percentages are worked out from each real card's own width and its fixed 5:4 photo shape, not a fresh on-screen measurement, this session's shared preview browser is being used by several other builds in parallel right now and kept getting pulled away mid-check. The 28px / 20px / 1.06% / 1.21% figures ARE live reads, taken directly off the running app this turn, and they contradict the 18px given in this task's brief, see the correction near the top of this file's own source comments for the full detail.
+  </div>
+
+<script>
+  var MAX_POLLS = 200;
+
+  function frameReady(f) {
+    try { return f.contentDocument && f.contentDocument.readyState === 'complete'; } catch (e) { return false; }
+  }
+
+  function waitFor(check, onReady, onGiveUp) {
+    var tries = 0;
+    var iv = setInterval(function () {
+      tries++;
+      var r;
+      try { r = check(); } catch (e) { r = null; }
+      if (r) { clearInterval(iv); onReady(r); return; }
+      if (tries > MAX_POLLS) { clearInterval(iv); onGiveUp(); }
+    }, 150);
+  }
+
+  // Step 1: load the real favorites route in a hidden (but real, laid-out) iframe so the
+  // real SalonCard photos actually render and lazy-load, then grab up to 2 real card nodes.
+  var sourceFrame = document.createElement('iframe');
+  sourceFrame.src = '/de/profile/favorites';
+  sourceFrame.style.position = 'absolute';
+  sourceFrame.style.left = '-9999px';
+  sourceFrame.style.top = '0';
+  sourceFrame.style.width = '402px';
+  sourceFrame.style.height = '1400px';
+  sourceFrame.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(sourceFrame);
+
+  var sourceResult = null; // {cards:[node,node]} | {empty:true} | {loggedOut:true}
+
+  waitFor(
+    function () {
+      if (!frameReady(sourceFrame)) return null;
+      var doc = sourceFrame.contentDocument;
+      if (/\/auth\/login/.test(sourceFrame.contentWindow.location.pathname)) return { loggedOut: true };
+      var cards = Array.prototype.slice.call(doc.querySelectorAll('.card-listing')).slice(0, 2);
+      if (cards.length === 0) {
+        // Either still rendering, or genuinely 0 favorites (the empty-state page). Distinguish
+        // by giving the real cards a few more polls before concluding "empty".
+        return null;
+      }
+      // Make sure the real <img> inside the first card actually finished loading a real photo,
+      // not just the blur placeholder, before we call this "ready".
+      var img = cards[0].querySelector('img');
+      if (img && !(img.complete && img.naturalWidth > 0)) return null;
+      return { cards: cards };
+    },
+    function (r) { sourceResult = r; },
+    function () {
+      // Gave up waiting for real cards. If the frame is sitting on the empty-favorites state
+      // that is a real, honest outcome, not a failure, report it as such.
+      try {
+        var doc = sourceFrame.contentDocument;
+        sourceResult = doc && doc.querySelectorAll('.card-listing').length === 0 ? { empty: true } : { timeout: true };
+      } catch (e) { sourceResult = { timeout: true }; }
+    }
+  );
+
+  function buildInsertBlock(doc) {
+    var wrap = doc.createElement('div');
+    wrap.style.marginTop = '18px';
+    var label = doc.createElement('p');
+    label.textContent = 'Your favorites';
+    label.style.cssText = 'font-size:12px;font-weight:600;color:#52525B;margin-bottom:8px';
+    wrap.appendChild(label);
+    var cardsBox = doc.createElement('div');
+    cardsBox.style.cssText = 'display:flex;flex-direction:column;gap:10px';
+    wrap.appendChild(cardsBox);
+    var link = doc.createElement('a');
+    link.href = '/de/profile/favorites';
+    link.textContent = 'See all favorites';
+    link.style.cssText = 'display:inline-block;margin-top:10px;font-size:13px;font-weight:500;color:#276EF1';
+    wrap.appendChild(link);
+    return { wrap: wrap, cardsBox: cardsBox };
+  }
+
+  function applyTo(iframeId, statusId, isSettings) {
+    var f = document.getElementById(iframeId);
+    var statusEl = document.getElementById(statusId);
+    waitFor(
+      function () { return frameReady(f) ? f : null; },
+      function () {
+        // Also wait for the favorites splice to have resolved one way or another.
+        waitFor(
+          function () { return sourceResult; },
+          function (src) {
+            var doc = f.contentDocument;
+            if (src.cards) {
+              var root = isSettings
+                ? doc.querySelector('main > div')
+                : doc.querySelector('[class*="max-w-[560px]"][class*="px-5"]');
+              if (!root || root.children.length < 2) { statusEl.textContent = 'could not find insert point'; return; }
+              // Treatment 1: tighten the header/identity block's own top spacing a few px.
+              var header = root.children[0];
+              if (!isSettings) {
+                header.style.paddingTop = '10px';
+                var eyebrow = header.querySelector('p');
+                if (eyebrow) eyebrow.style.marginBottom = '8px';
+              } else {
+                header.style.marginTop = '10px';
+                header.style.marginBottom = '2px';
+              }
+              // Treatment 2 (structural, named as such in this file's header comment): insert
+              // the real favorite-salon cards directly after the header, before the next block.
+              var built = buildInsertBlock(doc);
+              src.cards.forEach(function (c) {
+                built.cardsBox.appendChild(doc.importNode(c, true));
+              });
+              root.insertBefore(built.wrap, root.children[1]);
+              statusEl.textContent = 'applied, ' + src.cards.length + ' real card' + (src.cards.length === 1 ? '' : 's');
+            } else if (src.loggedOut) {
+              statusEl.textContent = 'no session, nothing real to show';
+            } else if (src.empty) {
+              statusEl.textContent = '0 favorites saved this session, nothing real to show';
+            } else {
+              statusEl.textContent = 'could not confirm';
+            }
+          },
+          function () { statusEl.textContent = 'could not confirm'; }
+        );
+      },
+      function () { statusEl.textContent = 'could not confirm'; }
+    );
+  }
+
+  applyTo('p2', 'p2Status', false);
+  applyTo('p4', 'p4Status', true);
+</script>
+</body>
+</html>

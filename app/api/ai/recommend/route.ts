@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getGeminiModel } from "@/lib/ai/gemini";
 import { applyRateLimit, generalLimiter, getAiDailyLimiter, getAiGlobalDailyLimiter, AI_GLOBAL_BUDGET_KEY, AI_GLOBAL_BUDGET_EXCEEDED_BODY } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { validateBody } from "@/lib/validations";
@@ -48,8 +48,7 @@ export async function POST(req: NextRequest) {
   const { template_key, intake_summary } = data;
 
   try {
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = getGeminiModel(apiKey, { model: "gemini-2.0-flash" });
 
     const prompt = `Du bist ein erfahrener Beauty-Berater. Basierend auf dem folgenden Fragebogen (${template_key.replace("_", " ")}), gib eine personalisierte Empfehlung auf Deutsch. Sei konkret und professionell. Max 200 Wörter.
 

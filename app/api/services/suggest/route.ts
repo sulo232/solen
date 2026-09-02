@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getGeminiModel } from "@/lib/ai/gemini";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
 import { applyRateLimit, generalLimiter, getAiDailyLimiter, getAiGlobalDailyLimiter, AI_GLOBAL_BUDGET_KEY, AI_GLOBAL_BUDGET_EXCEEDED_BODY } from "@/lib/ratelimit";
@@ -34,8 +34,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Gemini not configured" }, { status: 500 });
     }
 
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = getGeminiModel(apiKey, { model: "gemini-2.5-flash" });
 
     const prompt = `You are a salon expert in Switzerland. Generate exactly 5 standard, popular services for a salon with the following categories: ${wrapUntrustedInput("categories", categories)}.
     

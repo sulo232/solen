@@ -236,7 +236,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                 {cityDropdownOpen && (
                 <div
                   role="listbox"
-                  aria-label="Stadt wählen"
+                  aria-label={t("selectCity")}
                   className="mt-2 overflow-hidden rounded-[14px] border border-s-border bg-s-bg-surface shadow-[0_4px_14px_rgba(26,18,9,0.06)]"
                 >
                   {activeCities.map((c) => {

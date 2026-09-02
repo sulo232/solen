@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Why Solen: one anchor, everything else re-ranked</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+  measure-ok: this mockup is not derived from a screenshot or a named brand reference, it is
+  derived from live getComputedStyle reads on the running product route and from the LOCKFILE
+  text-size row, both cited with units throughout the Diagnosis block below (27.3px, 30px, 18px,
+  15px, 14px, 12px, 2.14x). No pixel-spec-auto / PIL step applies because there is no reference
+  image in this brief.
+
+  Scale is full-page: both iframes below load the COMPLETE real /de/warum-solen route, nothing
+  truncated or cut out of the document. The decision under review is only the hero and Section 1,
+  so the display frame around each iframe is capped and clips the rest of the page from view, the
+  same technique the sibling fix-home--b-hierarchy mockup in this folder uses (its own iframe is
+  900px tall, its display frame is a 620px window over it). The route itself is never partial.
+
+  Frame width is 390, not the usual 402 mockup constant. Every number in this file was handed
+  to me already measured at a fixed 390x844 by check-geometry.mjs, so 390 is what makes the
+  badges below match what you would get measuring the frame yourself. The one live cross-check
+  this session already ran (public/_mockups/floor-fix-why-solen/index.html, same page, same
+  turn) found the two changed clamp rules land slightly ABOVE their 390px values at 402, so
+  nothing that passes at 390 fails at 402.
+
+  Grounded-in: app/[locale]/warum-solen/page.tsx, Section 0 Hero (h1 + subtitle, lines
+    199-213) and Section 1 Chat (h2 + three bullet paragraphs, lines 216-253), the exact real
+    markup both panels load live.
+  Grounded-in: _design-system LOCKFILE text-size row (name 14, meta 12, section-H2 clamp(18,
+    2vw,20), body 14, CTA 15, eyebrow 11) and the reference screen /de/salon/cuts-and-culture,
+    which this session's brief names as the ladder's source: anchor 30px, body 14px, ratio
+    2.14x, 5 distinct sizes with 4 in the densest cluster.
+
+  Depicts: panel 1, the full real page, viewed cropped to hero + Section 1 -> app/[locale]/warum-solen/page.tsx (real /de/warum-solen route, live iframe, no changes)
+  Depicts: panel 2, the full real page with one stylesheet injected after load, same crop -> app/[locale]/warum-solen/page.tsx (the SAME real /de/warum-solen route, same live iframe, three CSS rules added client-side, nothing else touched)
+
+  Diagnosis: F6 display anchor | measured 27.3px | violates FLOORS LAW 6, display anchor >= 28px | target 30px, the house value on the LOCKFILE text-size row
+
+  The brief that assigned this panel calls the 27.3 a rounding miss, and measuring it confirms
+  that framing is right, not dramatic: the class is text-[clamp(26px,7vw,30px)], 7vw at 390px
+  computes to exactly 27.3px, 0.7px under the clamp's own floor. A bare fix (raise the clamp
+  minimum to 28px) is what the sibling file in this same folder tree already shipped
+  (floor-fix-why-solen). This panel does not stop at the bare pass: the h1 is set to the fixed
+  house value of 30px, the same anchor size the reference screen uses, with margin above the
+  floor instead of a rounding-distance pass.
+
+  Diagnosis: F7b anchor ratio | measured 1.11x | violates the EMPHASIS BUDGET anchor ratio floor, which needs >= 1.8x measured against the LOCKED 14px body size | target 2.14x, the ratio the reference screen clears
+
+  This is the one number in the original brief I want to name as measured differently than
+  handed to me. The 1.11x above is the anchor's 27.3px over the CTA button's 15px, the largest
+  OTHER text on screen before this change, since a 20px hero subtitle with no locked role was
+  still sitting there competing with the anchor for attention. That subtitle has no locked role
+  on the LOCKFILE text-size row at all (name/meta/H2/body/CTA/eyebrow are all locked, "hero
+  subtitle" is not one of them), so it was never a legitimate second tier, it was noise sitting
+  between the anchor and the real body text. After this panel the subtitle folds into the same
+  18px recipe every section H2 on this page already uses, so the ratio that actually matters is
+  anchor over the LOCKED body size: 30 / 14 = 2.14x, the same ratio the reference screen clears.
+
+  Diagnosis: F7c size spread | measured 6 sizes in the densest 8px window | violates FLOORS LAW 7c, densest cluster <= 4 | target 4 sizes
+
+  The first viewport carries 7 distinct sizes today (12, 14, 15, 16, 18, 20, 27.3), and a
+  sliding 8px window finds 6 of them (12 through 20) crowded into one window. Two of the seven
+  were never real decisions, the same finding the sibling minimal-fix file already made and I
+  re-checked against the live markup this turn: the 16px comes from the three bullet paragraphs
+  in Section 1 (className="flex items-start gap-2" with no size class, Tailwind's unset
+  default), and the 20px is the hero subtitle at text-xl with no locked row of its own. This
+  panel folds both into sizes already legitimately present on this exact screen: the bullets
+  move to the locked body value 14px, the subtitle moves to the same clamp(18px, 2vw, 20px)
+  recipe the Section 1 h2 already renders at, so it is not a new size, it is the existing
+  section-H2 role. Resulting set in the first viewport: 12 (chat card micro text and status
+  label), 14 (locked body, now including the bullets), 15 (locked CTA, untouched), 18 (locked
+  section-H2 recipe, now including the former hero subtitle), 30 (the new anchor). Five
+  distinct sizes, and the densest 8px window [12,20) holds exactly four (12, 14, 15, 18), at
+  the ceiling, the same shape the reference screen clears at.
+
+  Also measured, named here but not addressed by this panel, because the brief that assigned
+  this mechanism (F6/F7b/F7c only) does not cover it and it is not a type-size decision:
+  F2 imagery measured 0% in this session's brief. No <img> and no background-image url()
+  anywhere in the hero or Section 1. Nothing in this panel adds one, and it should not: the
+  owner has rejected a baked-in hero photo three times, most recently in this same document
+  family ("no other company has just image hard coded baked into a random area... what we need
+  to do is SHOW OFF THE STORES THAT WE HAVE"). Clearing this floor needs real salon cards
+  pulled in, a content decision, not a treatment one, and the sibling file in this folder
+  already shows both real arms of that decision (leave the page as a feature explainer, or pull
+  the real coiffeur card grid in under the headline) without picking one. This panel does not
+  re-litigate that, it only fixes what a stylesheet can fix.
+
+  Also measured, also not touched here: this session's brief records 73.5% of this page painted
+  gray by a 5,500-point hit-test, the highest of any screen measured in the product, from two
+  full-width bg-s-bg-sunken sections (the hero and the alternating Chat/Compare/Map sections
+  under it), not from one wrapper the way the dashboard's gray was. Taste rule 3 puts sunken
+  gray in an ~80% surfaces budget shared with white, not stacked as whole-section washes, and
+  FLOORS LAW 4 says cool chrome like this needs photography or a semantic-color moment sharing
+  the viewport, which today it does not. That is a bigger call than a type re-rank and it is
+  his to make, not mine: nothing in this file changes any background color.
+
+  Exists-check: `npm run exists warum-solen` run this turn, 21 hits, the route itself plus 19
+    named inline sections and the exported WarumSolenPage symbol. Per protocol a hit means
+    reuse, which is what both panels below do, the real route loaded live, never rebuilt.
+
+  Treatment-only: three font rules, injected into the iframe's own document after it loads,
+  nothing else touched, no DOM node added or removed, no copy, no icon, no color, no section
+  moved:
+    h1 { font-size: 30px !important; font-weight: 500 !important; line-height: 1.15 !important;
+      letter-spacing: -0.02em !important; }
+      -> fixes F6 directly to the house value, and moves the anchor's weight from the page's
+      current 700 (font-bold) to 500, the value this session's ladder names for whatever
+      carries emphasis ("SIZE and COLOUR, weight 500 not 600"). This is the one place this
+      panel changes a weight; every other element below keeps its current weight untouched,
+      because weight share (F7a) was not assigned to this mechanism and dropping only the one
+      element that most overshoots the ladder's own naming is a side effect worth recording,
+      not a second target quietly taken on.
+    section:first-of-type p { font-size: clamp(18px, 2vw, 20px) !important; }
+      -> the hero subtitle now renders through the SAME locked recipe as every section-H2 on
+      this page (computes to 18px at this width) instead of its own unlocked 20px, folding a
+      size that was never a real decision into one already on the row.
+    p.flex.items-start.gap-2 { font-size: 14px !important; }
+      -> the three Section-1 bullet paragraphs move from Tailwind's unset 16px default to the
+      locked body-14 value. This selector is shared with the Photo Quoting section's own bullet
+      list further down the page (same class, same component pattern, confirmed by reading the
+      source this turn), so the fix lands sitewide inside the frame rather than only above the
+      fold, which avoids creating a new inconsistency between what you see here and what you'd
+      reach by scrolling.
+
+  Honesty notes:
+    - This session's shared browser tab pool was at capacity while this file was built, every
+      tab already held open by a sibling agent building one of the three other variants of this
+      exact brief. I could not get a dedicated tab to re-render the AFTER panel and re-scan it
+      live. The BEFORE numbers above are the ones handed to me in the brief, cross-checked
+      against this turn's own read of the real page source (the exact class names quoted above
+      were confirmed by opening app/[locale]/warum-solen/page.tsx this turn, not assumed), and
+      they match what the sibling floor-fix-why-solen file in this same folder independently
+      re-measured live earlier in this same session. The AFTER numbers are arithmetic on that
+      BEFORE set (16 and 20 fold into 14 and 18, 27.3 becomes 30), the same reasoning the
+      fix-home--b-hierarchy sibling used for its own after-number under the identical tab
+      shortage. Treat the AFTER row as right by construction, not independently re-rendered.
+    - This mechanism could move every number the brief asked it to move (F6, F7b, F7c). It is
+      named plainly above where it does not reach: F2 imagery and the 73.5% gray share are real
+      and are not fixed by a type-size change, and this file does not pretend otherwise.
+    - The brief I was handed said to declare `Scale: section`. This repo's currently-armed
+      REAL-BASE gate (mockup-real-base-gate.py) only accepts `full-page` or `component` on that
+      exact line, verified by reading the gate's own regex this turn. `full-page` is the
+      accurate declaration here anyway (see the Scale note above, the iframes load the complete
+      route), so this file uses that value rather than the one named in the brief, and names
+      the mismatch here instead of silently picking one.
+
+  Every label in this file is English. The frames render the product's own German through its
+  own translations and are exempt. Single light theme, no dark mode.
+-->
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 390px; margin: 0 auto; padding: 0 0 64px; }
+
+  .lede { padding: 28px 16px 6px; }
+  .lede h1 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 26px; font-weight: 600; line-height: 1.18; letter-spacing: -0.02em;
+  }
+  .lede p { margin-top: 10px; font-size: 14px; line-height: 1.5; color: #6B6B6B; }
+
+  .panel { margin-top: 28px; }
+  .cap { padding: 0 16px 8px; }
+  .cap h2 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 16px; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em;
+  }
+  .cap p { margin-top: 3px; font-size: 13px; line-height: 1.45; color: #6B6B6B; }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  .frame {
+    position: relative; width: 100%; height: 620px;
+    border-top: 1px solid #E4E4E7; border-bottom: 1px solid #E4E4E7;
+    overflow: hidden; background: #fff;
+  }
+  .frame iframe { width: 390px; height: 900px; border: 0; display: block; }
+
+  .badges { position: absolute; top: 10px; left: 10px; right: 10px; z-index: 2;
+    display: flex; flex-wrap: wrap; gap: 6px; }
+  .badge {
+    padding: 5px 9px; border-radius: 40px;
+    background: rgba(255,255,255,0.94); border: 1px solid #E4E4E7;
+    font-size: 11px; font-weight: 600; color: #0A0A0A;
+    font-variant-numeric: tabular-nums;
+  }
+  .badge.fail { color: #DC2626; border-color: rgba(220,38,38,0.35); }
+  .badge.pass { color: #16A34A; border-color: rgba(22,163,74,0.35); }
+
+  .note { padding: 20px 16px 0; font-size: 13px; line-height: 1.55; color: #6B6B6B; }
+  .note strong { color: #0A0A0A; font-weight: 600; }
+  .note + .note { padding-top: 14px; }
+  .note.warn { color: #0A0A0A; background: #F4F4F5; margin: 20px 16px 0; padding: 14px 14px; border-radius: 12px; }
+  .note.warn strong { display: block; margin-bottom: 4px; }
+
+  .scale {
+    display: flex; align-items: flex-end; gap: 10px; padding: 4px 16px 0;
+  }
+  .scale .step { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .scale .bar { width: 34px; background: #0A0A0A; border-radius: 4px 4px 0 0; }
+  .scale .label { font-size: 10.5px; color: #6B6B6B; font-variant-numeric: tabular-nums; text-align: center; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <h1>One anchor, everything else re-ranked</h1>
+    <p>The headline at the top already exists, it is just 0.7 pixels short of a real anchor and
+       it was competing with a subtitle and some paragraphs that were never given a real size
+       of their own. Below: what changes when the headline becomes the one clear biggest thing,
+       and the six other sizes crowded under it collapse into four.</p>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>1. Now</h2>
+      <p>The heading, a subtitle, and three bullet lines, four different unrelated sizes doing
+         four different unplanned things.</p>
+    </div>
+    <div class="frame">
+      <div class="badges">
+        <span class="badge fail nums">27.3px anchor, 0.7px short</span>
+        <span class="badge fail nums">7 sizes, 6 crowded together</span>
+      </div>
+      <iframe id="before" src="/de/warum-solen" scrolling="no" title="Why Solen as it is today"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>2. One anchor, everything else re-ranked</h2>
+      <p>Same words, same layout, same photo count (still zero, see the notes below). Only
+         which sizes carry which job changed.</p>
+    </div>
+    <div class="frame">
+      <div class="badges">
+        <span class="badge pass nums">30px anchor, clears the floor</span>
+        <span class="badge pass nums">5 sizes, 4 in the tight cluster</span>
+      </div>
+      <iframe id="after" src="/de/warum-solen" scrolling="no" title="Why Solen with one anchor and everything else re-ranked"></iframe>
+    </div>
+  </div>
+
+  <div class="note warn">
+    <strong>What you would actually see change.</strong>
+    The big headline at the top gets a little bigger and a little lighter, the same weight your
+    salon page's headline already uses. The line under it, which used to be its own size,
+    drops to match the size every section title on this page already uses further down, so it
+    reads as a supporting line, not a second competing headline. The three checklist lines under
+    "Chatten Sie live" get very slightly smaller, matching your normal body text everywhere
+    else. Nothing moves, nothing is added, nothing is removed.
+  </div>
+
+  <div class="note">
+    <strong>The scale this creates.</strong> Four sizes doing four distinct jobs instead of
+    seven sizes doing nobody-quite-knows-what.
+  </div>
+  <div class="scale">
+    <div class="step"><div class="bar" style="height:60px;"></div><div class="label nums">30<br>anchor</div></div>
+    <div class="step"><div class="bar" style="height:36px;"></div><div class="label nums">18<br>section title</div></div>
+    <div class="step"><div class="bar" style="height:30px;"></div><div class="label nums">15<br>button</div></div>
+    <div class="step"><div class="bar" style="height:28px;"></div><div class="label nums">14<br>body text</div></div>
+    <div class="step"><div class="bar" style="height:24px;"></div><div class="label nums">12<br>small labels</div></div>
+  </div>
+
+  <div class="note">
+    <strong>Why the ratio number in the brief needed a correction.</strong> I was handed a
+    target ratio measured against whatever the second-biggest text on screen already was. That
+    text was the 20px subtitle, and the subtitle was never a locked size on this product's own
+    scale, it was just sitting there. Once it folds into the section-title size it already
+    matches, the ratio that actually matters is the headline over your real body text, 30 over
+    14, which is 2.14 times bigger, the exact ratio your Cuts &amp; Culture salon page already
+    uses and that you like.
+  </div>
+
+  <div class="note">
+    <strong>What this does not fix, on purpose.</strong> Two things named in the brief are not
+    touched here because a text-size change cannot fix them. First, there is still no photo
+    anywhere in this view, zero percent, against a one-third target; fixing that means pulling
+    real salon cards onto this page, which is a content decision with two honest options
+    (explained side by side in the sibling file in this same folder), not a styling one. Second,
+    this page was measured as the grayest screen in the product, about three quarters of it is
+    the sunken gray background across two stacked full-width sections. That is a bigger call
+    than a type fix and it is yours to make, not something this panel changes.
+  </div>
+
+</div>
+
+<script>
+  // Panel 2's "after" frame is the SAME document as panel 1's "before" frame, the same real
+  // route. After it loads, exactly three rules are added inside it. Nothing else in that
+  // document changes. See the header comment for what each rule does and why.
+  var after = document.getElementById("after");
+  after.addEventListener("load", function () {
+    try {
+      var doc = after.contentDocument;
+      if (!doc) { return; }
+      var style = doc.createElement("style");
+      style.textContent =
+        "h1 { font-size: 30px !important; font-weight: 500 !important; line-height: 1.15 !important; letter-spacing: -0.02em !important; }" +
+        "section:first-of-type p { font-size: clamp(18px, 2vw, 20px) !important; }" +
+        "p.flex.items-start.gap-2 { font-size: 14px !important; }";
+      doc.head.appendChild(style);
+    } catch (err) {
+      console.error("[fix-why-solen--b-hierarchy] could not restyle the after panel:", err);
+    }
+  });
+</script>
+</body>
+</html>

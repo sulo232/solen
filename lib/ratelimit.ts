@@ -1,15 +1,12 @@
 import { Ratelimit } from "@upstash/ratelimit";
-import { Redis } from "@upstash/redis";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerEnv } from "@/lib/env";
 import { createAdminSupabaseClient } from "@/lib/supabase";
+import { createBoundedRedis } from "@/lib/redis";
 
 const env = getServerEnv();
 const redis = (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN)
-  ? new Redis({
-      url: env.UPSTASH_REDIS_REST_URL,
-      token: env.UPSTASH_REDIS_REST_TOKEN,
-    })
+  ? createBoundedRedis(env.UPSTASH_REDIS_REST_URL, env.UPSTASH_REDIS_REST_TOKEN)
   : null as any;
 
 export const generalLimiter = new Ratelimit({
@@ -136,6 +133,19 @@ export const offPeakNotifyLimiter = new Ratelimit({ redis, limiter: Ratelimit.sl
 // Every other limiter (general browsing, discovery, admin, messaging, etc.) keeps
 // today's fail-open behavior since blocking those would break the product, not just
 // slow an attacker.
+// Bounds the cost of VERIFYING a bearer token, which is a network round trip to the Supabase Auth
+// server that any caller can force with a garbage `Authorization` header and no credentials. Added
+// 2026-08-14 after the security review of the iOS auth change found that round trip sitting ahead
+// of `bookingLimiter` on the booking POST, reopening the unthrottled-anon hole §10b.12 closed.
+// 30/min per IP: far above a real customer, far below a useful flood, and deliberately not
+// authLimiter's 5/min, which Swiss carrier NAT would trip for real people sharing an egress IP.
+export const bearerVerifyLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(30, "1 m"),
+  analytics: true,
+  prefix: "rl:bearer",
+});
+
 const ABUSE_PRONE_LIMITERS = new Set<Ratelimit>([
   authLimiter,
   paymentLimiter,
@@ -144,6 +154,11 @@ const ABUSE_PRONE_LIMITERS = new Set<Ratelimit>([
   referralLimiter,
   referralValidateLimiter,
   resendAccessLimiter,
+  // Fails CLOSED with no Redis in production, like the others here. `generalLimiter` was the first
+  // choice for this job and would have been wrong: it is not in this set, so on a production boot
+  // with Upstash unset the throttle would have passed everything silently while the booking
+  // limiter below it correctly 429'd. A protection against a flood must not fail open.
+  bearerVerifyLimiter,
 ]);
 
 const RATE_LIMITED_BODY = { error: "Too many requests. Please try again later.", code: "RATE_LIMITED" } as const;

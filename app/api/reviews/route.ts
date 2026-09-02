@@ -1,20 +1,32 @@
 export const dynamic = "force-dynamic";
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { createAdminSupabaseClient } from "@/lib/supabase";
 import { checkReview } from "@/lib/automod";
-import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { applyRateLimit, generalLimiter, bearerVerifyLimiter, getClientIp } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, createReviewSchema } from "@/lib/validations";
 import { trackServerEvent } from "@/lib/posthog-server";
 import { getAppUrl, getServerEnv } from "@/lib/env";
+import { resolveRequestUser } from "@/lib/auth/request-user";
 
 export async function POST(request: NextRequest) {
   const disabled = await checkFeatureEnabled("reviews");
   if (disabled) return disabled;
 
-  const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  // resolveRequestUser (lib/auth/request-user.ts) resolves the caller from EITHER the web
+  // session cookie, unchanged, or an iOS `Authorization: Bearer <token>` header, itself
+  // verified server-side against the Supabase Auth server. Verifying a Bearer token costs a
+  // network round trip that any caller can force with a garbage header and no credentials,
+  // so it is throttled by IP BEFORE the resolve, and only when a header is actually present,
+  // same ordering as app/api/bookings/route.ts POST.
+  if (request.headers.get("Authorization")) {
+    const authFlood = await applyRateLimit(bearerVerifyLimiter, { ip: getClientIp(request) });
+    if (authFlood) return authFlood;
+  }
+  const resolvedUser = await resolveRequestUser(request);
+  if (resolvedUser instanceof NextResponse) return resolvedUser;
+  const { user, supabase } = resolvedUser;
   if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
 
   const banned = await checkUserBanned(user.id);

@@ -152,7 +152,7 @@ export function SalonHeader({
         <div className="hidden shrink-0 items-center gap-3 md:flex">
           <button
             type="button"
-            aria-label="Salon teilen"
+            aria-label={t("shareProfile")}
             onClick={() => shareOrCopy(salon.name, window.location.href)}
             className="grid h-11 w-11 place-items-center rounded-full border border-s-border bg-white transition-transform hover:scale-105 active:scale-95 active:duration-[80ms] active:ease-glide"
           >

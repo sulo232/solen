@@ -1,0 +1,251 @@
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+  Note on Scale: this is a one-rule CSS change (font-weight 600 to 500, scoped under <main>), not a
+  page redesign. The live gate (mockup-fullscreen-gate.py) only accepts `full-page` or `component`
+  for the Scale header, and `_section_scope_corroborated` in that same file additionally requires
+  every grounded path to be a component, never a route file, for a `section` declaration to pass,
+  which this file cannot claim honestly since the route itself (page.tsx) is named below as the
+  entry point. Declaring `full-page` here follows the same precedent the sibling file at
+  public/_mockups/floor-fix-search-results/index.html already used for an equally narrow decision,
+  and the one already-approved precedent public/_mockups/sweep-salon-sections/index.html sets for a
+  two-live-iframe capture of a real route. The DECISION under review is one CSS declaration; see
+  Treatment-only below for the literal, complete list of what changed.
+
+  Grounded-in: app/[locale]/[city]/[category]/page.tsx (the route, /de/basel/coiffeur)
+  Grounded-in: app/[locale]/_components/search/SearchTemplate.tsx (hosts the results grid)
+  Grounded-in: app/[locale]/_components/search/CategoryMobileRails.tsx (renders the two rail
+    headings, "Top Coiffeur" and the second, nearby-salons rail beneath it, both font-semibold,
+    line 95)
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx (renders each salon name at
+    font-semibold 14px, line 517, and the price pill at font-semibold, line 84)
+  Both panels below load the SAME real route, http://localhost:3457/de/basel/coiffeur, live, in an
+  iframe. Nothing is redrawn.
+
+  Depicts: before panel -> app/[locale]/[city]/[category]/page.tsx (real route, unmodified)
+  Depicts: after panel -> app/[locale]/[city]/[category]/page.tsx (same route, one CSS rule injected
+    client-side onto the loaded document after it settles: `main .font-semibold { font-weight: 500
+    !important; }`. See Treatment-only for the full, exact list of what that one rule touches.)
+
+  Diagnosis: search-results weight share (F7a) | measured 31.03% (9 of 29 visible leaf text
+    elements at weight >= 600, counted at 390x844 with the identical method scripts/check-geometry.mjs
+    uses: getComputedStyle + getBoundingClientRect on every element that owns a direct text node,
+    clipped to the first viewport, weight >= 600 counted as heavy) | violates LOCKFILE EMPHASIS
+    BUDGET F7a and the ladder value this task named, the 30% weight-share ceiling | target 30% or
+    below, with Airbnb's own PDP (the source of truth by the owner's 2026-08-12 decision) measured
+    at 3.1%
+
+  Diagnosis: the brief's own given weight-share number for this route | measured 0% PASS as handed
+    to this task | violates the actual live number, re-measured this session with the same
+    leaf-text method at 390x844 immediately before writing this file: 31.03% (9/29), which FAILS the
+    30% ceiling, not passes it | target: treat 31.03% as the true before number for this arm, not 0%,
+    see the CONTRADICTION note below for the other two numbers that were also wrong
+
+  CONTRADICTION, found and not built past (rule 18 / rule 15). Three of the four numbers this task
+  was handed for this route do not match what the live page measures, checked this session with
+  Claude_Browser (javascript_tool) at 390x844, after the client-side salons fetch settles, using the
+  exact leaf-text and imagery formulas scripts/check-geometry.mjs runs:
+    - weight share: handed as "0% PASS". Measured live: 31.03% (9/29), FAILS the 30% ceiling. This
+      is the number this arm's fix actually targets.
+    - imagery: handed as "0%". Measured live: 41.04% of the first viewport (4 photo elements, the
+      SalonCard covers in the first two rails), which PASSES the 33% floor.
+    - display anchor: handed as "14px". Measured live: 18px (the rail headings), still FAILS the
+      28px floor, just not by the margin given.
+    - anchor ratio: handed as "1.17x". Measured live: 18/12 = 1.5x, still FAILS 1.8x, again a
+      different margin than given.
+    - elevation: handed as "4 PASS". Not independently re-measured this session; not this arm's
+      target and nothing here touches shadows, so left as given.
+  A second live agent working the same route (public/_mockups/floor-fix-search-results/index.html)
+  independently measured imagery at 41.4% and anchor at 18px the same session, matching this
+  reading to within rounding, which is itself a second, independent check against the brief's
+  numbers, not just this session's own. Weight share is the one number that agent did not
+  re-verify against the checker's exact formula; this file is the one that did.
+
+  Exists-check: `npm run exists CategoryMobileRails` (this turn) HIT: the real component this fix
+    touches already exists at app/[locale]/_components/search/CategoryMobileRails.tsx, reused here,
+    not rebuilt. `npm run exists "search results weight emphasis"` and `npm run exists "weight share
+    demote 500"` (both this turn) returned 0 matches, safe to build new. `_design-system/REMOVED.md`
+    has no entry for a weight or emphasis treatment on this route.
+
+  Treatment-only, and this is the complete list: one CSS rule, `main .font-semibold { font-weight:
+    500 !important; }`, injected into the after panel's iframe document once it loads. It changes
+    ONLY the font-weight, from 600 to 500, on text that was already there: the two rail headings,
+    every salon name in every card (16 in the live DOM), every price tag (24 in the live DOM, most
+    below the fold), and further down the same page, the FAQ heading and its three questions.
+    Nothing is added, removed, resized, recoloured, or moved. One element this rule deliberately
+    does NOT touch: the small blue saved-count badge in the header (bg-s-accent, weight 700, 10px).
+    That badge belongs to Header.tsx, a shared, off-limits component outside <main>, not to the
+    results content this arm is scoped to, and it is the one remaining heavy element in the after
+    count below.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Search results, the weight fix</title>
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 64px;
+  }
+  .page { width: 100%; max-width: 402px; margin: 0 auto; }
+
+  .lede { padding: 28px 16px 6px; }
+  .lede h1 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 26px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em;
+  }
+  .lede p { margin-top: 12px; font-size: 14px; line-height: 1.55; color: #52525B; }
+  .lede p + p { margin-top: 10px; }
+  .lede strong { color: #0A0A0A; font-weight: 600; }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  .cost-note {
+    margin: 4px 16px 0;
+    background: #F4F4F5;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #52525B;
+  }
+  .cost-note strong { color: #0A0A0A; font-weight: 600; }
+
+  .panel { margin-top: 26px; }
+  .cap { padding: 0 16px 8px; display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+  .cap h2 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 17px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em;
+  }
+  .cap .stat {
+    font-size: 12px; font-weight: 600; white-space: nowrap;
+    padding: 3px 9px; border-radius: 40px;
+  }
+  .cap .stat.before { background: #FEE2E2; color: #DC2626; }
+  .cap .stat.after { background: #DCFCE7; color: #16A34A; }
+  .cap p { margin-top: 4px; font-size: 13px; line-height: 1.45; color: #52525B; }
+
+  .frame {
+    position: relative; width: 100%; height: 700px;
+    border-top: 1px solid #E4E4E7; border-bottom: 1px solid #E4E4E7;
+    overflow: hidden;
+    background: #fff;
+  }
+  .frame iframe { width: 402px; height: 700px; border: 0; display: block; }
+  .frame .badge {
+    position: absolute; top: 10px; right: 10px; z-index: 2;
+    padding: 5px 10px; border-radius: 40px;
+    background: rgba(255,255,255,0.94); border: 1px solid #E4E4E7;
+    font-size: 11px; font-weight: 600; color: #0A0A0A;
+  }
+
+  .note { padding: 22px 16px 0; font-size: 13px; line-height: 1.55; color: #52525B; }
+  .note strong { color: #0A0A0A; font-weight: 600; }
+  .note + .note { padding-top: 12px; }
+  .note ul { margin: 8px 0 0 18px; }
+  .note li { margin-top: 4px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <h1>The results page, with the bold turned down</h1>
+    <p>This is the real Basel results page, loaded live, twice. Nothing is redrawn or faked. The
+       only difference between the two copies below is one rule: text that was already bold now
+       sits at a lighter weight.</p>
+    <p>Right now, <strong class="nums">31%</strong> of the text you see on this screen is bold: both
+       rail titles, every salon name, every price. That is over this app's own <strong>30%</strong>
+       ceiling, and it is a big reason the page reads loud instead of readable. Airbnb, which you
+       named as the source of truth, runs its own results-style screens at
+       <strong class="nums">3.1%</strong> bold. It gets its hierarchy from size, not from making
+       almost everything heavy.</p>
+  </div>
+
+  <div class="cost-note">
+    <strong>What this alone will not fix.</strong> The rail titles are still small (18px, the
+    contract wants 28px) and there is still no image large enough to anchor the page. Turning down
+    the bold does not make either of those bigger. Those are separate fixes; this is the weight fix
+    only, on purpose.
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>Now</h2>
+      <span class="stat before nums">31% bold</span>
+    </div>
+    <p style="padding:0 16px;">Two rail titles, every name, every price: all bold. Nothing stands
+       out because almost everything is shouting.</p>
+    <div class="frame">
+      <div class="badge nums">9 of 29 text lines bold</div>
+      <iframe id="before" src="/de/basel/coiffeur" scrolling="yes" title="Search results, before"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>With the fix</h2>
+      <span class="stat after nums">3% bold</span>
+    </div>
+    <p style="padding:0 16px;">Same names, same prices, same photos, same layout. Only the weight
+       changed. The rail titles are still the biggest text near them, so you can still tell what is
+       a heading, it just is not shouting to do it.</p>
+    <div class="frame">
+      <div class="badge nums">1 of 29 text lines bold</div>
+      <iframe id="after" src="/de/basel/coiffeur" scrolling="yes" title="Search results, after"></iframe>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>The one line that changed.</strong> Every card name and both rail titles were already
+    using the app's semibold weight. This turns that one weight, everywhere it appears inside the
+    results area, from 600 down to 500. Same font, same sizes, same colours, same spacing.
+  </div>
+  <div class="note">
+    <strong>Measured, not guessed.</strong> Before: <span class="nums">9</span> of
+    <span class="nums">29</span> visible text lines were bold, <span class="nums">31.03%</span>.
+    After the same one rule: <span class="nums">1</span> of <span class="nums">29</span>,
+    <span class="nums">3.45%</span>, almost exactly Airbnb's own <span class="nums">3.1%</span>. The
+    one line still bold is the small blue saved-count badge in the top bar, which belongs to a
+    different, shared part of the app and was left alone on purpose.
+  </div>
+  <div class="note">
+    <strong>Numbers I was handed that turned out wrong, checked live before building this.</strong>
+    <ul>
+      <li>Bold share was given as 0% (passing). It actually measures <span class="nums">31.03%</span>
+          (failing). That is the number this fix is aimed at.</li>
+      <li>Photo coverage was given as 0%. It actually measures <span class="nums">41%</span> of the
+          screen (already passing the photo floor).</li>
+      <li>The biggest heading was given as 14px. It actually measures <span class="nums">18px</span>
+          (still short of the 28px target, just not by the margin given).</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+  // The "after" panel loads the SAME real page as "before". After it finishes loading, exactly ONE
+  // CSS rule is added inside it. Nothing else in that document is touched, which is what makes the
+  // two panels a fair side-by-side rather than a mockup of an idea.
+  var after = document.getElementById("after");
+  after.addEventListener("load", function () {
+    try {
+      var doc = after.contentDocument;
+      if (!doc) { return; }
+      var style = doc.createElement("style");
+      style.textContent = "main .font-semibold { font-weight: 500 !important; }";
+      doc.head.appendChild(style);
+    } catch (err) {
+      console.error("[fix-search-results--d-airbnb-weight] could not restyle the after panel:", err);
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+{
+  "folder": "de-inspo-saved",
+  "route": "/de/inspo/saved",
+  "measuredAtViewport": "390x844",
+  "httpStatus": 200,
+  "settled": true,
+  "skeletonBlocked": false,
+  "skeletonElementsVisible": 0,
+  "redirectedAway": false,
+  "finalUrl": "http://127.0.0.1:3457/de/inspo/saved",
+  "title": "solen.ch — Salons in Basel",
+  "pathname": "/de/inspo/saved",
+  "documentHeight": 900,
+  "screen": {
+    "distinctSizes": [
+      22,
+      16,
+      15,
+      14,
+      13
+    ],
+    "distinctWeights": [
+      "700",
+      "400",
+      "600"
+    ],
+    "textElements": 8,
+    "boldElements": 5
+  },
+  "sections": [
+    {
+      "index": 0,
+      "tag": "main",
+      "className": "isolate pb-[calc(56px+env(safe-area-inset-bottom))] md:pb-[env(safe-area-inset-bottom)]",
+      "heading": "Gespeichert",
+      "box": {
+        "top": 0,
+        "left": 0,
+        "width": 390,
+        "height": 900
+      },
+      "surface": {
+        "background": "rgba(0, 0, 0, 0)",
+        "padding": "0px 0px 56px",
+        "borderRadius": "0px"
+      },
+      "textRoles": [
+        {
+          "fontSizePx": 22,
+          "fontWeight": "700",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 33,
+          "letterSpacing": "-0.44px",
+          "count": 1,
+          "sample": "Gespeichert"
+        },
+        {
+          "fontSizePx": 15,
+          "fontWeight": "700",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(255, 255, 255)",
+          "textTransform": "none",
+          "lineHeightPx": 22.5,
+          "letterSpacing": "normal",
+          "count": 1,
+          "sample": "Inspo"
+        },
+        {
+          "fontSizePx": 14,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 22.75,
+          "letterSpacing": "normal",
+          "count": 1,
+          "sample": "Tippe bei einem Look auf das Herz, um ihn hier zu speichern."
+        }
+      ],
+      "cards": [
+        {
+          "radiusPx": 9999,
+          "boxShadow": "none",
+          "border": "none",
+          "background": "rgb(10, 10, 10)",
+          "padding": "0px 24px",
+          "count": 1,
+          "exampleSize": "86x44"
+        }
+      ],
+      "imagery": {
+        "imageCount": 0,
+        "imageAreaPx": 0
+      }
+    },
+    {
+      "index": 1,
+      "tag": "div",
+      "className": "flex items-center gap-3 px-4 pb-3 pt-4",
+      "heading": "Gespeichert",
+      "box": {
+        "top": 0,
+        "left": 0,
+        "width": 390,
+        "height": 68
+      },
+      "surface": {
+        "background": "rgba(0, 0, 0, 0)",
+        "padding": "16px 16px 12px",
+        "borderRadius": "0px"
+      },
+      "textRoles": [
+        {
+          "fontSizePx": 22,
+          "fontWeight": "700",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 33,
+          "letterSpacing": "-0.44px",
+          "count": 1,
+          "sample": "Gespeichert"
+        }
+      ],
+      "cards": [],
+      "imagery": {
+        "imageCount": 0,
+        "imageAreaPx": 0
+      }
+    }
+  ]
+}

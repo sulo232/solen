@@ -18,6 +18,17 @@ export interface SwitchProps
   label?: React.ReactNode;
   /** Optional sub-label below the main label (12px ink-3). */
   subLabel?: React.ReactNode;
+  /**
+   * Accessible name for a switch with no visible `label` tied to it. The switch's only child
+   * is `aria-hidden`, so without this (or `label`) it announces nothing to a screen reader.
+   * Forwarded to the underlying button's `aria-label`.
+   */
+  "aria-label"?: string;
+  /**
+   * Accessible name reference (id of an element that contains the name), forwarded to the
+   * underlying button's `aria-labelledby`. Takes precedence over `aria-label` and `label`.
+   */
+  "aria-labelledby"?: string;
 }
 
 /**
@@ -51,6 +62,8 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
       subLabel,
       disabled,
       id,
+      "aria-label": ariaLabel,
+      "aria-labelledby": ariaLabelledBy,
       ...props
     },
     ref,
@@ -58,6 +71,15 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
     const [internalChecked, setInternalChecked] = React.useState(defaultChecked);
     const isControlled = controlledChecked !== undefined;
     const checked = isControlled ? controlledChecked : internalChecked;
+
+    // Stable id for the visible label text, so a `label`-only Switch (no `id`, no explicit
+    // `aria-label`/`aria-labelledby`) still resolves to a non-empty accessible name. The
+    // wrapping <label htmlFor> below keeps the row clickable, but per the accessible-name
+    // computation a <label> only names form controls (input/select/textarea/meter/output/
+    // progress), never a <button>, so this is required in addition to it, not instead of it.
+    const generatedLabelId = React.useId();
+    const resolvedAriaLabelledBy =
+      ariaLabelledBy ?? (label && !ariaLabel ? generatedLabelId : undefined);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
       if (disabled) return;
@@ -74,6 +96,8 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
         role="switch"
         aria-checked={checked}
         aria-disabled={disabled || undefined}
+        aria-label={ariaLabel}
+        aria-labelledby={resolvedAriaLabelledBy}
         disabled={disabled}
         onClick={handleClick}
         id={id}
@@ -114,7 +138,7 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
         )}
       >
         <span className="flex flex-col">
-          <span className="font-body font-normal text-[16px] text-s-ink">{label}</span>
+          <span id={generatedLabelId} className="font-body font-normal text-[16px] text-s-ink">{label}</span>
           {subLabel && (
             <span className="font-body font-normal text-[13px] text-s-ink-2 mt-1">
               {subLabel}

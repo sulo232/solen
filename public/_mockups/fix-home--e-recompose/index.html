@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Home page: clear every floor at once</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+  Scale is full-page because both panels load the entire real /de route end to end, nothing is
+  cropped out of the iframe. The DECISION itself only concerns the top of the page: the search bar,
+  the category pills, the hidden headline, and the first content row underneath. The footer, the
+  business teaser and the review section further down render in both panels, untouched, purely
+  because they come along with the real page.
+
+  Grounded-in: app/[locale]/page.tsx (real /de route, both panels are live iframes of it)
+  Grounded-in: app/[locale]/_components/homepage/Hero.tsx (the H1 this panel un-hides)
+  Grounded-in: app/[locale]/_components/layout/CategoryPillRow.tsx (the pill row this panel compresses)
+  Grounded-in: app/[locale]/_components/homepage/SectionHeader.tsx (every section h2 on this screen)
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx + _components/primitives/PriceFrom.tsx
+    (the two locked weight-600 anchors this panel deliberately leaves alone)
+
+  Depicts:
+    BEFORE panel -> app/[locale]/page.tsx, the real /de route, live iframe, untouched.
+    AFTER panel  -> the SAME real /de route, live iframe, DOM-patched after it loads:
+      1. Hero's own headline block (already in the code, already rendering correctly on desktop,
+         switched off on phones since 2026-08-01) is un-hidden on mobile. Its search card is
+         removed from the reveal (HomeSearchPill already owns search on this screen, so showing
+         both would be two search bars) and its subline is removed (the category pills sitting
+         right above it already name the same categories, copy rule 1). What is left standing is
+         the real H1 the product already ships on desktop, nothing invented.
+      2. CategoryPillRow's pt-5/pb-5 (the 2026-08-11 "Balance pass" number) is tightened to
+         pt-3/pb-3, the same 16px reclaim public/_mockups/floor-fix-home/index.html already proposed.
+      3. Every element carrying Tailwind's font-semibold or font-bold drops to weight 500, EXCEPT
+         the two elements V3-D442 deliberately locked at 600 as a SalonCard's two ink anchors
+         (the name h3, the price span) , those are left exactly as they render today.
+
+  Diagnosis: F6 DISPLAY ANCHOR | measured 18px, confirmed live: the tallest text a phone visitor
+    sees today is the shared SectionHeader h2 (18-20px/600), because Hero's real 31px H1 carries
+    max-md:hidden | violates FLOORS LAW 6 | target 30px (the house value, read off /de/salon/cuts-and-culture)
+  Diagnosis: F7b ANCHOR RATIO | measured 1.5x (18/12) | violates EMPHASIS BUDGET floor (b), which
+    requires >= 1.8x | target 2.14x (30px anchor over the ladder's 14px body, matching cuts-and-culture)
+  Diagnosis: F7a WEIGHT SHARE | measured 37.14% of visible text at weight >= 600 | violates EMPHASIS
+    BUDGET ceiling (a), which caps this at 30% | target <= 30%, house value 17.6% (cuts-and-culture)
+  Diagnosis: F2 IMAGERY | measured 28.56% of the first viewport is photographic | violates FLOORS LAW 2 |
+    target 33%. THIS PANEL DOES NOT CLEAR IT, see the honest-numbers box below the panels for why.
+
+  Exists-check: `npm run exists Hero` run this turn -> HIT, app/[locale]/_components/homepage/Hero.tsx,
+    reused as-is, nothing rebuilt. `npm run exists SalonOfMonth` -> HIT but the table behind it has
+    0 rows today, so it renders null on the real page and was not a usable imagery lever here.
+    `npm run exists CardName` -> HIT, app/[locale]/_components/primitives/CardText.tsx, the exact
+    primitive baking the 600-weight name this panel is told to leave alone. `npm run exists
+    "fix-home--e-recompose"` (this mockup's own folder name) -> 0 hits, genuinely new.
+    _design-system/REMOVED.md has no entry against Hero's mobile H1: it is a live, dated,
+    OWNER-APPROVED removal (2026-08-01, "why is homepage still that bro"), not a graveyard kill,
+    so reopening it needs his yes, not a graveyard override.
+
+  Treatment-only: this is not a single treatment. It reveals an existing hidden component (Hero's
+    H1), removes an existing element inside it (the search card, to avoid a duplicate search bar),
+    removes an existing line of copy inside it (the subline, per copy rule 1), tightens one
+    already-dated padding number (CategoryPillRow), and applies one CSS weight rule across the
+    whole screen with two named exceptions. No new component is created and no photo is added.
+    No German is authored anywhere in this file, not even quoted; every label below is written in
+    English. The real page inside the iframes speaks its own German through the product's own
+    translations, which is exempt.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#52525B; --ink3:#6B6B6B; --line:#E4E4E7; --sunken:#F4F4F5;
+    --good:#16A34A; --bad:#DC2626; --font:'Inter Tight',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fff}
+  body{
+    font-family:var(--font); color:var(--ink); -webkit-font-smoothing:antialiased;
+    -webkit-text-size-adjust:100%; text-size-adjust:100%;
+    max-width:640px; margin:0 auto; padding:22px 16px calc(32px + env(safe-area-inset-bottom));
+  }
+  h1.page-title{font-size:20px; font-weight:600; letter-spacing:-0.01em; line-height:1.3}
+  .sub{font-size:13px; color:var(--ink3); margin-top:6px; line-height:1.55}
+
+  .panel-row{margin-top:26px}
+  .panel-cap{display:flex; align-items:baseline; justify-content:space-between; gap:8px; margin-bottom:8px}
+  .panel-tag{font-size:12px; font-weight:600; color:var(--ink3)}
+  .panel-tag.after{color:var(--ink)}
+  .badge{font-size:11px; font-weight:600; color:var(--ink2); background:var(--sunken); border-radius:999px; padding:3px 9px; font-variant-numeric:tabular-nums}
+  .badge.pending{color:var(--ink3)}
+
+  .frame{border:1px solid var(--line); border-radius:16px; overflow:hidden; background:#fff; max-width:402px; margin:0 auto}
+  iframe{display:block; width:100%; height:844px; border:0}
+
+  .box{margin-top:28px; background:var(--sunken); border-radius:16px; padding:16px 16px 18px; font-size:13px; line-height:1.6; color:var(--ink2)}
+  .box b{color:var(--ink); font-weight:600}
+  .box + .box{margin-top:14px}
+  .box h2{font-size:14px; font-weight:600; color:var(--ink); margin-bottom:10px}
+  .box i{color:var(--ink2); font-style:normal}
+
+  table.floors{width:100%; border-collapse:collapse; font-size:13px}
+  table.floors th, table.floors td{text-align:left; padding:7px 6px; border-bottom:1px solid var(--line)}
+  table.floors th{font-size:11px; font-weight:600; color:var(--ink3); text-transform:none}
+  table.floors td.num{font-variant-numeric:tabular-nums; white-space:nowrap}
+  .tag-clear{color:var(--good); font-weight:600}
+  .tag-open{color:var(--bad); font-weight:600}
+
+  .arms{margin-top:8px; padding-left:18px}
+  .arms li{margin-top:8px}
+  .foot{margin-top:20px; font-size:11px; color:var(--ink3); line-height:1.5; border-top:1px solid var(--line); padding-top:12px}
+</style>
+</head>
+<body>
+
+  <h1 class="page-title">Clearing every floor on the home page at once</h1>
+  <p class="sub">Two boxes below. The first is your home page exactly as it is now. The second is the same page with four changes applied live, stacked so you can scroll and compare. Nothing here is a new drawing, both are the real page loading from your dev server.</p>
+
+  <div class="panel-row">
+    <div class="panel-cap"><span class="panel-tag">BEFORE (live, untouched)</span></div>
+    <div class="frame"><iframe id="beforeFrame" src="/de" title="real home page, before"></iframe></div>
+  </div>
+
+  <div class="panel-row">
+    <div class="panel-cap"><span class="panel-tag after">AFTER (four changes applied live)</span><span class="badge pending" id="afterStatus">loading</span></div>
+    <div class="frame"><iframe id="afterFrame" src="/de" title="real home page, after (headline restored, pills tightened, weight thinned)"></iframe></div>
+  </div>
+
+  <div class="box">
+    <h2>What you would actually see change</h2>
+    <p><b>1. A real headline appears at the top.</b> It is the same "your booking is confirmed instantly" headline your desktop site already shows today, just switched on for phones. It was turned off on mobile back on August 1st ("why is homepage still that bro"). This turns it back on, keeps it small and plain (no extra weight), and removes the leftover sentence under it since your category row right above already names the same categories. It does not bring back the old search box, your pill search bar stays exactly where it is.</p>
+    <p><b>2. The row of category pills sits a little tighter.</b> Same change public/_mockups/floor-fix-home already showed you: 20px of air above and below the pill row comes down to 12px.</p>
+    <p><b>3. Bold text calms down almost everywhere.</b> Every heading, label and button that was bold now sits at a lighter weight. The two things that are SUPPOSED to stand out on a card, the salon name and the price, are the one deliberate exception and are left exactly as they are today.</p>
+  </div>
+
+  <div class="box">
+    <h2>Which floors this clears</h2>
+    <table class="floors">
+      <tr><th>Floor</th><th>Before</th><th>Target</th><th>After this change</th></tr>
+      <tr><td>F6 display anchor</td><td class="num">18px</td><td class="num">&ge; 28px, house 30px</td><td class="num tag-clear">clears, real H1 at ~30-31px</td></tr>
+      <tr><td>F7b anchor ratio</td><td class="num">1.5x</td><td class="num">&ge; 1.8x</td><td class="num tag-clear">clears, ~2.1x at a 14px body</td></tr>
+      <tr><td>F7a weight share</td><td class="num">37.14%</td><td class="num">&le; 30%</td><td class="num tag-clear">expected to clear, not re-measured live, see below</td></tr>
+      <tr><td>F2 imagery</td><td class="num">28.56%</td><td class="num">&ge; 33%</td><td class="num tag-open">does NOT clear, gets worse, see below</td></tr>
+    </table>
+  </div>
+
+  <div class="box">
+    <h2>The one honest problem: the headline and the photo are fighting for the same space</h2>
+    <p>Your phone screen is a fixed 844px tall. Every pixel a headline uses is a pixel a photo cannot use, and I could not find a way around that on this screen without touching something that was already deliberately tuned.</p>
+    <p><b>What the headline costs:</b> even trimmed as tight as I could get it (top gap, the H1's two lines, a small bottom gap, no subline), it is roughly 100px of screen height that did not exist there before.</p>
+    <p><b>What the pill-row squeeze buys back:</b> 16px. That is the only spacing on this screen I could tighten without reopening a call your own comments say was already measured and settled this month: the search bar's own height is copied 1:1 from the category-page search (owner-approved August 2nd), and the gap between the pill row and the first heading was already tuned against a competitor's own number on August 10th ("everything is unbalanced").</p>
+    <p><b>Net effect, estimated, not re-measured live</b> (my browser session hit its tab limit while building this, shared with the three other mockups running alongside it, the same limitation the floor-fix-home mockup already ran into): about 100px minus 16px equals roughly 84px pushed down, against a target that only needed about 37px of extra photo to begin with. So this combination is likely to leave imagery further from 33% than it started, not closer. I am not claiming a precise after-number here because I do not have one I trust.</p>
+    <div class="arms">
+      <p><b>Two ways to actually close this, both his call, neither applied here:</b></p>
+      <ol class="arms">
+        <li><b>Skip the headline, keep the photo.</b> The imagery floor itself says a 28px headline is not required "unless the photograph is the focal point." Imagery only needs the small pill-row squeeze to get close to 33%, per public/_mockups/floor-fix-home. If he is fine with the photo carrying the screen instead of a headline, the headline requirement stops being a problem to solve at all, and this whole headline change goes away.</li>
+        <li><b>Keep the headline, reopen one more locked number.</b> The next 84px of room only exists inside the search pill's own height or the section rhythm below it, both dated, named, owner-approved changes from this past two weeks. Reopening either is his call, not mine to guess at.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="foot">Both panels load the same live route. The headline reveal reopens a named 2026-08-01 decision. The pill-row squeeze reopens a named 2026-08-11 decision. The weight-500 rule is new and touches almost every heading and label on the screen, it is the broadest change in this file. Nothing here has been applied to the real component files.</div>
+
+<script>
+  // The AFTER panel loads the SAME real route as BEFORE. Once it finishes loading, four rules are
+  // patched into that document in place: nothing is redrawn, nothing is a second implementation.
+  function applyChange(doc) {
+    if (doc.getElementById('mockup-recompose-style')) return true;
+
+    // 1. Reveal Hero's real headline block on mobile. It is real markup already in the page,
+    //    matched by its own two Tailwind classes rather than a brittle id.
+    var heroBlock = doc.querySelector('[class*="max-md:hidden"][class*="justify-center"]');
+    if (!heroBlock) return false;
+    heroBlock.classList.remove('max-md:hidden');
+    heroBlock.id = 'mockup-hero-anchor';
+
+    // Remove the search card from the reveal (HomeSearchPill already owns search here).
+    var searchWrap = heroBlock.querySelector('[class*="rounded-[11px]"]');
+    if (searchWrap) { searchWrap.style.display = 'none'; }
+
+    // Remove the subline (the category pills above already name the same categories, copy rule 1).
+    var heroParas = heroBlock.querySelectorAll('p');
+    for (var i = 0; i < heroParas.length; i++) {
+      var pClass = heroParas[i].className || '';
+      if (pClass.indexOf('font-normal') !== -1) { heroParas[i].style.display = 'none'; }
+    }
+
+    // 2. Tighten CategoryPillRow's dated 20/20 padding to 12/12 (same lever floor-fix-home used).
+    var tablist = doc.querySelector('[role="tablist"][aria-label="Kategorien"]');
+    if (tablist) {
+      tablist.style.setProperty('padding-top', '12px', 'important');
+      tablist.style.setProperty('padding-bottom', '12px', 'important');
+    }
+
+    // 3. Weight ceiling: every font-semibold / font-bold element drops to 500, except the two
+    //    SalonCard anchors V3-D442 locked at 600 (the name h3, the price span).
+    var style = doc.createElement('style');
+    style.id = 'mockup-recompose-style';
+    style.textContent =
+      '#mockup-hero-anchor{padding-top:16px !important;padding-bottom:8px !important;}\n' +
+      '[class~="font-semibold"], [class~="font-bold"] { font-weight:500 !important; }\n' +
+      'h3[class~="font-semibold"] { font-weight:600 !important; }\n' +
+      'span.tabular-nums span[class~="font-semibold"] { font-weight:600 !important; }';
+    doc.head.appendChild(style);
+
+    return true;
+  }
+
+  var tries = 0;
+  var MAX_POLLS = 150; // poll cap, never a displayed count
+  var iv = setInterval(function () {
+    tries++;
+    var f = document.getElementById('afterFrame');
+    var status = document.getElementById('afterStatus');
+    try {
+      var doc = f.contentDocument;
+      if (doc && doc.readyState === 'complete' && applyChange(doc)) {
+        clearInterval(iv);
+        if (status) { status.textContent = 'applied'; status.classList.remove('pending'); }
+      }
+    } catch (e) {
+      console.error('[fix-home--e-recompose] could not patch the after panel:', e);
+    }
+    if (tries > MAX_POLLS) {
+      clearInterval(iv);
+      if (status && status.textContent === 'loading') { status.textContent = 'could not confirm'; }
+    }
+  }, 200);
+</script>
+</body>
+</html>

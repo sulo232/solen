@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Your profile screen: two small text fixes</title>
+<!-- Base: capture -->
+<!-- Scale: component -->
+<!--
+  Scale is component because the thing being decided is the text hierarchy inside the account hub
+  component, not the page's structure or its route list. Both panels below are the REAL running
+  /profile screen loaded in place, same route, same live session, same seeded account. Nothing is
+  redrawn and nothing is faked. The only difference between the two panels is two CSS
+  declarations, injected after the page loads.
+
+  Grounded-in: app/[locale]/profile/page.tsx
+  Grounded-in: app/[locale]/_components/profile/AccountHub.tsx
+  Grounded-in: the running dev server, both panels load /de/profile from it directly, under the viewer's own signed-in session
+
+  Depicts: profile screen before -> /de/profile (app/[locale]/profile/page.tsx, AccountHub.tsx), unmodified
+  Depicts: profile screen after -> /de/profile (app/[locale]/profile/page.tsx, AccountHub.tsx), with two CSS-only tweaks injected after load
+
+  Diagnosis: /de/profile's text runs too heavy | measured 33.33% of visible leaf text at weight >= 600 (8 of 24 elements: the header title, the avatar initials, the account name, and the four section eyebrows), live via getComputedStyle on the authenticated page at 390x844 with the cookie banner dismissed, same method as scripts/check-geometry.mjs's F7a check | violates FLOORS LAW 7a (LOCKFILE EMPHASIS BUDGET), ceiling 30% | target 30%, cleared at 29.17% (7 of 24) once the account name drops from weight 600 to 500, the one element in reach not already pinned by another rule (header and avatar are shared components out of scope here, the four eyebrows are locked semibold by this project's own copy-economy law)
+
+  Diagnosis: /de/profile crowds five font sizes into one narrow band | measured a densest cluster of 5 distinct sizes (12, 13, 14, 15.5, 18px) inside an 8px window, via the same sliding-window method as scripts/check-geometry.mjs's F7c trap | violates FLOORS LAW 7c, ceiling 4 distinct sizes per 8px window | target 4, cleared by moving the "Edit profile" link off its own 14px onto the 13px every row's subline text already uses, which drops the window to 4 (12, 13, 15.5, 18)
+
+  Diagnosis: /de/profile carries no photographic content | measured 0% of the first viewport as photographic area, via the same clipped-area method as scripts/check-geometry.mjs's F2 check | violates FLOORS LAW 2, floor 33% | target 33%, not reached here on purpose, see the note below for why and for the decision this leaves for the owner rather than a forced pass
+
+  WHAT I WAS TOLD THAT TURNED OUT NOT TO BE TRUE. The brief said /profile and /profile/settings measured byte-identical on all six floors and share one template. Checked live, signed in as the seed customer kunde@solen.ch, cookie banner dismissed, same method as scripts/check-geometry.mjs: they do not. /de/profile passes F6 (28px), F7b (2.15x) and ELEVATION (2) already, and only fails F2, F7a and F7c. /de/profile/settings (app/[locale]/profile/settings/page.tsx) fails five of the six (only ELEVATION passes): F6 24px against a floor of 28 (with no photo on this account the fallback initial letter is the largest text on that screen, the real name renders at only 20px), F7b 1.6x against a floor of 1.8, F7a 34.78%, F7c densest cluster 8 within 8px, F2 0%. This is not a measurement wobble: AccountHub.tsx and settings/page.tsx's own IdentityBlock/Row are two different components in the code, they were never one template. The brief's own anchor/ratio numbers (18px, 1.5x) matched neither page on any pass this session ran, authenticated or not, cookies dismissed or not. This fix is scoped to /de/profile only. Settings needs its own separate pass: its anchor and ratio floors are genuinely failing there, not merely mis-measured, and fixing an identity-block layout is a bigger decision than two text tweaks.
+
+  WHY THE PHOTO FLOOR IS NOT FIXED HERE. F2's exemption list names forms, checkout, legal and receipts, and an account hub is none of those, so it is not exempt by the letter of the rule. But the floor's own text says what it is FOR: showing off the salons on the platform, satisfied by content never by decoration. The account hub does not browse salons, it navigates to your own bookings, wallet and settings, and FLOORS LAW 10 (every element must belong to the screen's job) is the exact rule that removed this screen's one photographic element, a small favorites photo strip, five weeks ago: REMOVED.md, 2026-08-02, "konto hub better", your own call, made twice. Putting a photo strip back to satisfy a percentage would undo that. So this is not skipped quietly: it is a real 0% against a real 33% floor, and I am not calling it satisfied. But I am also not unilaterally reversing a dated, named decision to force a pass. Two honest options, both yours: (a) keep this screen text-only and add "/profile" to the exemption list this script already keeps for forms, checkout, legal and receipts, so this floor stops reading as a live failure on a screen it was never meant to grade, or (b) bring back a small strip of the salons you favorited, using the real, existing salon-card component, never a one-off tile, if you want photography on this screen after all.
+
+  Exists-check: `npm run exists profile` run this turn, 98 matches (verified live: ROUTES hit /[locale]/profile -> app/[locale]/profile/page.tsx and /[locale]/profile/settings -> app/[locale]/profile/settings/page.tsx; one REMOVED.md entry hits directly: the 2026-08-02 "konto hub better" removal of ProfileTabs.tsx's tab bar, search field and photo grid, replaced by AccountHub.tsx, this file's target). Per the exists-check protocol a graveyard hit means do not restore without an explicit owner yes, which is exactly why the imagery floor is flagged above rather than force-fixed.
+
+  Measured: authenticated Playwright pass this session against the live dev server, seed customer kunde@solen.ch, viewport 390x844, cookie banner dismissed. getComputedStyle read on every visible leaf text element (fontSize, fontWeight) and every element with a real box-shadow, and getBoundingClientRect used to clip photographic area to the first viewport, replicating scripts/check-geometry.mjs's F2/F6/F7a/F7b/F7c/ELEVATION extraction exactly. Also confirmed visually with a live screenshot of the signed-in page before any change was proposed.
+
+  Treatment-only: two CSS declarations. Font-weight on the account name (600 -> 500, size untouched). Font-size on the "Edit profile" link (14px -> 13px). Nothing else: no layout, no copy, no icons, no colour. Single light theme, no dark mode. Every label on this page is English; the account hub inside the panels renders its own German through the product's own translations, which is the real page and is exempt.
+-->
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 402px; margin: 0 auto; padding: 0 0 56px; }
+
+  .lede { padding: 28px 16px 6px; }
+  .lede h1 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 26px; font-weight: 600; line-height: 1.18; letter-spacing: -0.02em;
+  }
+  .lede p { margin-top: 10px; font-size: 14px; line-height: 1.5; color: #6B6B6B; }
+
+  .panel { margin-top: 26px; }
+  .cap { padding: 0 16px 8px; }
+  .cap h2 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 18px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em;
+  }
+  .cap p { margin-top: 3px; font-size: 13px; line-height: 1.45; color: #6B6B6B; }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  /* the real page, held at its real phone width so nothing is scaled or distorted */
+  .frame {
+    position: relative; width: 100%; height: 640px;
+    border-top: 1px solid #E4E4E7; border-bottom: 1px solid #E4E4E7;
+    overflow: hidden;
+  }
+  .frame iframe { width: 402px; height: 640px; border: 0; display: block; }
+  .frame .badge {
+    position: absolute; top: 10px; right: 10px; z-index: 2;
+    padding: 5px 10px; border-radius: 40px;
+    background: rgba(255,255,255,0.92); border: 1px solid #E4E4E7;
+    font-size: 11px; font-weight: 600; color: #0A0A0A;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .note { padding: 22px 16px 0; font-size: 13px; line-height: 1.55; color: #6B6B6B; }
+  .note h3 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 14px; font-weight: 600; color: #0A0A0A; margin-bottom: 6px;
+  }
+  .note strong { color: #0A0A0A; font-weight: 600; }
+  .note + .note { padding-top: 16px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <h1>Your profile screen: two small text fixes</h1>
+    <p>Both panels below are your real profile screen, live, with your real account in it. Two
+       things changed: how bold your name is, and the size of one link. Nothing else.</p>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>Today</h2>
+      <p>Your name is bold. The "Edit profile" link sits at its own one-off size, nowhere else
+         on the screen.</p>
+    </div>
+    <div class="frame">
+      <div class="badge nums">33% bold text</div>
+      <iframe id="before" src="/de/profile" scrolling="no" title="The profile screen as it is today"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>Fixed</h2>
+      <p>Your name keeps its size, just less bold. The link now matches a size the screen already
+         uses everywhere else.</p>
+    </div>
+    <div class="frame">
+      <div class="badge nums">29% bold text</div>
+      <iframe id="after" src="/de/profile" scrolling="no" title="The profile screen with the two text fixes"></iframe>
+    </div>
+  </div>
+
+  <div class="note">
+    <h3>What actually changed</h3>
+    <p>Two CSS rules, nothing else. Your name: same <span class="nums">28px</span>, just medium
+       weight instead of semibold. The "Edit profile" link: <span class="nums">14px</span> down to
+       <span class="nums">13px</span>, the same size every row's small grey subtext already uses.
+       That single move also fixes a second problem: five different text sizes were bunched inside
+       an <span class="nums">8px</span> window, which reads as noise rather than hierarchy. Moving
+       the link's size takes that down to four.</p>
+  </div>
+
+  <div class="note">
+    <h3>What I was told that did not hold up</h3>
+    <p>I was told this screen and the settings screen measured identically and share one
+       template. I checked, signed in as a real seeded account, before touching anything. They do
+       not. Your profile screen already passes its size-anchor and ratio floors right now
+       (<span class="nums">28px</span>, <span class="nums">2.15x</span>). Settings fails both
+       (<span class="nums">24px</span> against a floor of <span class="nums">28</span>, because
+       with no photo on that account the fallback initial letter is the largest text on the
+       screen; <span class="nums">1.6x</span> against a floor of <span class="nums">1.8</span>).
+       They are two different components in the code, not one, so this fix only touches the one
+       named in the title. Settings needs its own pass.</p>
+  </div>
+
+  <div class="note">
+    <h3>The photo question, your call either way</h3>
+    <p>This screen has no photo, and the rule that wants roughly a third of the screen to be
+       photographic is failing here, at <span class="nums">0%</span>. I did not add one. Five
+       weeks ago you removed the one photo this screen had, a small favorites photo strip, saying
+       "konto hub better" about the plain row list that replaced it. Putting a photo strip back
+       to satisfy a percentage would undo that. Two honest paths, both yours: leave this screen
+       text-only and mark it exempt from the photo rule the way forms and checkout already are,
+       or bring a small strip of the salons you favorited back, using the same salon card the
+       rest of the app already uses, never a one-off picture.</p>
+  </div>
+
+</div>
+
+<script>
+  // The "after" panel is the SAME page as the "before" panel. It is not a redrawing and not a
+  // second implementation. After it loads, exactly TWO rules are added inside it: the account
+  // name's weight drops from 600 to 500 (its size is untouched), and the "Edit profile" link's
+  // size moves from its own one-off 14px to the 13px every row's subline already uses. Nothing
+  // else in that document is touched.
+  var after = document.getElementById("after");
+  after.addEventListener("load", function () {
+    try {
+      var doc = after.contentDocument;
+      if (!doc) { return; }
+      var style = doc.createElement("style");
+      style.textContent =
+        "h1 { font-weight: 500 !important; }" +
+        "a.text-s-accent { font-size: 13px !important; }";
+      doc.head.appendChild(style);
+    } catch (err) {
+      console.error("[floor-fix-profile-and-settings] could not restyle the after panel:", err);
+    }
+  });
+</script>
+</body>
+</html>

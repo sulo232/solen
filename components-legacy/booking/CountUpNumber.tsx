@@ -78,7 +78,27 @@ export default function CountUpNumber({ value, className, format }: CountUpNumbe
     };
     rafRef.current = requestAnimationFrame(step);
 
+    // Safety net (2026-09-01): the count is driven ENTIRELY by animation frames, and a
+    // browser stops delivering them whenever the tab is hidden or backgrounded. Measured
+    // live: 0 frames in 1500ms in a hidden tab, during which this component was receiving
+    // value 190 and painting 0. So a customer who backgrounds the page mid-animation and
+    // comes back reads CHF 0 next to a service they picked. There was a fallback for
+    // reduced-motion but none for "frames never arrive". This timer settles on the exact
+    // value if the animation has not finished a little after its own duration. On a
+    // normal run it is either cleared by the cleanup below (the value changed again, or
+    // the component unmounted) or it fires onto a number already equal to `to`, which
+    // React's same-value bail-out drops, so it never repaints and never wobbles.
+    const settle = setTimeout(() => {
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+      displayRef.current = to;
+      setDisplay(to);
+    }, DURATION_MS + 120);
+
     return () => {
+      clearTimeout(settle);
       if (rafRef.current !== null) {
         cancelAnimationFrame(rafRef.current);
         rafRef.current = null;

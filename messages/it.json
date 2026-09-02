@@ -157,6 +157,7 @@
     "search": "Cerca",
     "menu": "Menu",
     "searchCompact": "Cosa · Dove · Quando",
+    "mainNavigation": "Navigazione principale",
     "mobileNavigation": "Navigazione",
     "loginToSave": "Accedi per salvare i saloni",
     "loginToProfile": "Acceda per vedere il Suo profilo",
@@ -164,7 +165,9 @@
     "aboutUs": "Chi siamo",
     "myAccount": "Il mio account",
     "forBusiness": "Per le attività",
-    "services": "Servizi"
+    "services": "Servizi",
+    "homeLinkTitled": "{title}, vada alla homepage Solen",
+    "homeIconLabel": "Vada alla homepage"
   },
   "home": {
     "hero_title": "Il Suo salone a Basilea",
@@ -238,7 +241,8 @@
       "beliebtInBern": "Popolare a Berna",
       "nearbyPros": "Professionisti vicino a te",
       "forYou": "Consigliato per te",
-      "artistOfMonth": "Artista del mese"
+      "artistOfMonth": "Artista del mese",
+      "portraitOf": "Ritratto di {name}"
     },
     "trending": {
       "eyebrow": "Tendenza",
@@ -327,7 +331,13 @@
       "allWalkIns": "Tutti i walk-in",
       "untilFree": "fino a libero",
       "queueEmpty": "Nessuno in attesa",
-      "queueAhead": "{n} prima di te"
+      "queueAhead": "{n} prima di te",
+      "reviewsTitle": "Recensioni",
+      "reviewsLinkLabel": "Tutte le recensioni →",
+      "reviewOpenAria": "Apri la recensione di {name}",
+      "freeNow": "Libero ora",
+      "waitRange": "{min}-{max} min",
+      "viewSalonAria": "Vedi il salone {name}"
     },
     "heroCarousel": {
       "label": "Popolari vicino a Lei",
@@ -507,6 +517,12 @@
     "previousPhoto": "Foto precedente",
     "nextPhoto": "Foto successiva",
     "showPhoto": "Mostra foto {number}",
+    "photoOf": "Foto di {name}",
+    "photoOfSalon": "Foto {number} di {name}",
+    "photoCountOf": "Foto {number} di {total}",
+    "photoGalleryLabel": "Galleria foto, immagine {number} di {total}",
+    "closeOverlay": "Chiudi",
+    "removeImage": "Rimuovi immagine",
     "choose": "Scegli",
     "add": "Aggiungi",
     "minutes": "minuti",
@@ -753,7 +769,18 @@
     "women": "Donne",
     "men": "Uomini",
     "makeup": "Trucco",
-    "waxing": "Ceretta"
+    "waxing": "Ceretta",
+    "previous": "Precedente",
+    "percentOffAria": "{percent}% di sconto",
+    "bookWithAria": "{name}, prenota un appuntamento",
+    "previousMonthAria": "Mese precedente",
+    "unavailable": "Non disponibile",
+    "slotTimeAria": "{time} {status}",
+    "mapUnavailable": "Mappa non disponibile",
+    "viewAll": "Vedi tutto",
+    "noReviewsForRating": "Nessuna recensione con questa valutazione.",
+    "viewReviewsCountAria": "Vedi {count} recensioni",
+    "share": "Condividi"
   },
   "cookies": {
     "title": "Utilizziamo i cookie",
@@ -1706,6 +1733,7 @@
       "settings": "Impostazioni",
       "verification": "Verifica",
       "backToSite": "Torna al sito",
+      "closeMenu": "Chiudi il menu",
       "myCalendar": "Il mio calendario",
       "myBreaks": "Le mie pause",
       "myPortfolio": "Il mio portfolio",
@@ -4962,7 +4990,8 @@
       "help": "Aiuto",
       "signIn": "Accedi o registrati",
       "whySolen": "Perche Solen",
-      "language": "Italiano"
+      "language": "Italiano",
+      "selectCity": "Seleziona città"
     },
     "filterSheet": {
       "title": "Filtri",
@@ -5191,6 +5220,7 @@
     "quickReplyChips": {}
   },
   "breadcrumb": {
+    "landmark": "Percorso di navigazione",
     "back": "Indietro",
     "coiffeur": "Parrucchiere",
     "barbershop": "Barbershop",
@@ -6532,6 +6562,14 @@
     "saved": "Salvato",
     "saveError": "Salvataggio non riuscito. Riprova."
   },
+  "looks": {
+    "title": "Ancora nessun look.",
+    "lead": "Raccolga ispirazione dai profili dei saloni e da Inspo: la ritroverà qui.",
+    "bannerTitle": "Apra Inspo",
+    "bannerSub": "Look freschi dai saloni di Basilea",
+    "hintText": "Salvi i look direttamente dal feed Discovery e dai portfolio dei saloni.",
+    "railTitle": "Più votato"
+  },
   "notifications": {
     "title": "Notifiche",
     "unread": "non lette",
@@ -6593,5 +6631,42 @@
       "title": "Store rifiutato",
       "body": "Il tuo store {salon} purtroppo non è stato approvato. Motivo: {reason}"
     }
+  },
+  "profileFavorites": {
+    "title": "Ancora nessun preferito.",
+    "lead": "Tocchi il cuore su un salone: apparirà qui, la Sua lista per la prossima volta.",
+    "bannerTitle": "Apra Inspo",
+    "bannerSub": "Stili, saloni e ispirazione da Basilea",
+    "hintText": "Troverà il cuore in alto a destra su ogni foto del salone.",
+    "railTitle": "Più votati"
+  },
+  "profileStamps": {
+    "title": "Ancora nessun timbro.",
+    "lead": "Prenoti in un salone con carta fedeltà e raccolga timbri per il Suo prossimo premio.",
+    "bannerTitle": "Come funziona",
+    "bannerSub": "Un timbro per visita, carta completa = premio",
+    "hintText": "Il timbro viene aggiunto automaticamente dopo ogni appuntamento completato.",
+    "railTitle": "Popolare a Basilea",
+    "cardsCount": "{count} carte",
+    "sectionActive": "Attivo",
+    "sectionCompleted": "Completato {count}",
+    "rewardAvailable": "Premio disponibile"
+  },
+  "profileReferral": {
+    "loginRequired": "Accesso richiesto",
+    "loginMessage": "Acceda per vedere i Suoi referral.",
+    "login": "Accedi",
+    "heroSubtitle": "Condivida il Suo codice e riceva CHF 10 di credito, anche il Suo amico riceve CHF 10!",
+    "codeLabel": "Il Suo codice di referral",
+    "copyCode": "Copia codice",
+    "copyLink": "Copia link",
+    "statsTitle": "Le Sue statistiche",
+    "friendsInvited": "Amici invitati",
+    "earned": "Guadagnato",
+    "howItWorks": "Come funziona",
+    "step1": "Condivida il Suo codice di referral con gli amici",
+    "step2": "Il Suo amico si registra e prenota un appuntamento",
+    "step3": "Ricevete entrambi CHF 10 di credito!",
+    "shareText": "Ehi! Prenota il tuo prossimo appuntamento su Solen e ricevi CHF 10 di credito con il mio codice: {code}\n{url}"
   }
 }

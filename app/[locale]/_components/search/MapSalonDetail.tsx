@@ -13,7 +13,7 @@ import { ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CardName, CardMeta, RatingStars, PriceFrom } from "../primitives";
 import { HeartButton } from "../homepage/HeartButton";
-import { CATEGORY_LABEL, FROM_LABEL, REVIEWS_LABEL, DURATION_UNIT } from "./SalonResultCard";
+import { CATEGORY_LABEL, FROM_LABEL, REVIEWS_LABEL, DURATION_UNIT, PHOTO_OF_LABEL } from "./SalonResultCard";
 import { withDateParam } from "../salon/_shared";
 import type { Salon } from "./SearchTemplate";
 
@@ -95,6 +95,7 @@ export function MapSalonDetail({
 }: MapSalonDetailProps) {
   const href = withDateParam(`/${locale}/salon/${salon.slug}`, date);
   const fromLabel = FROM_LABEL[locale] ?? FROM_LABEL.de;
+  const photoOfLabel = PHOTO_OF_LABEL[locale] ?? PHOTO_OF_LABEL.de;
   const catKey = safeCategory(salon.categories);
   const catLabel = catKey ? CATEGORY_LABEL[catKey] ?? catKey : null;
 
@@ -135,7 +136,7 @@ export function MapSalonDetail({
         {salon.cover_photo_url ? (
           <Image
             src={salon.cover_photo_url}
-            alt={`Foto von ${salon.name}`}
+            alt={`${photoOfLabel} ${salon.name}`}
             fill
             sizes="(max-width: 768px) 100vw, 420px" // copy-ok: next/image responsive-sizes attr, not UI copy
             className="object-cover"

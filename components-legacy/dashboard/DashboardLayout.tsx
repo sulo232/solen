@@ -350,7 +350,7 @@ export default function DashboardLayout({
               {/* Salon header */}
               <div className="px-4 py-4 border-b border-s-border flex items-center gap-3">
                 <SalonSwitcher variant="sidebar" fallbackName={salonName ?? fetchedSalonName ?? undefined} />
-                <button onClick={() => setMobileSidebarOpen(false)} aria-label="Menü schließen" className="p-1 -mr-1 text-s-ink-2 hover:text-s-ink transition-colors"><X size={20} strokeWidth={2.2} /></button>
+                <button onClick={() => setMobileSidebarOpen(false)} aria-label={t("closeMenu")} className="p-1 -mr-1 text-s-ink-2 hover:text-s-ink transition-colors"><X size={20} strokeWidth={2.2} /></button>
               </div>
 
               {/* Scrollable grouped nav */}

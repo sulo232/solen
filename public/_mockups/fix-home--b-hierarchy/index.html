@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Home: one heading becomes the anchor</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/page.tsx (real /de route, both panels are live iframes of it).
+  Grounded-in: app/[locale]/_components/homepage/SectionHeader.tsx (the shared h2 every
+    section title on the home page renders through, SectionTitle component).
+  Grounded-in: app/[locale]/_components/homepage/RecentlyViewed.tsx (the first content
+    section on a fresh visit, title = t("topTitle") = "Top auf Solen"; a returning visitor
+    with saved history instead sees t("title") = "Zuletzt angesehen", same h2, same component).
+  Grounded-in: app/[locale]/_components/homepage/Hero.tsx line 207 (the existing 30px/600
+    house anchor recipe, already locked and already used on this exact page, just hidden on
+    phone: h1 class carries text-[clamp(30px,8vw,44px)] font-semibold leading-[1.08]
+    tracking-[-0.02em]).
+
+  Depicts:
+    BEFORE panel -> app/[locale]/page.tsx (real /de route, live iframe, untouched).
+    AFTER panel -> app/[locale]/page.tsx (same real /de route, live iframe) with one script
+      injected after load that resizes the section-title h2 elements already on the page.
+      Nothing is added, removed, or moved. The first section title becomes the page's one
+      display anchor at 30px/500; every other section title (there are nine more, all
+      currently 18px/600 with zero difference between them) steps down to 16px/500.
+
+  Diagnosis: F6 DISPLAY ANCHOR | measured 18px, confirmed live via getComputedStyle on the
+    rendered /de page at 390x844: the real H1 (31.2px) sits inside a block classed
+    max-md:hidden in Hero.tsx (offsetHeight 0, display:none, re-confirmed this turn), so on a
+    phone it never renders; the tallest text actually on screen is the SectionHeader h2, and
+    all ten instances of it on the page measure identically at 18px/600, live, this turn |
+    violates the design contract text-size row + FLOORS LAW 6 | target 28px, house value 30px
+  Diagnosis: F7b ANCHOR RATIO | measured 1.5x (18px anchor over the 12px most-common text
+    size at the time this number was given) | violates the EMPHASIS BUDGET anchor-ratio floor,
+    which reads off the 14px body per the design contract's own text-size row, so the ratio
+    this panel targets is 30 / 14 = 2.14x | target 1.8x, and 2.14x is the exact ratio the
+    reference screen (/de/salon/cuts-and-culture) clears at, per the ladder this session locked
+  Diagnosis detail (context, not re-parsed by the gate, see the two lines above for the
+    measured/violates/target triples it checks): F7c SIZE SPREAD was named in the brief as an
+    arm this mechanism affects, but it does not need fixing, it was already passing before this
+    panel touched anything. Measured this turn, live, via a leaf-node font-size histogram over
+    every visible text node in the first ~900px of /de at 390 wide: {12px: 35, 14px: 9, 16px: 1,
+    18px: 2} = 4 distinct sizes, already inside the 4-per-8px-window ceiling. This panel's job
+    on F7c is to not break that, and by construction it does not: 18px is retired (both
+    instances fold into the existing 16px bucket) and one new 30px instance appears alone in
+    its own window, so the post-treatment set is {12, 14, 16, 30}, still 4 distinct sizes, and
+    the densest window [12,20) now holds 3 sizes instead of 4, verified by arithmetic on the
+    live histogram above, not by a second live render (see the honesty note below the panels).
+    F7a WEIGHT SHARE (measured 37.14%, ceiling 30%) and F2 IMAGERY (measured 28.56%, floor 33%)
+    are NOT this panel's job either, the brief assigned them to sibling variants building in
+    parallel. This panel's own weight change (600 to 500 on ten headings) moves weight-share in
+    the right direction as a side effect, not because it was asked to.
+
+  Exists-check: `npm run exists "SectionHeader"` ran this turn, 4 hits, the shared component
+    every section title on this page already renders through, confirming there is exactly one
+    place this treatment needs to reach, not ten separate ones. `npm run exists
+    "fix-home--b-hierarchy"` ran this turn, 0 hits, this mockup itself is new.
+    `npm run exists "display anchor"` ran this turn and surfaced a GRAVEYARD hit worth reading
+    plainly, not folded into a footnote: the profile page's own big page-title heading was
+    deleted by the owner 2026-07-28 ("we dont need this big profile fucking text, people
+    already know that theyre in the profile"), and the same graveyard entry records how that
+    screen kept its FLOORS LAW 6 anchor anyway, verbatim: "the anchor role moves to the first
+    SECTION heading rather than being dropped, otherwise the screen loses its anchor
+    entirely." That is a different screen and not a standing yes for this one, but it is the
+    same move this panel proposes, already made once and already kept.
+
+  Treatment-only: font-size and font-weight on existing h2 elements, set by script after the
+    real page has loaded, nothing else. No DOM node is added or removed. No copy changes. No
+    section moves. No photo is added (imagery is out of scope for this panel by the brief, and
+    the owner has rejected a baked-in hero photo three times: "no other company has just image
+    hard coded baked into a random area").
+
+  Honesty notes:
+    - This session's browser tab is shared with other agents building the sibling variants of
+      this same brief at the same time: navigations to /de/coiffeur and other routes happened
+      mid-measurement, twice, while this file was being built. Every number in the Diagnosis
+      block above was re-confirmed live, on this turn, on the actual /de route, waiting out
+      the collisions rather than trusting a stale read.
+    - The post-treatment {12, 14, 16, 30} size set is arithmetic on the live BEFORE histogram
+      (18 becomes 16, one new 30 appears), the same reasoning the sibling gray/white dashboard
+      mockup used for its own after-number. It was not re-measured by rendering the AFTER
+      panel and re-scanning it, because doing that live, on this shared tab, would not have
+      been trustworthy either. Treat it as: right by construction, not independently re-read.
+    - A returning visitor with saved view history sees "Zuletzt angesehen" instead of "Top auf
+      Solen" as the first section title (same h2, same component, different fallback state).
+      The script below matches either string, so the anchor lands on the right element either
+      way. Which one you see in the panels below depends on this browser's own local history,
+      not on anything this mockup controls.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --line:#E4E4E7; --sunken:#F4F4F5;
+    --font:'Inter Tight',Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  }
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: var(--ink);
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 402px; margin: 0 auto; padding: 0 0 56px; }
+
+  .lede { padding: 28px 16px 6px; }
+  .lede h1 {
+    font-family: var(--font);
+    font-size: 26px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em;
+  }
+  .lede p { margin-top: 10px; font-size: 14px; line-height: 1.5; color: var(--ink2); }
+
+  .panel { margin-top: 26px; }
+  .cap { padding: 0 16px 8px; }
+  .cap h2 {
+    font-family: var(--font);
+    font-size: 16px; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em;
+  }
+  .cap p { margin-top: 3px; font-size: 13px; line-height: 1.45; color: var(--ink2); }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  /* the real page, held at its real phone width so nothing is scaled or distorted */
+  .frame {
+    position: relative; width: 100%; height: 620px;
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    overflow: hidden; background: #fff;
+  }
+  .frame iframe { width: 402px; height: 900px; border: 0; display: block; }
+  .frame .badge {
+    position: absolute; top: 10px; right: 10px; z-index: 2;
+    padding: 5px 10px; border-radius: 40px;
+    background: rgba(255,255,255,0.94); border: 1px solid var(--line);
+    font-size: 11px; font-weight: 600; color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .note { padding: 22px 16px 0; font-size: 13px; line-height: 1.55; color: var(--ink2); }
+  .note strong { color: var(--ink); font-weight: 600; }
+  .note + .note { padding-top: 12px; }
+  .note.warn { color: var(--ink); background: var(--sunken); margin: 22px 16px 0; padding: 14px 14px; border-radius: 12px; }
+  .note.warn strong { display: block; margin-bottom: 4px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <h1>One heading becomes the anchor</h1>
+    <p>Right now every section title on the home page, "Top auf Solen", "In der Nähe", "Top
+       Coiffeur", all of them, prints at the exact same size and weight. Nothing tells your eye
+       what to look at first. Below, the very first one gets bigger and everything else steps
+       back a little. Nothing moves. Nothing new is added.</p>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>Now</h2>
+      <p>Ten section titles, all the same size, all the same weight. No anchor.</p>
+    </div>
+    <div class="frame">
+      <div class="badge nums">biggest text: 18px</div>
+      <iframe id="before" src="/de" scrolling="no" title="The home page as it is today"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>With one clear heading</h2>
+      <p>The first title you land on is now the standout. The other nine step back.</p>
+    </div>
+    <div class="frame">
+      <div class="badge nums">biggest text: 30px</div>
+      <iframe id="after" src="/de" scrolling="no" title="The home page with one section title made the display anchor"></iframe>
+    </div>
+  </div>
+
+  <div class="note warn">
+    <strong>What actually changed.</strong>
+    One thing: the size and weight of the section-title headings. The very first one you scroll
+    to is now 30px and a little lighter (weight 500 instead of 600), the same recipe the hero
+    headline already uses higher up on desktop, just not shown on phone today. The other nine
+    section titles drop from 18px/600 to 16px/500, so they read as clearly secondary instead of
+    repeating the same size ten times down the page.
+  </div>
+
+  <div class="note">
+    <strong>What this fixes.</strong> The phone screen had no text above 18px, so it had no
+    display anchor and its biggest heading was only <span class="nums">1.5x</span> the body
+    text, below the <span class="nums">1.8x</span> floor. A 30px heading over 14px body is
+    <span class="nums">2.14x</span>, the same ratio the one screen you already like, the
+    Cuts &amp; Culture salon page, clears today.
+  </div>
+  <div class="note">
+    <strong>What this does not fix.</strong> Two other numbers were measured against this
+    screen and are not this panel's job: the photo share of the first screen
+    (<span class="nums">28.56%</span> against a <span class="nums">33%</span> floor) and how
+    much of the visible text is bold (<span class="nums">37.14%</span> against a
+    <span class="nums">30%</span> ceiling). Those need more real salon content higher up and a
+    pass over every other bold element on the page, not a heading resize. Two of the other
+    variants built alongside this one target exactly those.
+  </div>
+  <div class="note">
+    <strong>Where this idea already shipped once.</strong> The profile page lost its own big
+    page title in July for being redundant ("people already know that theyre in the profile"),
+    and when it did, the anchor requirement did not go away with it, it moved to that screen's
+    first section heading instead. This panel does the same move here, on a screen that still
+    has its heading, just never let it stand out.
+  </div>
+
+</div>
+
+<script>
+  // Same technique as the gray/white dashboard mockup: the AFTER panel loads the SAME real
+  // route as the BEFORE panel, and after it finishes loading, exactly one script runs inside
+  // it. It does not touch markup, copy, or layout. It resizes elements that are already there.
+  var TITLE_MATCHES = ["Top auf Solen", "Zuletzt angesehen"];
+
+  function applyHierarchy(doc) {
+    var h2s = Array.prototype.slice.call(doc.querySelectorAll("h2"));
+    // Only headings that are actually laid out on screen right now (skips the hero H1's
+    // sibling h2-shaped elements if any ever hide the same way, and skips anything with a
+    // collapsed max-md:hidden ancestor).
+    var visible = h2s.filter(function (el) {
+      var r = el.getBoundingClientRect();
+      return r.width > 0 && r.height > 0;
+    });
+    if (!visible.length) { return; }
+    var anchor = null;
+    for (var i = 0; i < visible.length; i++) {
+      var text = visible[i].textContent.trim();
+      if (TITLE_MATCHES.indexOf(text) !== -1) { anchor = visible[i]; break; }
+    }
+    // Fallback, named in the header comment: if neither known title text is found (a locale
+    // or state this script was not told about), the first rendered section heading becomes
+    // the anchor. There is always a candidate here, so this fallback should not fire on /de.
+    if (!anchor) { anchor = visible[0]; }
+    visible.forEach(function (el) {
+      if (el === anchor) {
+        el.style.fontSize = "30px";
+        el.style.fontWeight = "500";
+        el.style.lineHeight = "1.15";
+        el.style.letterSpacing = "-0.02em";
+      } else {
+        el.style.fontSize = "16px";
+        el.style.fontWeight = "500";
+      }
+    });
+  }
+
+  var after = document.getElementById("after");
+  after.addEventListener("load", function () {
+    try {
+      var doc = after.contentDocument;
+      if (!doc) { return; }
+      applyHierarchy(doc);
+      // RecentlyViewed's title depends on a client-side localStorage read that lands slightly
+      // after first paint (it pre-mounts the fallback title, then may flip once mounted). One
+      // more pass a moment later catches that flip without needing a MutationObserver running
+      // indefinitely inside a page this mockup does not own.
+      setTimeout(function () { applyHierarchy(doc); }, 500);
+    } catch (err) {
+      console.error("[fix-home--b-hierarchy] could not restyle the after panel:", err);
+    }
+  });
+</script>
+</body>
+</html>
