@@ -32,11 +32,11 @@ export const dynamic = "force-dynamic";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { ArrowLeft, Shuffle, Star } from "lucide-react";
+import { Shuffle, Star } from "lucide-react";
 import { loadSalonDetailWithStatus } from "@/lib/salon-detail";
 import type { StaffMember } from "@/app/[locale]/_components/salon/_shared";
 import { MetaDot } from "@/app/[locale]/_components/salon/MetaDot";
-import { Avatar } from "@/app/[locale]/_components/primitives";
+import { Avatar, BackButton } from "@/app/[locale]/_components/primitives";
 
 export async function generateMetadata({
   params,
@@ -75,13 +75,15 @@ export default async function SalonTeamPage({
   return (
     <main className="min-h-screen bg-white pb-16">
       <div className="mx-auto max-w-[480px] px-4 pt-6">
-        <Link
+        {/* mockup-ok: restores the NAV CONTROLS lock (_design-system/LOCKFILE.md#L2096,
+            owner-measured 2026-08-10). Composing the registered BackButton primitive at its
+            locked flat treatment (white + shadow-elevation-2 circle, ChevronLeft) in place of
+            the hand-drawn control, per FLOORS LAW 9; no photo sits under this control. */}
+        <BackButton
+          variant="flat"
           href={`/${locale}/salon/${slug}#section-team`}
-          aria-label={tBack("back")}
-          className="grid h-11 w-11 place-items-center rounded-full border border-s-border bg-white transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.94] active:duration-[80ms] active:ease-glide"
-        >
-          <ArrowLeft size={20} strokeWidth={2.2} aria-hidden className="text-s-ink" />
-        </Link>
+          label={tBack("back")}
+        />
 
         <h1 className="mt-5 font-display text-[28px] font-semibold tracking-[-0.02em] text-s-ink">
           {t("title")}

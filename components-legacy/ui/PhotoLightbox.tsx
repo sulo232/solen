@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
+import { useTranslations } from "next-intl";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface PhotoLightboxProps {
@@ -20,6 +21,7 @@ export default function PhotoLightbox({
   onClose,
   altPrefix = "Photo",
 }: PhotoLightboxProps) {
+  const t = useTranslations("common");
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [direction, setDirection] = useState(0);
 
@@ -100,7 +102,7 @@ export default function PhotoLightbox({
           <button
             onClick={onClose}
             className="absolute top-4 right-4 z-[101] w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
-            aria-label="Schliessen"
+            aria-label={t("close")}
           >
             <X className="w-5 h-5 text-white" />
           </button>
@@ -147,7 +149,7 @@ export default function PhotoLightbox({
             <button
               onClick={(e) => { e.stopPropagation(); goTo(-1); }}
               className="absolute left-4 top-1/2 -translate-y-1/2 z-[101] w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
-              aria-label="Vorheriges Foto"
+              aria-label={t("previousPhoto")}
             >
               <ChevronLeft className="w-6 h-6 text-white" />
             </button>
@@ -158,7 +160,7 @@ export default function PhotoLightbox({
             <button
               onClick={(e) => { e.stopPropagation(); goTo(1); }}
               className="absolute right-4 top-1/2 -translate-y-1/2 z-[101] w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
-              aria-label="Nächstes Foto"
+              aria-label={t("nextPhoto")}
             >
               <ChevronRight className="w-6 h-6 text-white" />
             </button>
@@ -180,7 +182,7 @@ export default function PhotoLightbox({
                       ? "ring-2 ring-white opacity-100 scale-110"
                       : "opacity-50 hover:opacity-80"
                   }`}
-                  aria-label={`Foto ${i + 1} anzeigen`}
+                  aria-label={t("showPhoto", { number: i + 1 })}
                 >
                   <Image
                     src={photo}

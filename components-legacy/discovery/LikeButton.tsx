@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { Heart } from "lucide-react";
 
 interface LikeButtonProps {
@@ -37,6 +38,7 @@ export default function LikeButton({
   onSave,
   saved = false,
 }: LikeButtonProps) {
+  const tCommon = useTranslations("common");
   const [liked, setLiked] = useState(initialLiked);
   const [popKey, setPopKey] = useState(0);
   const [, startTransition] = useTransition();
@@ -96,7 +98,7 @@ export default function LikeButton({
     <button
       type="button"
       onClick={handleClick}
-      aria-label={filled ? "Gespeichert" : "Speichern"}
+      aria-label={filled ? tCommon("saved") : tCommon("save")}
       aria-pressed={filled}
       className="group grid h-11 w-11 place-items-center bg-transparent p-0 focus-visible:rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-s-ink"
     >

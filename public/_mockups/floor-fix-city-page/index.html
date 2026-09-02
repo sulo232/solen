@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Basel city page, without the extra bold</title>
+<!-- Base: capture -->
+<!-- Scale: component -->
+<!-- geometry-only: this is a floor-measurement before/after, not a finished-screen pitch, so the
+     five-item finished-screen "floors:" note does not apply here. -->
+<!--
+  Grounded-in: app/[locale]/[city]/page.tsx
+  Grounded-in: components-legacy/CityPage.tsx
+  Grounded-in: the running dev server at http://localhost:3457, both panels load /de/basel from it
+  directly, live, with the real seeded Basel salons in it.
+
+  Depicts: the basel city page, before -> app/[locale]/[city]/page.tsx via components-legacy/CityPage.tsx, loaded live at /de/basel, unmodified
+  Depicts: the basel city page, after -> app/[locale]/[city]/page.tsx via components-legacy/CityPage.tsx, loaded live at /de/basel, with two CSS rules injected after load and nothing else touched
+
+  Diagnosis: display anchor | measured 25px | violates NEVER-AGAIN floor 6, the display-anchor floor (LOCKFILE: one element >= 28px per customer screen) | target 28px
+  Diagnosis: anchor ratio | measured 1.79x | violates FLOORS LAW 7b, the emphasis-budget anchor ratio (>= 1.8x body) | target 1.8x
+  Diagnosis: weight share | measured 43.75% | violates FLOORS LAW 7a, the emphasis-budget weight-share ceiling (<= 30% of visible text at weight >= 600) | target 30%
+
+  HOW MEASURED. Ran the project's own gate script directly against the live dev server, not a
+  guess: `node scripts/check-geometry.mjs --base-url http://localhost:3457 --floors-only /de/basel`.
+  It returned: displayAnchor=25px(FAIL) anchorRatio=1.79x(FAIL) weightShare=43.75%(FAIL)
+  imagery=43.18%(PASS) sizeSpread=PASS elevation=PASS. As a control, the same command against
+  /de/salon/cuts-and-culture, the one page this system says already passes everything, came back
+  34.66%/30px/30%/2.14x, matching the numbers I was given for that page to the decimal. I trusted
+  the Basel reading only after that control agreed.
+
+  WHY THE ANCHOR AND THE RATIO ARE ONE FIX. The heading currently renders at
+  clamp(25px, 4vw, 40px); at 390px wide, 4vw is only 15.6px, so the clamp floor of 25px is what
+  actually shows. Raising that floor to 28px clears BOTH broken floors in one move: the anchor
+  itself (target 28px) and the ratio against the 14px body (28/14 = 2.0x, clear of the 1.8x floor).
+
+  WHY THE WEIGHT SHARE IS A DIFFERENT BUG, NOT THE SAME ONE. The four category buttons under the
+  heading (Coiffeur, Barbershop, Nails, Spa) carry `font-semibold` unconditionally in the
+  component's own code, regardless of whether that button is the one you are standing on. This
+  project's own locked filter-pill row reserves semibold for the SELECTED option only; these
+  buttons were never actually built to that rule. Dropping the three you are not on back to
+  regular weight is the fix, and it is the same pattern already used everywhere else in this
+  system, nothing new invented.
+
+  CORRECTION, and this is the important one. I was handed a fourth number to fix: imagery at 0%
+  against the 33% floor. The same script run above does not agree: imagery=43.18%(PASS). The
+  control run above shows my method is not the problem, since it reproduced the cuts-and-culture
+  numbers exactly. The likely cause: this page loads its salon list client-side after the page
+  appears, so the very first frame, before that fetch returns, is a gray skeleton with zero photos
+  in it, and a screenshot caught in that half-second window would read 0%. On this dev server that
+  fetch resolved in well under a second on every attempt I made, so a customer is not living in
+  that gray frame, but a screenshot taken at exactly the wrong moment could be. I am not building a
+  fix for this. There is nothing here to fix: the populated page your customers actually see
+  already clears the imagery floor with room to spare, and I am not adding a photo you do not need
+  on the strength of a stale reading.
+
+  Exists-check: `npm run exists "city page"` run this turn. 1 hit: CityPage ->
+  components-legacy/CityPage.tsx. Per protocol a hit means reuse, and that is exactly what this
+  mockup does, both panels load the real route rather than rebuilding any part of it. No component
+  is created or modified.
+
+  Treatment-only: two CSS rules and nothing else, injected into the "after" panel after it loads.
+  Single light theme, no dark mode anywhere in this file. Every label I wrote here is English; the
+  city page inside both panels renders its own German through the product's translations, which is
+  the real page and is exempt.
+-->
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 402px; margin: 0 auto; padding: 0 0 56px; }
+
+  .lede { padding: 28px 16px 6px; }
+  .lede h1 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 28px; font-weight: 600; line-height: 1.15; letter-spacing: -0.02em;
+  }
+  .lede p { margin-top: 10px; font-size: 14px; line-height: 1.5; color: #6B6B6B; }
+
+  .panel { margin-top: 26px; }
+  .cap { padding: 0 16px 8px; }
+  .cap h2 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 18px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em;
+  }
+  .cap p { margin-top: 3px; font-size: 13px; line-height: 1.45; color: #6B6B6B; }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  /* the real page, held at its real phone width so nothing is scaled or distorted */
+  .frame {
+    position: relative; width: 100%; height: 620px;
+    border-top: 1px solid #E4E4E7; border-bottom: 1px solid #E4E4E7;
+    overflow: hidden;
+  }
+  .frame iframe { width: 402px; height: 620px; border: 0; display: block; }
+  .frame .badge {
+    position: absolute; top: 10px; right: 10px; z-index: 2;
+    padding: 5px 10px; border-radius: 40px;
+    background: rgba(255,255,255,0.92); border: 1px solid #E4E4E7;
+    font-size: 11px; font-weight: 600; color: #0A0A0A;
+    font-variant-numeric: tabular-nums;
+  }
+  .frame .badge.bad { color: #DC2626; }
+  .frame .badge.good { color: #16A34A; }
+
+  .note { padding: 22px 16px 0; font-size: 13px; line-height: 1.55; color: #6B6B6B; }
+  .note strong { color: #0A0A0A; font-weight: 600; }
+  .note + .note { padding-top: 12px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <h1>Basel city page, without the extra bold</h1>
+    <p>Both panels below are your real Basel page, live, with your real salons in it. Two small
+       things are different in the second one. Nothing else.</p>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>Now</h2>
+      <p>The heading tops out at 25px, and the four category buttons are all bold, even the three
+         you are not standing on.</p>
+    </div>
+    <div class="frame">
+      <div class="badge nums bad">44% bold</div>
+      <iframe id="before" src="/de/basel" scrolling="no" title="The Basel page as it is today"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>Fixed</h2>
+      <p>The heading grows to 28px. Only the button you are actually on keeps its weight; the
+         other three go back to plain text.</p>
+    </div>
+    <div class="frame">
+      <div class="badge nums good">29% bold</div>
+      <iframe id="after" src="/de/basel" scrolling="no" title="The Basel page with the heading and button weight fixed"></iframe>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>What actually changes.</strong> Two things. The heading grows from
+    <span class="nums">25px</span> to <span class="nums">28px</span>, which is your own floor for
+    the one piece of text on a screen that is allowed to be the biggest thing on it. And the three
+    category buttons you have not tapped stop being bold, matching the same rule this system
+    already uses everywhere else: the one you are on stays bold, the rest stay plain. Before this,
+    every button was bold regardless, which is most of why <span class="nums">44%</span> of the
+    text on this screen carried weight against a <span class="nums">30%</span> ceiling.
+  </div>
+  <div class="note">
+    <strong>About the photos, since I was told they were the real problem here.</strong> They are
+    not, not on the page as it actually renders. I measured it fresh with your own check script
+    against the live page: <span class="nums">43.18%</span> of the first screen is real salon
+    photography, comfortably over your <span class="nums">33%</span> floor. The 0% figure I was
+    handed looks like a screenshot caught during the half-second gray-loading flash before your
+    salon list arrives, not the page a customer actually stands on. I am not adding a photo here
+    because there is nothing here that needs one.
+  </div>
+  <div class="note">
+    <strong>What this does not touch.</strong> The layout, the salon cards, the photos, the search
+    bar, the category icons, the colors, the copy. Nothing here was invented: both fixes reuse
+    sizes and weights this design system already locks elsewhere on the same screen.
+  </div>
+
+</div>
+
+<script>
+  // The "after" panel is the SAME page as the "before" panel, loaded from the same real route.
+  // After it loads, exactly TWO rules are added inside it, both verified live before this file was
+  // written (injected into the running page, then re-measured with the same method that reproduced
+  // the control page's numbers to the decimal): the heading's minimum size and the category
+  // buttons' inactive weight. Nothing else in that document is touched.
+  var after = document.getElementById("after");
+  after.addEventListener("load", function () {
+    try {
+      var doc = after.contentDocument;
+      if (!doc) { return; }
+      var style = doc.createElement("style");
+      style.textContent =
+        "main h1.font-heading { font-size: clamp(28px, 4vw, 40px) !important; }\n" +
+        "section:nth-of-type(2) a.border-s-border { font-weight: 400 !important; }";
+      doc.head.appendChild(style);
+    } catch (err) {
+      console.error("[floor-fix-city-page] could not restyle the after panel:", err);
+    }
+  });
+</script>
+</body>
+</html>

@@ -127,7 +127,7 @@ export default function WalkInBand() {
                           name + rating (gold star is the separator), then address + queue on their OWN
                           lines , NO middot between two same-weight metadata bits (taste rule 2). */}
                       <div className="font-display text-[20px] font-semibold leading-none tracking-[-0.02em] text-s-success">
-                        {sofort ? "Jetzt frei" : `${s.waitMinutes}-${s.waitMinutesMax} Min`}
+                        {sofort ? t("freeNow") : t("waitRange", { min: s.waitMinutes, max: s.waitMinutesMax })}
                       </div>
                       {!sofort && (
                         <div className="mt-[3px] font-body text-[12px] font-semibold text-s-ink-2">{t("untilFree")}</div>

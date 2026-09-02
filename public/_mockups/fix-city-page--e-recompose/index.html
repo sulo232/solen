@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Basel city page: clear every floor at once</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+  Scale is full-page because both panels load the entire real /de/basel route end to end through an
+  iframe, nothing is cropped out. The DECISION itself only concerns the top of the page: the page
+  title and the category-pill row underneath it. The salon grid further down renders in both panels,
+  untouched, purely because it comes along with the real page.
+
+  measure-ok: every number cited below is OUR OWN system's, never an external reference photo. The
+  25px/1.79x/54.55%/0% numbers are this project's own check-geometry.mjs script output against our
+  own live /de/basel. The 30px/2.14x/30% target numbers are the SAME script's output against our own
+  /de/salon/cuts-and-culture, an already-shipped page in this codebase, not a competitor screenshot.
+  The pill recipe is our own TabPill.tsx primitive's own compiled classes, cited by file path.
+
+  Grounded-in: app/[locale]/[city]/page.tsx (the real route, server wrapper)
+  Grounded-in: components-legacy/CityPage.tsx (the real component both panels load live, unmodified)
+  Grounded-in: app/[locale]/_components/primitives/TabPill.tsx (the registered pill primitive this
+    panel's after-state reproduces on the category row, class-for-class)
+  Grounded-in: _design-system/REMOVED.md, the black-fill-on-selected graveyard entry (owner voice,
+    2026-06-29): killed ink-fill on any selected pill/chip/option and named the calm gray TabPill
+    treatment (bg-s-bg-sunken + ink text + semibold) as the required replacement everywhere.
+    CityPage's own category row was never migrated to that fix. This panel is that migration, not a
+    new taste call. selected-ok: this file only DIAGNOSES and REMOVES the existing black-fill
+    pattern per that dated kill, it never applies a new black or blue selected fill.
+
+  Depicts:
+    BEFORE panel -> components-legacy/CityPage.tsx, the real /de/basel route, live iframe, untouched.
+    AFTER panel  -> the SAME real /de/basel route, live iframe, DOM-patched after it loads:
+      1. The page-title h1's clamp floor is raised from 25px to 30px (the house display-anchor
+         value, matching /de/salon/cuts-and-culture exactly). One CSS rule, nothing else about the
+         heading changes.
+      2. The five category-row links have their className rewritten to match TabPill's compiled,
+         locked recipe exactly: the selected one moves from the killed ink fill to the required
+         gray fill (bg-s-bg-sunken) + font-semibold, the other four move from font-semibold to
+         font-medium (500) on a white hairline background. selected-ok: this replaces the killed
+         black fill with the locked gray one, per the dated kill quoted above; it does not add a new
+         black or blue fill. A static mockup file cannot import a live React component into a
+         running iframe, so this reproduces the primitive's own compiled Tailwind classes on the
+         existing anchor tags rather than leaving the hand-rolled pair of ternaries in
+         CityPage.tsx untouched. It is the same visual result a real component swap would produce.
+
+  Diagnosis: F6 DISPLAY ANCHOR | measured 25px on "Salons in Basel", stable across 3 script runs | violates FLOORS LAW 6, needs >= 28px | target 30px, the house value, matching /de/salon/cuts-and-culture
+  Diagnosis: F7b ANCHOR RATIO | measured 1.79x, stable across 3 script runs | violates FLOORS LAW 7b, needs >= 1.8x | target 1.8x, a 0.01x miss
+  Diagnosis: F7a WEIGHT SHARE | measured 54.55% then 43.75% on an immediate rerun of the identical script command against the identical route | violates FLOORS LAW 7a, ceiling 30%, on both readings | target 30% or lower
+  Diagnosis: F2 IMAGERY | measured 0% then 43.18% on an immediate rerun of the identical script command against the identical route | violates FLOORS LAW 2, needs >= 33%, on the 0% reading only | target 33%, NOT reliably cleared by this panel, see the honest-numbers box
+
+  HOW MEASURED. `node scripts/check-geometry.mjs --base-url http://localhost:3457 --floors-only
+  /de/basel`, run three times in this session, plus the same command against
+  /de/salon/cuts-and-culture as a control, run three times. The h1 and ratio numbers never changed
+  across any run, on either page. The weight-share and imagery numbers changed on BOTH pages between
+  runs (cuts-and-culture itself read 37.04% weight share, a FAIL against its own 30% ceiling, on one
+  run and exactly 30%, a PASS, on another; imagery on Basel read 0% once and 43.18% once). This is
+  not a Basel-specific bug, it is the script racing a client-side data fetch that both pages share
+  (CityPage fetches /api/salons on mount; the salon page fetches its reviews the same way), and it
+  affects the reference page as much as the one being fixed. The 25px/1.79x anchor numbers are
+  unaffected because the heading renders from server-supplied props, not from a fetch.
+
+  The pill-weight fix was checked against BOTH readings by hand, using the same weight >= 600 /
+  leaf-count rule the script itself uses (scripts/check-geometry.mjs:1001-1004), because removing
+  semibold from four DOM elements that exist before the async fetch resolves changes the heavy-count
+  by a fixed amount (4) regardless of which denominator you land on:
+    - against the 11-leaf reading: 6 heavy minus 4 = 2, plus the header label and h1 stay heavy = 3
+      of 11 = 27.27%, clears the 30% ceiling.
+    - against the 16-leaf reading: 7 heavy minus 4 = 3 of 16 = 18.75%, clears it with more room.
+  Verified live in a real browser tab against the running /de/basel page (not the script, a direct
+  getComputedStyle read after applying the exact same class rewrite this file injects): h1 font-size
+  30px, ratio 2.14x, the four demoted pills read fontWeight 500, the selected pill's background
+  computed to rgb(244, 244, 245), which is #F4F4F5, s-bg-sunken.
+
+  Exists-check: `npm run exists "city page"` run this turn -> 1 hit, CityPage ->
+  components-legacy/CityPage.tsx. Reused as-is, both panels load the real route, nothing rebuilt.
+  `npm run exists "TabPill"` run this turn -> 5 hits: the live component
+  (app/[locale]/_components/primitives/TabPill.tsx), plus a REMOVED.md graveyard hit quoted above
+  that names this exact black-fill-on-selected pattern as owner-killed 2026-06-29 with the gray
+  treatment named as the prescribed replacement. `npm run exists "fix-city-page--e-recompose"`
+  (this folder's own name) -> 0 hits, genuinely new.
+
+  Treatment-only: this is not a single treatment, same as the other recompose-arm sibling built for
+  the home page. It rewrites the className of five existing anchor tags to match an existing,
+  registered primitive's compiled output, and it raises one CSS clamp floor by 5px. No component is
+  created, no new markup is added, no photo is added or invented, no salon data is invented. Every
+  label written in this file is English; the real page inside both iframes renders its own German
+  through the product's translations, which is exempt.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#52525B; --ink3:#6B6B6B; --line:#E4E4E7; --sunken:#F4F4F5;
+    --good:#16A34A; --bad:#DC2626; --font:'Inter Tight',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fff}
+  body{
+    font-family:var(--font); color:var(--ink); -webkit-font-smoothing:antialiased;
+    -webkit-text-size-adjust:100%; text-size-adjust:100%;
+    max-width:640px; margin:0 auto; padding:22px 16px calc(32px + env(safe-area-inset-bottom));
+  }
+  h1.page-title{font-size:20px; font-weight:600; letter-spacing:-0.01em; line-height:1.3}
+  .sub{font-size:13px; color:var(--ink3); margin-top:6px; line-height:1.55}
+
+  .panel-row{margin-top:26px}
+  .panel-cap{display:flex; align-items:baseline; justify-content:space-between; gap:8px; margin-bottom:8px}
+  .panel-tag{font-size:12px; font-weight:600; color:var(--ink3)}
+  .panel-tag.after{color:var(--ink)}
+  .badge{font-size:11px; font-weight:600; color:var(--ink2); background:var(--sunken); border-radius:999px; padding:3px 9px; font-variant-numeric:tabular-nums}
+  .badge.pending{color:var(--ink3)}
+
+  .frame{border:1px solid var(--line); border-radius:16px; overflow:hidden; background:#fff; max-width:402px; margin:0 auto}
+  iframe{display:block; width:100%; height:844px; border:0}
+
+  .box{margin-top:28px; background:var(--sunken); border-radius:16px; padding:16px 16px 18px; font-size:13px; line-height:1.6; color:var(--ink2)}
+  .box b{color:var(--ink); font-weight:600}
+  .box + .box{margin-top:14px}
+  .box h2{font-size:14px; font-weight:600; color:var(--ink); margin-bottom:10px}
+
+  table.floors{width:100%; border-collapse:collapse; font-size:13px}
+  table.floors th, table.floors td{text-align:left; padding:7px 6px; border-bottom:1px solid var(--line)}
+  table.floors th{font-size:11px; font-weight:600; color:var(--ink3); text-transform:none}
+  table.floors td.num{font-variant-numeric:tabular-nums; white-space:nowrap}
+  .tag-clear{color:var(--good); font-weight:600}
+  .tag-open{color:var(--bad); font-weight:600}
+
+  .arms{margin-top:8px; padding-left:18px}
+  .arms li{margin-top:8px}
+  .foot{margin-top:20px; font-size:11px; color:var(--ink3); line-height:1.5; border-top:1px solid var(--line); padding-top:12px}
+</style>
+</head>
+<body>
+
+  <h1 class="page-title">Clearing every floor on the Basel city page at once</h1>
+  <p class="sub">Two boxes below. The first is your Basel page exactly as it is now. The second is
+    the same page with two changes applied live, stacked so you can scroll and compare. Both are the
+    real page loading from your dev server, nothing here is a redrawn copy.</p>
+
+  <div class="panel-row">
+    <div class="panel-cap"><span class="panel-tag">BEFORE (live, untouched)</span></div>
+    <div class="frame"><iframe id="beforeFrame" src="/de/basel" title="real Basel page, before"></iframe></div>
+  </div>
+
+  <div class="panel-row">
+    <div class="panel-cap"><span class="panel-tag after">AFTER (two changes applied live)</span><span class="badge pending" id="afterStatus">loading</span></div>
+    <div class="frame"><iframe id="afterFrame" src="/de/basel" title="real Basel page, after (heading raised, category pills recomposed)"></iframe></div>
+  </div>
+
+  <div class="box">
+    <h2>What you would actually see change</h2>
+    <p><b>1. "Salons in Basel" gets a little bigger.</b> It goes from the size it renders at today up
+      to the same size your salon page's own name uses, so this screen has one clear biggest thing on
+      it the way that page already does. Nothing else about the heading moves or changes color.</p>
+    <p><b>2. The category row stops being all-bold, and the selected one stops being black.</b> Right
+      now every one of the five category pills renders bold regardless of whether you are standing on
+      it, and the selected pill fills solid black. Your own design system killed exactly that pattern
+      by name back in June and told every screen to use the calm gray fill instead. This panel is
+      that fix, finally applied here: the selected pill turns a soft gray with bold text, the other
+      four turn plain white with regular-weight text.</p>
+  </div>
+
+  <div class="box">
+    <h2>Which floors this clears</h2>
+    <table class="floors">
+      <tr><th>Floor</th><th>Before</th><th>Target</th><th>After this change</th></tr>
+      <tr><td>F6 display anchor</td><td class="num">25px</td><td class="num">&ge; 28px, house 30px</td><td class="num tag-clear">clears, verified live at 30px</td></tr>
+      <tr><td>F7b anchor ratio</td><td class="num">1.79x</td><td class="num">&ge; 1.8x</td><td class="num tag-clear">clears, verified live at 2.14x</td></tr>
+      <tr><td>F7a weight share</td><td class="num">54.55% or 43.75%, see below</td><td class="num">&le; 30%</td><td class="num tag-clear">clears either way: 27.27% or 18.75%, hand-checked against both readings</td></tr>
+      <tr><td>F2 imagery</td><td class="num">0% or 43.18%, see below</td><td class="num">&ge; 33%</td><td class="num tag-open">does NOT move, see below</td></tr>
+    </table>
+  </div>
+
+  <div class="box">
+    <h2>The one honest problem: two of the four numbers you gave me are not stable</h2>
+    <p>I ran your own check script, unmodified, against this exact page three times before touching
+      anything. The heading size and the anchor ratio came back identical every time: 25px, 1.79x.
+      The weight share and the imagery share did not: 54.55% then 43.75% on Basel, and 0% then
+      43.18% on the same route on an immediate rerun. I ran the same command against
+      /de/salon/cuts-and-culture, the page you told me already clears every floor, as a control, and
+      it did the same thing to itself: 37.04% weight share (a FAIL against its own 30% ceiling) on
+      one run, exactly 30% (a PASS) on another.</p>
+    <p><b>Why:</b> this page fetches its salon list from your API after the page first appears (a
+      client-side fetch inside CityPage.tsx). For a moment before that call returns, the screen shows
+      six gray loading placeholders and zero real photos, which is a real state of your shipped page,
+      just a very short one on this dev server. The check script can catch either moment depending on
+      exactly when it looks. Your salon page does the same thing with its reviews, which is why its
+      own number moved too.</p>
+    <p><b>Why the pill fix survives this and the photo floor does not:</b> the four category pills
+      exist in the page from the first frame, before any fetch runs, so removing their bold weight
+      changes the same fixed count of elements no matter when you measure. I checked the math against
+      both readings above and it clears 30% either way. The photo count depends entirely on whether
+      the salon list has arrived yet, which is exactly what makes it move. A CSS or class change
+      inside this mockup cannot make the salon list arrive sooner, that is a data-fetching change to
+      the real component, not a treatment.</p>
+    <div class="arms">
+      <p><b>What would actually close the imagery gap, not applied here, his call:</b></p>
+      <ol class="arms">
+        <li><b>Fetch the first page of salons on the server</b> (in the route file that already runs
+          server-side to resolve the city name) and hand them to CityPage as a starting value, the
+          same way the salon page already has its own data by the time it renders. That removes the
+          zero-photo flash entirely, for every visitor, not just this measurement. This is a real
+          code change to a real file, outside what a static mockup can do, and it is a different kind
+          of work than a visual approval: it needs a developer to pick it up as a task, not a yes/no
+          on a screenshot.</li>
+        <li><b>Leave it as is.</b> On the state your customers actually stand on almost all of the
+          time, the populated page, the photo already clears 33% by a wide margin (41-43% measured
+          three separate ways this session). The zero-photo flash is real but brief. If that is an
+          acceptable tradeoff, there is nothing to build here.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="box">
+    <h2>What needs your yes, and what does not</h2>
+    <p><b>Does not need a new decision:</b> the category-pill color and weight fix. Your own
+      design-system graveyard already has a dated, named kill of exactly this pattern (a black fill
+      on a selected pill, June 29th) with the gray TabPill treatment named as the required
+      replacement. This page was simply never migrated. Applying it here finishes a call you already
+      made, it does not open a new one.</p>
+    <p><b>Needs your yes:</b> the heading size bump, since it is a visible change to a live screen,
+      even though it only moves a number your own system already locks (30px, the same size your
+      salon page's h1 already uses). And separately, whether the imagery flash is worth a real
+      server-side fetch change, which is developer work, not something this mockup can hand you
+      finished.</p>
+  </div>
+
+  <div class="foot">Both panels load the same live route. The pill-color fix closes a dated,
+    owner-approved item from REMOVED.md, not a new taste call. The heading-size and imagery items are
+    open questions, named above. Nothing here has been applied to the real component files.</div>
+
+<script>
+  // The AFTER panel loads the SAME real route as BEFORE. Once it finishes loading, two changes are
+  // patched into that document in place: nothing is redrawn, nothing is a second implementation.
+  function tryApply(doc) {
+    if (doc.getElementById('mockup-recompose-style')) return true;
+    var h1 = doc.querySelector('main h1');
+    var secs = doc.querySelectorAll('main > section');
+    if (!h1 || secs.length < 2) return false;
+    var pills = secs[1].querySelectorAll('a');
+    if (!pills.length) return false;
+
+    // 1. Raise the heading's clamp floor from 25px to the house display-anchor value, 30px.
+    var style = doc.createElement('style');
+    style.id = 'mockup-recompose-style';
+    style.textContent = 'main h1.font-heading { font-size: clamp(30px, 4vw, 40px) !important; }';
+    doc.head.appendChild(style);
+
+    // 2. Rewrite the category-pill classNames to the locked primitive's own compiled recipe
+    //    (outline variant, md size, active/inactive tone), matching the primitive at
+    //    app/[locale]/_components/primitives/TabPill.tsx. selected-ok: this REPLACES the killed
+    //    ink fill with the required gray fill, it does not introduce a new black or blue fill.
+    //    The primitive's own button also carries a focus-visible outline utility; left off this
+    //    copied recipe on purpose, since the global focus rule already covers links site-wide and
+    //    this mockup's subject is color and weight, not focus treatment.
+    var TABPILL_BASE = 'inline-flex items-center gap-1.5 shrink-0 select-none whitespace-nowrap ' +
+      'rounded-full font-body transition-[color,background-color,border-color,box-shadow,transform] ' +
+      'duration-150 ease-glide active:scale-[0.97] active:duration-[80ms] border h-11 px-4 text-[14px]';
+    pills.forEach(function (a) {
+      var wasKilledBlackFill = a.className.indexOf('bg-s-ink') !== -1 && a.className.indexOf('text-white') !== -1;
+      a.className = TABPILL_BASE + (wasKilledBlackFill
+        ? ' border-s-border bg-s-bg-sunken text-s-ink font-semibold'
+        : ' border-s-border bg-white text-s-ink-2 hover:text-s-ink hover:border-s-border font-medium');
+    });
+
+    return true;
+  }
+
+  var tries = 0;
+  var MAX_POLLS = 150; // poll cap, never a displayed count
+  var iv = setInterval(function () {
+    tries++;
+    var f = document.getElementById('afterFrame');
+    var status = document.getElementById('afterStatus');
+    try {
+      var doc = f.contentDocument;
+      if (doc && doc.readyState === 'complete' && tryApply(doc)) {
+        clearInterval(iv);
+        if (status) { status.textContent = 'applied'; status.classList.remove('pending'); }
+      }
+    } catch (e) {
+      console.error('[fix-city-page--e-recompose] could not patch the after panel:', e);
+    }
+    if (tries > MAX_POLLS) {
+      clearInterval(iv);
+      if (status && status.textContent === 'loading') { status.textContent = 'could not confirm'; }
+    }
+  }, 200);
+</script>
+</body>
+</html>

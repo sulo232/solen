@@ -1,0 +1,1052 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Your profile and settings: every fix, stacked</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+  This file builds nothing new. It stacks live iframes of the SAME two real routes
+  (/de/profile and /de/profile/settings), untouched at the top of each route's section, then
+  once with each proposed fix injected after load, so every option can be scrolled and compared
+  without tapping a switcher. No tabs, no A/B toggle: the owner rejected that shape by name
+  ("I can't even see a difference").
+
+  Grounded-in: app/[locale]/profile/page.tsx + app/[locale]/_components/profile/AccountHub.tsx
+    (the real /de/profile route, every profile panel below is a live iframe of it)
+  Grounded-in: app/[locale]/profile/settings/page.tsx (the real /de/profile/settings route,
+    every settings panel below is a live iframe of it)
+  Grounded-in: public/_mockups/fix-profile-and-settings--b-hierarchy/index.html (Option B's own
+    mechanism, lifted verbatim: font-size/font-weight folded on existing elements by their
+    current computed size)
+  Grounded-in: public/_mockups/fix-profile-and-settings--c-content-forward/index.html (Option
+    C's own mechanism, lifted verbatim: real favorite-salon cards cloned live from
+    /de/profile/favorites and spliced under the name)
+  Grounded-in: public/_mockups/fix-profile-and-settings--d-airbnb-weight/index.html (Option D's
+    own mechanism, lifted verbatim: one CSS rule demoting .font-semibold/.font-bold to 500)
+  Grounded-in: public/_mockups/fix-profile-and-settings--e-recompose/index.html (Option E's own
+    mechanism, lifted verbatim: real favorites section on the account page, name-size match on
+    settings)
+
+  Option A is NOT on this page. `public/_mockups/floor-fix-profile-and-settings/` exists as a
+    directory but holds no index.html, checked this turn (`ls` on the directory returns empty).
+    Nothing to lift. This is stated on the page itself, not silently dropped.
+
+  Depicts: Now (profile) -> app/[locale]/profile/page.tsx (real /de/profile route, live iframe, untouched)
+  Depicts: Now (settings) -> app/[locale]/profile/settings/page.tsx (real /de/profile/settings route, live iframe, untouched)
+  Depicts: Option B profile after -> app/[locale]/profile/page.tsx (small-text sizes folded 7 to 4 by script, name untouched)
+  Depicts: Option B settings after -> app/[locale]/profile/settings/page.tsx (name grown 20px to 28px, same fold)
+  Depicts: Option C profile after -> app/[locale]/profile/favorites/page.tsx (real SalonCard nodes cloned into app/[locale]/profile/page.tsx)
+  Depicts: Option C settings after -> app/[locale]/profile/favorites/page.tsx (real SalonCard nodes cloned into app/[locale]/profile/settings/page.tsx)
+  Depicts: Option D profile after -> app/[locale]/profile/page.tsx (.font-semibold/.font-bold demoted to weight 500)
+  Depicts: Option D settings after -> app/[locale]/profile/settings/page.tsx (.font-semibold/.font-bold demoted to weight 500)
+  Depicts: Option E profile after -> app/[locale]/profile/favorites/page.tsx (nested cropped iframe under the name in app/[locale]/profile/page.tsx, needs-your-yes)
+  Depicts: Option E settings after -> app/[locale]/profile/settings/page.tsx (name resized to the AccountHub 28px/600 recipe)
+
+  Diagnosis: F6 DISPLAY ANCHOR (settings) | measured 20px, weight 700 (profile/settings/page.tsx's
+    own IdentityBlock name), confirmed independently by three of the four builders this session
+    via getComputedStyle | violates FLOORS LAW 6 (anchor >= 28px) and FLOORS LAW 8 (same person's
+    name renders two sizes on two screens) | target 28px, matching AccountHub.tsx's own already-
+    shipped 28px/600 recipe one tap away, the house value is 30px per the ladder
+  Diagnosis: F7b ANCHOR RATIO (settings) | measured 1.43x (20px anchor over the 14px body),
+    confirmed independently by three of the four builders | violates the EMPHASIS BUDGET
+    anchor-ratio floor of 1.8x | target 2.0x, the ratio the profile page's own anchor already
+    reaches today
+  Diagnosis: F2 IMAGERY (both routes) | measured 1.06 to 1.09% on /de/profile and 1.21 to 1.24%
+    on /de/profile/settings of the first 390x844 viewport, all four builders converge within
+    0.2 points of each other | violates FLOORS LAW 2 / LOCKFILE imagery row | target 33%, house
+    value 34.66% on /de/salon/cuts-and-culture
+  Diagnosis: F7c SIZE SPREAD (profile) | measured 7 distinct text sizes (10, 12, 13, 14, 16, 18,
+    28px) with 6 of them inside one 8px window, confirmed by two builders via getComputedStyle |
+    violates the ladder's at-most-5-distinct / at-most-4-per-8px-window rule | target 5 distinct,
+    4 in the densest window
+
+  Diagnosis detail, context not re-parsed by the gate: F6 and F7b were reported by all four
+    builders as ALREADY PASSING on /de/profile today (anchor 28px, ratio 2.0x), which
+    contradicts the brief every builder was handed ("both screens measure 18px / 1.5x / identical
+    on all six floors"). AccountHub.tsx's own header comment documents an earlier session moving
+    that anchor to 28px/600 specifically to clear these two floors; settings was never touched by
+    that fix. None of the four builders could get a second, independent live re-measurement of
+    every number on this assembly page, this turn, because the shared preview tab kept getting
+    navigated by the other three variant builders running in parallel; each builder caught and
+    reported the collisions rather than silently guessing (see each source file's own Honesty
+    notes). The numbers above are what each source file already measured and stands behind, not
+    a fresh re-check by this assembly step. Weight share specifically did NOT converge across
+    builders (22.3% to 34.8% depending on method and route), so it is reported per-option below
+    with its own source rather than forced into one Diagnosis line here.
+
+  Exists-check: `npm run exists "compare-profile-and-settings"` run this turn, 0 hits, this
+    directory is genuinely new. The four source mockups were each separately exists-checked by
+    their own builders (see each source file's own header comment for that record, including the
+    AccountHub graveyard hits on Options C and E); this file duplicates none of that research, it
+    only reads their already-written stylesheets and scripts and re-applies them verbatim inside
+    a shared page.
+
+  Treatment-only, and this is the treatment for the WHOLE page, not one panel: every stylesheet
+    rule and every script below is copied byte-for-byte from the four listed source files. No new
+    fix is invented here. The only things this file adds are the stacking, the captions, the
+    intro/closing copy, and the missing-Option-A note, all written in English. The real pages
+    inside every iframe render their own German through the product's own translations, which is
+    exempt. This report page's own wrapper chrome (the box drawn around each iframe, the stat
+    cells, the closing note) keeps its corner radii OUTSIDE the 12-39px band the account-surface
+    rejected-elements gate flags, so it never reads as the rejected boxed-row pattern: 10px on
+    every wrapper below, matching the convention the D and E source mockups already use for the
+    same purpose.
+
+  Correctness pass (this turn): both fold functions (Option B) used to `return true`
+    unconditionally, so a panel could be marked "applied" without a single element actually
+    resizing; fixed to track what was touched and read the DOM back to confirm the target size
+    stuck, confirmed on 8 fresh loads with the settings name landing at 28px every time. Option C's
+    favorites splice had three separate real bugs, not one: its hidden favorites-source iframe sat
+    at left:-9999px, geometrically outside any viewport, so next/image's native lazy-loading never
+    fired and it always timed out (fixed: kept in-viewport via position:fixed + opacity:0); the
+    settings-page insertion point selector (`main > div`) matched the wrong div (the desktop
+    breadcrumb wrapper, settings/page.tsx nests a second <main>), so it never once found room to
+    insert on settings (fixed: matched by the real container's class instead); and inserting before
+    this app's client hydration settles could get silently patched over by React (fixed: wait for
+    the target frame to go quiet, then for the insertion point to have a stable child count, before
+    inserting). Measured across 8 fresh loads after all three fixes: the settings name-match (B2)
+    never once failed; Option C inserted correctly on both panels in the majority of loads, and on
+    the rest exactly one panel missed its render window under this page's own heavy concurrent
+    iframe load and reported that honestly (badge and DOM agree every time) rather than claiming
+    success it didn't earn.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#52525B; --ink3:#6B6B6B; --line:#E4E4E7; --sunken:#F4F4F5;
+    --good:#16A34A; --bad:#DC2626; --amber:#F1AE27;
+    --font:'Inter Tight',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #fff; }
+  body{
+    font-family: Inter, var(--font), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 24px 16px calc(40px + env(safe-area-inset-bottom));
+  }
+
+  .intro h1{
+    font-family: var(--font);
+    font-size: clamp(21px, 5vw, 24px); font-weight: 600; letter-spacing: -0.01em; line-height: 1.25;
+  }
+  .intro p{ margin-top: 10px; font-size: 14px; line-height: 1.6; color: var(--ink2); }
+  .intro p + p{ margin-top: 8px; }
+
+  .now-stats{ margin-top: 18px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .now-stats .cell{ background: var(--sunken); border-radius: 10px; padding: 10px 8px; }
+  .now-stats .n{ font-size: 16px; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .now-stats .l{ font-size: 10.5px; color: var(--ink3); margin-top: 3px; line-height: 1.3; }
+
+  .missing{
+    margin-top: 16px; background: var(--sunken); border-left: 3px solid var(--amber);
+    border-radius: 10px; padding: 12px 14px; font-size: 12.5px; line-height: 1.55; color: var(--ink2);
+  }
+  .missing b{ color: var(--ink); font-weight: 600; }
+
+  .route-heading{ margin-top: 40px; padding-bottom: 6px; border-bottom: 2px solid var(--ink); }
+  .route-heading h2{ font-family: var(--font); font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+  .route-heading p{ margin-top: 3px; font-size: 12.5px; color: var(--ink3); }
+
+  .panel{ margin-top: 26px; }
+  .panel-cap{ margin-bottom: 8px; }
+  .panel-tag{ display: inline-block; font-size: 13px; font-weight: 600; color: var(--ink3); }
+  .panel-tag.now{ color: var(--ink3); }
+  .panel-tag.fix{ color: var(--ink); }
+  .panel h3{ font-family: var(--font); font-size: 16px; font-weight: 600; margin-top: 2px; letter-spacing: -0.01em; }
+  .panel .desc{ margin-top: 5px; font-size: 13px; line-height: 1.55; color: var(--ink2); }
+  .panel .badge{
+    display: inline-block; margin-top: 8px; font-size: 11px; font-weight: 600; color: var(--ink2);
+    background: var(--sunken); border-radius: 999px; padding: 4px 10px; font-variant-numeric: tabular-nums;
+  }
+  .panel .badge.status{ margin-left: 6px; }
+  .panel .badge.status.applied{ color: var(--good); background: #F0FDF4; }
+  .panel .badge.status.needsyes{ color: var(--ink); background: #FEF3C7; }
+  .panel .badge.status.failed{ color: var(--bad); background: #FEF2F2; }
+
+  .frame{
+    margin-top: 12px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
+    background: #fff; max-width: 402px;
+  }
+  iframe{ display: block; width: 100%; height: 780px; border: 0; }
+
+  .not-fixed{ margin-top: 10px; font-size: 12.5px; line-height: 1.55; color: var(--ink3); }
+  .not-fixed b{ color: var(--ink2); font-weight: 600; }
+
+  .not-applied-note{
+    margin-top: 10px; background: #FEF2F2; border-left: 3px solid var(--bad);
+    border-radius: 10px; padding: 10px 12px; font-size: 12.5px; line-height: 1.55; color: var(--ink2);
+  }
+
+  .closer{ margin-top: 44px; background: var(--sunken); border-radius: 10px; padding: 18px 16px; }
+  .closer h2{ font-family: var(--font); font-size: 15px; font-weight: 600; margin-bottom: 10px; }
+  .closer ul{ padding-left: 18px; }
+  .closer li{ font-size: 13px; line-height: 1.6; color: var(--ink2); margin-top: 8px; }
+  .closer li b{ color: var(--ink); font-weight: 600; }
+  .closer .divider{ margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+
+  .foot{
+    margin-top: 22px; font-size: 11px; color: var(--ink3); line-height: 1.6;
+    border-top: 1px solid var(--line); padding-top: 12px;
+  }
+</style>
+</head>
+<body>
+
+  <div class="intro">
+    <h1>Four ways to fix your profile and settings pages, one under the other</h1>
+    <p>Right now these two pages have real problems and they don't share a fix. Your name renders
+       at a good size on your profile page (28px) but shrinks to 20px, one tap later, on the
+       settings page, the same name, two sizes. Both pages are almost entirely icons and text,
+       under 1.3% of the screen is a real photo, against the roughly one-third that a page like
+       your salon page for Cuts &amp; Culture carries. And the small text on both screens is cut
+       into too many almost-identical sizes to read as clean groups.</p>
+    <p>Below are four different fixes for that, each applied live to your real, running pages,
+       real data, nothing invented. A fifth option was supposed to be here too (the smallest
+       possible CSS change) but its file was never actually written, that's called out below
+       rather than skipped quietly. Scroll down to compare each option against "Now" at the top
+       of each screen's section.</p>
+  </div>
+
+  <div class="now-stats">
+    <div class="cell"><div class="n">28px / 20px</div><div class="l">your name: profile vs settings (target: both 28px+)</div></div>
+    <div class="cell"><div class="n">2.0x / 1.43x</div><div class="l">name vs body size: profile vs settings (target 1.8x+)</div></div>
+    <div class="cell"><div class="n">~1.1% / ~1.2%</div><div class="l">real photo on screen: profile vs settings (target 33%)</div></div>
+    <div class="cell"><div class="n">7 sizes</div><div class="l">distinct text sizes on each screen, 6 crammed together (target 4-5)</div></div>
+  </div>
+
+  <div class="missing">
+    <b>Option A is missing.</b> The smallest-possible-change option was supposed to live at
+    <code>public/_mockups/floor-fix-profile-and-settings/</code>. That folder exists but is empty,
+    no file was ever written into it. It is not shown below because there is nothing to show.
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- ROUTE 1: /de/profile -->
+  <!-- ============================================================= -->
+  <div class="route-heading">
+    <h2>Your profile page</h2>
+    <p>/de/profile, the account hub</p>
+  </div>
+
+  <div class="panel">
+    <div class="panel-cap">
+      <span class="panel-tag now">Now</span>
+      <h3>Your profile as it is today</h3>
+      <div class="desc">Nothing changed here. This is the same live page every "after" panel
+        below is a copy of. Your name already renders at 28px, big and clear. Underneath it,
+        seven different text sizes are doing a job three could do, and there is almost no photo
+        anywhere on the screen.</div>
+      <span class="badge status" id="statusNowProfile">queued</span>
+    </div>
+    <div class="frame"><iframe id="nowProfile" data-src="/de/profile" title="your profile page, now, untouched"></iframe></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-cap">
+      <span class="panel-tag fix">Option B</span>
+      <h3>Fold the small text together</h3>
+      <div class="desc">Your name stays exactly as it is. The badge, the subtext under each row,
+        and the small grey title at the very top all step into one matching secondary size
+        instead of splitting across three sizes that were 1-2px apart.</div>
+      <span class="badge">moves: how many sizes are on screen, 7 down to 4</span>
+      <span class="badge status" id="statusB1">queued</span>
+    </div>
+    <div class="frame"><iframe id="frameB1" data-src="/de/profile" scrolling="no" title="profile page, option B, small text folded"></iframe></div>
+    <div class="not-fixed"><b>Does not touch:</b> the photo (still ~1.1%) or how much text is
+      bold. This option only cleans up sizes, it does not add content.</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-cap">
+      <span class="panel-tag fix">Option C</span>
+      <h3>Put your real favorites where you can see them</h3>
+      <div class="desc">Nothing is invented. This pulls the real salon cards from your own
+        favorites page (the one behind the heart icon) and shows them directly under your name,
+        so the first thing you see is a real photo instead of a list of icons.</div>
+      <span class="badge">moves: real photo on screen, from ~1% toward 33%+</span>
+      <span class="badge status needsyes" id="statusC1">queued</span>
+    </div>
+    <div class="frame"><iframe id="frameC1" data-src="/de/profile" scrolling="no" title="profile page, option C, real favorites pulled up"></iframe></div>
+    <div class="not-fixed"><b>Does not touch:</b> the seven-sizes problem or how much text is
+      bold. <b>Needs your yes:</b> a salon-photo section on this exact screen was removed twice
+      before, on 2026-07-21 and 2026-08-02 ("konto hub better"), so this is shown for you to
+      decide, not applied. It also only works because this test account happens to have real
+      favorites saved, a brand-new customer with none would need a different fallback.</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-cap">
+      <span class="panel-tag fix">Option D</span>
+      <h3>Let bold text calm down</h3>
+      <div class="desc">About a third of the text on this screen is bold today: the top bar
+        title, your name, every section label. This makes all of that one step lighter, medium
+        instead of semibold or bold. No sizes, spacing, or colors change.</div>
+      <span class="badge">moves: how much text is bold, down to 0%</span>
+      <span class="badge status" id="statusD1">queued</span>
+    </div>
+    <div class="frame"><iframe id="frameD1" data-src="/de/profile" scrolling="no" title="profile page, option D, lighter bold weight"></iframe></div>
+    <div class="not-fixed"><b>Does not touch:</b> the photo, the sizes problem, or your name
+      (already big enough at 28px, this option leaves it alone).</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-cap">
+      <span class="panel-tag fix">Option E</span>
+      <h3>The real favorites section, cropped and measured</h3>
+      <div class="desc">The same idea as Option C, your real favorite salons shown under your
+        name, but here it is cropped to a fixed height as it loads.</div>
+      <span class="badge">moves: real photo on screen, live</span>
+      <span class="badge status needsyes" id="statusE1">queued</span>
+    </div>
+    <div class="frame"><iframe id="frameE1" data-src="/de/profile" scrolling="no" title="profile page, option E, real favorites cropped and measured"></iframe></div>
+    <div class="not-fixed"><b>Does not touch:</b> the seven-sizes problem or bold text.
+      <b>Needs your yes,</b> the same graveyard collision as Option C: this exact kind of section
+      was removed twice before. This builder argues the earlier removal was about a search bar
+      and a bespoke grid, not photos themselves, but says plainly that is his own read, not a
+      settled fact.</div>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- ROUTE 2: /de/profile/settings -->
+  <!-- ============================================================= -->
+  <div class="route-heading">
+    <h2>Your settings page</h2>
+    <p>/de/profile/settings</p>
+  </div>
+
+  <div class="panel">
+    <div class="panel-cap">
+      <span class="panel-tag now">Now</span>
+      <h3>Settings as it is today</h3>
+      <div class="desc">Nothing changed here. The exact same name that renders at 28px on your
+        profile page renders at 20px here, one tap later. That is the single biggest problem on
+        this screen: your name is not the clear anchor it should be.</div>
+      <span class="badge status" id="statusNowSettings">queued</span>
+    </div>
+    <div class="frame"><iframe id="nowSettings" data-src="/de/profile/settings" title="settings page, now, untouched"></iframe></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-cap">
+      <span class="panel-tag fix">Option B</span>
+      <h3>Match your name to your profile page, and fold the small text</h3>
+      <div class="desc">Your name here grows from 20px to 28px, the exact size it already
+        renders at one tap away on the profile page. The same small-text fold as above (badge,
+        subtext, grey title) is applied here too.</div>
+      <span class="badge">moves: name size 20px -> 28px, sizes 7 -> 4</span>
+      <span class="badge status" id="statusB2">queued</span>
+    </div>
+    <div class="frame"><iframe id="frameB2" data-src="/de/profile/settings" scrolling="no" title="settings page, option B, name matched and small text folded"></iframe></div>
+    <div class="not-fixed"><b>Does not touch:</b> the photo, still under 1.3%, or bold text,
+      which lands just over the 30% ceiling after this fix (about 30.4%), reported as-is.</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-cap">
+      <span class="panel-tag fix">Option C</span>
+      <h3>Put your real favorites where you can see them</h3>
+      <div class="desc">The same real-favorites splice as the profile page above, inserted under
+        the identity card on settings instead.</div>
+      <span class="badge">moves: real photo on screen, from ~1.2% toward 33%+</span>
+      <span class="badge status needsyes" id="statusC2">queued</span>
+    </div>
+    <div class="frame"><iframe id="frameC2" data-src="/de/profile/settings" scrolling="no" title="settings page, option C, real favorites pulled up"></iframe></div>
+    <div class="not-fixed"><b>Does not touch:</b> the 20px name or the sizes problem. <b>Needs
+      your yes,</b> same graveyard collision as the profile version above. This option also
+      raises a real question this builder flagged: settings is an admin screen (change your
+      password, your notifications), and a browsing card here may not belong on this screen's
+      job at all, separate from whether the photo removal itself should be revisited.</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-cap">
+      <span class="panel-tag fix">Option D</span>
+      <h3>Let bold text calm down</h3>
+      <div class="desc">The section labels and row titles go from bold to medium, the same
+        change as the profile page above.</div>
+      <span class="badge">moves: how much text is bold, down to 0%</span>
+      <span class="badge status" id="statusD2">queued</span>
+    </div>
+    <div class="frame"><iframe id="frameD2" data-src="/de/profile/settings" scrolling="no" title="settings page, option D, lighter bold weight"></iframe></div>
+    <div class="not-fixed"><b>Does not touch:</b> the 20px name (still under the 28px floor) or
+      the 1.43x ratio (still under 1.8x). Lightening bold text cannot create a headline that
+      isn't there.</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-cap">
+      <span class="panel-tag fix">Option E</span>
+      <h3>Just the name, matched, nothing else</h3>
+      <div class="desc">The smallest of the five moves on this whole page: one CSS rule, your
+        name grows from 20px/700 to 28px/600, matching your profile page's own recipe exactly.
+        Nothing else on the screen moves.</div>
+      <span class="badge">moves: name size 20px -> 28px, ratio 1.43x -> 2.0x</span>
+      <span class="badge status" id="statusE2">queued</span>
+    </div>
+    <div class="frame"><iframe id="frameE2" data-src="/de/profile/settings" scrolling="no" title="settings page, option E, name matched to profile page"></iframe></div>
+    <div class="not-fixed"><b>Does not touch:</b> the photo (stays ~1.24%) or the seven-sizes
+      problem. This builder recommends leaving the photo off settings on purpose (an admin
+      screen's job isn't browsing), and says so as a recommendation, not a decision made
+      quietly.</div>
+  </div>
+
+  <div class="closer">
+    <h2>What's your call, and what's just catching these pages up to one you already like</h2>
+    <ul>
+      <li><b>Your call: whether a real salon photo goes on either page at all.</b> This exact
+        kind of section (a photo grid on the account hub) was removed twice before, 2026-07-21
+        and 2026-08-02 ("konto hub better"). Options C and E both reopen that decision, using
+        your real favorites through the real card component, no search bar, no bespoke grid.
+        Two of this page's four builders think that is a different thing from what was removed,
+        but say plainly that is their own read, not your settled call.</li>
+      <li><b>Your call: whether settings gets a photo section too, or just the name fix.</b>
+        Option C puts the same favorites splice on settings; Option E's own builder recommends
+        against it there, arguing an admin screen (password, notifications, payment) isn't the
+        job a browsing card serves, and that the profile page one tap away already carries it.
+        Both are shown so you can pick either way.</li>
+      <li><b>Not your call, these just match the page you already like:</b> growing your name on
+        settings from 20px to 28px, and folding seven crowded text sizes down to four or five,
+        are both this screen catching up to the same ladder your own Cuts &amp; Culture salon
+        page already clears. Nothing new is being decided there, it's the same rule applied here
+        that already applies everywhere else. Every option that touches bold text (D, and part of
+        B) is the same kind of catch-up: it moves weight share toward the ceiling this system
+        already enforces on every other screen.</li>
+    </ul>
+    <div class="divider">
+      None of these four options touch a shared component file (SalonCard, Header,
+      SearchTemplate, SalonMobileBookBar, HomeSearchPill, BottomNav). Every change is scoped to
+      this test page's own copy of the real routes. Picking one still needs to be built for real,
+      into the actual page or component file, before it ships.
+    </div>
+  </div>
+
+  <div class="foot">
+    Every panel above loads the same two live routes, /de/profile and /de/profile/settings, from
+    your dev server, not a redraw. Each fix is copied from its own separate mockup file, named at
+    the top of this page's source, and applied here exactly as it was built there. No shared
+    component was edited to make this page. Option A is not shown, its file was never written.
+  </div>
+
+<script>
+  // SEQUENTIAL LOAD FIX, added this turn. The mechanisms below (Option B fold, Option C splice,
+  // Option D weight-500, Option E crop + name-match) are byte-for-byte the same functions that
+  // were already here. What changed is WHEN they run: every iframe below started with no src
+  // (see data-src in the HTML), because six live copies of a real Next.js route loading at once
+  // overloaded the dev server and the browser badly enough that fix-detection polls hit their
+  // cap before the target element ever appeared, and once a cap was hit the panel stayed broken
+  // for the life of the page. Panels now load ONE AT A TIME, in the order they appear on the
+  // page, gated by an IntersectionObserver so a panel below the fold never starts before one the
+  // owner can actually see. A panel whose fix is not confirmed applied replaces its own caption
+  // with a plain "did not apply, reload" note and hides the claimed numbers, it never leaves a
+  // claim standing next to an unchanged screen.
+
+  var POLL_INTERVAL_MS = 200;
+  var POLL_CAP = 300; // 300 * 200ms = 60 seconds, raised from the previous 30 second cap
+
+  // ---------------- shared status/caption helpers ----------------
+  function markApplied(item, statusEl) {
+    if (!statusEl) return;
+    statusEl.classList.remove('failed');
+    statusEl.classList.add('applied');
+    statusEl.textContent = statusEl.classList.contains('needsyes') ? 'applied (needs your yes to ship)' : 'applied';
+  }
+  function markAppliedWithText(statusEl, text) {
+    if (!statusEl) return;
+    statusEl.classList.remove('failed');
+    statusEl.classList.add('applied');
+    statusEl.textContent = text;
+  }
+  function markFailed(item, statusEl, customMessage) {
+    var iframe = document.getElementById(item.id);
+    var panel = iframe ? iframe.closest('.panel') : null;
+    if (statusEl) {
+      statusEl.classList.remove('applied');
+      statusEl.classList.add('failed');
+      statusEl.textContent = customMessage || 'not applied on this load';
+    }
+    if (panel) {
+      var claimBadge = panel.querySelector('.badge:not(.status)');
+      if (claimBadge) claimBadge.style.display = 'none';
+      if (!panel.querySelector('.not-applied-note')) {
+        var note = document.createElement('div');
+        note.className = 'not-applied-note';
+        note.textContent = 'This change did not apply when the page loaded. Reload the page to try again.';
+        var frame = panel.querySelector('.frame');
+        if (frame) { frame.insertAdjacentElement('afterend', note); } else { panel.appendChild(note); }
+      }
+    }
+  }
+
+  // Keeps a fix alive across the real page re-rendering over the injected node. One variant was
+  // measured applying and then being silently discarded by hydration, this watches for that and
+  // re-applies for a bounded window rather than trusting a single pass.
+  function observeAndReapply(doc, applyFn, debugId) {
+    try {
+      var scheduled = false;
+      var mo = new MutationObserver(function () {
+        if (scheduled) return;
+        scheduled = true;
+        setTimeout(function () {
+          scheduled = false;
+          try { applyFn(doc); } catch (e) { console.error('[compare-profile-and-settings:' + debugId + '] reapply after mutation failed:', e); }
+        }, 50);
+      });
+      mo.observe(doc.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style'] });
+      setTimeout(function () { mo.disconnect(); }, 20000);
+    } catch (e) {
+      console.error('[compare-profile-and-settings:' + debugId + '] could not watch for hydration overwrite:', e);
+    }
+  }
+  // Same idea for a fix that inserts a whole node (Option C, Option E1): if hydration removes or
+  // overwrites the inserted node, put a fresh copy back.
+  //
+  // FIX, diagnosed this turn: the previous version only checked `container.contains(node)` (the
+  // exact node object still attached anywhere) and only watched for 20 seconds. Reproduced live,
+  // twice: on /de/profile/settings, React logs a real hydration-mismatch warning that does NOT
+  // remove our node, it PATCHES it in place, React reassigns the DOM position it expected for its
+  // own SectionLabel onto our inserted div, overwriting its class/style/text ("Your favorites...")
+  // with the real "Einstellungen" label, so `container.contains(node)` kept returning true (the
+  // node object never left the tree) while its content was gone, and the old 20-second window had
+  // also already expired by the time this happened (the queue can still be loading later panels
+  // when it fires). Fixed two ways: (1) presence is now checked by a stable `data-cmp-c` marker
+  // read from the live DOM instead of trusting the JS node reference, which catches in-place
+  // content replacement, not just removal; (2) the observer watches the whole subtree
+  // (attributes + characterData + childList), and never disconnects, matching the sibling
+  // compare-notifications.html pattern, which also never disconnects its own reapply observer.
+  function watchInsertionPersists(container, node, reinsertAt, debugId) {
+    try {
+      var current = node;
+      var mo = new MutationObserver(function () {
+        if (container.querySelector('[data-cmp-c="1"]')) return;
+        try {
+          var fresh = current.cloneNode(true);
+          container.insertBefore(fresh, container.children[reinsertAt] || null);
+          current = fresh;
+        } catch (e) {
+          console.error('[compare-profile-and-settings:' + debugId + '] reinsert after mutation failed:', e);
+        }
+      });
+      mo.observe(container, { childList: true, subtree: true, attributes: true, characterData: true });
+    } catch (e) {
+      console.error('[compare-profile-and-settings:' + debugId + '] could not watch insertion point:', e);
+    }
+  }
+
+  function waitForFrameReady(iframe, cb, giveUpCb) {
+    var tries = 0;
+    var iv = setInterval(function () {
+      tries++;
+      var doc = null;
+      try { doc = iframe.contentDocument; } catch (e) { doc = null; }
+      if (doc && doc.readyState === 'complete') { clearInterval(iv); cb(doc); return; }
+      if (tries > POLL_CAP) { clearInterval(iv); giveUpCb(); }
+    }, POLL_INTERVAL_MS);
+  }
+
+  // Root cause of Option C's real flakiness, found by isolating it from the rest of the compare
+  // page: `readyState === 'complete'` fires BEFORE this app's client-side hydration settles,
+  // especially under this page's own heavy load (10 stacked copies of a data-fetching route).
+  // Confirmed live: injecting the same raw DOM sibling right after `readyState complete` collided
+  // with hydration's own reconciliation (a real "tree hydrated but attributes didn't match"
+  // warning, React discarding the injected sibling in place) and could repeat; injecting the
+  // identical node after the page's network genuinely went idle never triggered the warning once,
+  // 15s watched on both routes. Root DOM insertion is the one Option-C-specific move that can
+  // collide with React this way (the CSS/style-only fixes in B/D/E2 do not touch React's own
+  // children). Fixed by waiting for a quiet period (no DOM mutations) before inserting, a same-
+  // origin-iframe-safe proxy for "hydration has settled", instead of racing it.
+  function waitForQuiet(doc, quietMs, maxWaitMs, cb) {
+    var start = Date.now();
+    var lastMutation = start;
+    var mo = null;
+    try {
+      mo = new MutationObserver(function () { lastMutation = Date.now(); });
+      mo.observe(doc.body, { childList: true, subtree: true, attributes: true, characterData: true });
+    } catch (e) {
+      console.error('[compare-profile-and-settings:waitForQuiet] observe failed:', e);
+    }
+    var iv = setInterval(function () {
+      var quiet = Date.now() - lastMutation >= quietMs;
+      var timedOut = Date.now() - start > maxWaitMs;
+      if (quiet || timedOut) {
+        clearInterval(iv);
+        if (mo) mo.disconnect();
+        cb();
+      }
+    }, 150);
+  }
+
+  // Second half of the same fix: a quiet DOM is not the same as a FULLY RENDERED one, if the
+  // mutation stream pauses briefly between two async render passes, waitForQuiet can report
+  // "quiet" while the page is still mid-render (a real failure reproduced live: root found with
+  // only its loading-skeleton children). This polls the actual insertion target until its child
+  // count is both >= 2 and stable across two checks, instead of trusting a one-shot read.
+  function waitForRootReady(doc, isSettings, timeoutMs, cb) {
+    var start = Date.now();
+    var lastCount = -1;
+    var stableSince = null;
+    var iv = setInterval(function () {
+      var root = isSettings
+        ? doc.querySelector('[class*="max-w-[560px]"]')
+        : doc.querySelector('[class*="max-w-[560px]"][class*="px-5"]');
+      var count = root ? root.children.length : 0;
+      if (count >= 2 && count === lastCount) {
+        if (stableSince === null) stableSince = Date.now();
+        if (Date.now() - stableSince >= 500) {
+          clearInterval(iv);
+          cb(root);
+          return;
+        }
+      } else {
+        stableSince = null;
+      }
+      lastCount = count;
+      if (Date.now() - start > timeoutMs) {
+        clearInterval(iv);
+        cb(count >= 2 ? root : null);
+      }
+    }, 200);
+  }
+
+  // Generic runner for a fix that is one function(doc) -> boolean, called on an interval until it
+  // returns true or the cap is hit. Covers Option B (fold), Option D (weight-500), Option E2
+  // (settings name match). Mechanisms unchanged from before this turn.
+  function startWithApplyFn(item, applyFn, done) {
+    var iframe = document.getElementById(item.id);
+    var statusEl = document.getElementById(item.statusId);
+    if (statusEl) { statusEl.classList.remove('applied', 'failed'); statusEl.textContent = 'loading...'; }
+    iframe.src = iframe.getAttribute('data-src');
+    var tries = 0;
+    var iv = setInterval(function () {
+      tries++;
+      var doc = null;
+      try { doc = iframe.contentDocument; } catch (e) { doc = null; }
+      try {
+        if (doc && doc.readyState === 'complete' && applyFn(doc)) {
+          clearInterval(iv);
+          observeAndReapply(doc, applyFn, item.id);
+          markApplied(item, statusEl);
+          done(true);
+          return;
+        }
+      } catch (e) {
+        console.error('[compare-profile-and-settings:' + item.id + '] apply failed:', e);
+      }
+      if (tries > POLL_CAP) {
+        clearInterval(iv);
+        markFailed(item, statusEl);
+        done(false);
+      }
+    }, POLL_INTERVAL_MS);
+  }
+
+  // ================= plain "Now" panels: no fix, just load and confirm the load =================
+  function startPlain(item, done) {
+    var iframe = document.getElementById(item.id);
+    var statusEl = document.getElementById(item.statusId);
+    if (statusEl) { statusEl.classList.remove('applied', 'failed'); statusEl.textContent = 'loading...'; }
+    iframe.src = iframe.getAttribute('data-src');
+    waitForFrameReady(iframe, function () {
+      markAppliedWithText(statusEl, 'loaded');
+      done(true);
+    }, function () {
+      markFailed(item, statusEl, 'could not load, reload the page');
+      done(false);
+    });
+  }
+
+  // ================= Option B: fold small text (fix-profile-and-settings--b-hierarchy) =================
+  // Mechanism unchanged.
+  function leafTextEls(doc) {
+    var all = doc.querySelectorAll("body *");
+    var out = [];
+    for (var i = 0; i < all.length; i++) {
+      var el = all[i];
+      if (el.children.length > 0) continue;
+      var text = (el.textContent || "").trim();
+      if (!text) continue;
+      var r = el.getBoundingClientRect();
+      if (r.width <= 0 || r.height <= 0) continue;
+      out.push(el);
+    }
+    return out;
+  }
+  // Both fold functions used to `return true` unconditionally, so startWithApplyFn marked the
+  // panel "applied" whether or not any element actually matched a size bucket. Fixed: each
+  // function now tracks which elements it actually touched and reads the DOM back afterward to
+  // confirm the resized value stuck, returning false (keep polling) until that is true. On
+  // settings, the name-size bucket (19-21px -> 28px) must specifically land, since that is the
+  // one claim (B2's "name size 20px -> 28px") a real user reads off this panel; a run that only
+  // folds the small badge/meta text without ever touching the name is not "applied".
+  function foldProfile(doc) {
+    var touched = [];
+    leafTextEls(doc).forEach(function (el) {
+      var size = parseFloat(getComputedStyle(el).fontSize);
+      if (size >= 17 && size <= 19) { el.style.fontSize = "15.5px"; el.style.fontWeight = "500"; touched.push({ el: el, to: 15.5 }); }
+      else if (size >= 9 && size <= 11) { el.style.fontSize = "12px"; touched.push({ el: el, to: 12 }); }
+      else if (size >= 12.5 && size <= 13.5) { el.style.fontSize = "12px"; touched.push({ el: el, to: 12 }); }
+    });
+    if (touched.length === 0) return false;
+    return touched.every(function (t) {
+      return Math.abs(parseFloat(getComputedStyle(t.el).fontSize) - t.to) < 0.5;
+    });
+  }
+  function foldSettings(doc) {
+    var nameEl = null;
+    var touched = [];
+    leafTextEls(doc).forEach(function (el) {
+      var size = parseFloat(getComputedStyle(el).fontSize);
+      if (size >= 19 && size <= 21) {
+        el.style.fontSize = "28px"; el.style.fontWeight = "600"; el.style.letterSpacing = "-0.02em";
+        nameEl = el;
+        touched.push({ el: el, to: 28 });
+      } else if (size >= 17 && size <= 19) { el.style.fontSize = "15px"; el.style.fontWeight = "500"; touched.push({ el: el, to: 15 }); }
+      else if (size >= 9 && size <= 11) { el.style.fontSize = "12px"; touched.push({ el: el, to: 12 }); }
+      else if (size >= 12.5 && size <= 13.5) { el.style.fontSize = "12px"; touched.push({ el: el, to: 12 }); }
+    });
+    if (!nameEl) return false; // the load-bearing claim (name -> 28px) never matched, keep polling
+    return touched.every(function (t) {
+      return Math.abs(parseFloat(getComputedStyle(t.el).fontSize) - t.to) < 0.5;
+    });
+  }
+  function startB(item, done) {
+    startWithApplyFn(item, item.settings ? foldSettings : foldProfile, done);
+  }
+
+  // ================= Option C: real favorites splice (fix-profile-and-settings--c-content-forward) =================
+  // Mechanism unchanged: fetch the real /de/profile/favorites cards once into a hidden iframe,
+  // then clone them into whichever panel needs them. Only the timing changed: the hidden source
+  // frame used to load eagerly at parse time regardless of whether any C panel had started; now
+  // it loads lazily, the first time a C panel reaches the front of the queue, and its result is
+  // cached and shared so the second C panel does not reload it.
+  var favSourceStarted = false;
+  var favSourceResult = null;
+  var favSourceWaiters = [];
+  function ensureFavoritesSource(cb) {
+    if (favSourceResult) { cb(favSourceResult); return; }
+    favSourceWaiters.push(cb);
+    if (favSourceStarted) return;
+    favSourceStarted = true;
+    // FIX, diagnosed this turn: this used to sit at position:absolute;left:-9999px, geometrically
+    // outside any viewport. Confirmed live (Playwright, real dev server, kunde@solen.ch signed in,
+    // the seed customer who actually has favorites saved): .card-listing was found within 2s
+    // either way, but with the off-canvas position the card's next/image <img> never left
+    // naturalWidth:0/complete:false even after 30s, because native lazy-loading only fires once an
+    // element is geometrically near a viewport, and -9999px never is. The identical iframe
+    // positioned in-viewport (fixed;left:0;top:0) loaded the same image within 1s. So this always
+    // timed out waiting on `img.complete && img.naturalWidth > 0` and Option C reported honestly
+    // failed on every load, never actually broken data, just an unreachable image. Fixed by
+    // keeping the source iframe geometrically inside the viewport (fixed, top:0/left:0) while
+    // staying invisible and inert (opacity:0, pointer-events:none, z-index:-1), which still lets
+    // native lazy-loading trigger.
+    var sourceFrame = document.createElement('iframe');
+    sourceFrame.src = '/de/profile/favorites';
+    sourceFrame.style.cssText = 'position:fixed;left:0;top:0;width:402px;height:1400px;opacity:0;pointer-events:none;z-index:-1;';
+    sourceFrame.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(sourceFrame);
+    var tries = 0;
+    var iv = setInterval(function () {
+      tries++;
+      var result = null;
+      try {
+        var ready = sourceFrame.contentDocument && sourceFrame.contentDocument.readyState === 'complete';
+        if (ready) {
+          var doc = sourceFrame.contentDocument;
+          if (/\/auth\/login/.test(sourceFrame.contentWindow.location.pathname)) {
+            result = { loggedOut: true };
+          } else {
+            var cards = Array.prototype.slice.call(doc.querySelectorAll('.card-listing')).slice(0, 2);
+            if (cards.length > 0) {
+              var img = cards[0].querySelector('img');
+              if (!img || (img.complete && img.naturalWidth > 0)) result = { cards: cards };
+            } else if (tries > POLL_CAP) {
+              result = { empty: true };
+            }
+          }
+        }
+      } catch (e) {
+        console.error('[compare-profile-and-settings:favorites-source] read failed:', e);
+      }
+      if (!result && tries > POLL_CAP) result = { timeout: true };
+      if (result) {
+        clearInterval(iv);
+        favSourceResult = result;
+        favSourceWaiters.forEach(function (fn) { fn(result); });
+        favSourceWaiters = [];
+      }
+    }, POLL_INTERVAL_MS);
+  }
+  function buildInsertBlock(doc) {
+    var wrap = doc.createElement('div');
+    wrap.setAttribute('data-cmp-c', '1');
+    wrap.style.marginTop = '18px';
+    var label = doc.createElement('p');
+    label.textContent = 'Your favorites';
+    label.style.cssText = 'font-size:12px;font-weight:600;color:#52525B;margin-bottom:8px';
+    wrap.appendChild(label);
+    var cardsBox = doc.createElement('div');
+    cardsBox.style.cssText = 'display:flex;flex-direction:column;gap:10px';
+    wrap.appendChild(cardsBox);
+    var link = doc.createElement('a');
+    link.href = '/de/profile/favorites';
+    link.textContent = 'See all favorites';
+    link.style.cssText = 'display:inline-block;margin-top:10px;font-size:13px;font-weight:500;color:#276EF1';
+    wrap.appendChild(link);
+    return { wrap: wrap, cardsBox: cardsBox };
+  }
+  function finishC(item, doc, src, statusEl, done) {
+    try {
+      if (src.cards) {
+        // FIX, diagnosed this turn: settings/page.tsx nests a SECOND <main> inside the layout's
+        // <main> (confirmed live via Playwright: two <main> elements, the outer one's only div
+        // child is the desktop breadcrumb wrapper with 1 child). `doc.querySelector('main > div')`
+        // always matched that breadcrumb div, never the real content column, so
+        // `root.children.length < 2` always failed and this panel never once inserted. The real
+        // container is `<div className="max-w-[560px] mx-auto pb-20">` (settings/page.tsx line
+        // 84, confirmed live: 24 children), matched here by class substring like the profile path
+        // already does.
+        var root = item.settings
+          ? doc.querySelector('[class*="max-w-[560px]"]')
+          : doc.querySelector('[class*="max-w-[560px]"][class*="px-5"]');
+        if (!root || root.children.length < 2) {
+          markFailed(item, statusEl, 'could not find where to insert the favorites on this load');
+          done(false);
+          return;
+        }
+        var header = root.children[0];
+        if (!item.settings) {
+          header.style.paddingTop = '10px';
+          var eyebrow = header.querySelector('p');
+          if (eyebrow) eyebrow.style.marginBottom = '8px';
+        } else {
+          header.style.marginTop = '10px';
+          header.style.marginBottom = '2px';
+        }
+        var built = buildInsertBlock(doc);
+        src.cards.forEach(function (c) { built.cardsBox.appendChild(doc.importNode(c, true)); });
+        root.insertBefore(built.wrap, root.children[1]);
+        markAppliedWithText(statusEl, 'applied (needs your yes to ship), ' + src.cards.length + ' real card' + (src.cards.length === 1 ? '' : 's'));
+        watchInsertionPersists(root, built.wrap, 1, item.id);
+        done(true);
+      } else if (src.loggedOut) {
+        markFailed(item, statusEl, 'no session, nothing real to show');
+        done(false);
+      } else if (src.empty) {
+        markFailed(item, statusEl, '0 favorites saved this session, nothing real to show');
+        done(false);
+      } else {
+        markFailed(item, statusEl);
+        done(false);
+      }
+    } catch (e) {
+      console.error('[compare-profile-and-settings:' + item.id + '] option C splice failed:', e);
+      markFailed(item, statusEl);
+      done(false);
+    }
+  }
+  function startC(item, done) {
+    var iframe = document.getElementById(item.id);
+    var statusEl = document.getElementById(item.statusId);
+    if (statusEl) { statusEl.classList.remove('applied', 'failed'); statusEl.textContent = 'loading...'; }
+    iframe.src = iframe.getAttribute('data-src');
+    var targetDoc = null;
+    var srcResult = null;
+    var settled = false;
+    function tryFinish() {
+      if (settled || !targetDoc || !srcResult) return;
+      settled = true;
+      // Wait for the target frame's own DOM to go quiet (hydration settled), THEN wait for the
+      // actual insertion target to be present with a stable child count, before inserting.
+      // Two different transient-timing failures, reproduced live: hydration overwriting a too-
+      // early insertion (waitForQuiet), and the insertion point read mid-render with too few
+      // children on a single check (waitForRootReady). Timeouts sized against the same ~60s
+      // (POLL_CAP * POLL_INTERVAL_MS) budget every other fix on this page gets. Measured across
+      // six fresh loads this turn: this combination now inserts correctly on both the profile and
+      // settings panel in the large majority of loads (4 of 6 full loads, both panels correct);
+      // the rest showed one of the two panels missing its render window under this page's own
+      // heavy concurrent iframe load and reporting an honest failure instead of a false "applied"
+      // - never the reverse. A retry loop was tried and removed: it more than doubled the worst-
+      // case wait without a measurable reliability gain, which is not a trade worth making here.
+      waitForQuiet(targetDoc, 800, 15000, function () {
+        waitForRootReady(targetDoc, !!item.settings, 20000, function () {
+          finishC(item, targetDoc, srcResult, statusEl, done);
+        });
+      });
+    }
+    waitForFrameReady(iframe, function (doc) { targetDoc = doc; tryFinish(); }, function () {
+      if (settled) return;
+      settled = true;
+      markFailed(item, statusEl);
+      done(false);
+    });
+    ensureFavoritesSource(function (result) { srcResult = result; tryFinish(); });
+  }
+
+  // ================= Option D: lighter bold (fix-profile-and-settings--d-airbnb-weight) =================
+  // Mechanism unchanged.
+  function applyWeight500(doc) {
+    if (doc.getElementById('weight-500-style')) return true;
+    if (!doc.querySelector('.font-semibold') && !doc.querySelector('.font-bold')) return false;
+    var st = doc.createElement('style');
+    st.id = 'weight-500-style';
+    st.textContent = '.font-semibold,.font-bold{font-weight:500 !important}';
+    doc.head.appendChild(st);
+    return true;
+  }
+  function startD(item, done) {
+    startWithApplyFn(item, applyWeight500, done);
+  }
+
+  // ================= Option E1: cropped favorites on profile (fix-profile-and-settings--e-recompose) =================
+  // Mechanism unchanged: an outer poll waits for the profile page then inserts a cropped inner
+  // iframe of /de/profile/favorites; an inner poll waits for that inner iframe then strips its
+  // chrome. Only the poll cap and the sequencing into the shared queue changed.
+  var CROP_H = 520;
+  function insertFavSection(doc) {
+    if (doc.getElementById('mockup-fav-wrap')) return doc.getElementById('mockup-fav-wrap');
+    var h1 = doc.querySelector('h1');
+    if (!h1) return null;
+    var block = h1.parentElement && h1.parentElement.parentElement && h1.parentElement.parentElement.parentElement;
+    if (!block) return null;
+    var wrap = doc.createElement('div');
+    wrap.id = 'mockup-fav-wrap';
+    wrap.style.cssText = 'position:relative;overflow:hidden;height:' + CROP_H + 'px;margin:14px -20px 0;background:#F4F4F5;';
+    var innerFrame = doc.createElement('iframe');
+    innerFrame.id = 'mockup-fav-inner';
+    innerFrame.src = '/de/profile/favorites';
+    innerFrame.title = 'your real favorites, live';
+    innerFrame.style.cssText = 'position:absolute;top:0;left:0;width:390px;height:1400px;border:0;';
+    wrap.appendChild(innerFrame);
+    block.insertAdjacentElement('afterend', wrap);
+    return wrap;
+  }
+  function patchFavInner(idoc) {
+    var section = idoc.querySelector('main section');
+    if (!section) return false;
+    var header = idoc.querySelector('header');
+    var navs = idoc.querySelectorAll('nav');
+    var countP = idoc.querySelector('main > p');
+    if (header) header.style.display = 'none';
+    navs.forEach(function (n) { n.style.display = 'none'; });
+    if (countP) countP.style.display = 'none';
+    var main = idoc.querySelector('main');
+    if (main) main.style.cssText = 'padding:0 16px;margin:0;max-width:none;';
+    return true;
+  }
+  function startE1(item, done) {
+    var afterFrame = document.getElementById(item.id);
+    var statusEl = document.getElementById(item.statusId);
+    if (statusEl) { statusEl.classList.remove('applied', 'failed'); statusEl.textContent = 'loading...'; }
+    afterFrame.src = afterFrame.getAttribute('data-src');
+    var outerTries = 0;
+    var outerIv = setInterval(function () {
+      outerTries++;
+      try {
+        var doc = afterFrame.contentDocument;
+        if (doc && doc.readyState === 'complete') {
+          var wrap = insertFavSection(doc);
+          if (wrap) {
+            clearInterval(outerIv);
+            var innerFrame = doc.getElementById('mockup-fav-inner');
+            var innerTries = 0;
+            var innerIv = setInterval(function () {
+              innerTries++;
+              try {
+                var idoc = innerFrame.contentDocument;
+                if (idoc && idoc.readyState === 'complete' && patchFavInner(idoc)) {
+                  clearInterval(innerIv);
+                  markApplied(item, statusEl);
+                  done(true);
+                  return;
+                }
+              } catch (e) {
+                console.error('[compare-profile-and-settings:' + item.id + '] inner favorites patch failed:', e);
+              }
+              if (innerTries > POLL_CAP) {
+                clearInterval(innerIv);
+                markFailed(item, statusEl);
+                done(false);
+              }
+            }, POLL_INTERVAL_MS);
+          }
+        }
+      } catch (e) {
+        console.error('[compare-profile-and-settings:' + item.id + '] outer patch failed:', e);
+      }
+      if (outerTries > POLL_CAP) {
+        clearInterval(outerIv);
+        markFailed(item, statusEl);
+        done(false);
+      }
+    }, POLL_INTERVAL_MS);
+  }
+
+  // ================= Option E2: settings name match (fix-profile-and-settings--e-recompose) =================
+  // Mechanism unchanged.
+  function applySettingsNameMatch(doc) {
+    if (doc.getElementById('mockup-settings-style')) return true;
+    var nameEl = doc.querySelector('div[class*="text-[20px]"][class*="font-bold"]');
+    if (!nameEl) return false;
+    var style = doc.createElement('style');
+    style.id = 'mockup-settings-style';
+    style.textContent = '.mockup-name-match { font-size:28px !important; font-weight:600 !important; letter-spacing:-0.02em !important; }';
+    doc.head.appendChild(style);
+    nameEl.classList.add('mockup-name-match');
+    return true;
+  }
+  function startE2(item, done) {
+    startWithApplyFn(item, applySettingsNameMatch, done);
+  }
+
+  // ================= the queue: one panel at a time, in page order, gated by viewport =================
+  var QUEUE = [
+    { id: 'nowProfile',   type: 'plain', statusId: 'statusNowProfile' },
+    { id: 'frameB1',      type: 'B',     statusId: 'statusB1' },
+    { id: 'frameC1',      type: 'C',     statusId: 'statusC1', settings: false },
+    { id: 'frameD1',      type: 'D',     statusId: 'statusD1' },
+    { id: 'frameE1',      type: 'E1',    statusId: 'statusE1' },
+    { id: 'nowSettings',  type: 'plain', statusId: 'statusNowSettings' },
+    { id: 'frameB2',      type: 'B',     statusId: 'statusB2', settings: true },
+    { id: 'frameC2',      type: 'C',     statusId: 'statusC2', settings: true },
+    { id: 'frameD2',      type: 'D',     statusId: 'statusD2' },
+    { id: 'frameE2',      type: 'E2',    statusId: 'statusE2' }
+  ];
+  var STARTERS = { plain: startPlain, B: startB, C: startC, D: startD, E1: startE1, E2: startE2 };
+  var currentIndex = 0;
+
+  function advanceQueue() {
+    if (currentIndex >= QUEUE.length) return;
+    var item = QUEUE[currentIndex];
+    if (item.started || !item.observed) return;
+    item.started = true;
+    STARTERS[item.type](item, function () {
+      currentIndex++;
+      advanceQueue();
+    });
+  }
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      var item = entry.target.__queueItem;
+      if (item) { item.observed = true; io.unobserve(entry.target); }
+    });
+    advanceQueue();
+  }, { root: null, rootMargin: '600px 0px 600px 0px', threshold: 0 });
+
+  QUEUE.forEach(function (item) {
+    var iframe = document.getElementById(item.id);
+    var frameWrap = iframe ? iframe.closest('.frame') : null;
+    if (!frameWrap) { console.error('[compare-profile-and-settings:' + item.id + '] no .frame wrapper found, skipping'); return; }
+    frameWrap.__queueItem = item;
+    io.observe(frameWrap);
+  });
+  // No manual kick needed: the first panel sits at the very top of the page, so the browser's own
+  // first IntersectionObserver callback (fired automatically once observe() runs) reports it as
+  // already in view and the chain starts itself from there.
+</script>
+</html>

@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Category pages: promote the heading that already exists</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/coiffeur/page.tsx, which renders
+  app/[locale]/_components/search/SearchTemplate.tsx (serviceFilter="coiffeur"). The same
+  SearchTemplate + CategoryMobileRails render /de/nails and /de/spa too (app/[locale]/nails/page.tsx,
+  app/[locale]/spa/page.tsx, serviceFilter swapped). Verified this turn with a Playwright script that
+  runs the project's own scripts/check-geometry.mjs extractFloors() function (copied verbatim, not
+  reimplemented) against the live /de/coiffeur route, run 3x, byte-identical every time. This mockup
+  shows /de/coiffeur only; the same fix applies unchanged to /de/nails and /de/spa. Both panels are the
+  REAL, WHOLE route in a real iframe, not a section fragment: only one line of that whole page changes.
+
+  Mechanism (assigned): HIERARCHY FIRST. Give the screen a real anchor and re-rank what already exists
+  under it. Nothing moves position, nothing new is added; only what is biggest, what is second, and
+  what recedes. This is deliberately NOT the same fix as the sibling mockup at
+  public/_mockups/floor-fix-category-pages/, which inserts a brand-new headline + count element above
+  the existing content. That one ADDS an element. This one PROMOTES one that is already on the screen
+  and touches nothing else, no new DOM node, no revived copy.
+
+  Depicts: search bar, filter row, rail headings, salon cards -> app/[locale]/_components/search/SearchTemplate.tsx
+    + app/[locale]/_components/search/CategoryMobileRails.tsx (all real, unmodified structure, both panels)
+  Depicts: the promoted heading's text -> app/[locale]/_components/search/CategoryMobileRails.tsx lines 90-95
+    (the RailHeading() function, an internal h2) and line 224 (title={`Top ${categoryLabel}`}, the exact
+    string the first rail already renders). The mockup's script does not retype this text; it selects the
+    live h2 whose textContent matches /^Top /  and restyles that node in place.
+  Depicts: the second rail heading -> app/[locale]/_components/search/CategoryMobileRails.tsx line 235
+    (title={pick(TITLES.nearby, locale)}, same RailHeading component); left completely untouched, so it
+    reads as the second tier under the new anchor by contrast alone.
+
+  Diagnosis: category page display anchor | measured 18px "Top Coiffeur" (scripts/check-geometry.mjs --floors-only /de/coiffeur, run 3x live, identical every time) | violates CLAUDE.md FLOORS LAW / NEVER-AGAIN floor 6, display anchor >= 28px | target 28px, house value 30px, achieved 30px by resizing the existing rail heading in place
+  Diagnosis: category page anchor ratio | measured 1.5x, 18px anchor over 12px median body text (same check-geometry.mjs run) | violates FLOORS LAW 7b, anchor ratio >= 1.8x | target >= 1.8x, achieved 2.5x
+
+  Exists-check: `npm run exists "category page display anchor"` ran this turn, 0 matches (safe to
+    propose). `npm run exists "category page hierarchy"` ran too, 0 matches. `npm run exists "RailHeading"`
+    returned 0 matches because RailHeading is an un-exported local function inside CategoryMobileRails.tsx
+    (confirmed by grep, line 90), not a route/API/exported component the index scans; this is expected, not
+    a miss. Both rail headings on this route render through that one function (grep confirmed: line 129 calls
+    RailHeading, line 224 and line 235 are its two call sites on this page), so the heading being promoted
+    here is real, already-shipped, and already reused, nothing invented.
+
+  Treatment-only, with one named exception: the salon cards, search bar, filter row, and the second rail
+    heading are untouched, same DOM, same classes, same position. The one thing that changes is the CSS of
+    ONE existing node (the first rail's h2): font-size 18px -> 30px, font-weight 600 -> 500, line-height
+    1.25 -> 1.15. No element is added, removed, or reordered. The exception, named plainly: that h2's class
+    list is `font-display text-[clamp(18px,2vw,20px)] font-semibold ...`, which is the sitewide "section-H2"
+    value CLAUDE.md's Design Contract table locks at clamp(18px,2vw,20px) for every rail/section heading on
+    the site. This mockup overrides that locked value for ONE instance on ONE screen. That is a real
+    collision with a frozen literal, not a clean treatment, and it needs the owner's yes for that reason,
+    spelled out below the panels alongside the actual measured numbers.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --border:#E4E4E7; --sunken:#F4F4F5;
+    --accent:#276EF1; --success:#16A34A; --fail:#DC2626;
+    --font-body:'Inter',system-ui,-apple-system,sans-serif;
+    --font-display:'Inter Tight',system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:auto}
+  body{
+    font-family:var(--font-body); background:#fff; color:var(--ink);
+    -webkit-font-smoothing:antialiased; padding:28px 16px 64px;
+  }
+  .wrap{max-width:900px;margin:0 auto}
+  h1.page-title{
+    font-family:var(--font-display); font-size:22px; font-weight:600;
+    letter-spacing:-0.01em; color:var(--ink); margin-bottom:6px;
+  }
+  .lede{font-size:15px; line-height:1.55; color:var(--ink2); max-width:660px; margin-bottom:6px}
+  .lede strong{color:var(--ink); font-weight:600}
+  .shared-note{
+    font-size:13px; line-height:1.5; color:var(--ink2); background:var(--sunken);
+    border-radius:10px; padding:10px 14px; margin:16px 0 28px; max-width:660px;
+  }
+  .shared-note b{color:var(--ink)}
+  .panels{display:flex; flex-direction:column; gap:24px}
+  .panel{border:1px solid var(--border); border-radius:16px; overflow:hidden; background:#fff}
+  .panel-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 16px; border-bottom:1px solid var(--border); background:var(--sunken);
+  }
+  .panel-label{font-family:var(--font-display); font-size:14px; font-weight:600; color:var(--ink)}
+  .panel-label.after{color:var(--accent)}
+  .panel-tag{
+    font-size:11px; font-weight:600; padding:3px 8px; border-radius:999px;
+  }
+  .tag-fail{background:#FEE2E2; color:var(--fail)}
+  .tag-pass{background:#DCFCE7; color:var(--success)}
+  .frame-stage{display:flex; justify-content:center; background:#EDEDEF; padding:18px}
+  iframe{
+    width:402px; height:760px; border:0; display:block; background:#fff;
+    border-radius:8px; box-shadow:0 4px 18px rgba(0,0,0,0.10);
+  }
+  .measure-table{width:100%; border-collapse:collapse; margin-top:28px; font-size:13px}
+  .measure-table caption{
+    text-align:left; font-family:var(--font-display); font-size:16px; font-weight:600;
+    margin-bottom:10px; color:var(--ink);
+  }
+  .measure-table th, .measure-table td{
+    text-align:left; padding:9px 12px; border-bottom:1px solid var(--border);
+  }
+  .measure-table th{font-weight:600; color:var(--ink2); font-size:12px}
+  .status-pass{color:var(--success); font-weight:600}
+  .status-fail{color:var(--fail); font-weight:600}
+  .callout{
+    margin-top:28px; padding:16px 18px; border-radius:12px; border:1px solid var(--border);
+    background:#fff;
+  }
+  .callout h2{font-family:var(--font-display); font-size:16px; font-weight:600; margin-bottom:8px}
+  .callout p{font-size:14px; line-height:1.6; color:var(--ink2); margin-bottom:8px}
+  .callout p:last-child{margin-bottom:0}
+  .callout .arm{margin-top:10px; padding-left:14px; border-left:3px solid var(--border)}
+  .callout .arm b{color:var(--ink)}
+  .correction{
+    margin-top:28px; padding:16px 18px; border-radius:12px;
+    background:var(--sunken); border:1px solid var(--border);
+  }
+  .correction h2{font-family:var(--font-display); font-size:15px; font-weight:600; margin-bottom:8px; color:var(--ink)}
+  .correction p{font-size:13.5px; line-height:1.6; color:var(--ink2); margin-bottom:8px}
+  .correction p:last-child{margin-bottom:0}
+  code{font-family:ui-monospace,monospace; font-size:0.92em; background:#F4F4F5; padding:1px 5px; border-radius:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 class="page-title">The category page already has a headline. It's just the same small size as everything else.</h1>
+  <p class="lede">
+    Open <strong>solen.ch/de/coiffeur</strong> on a phone. The words "Top Coiffeur" are already
+    sitting at the top of the page, they're just printed at the same small size as a section label
+    everywhere else on the site, so your eye never lands on them. This mockup doesn't add anything
+    new. It takes that one line of text that is already there and makes it big, then leaves
+    everything else exactly where it is, so it reads as second and third instead of all the same size.
+  </p>
+  <div class="shared-note">
+    <b>One fix, three pages.</b> Coiffeur, Nails and Spa share this exact template and this exact
+    heading component, so this applies to all three unchanged.
+  </div>
+
+  <div class="panels">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-label">Live today</span>
+        <span class="panel-tag tag-fail">no anchor</span>
+      </div>
+      <div class="frame-stage">
+        <iframe id="beforeFrame" src="/de/coiffeur" title="the real category page, as shipped"></iframe>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-label after">With the fix</span>
+        <span class="panel-tag tag-pass">one heading, resized</span>
+      </div>
+      <div class="frame-stage">
+        <iframe id="afterFrame" src="/de/coiffeur" title="the real category page, with the existing heading resized"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <table class="measure-table">
+    <caption>What actually changes (measured on the real page, official check-geometry.mjs method, run 3x, identical every time)</caption>
+    <thead>
+      <tr><th>Check</th><th>Live today</th><th>With the fix</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Photo coverage of the screen</td><td>41.75% <span class="status-pass">pass</span></td><td>41.75% <span class="status-pass">pass</span></td></tr>
+      <tr><td>Biggest text on screen</td><td>18px, "Top Coiffeur" <span class="status-fail">fail</span> (needs 28px)</td><td>30px, "Top Coiffeur" <span class="status-pass">pass</span></td></tr>
+      <tr><td>Biggest text vs. body text</td><td>1.5x <span class="status-fail">fail</span> (needs 1.8x)</td><td>2.5x <span class="status-pass">pass</span></td></tr>
+      <tr><td>Share of bold text on screen</td><td>28.13% (9 of 32) <span class="status-pass">pass</span></td><td>25.0% (8 of 32) <span class="status-pass">pass</span></td></tr>
+      <tr><td>Text-size variety</td><td>4 sizes, 4 in the tightest cluster <span class="status-pass">pass</span></td><td>5 sizes, 4 in the tightest cluster <span class="status-pass">pass</span></td></tr>
+      <tr><td>Depth / shadow variety</td><td>7 distinct <span class="status-pass">pass</span></td><td>7 distinct <span class="status-pass">pass</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <h2>This needs your yes, and here's exactly why</h2>
+    <p>
+      Nothing was added. The heading you see enlarged is the real "Top Coiffeur" line the page already
+      renders, made 30px instead of 18px, medium weight instead of semibold. The second heading below
+      it (the nearby-salons rail title) is completely untouched, still 18px, so it now reads as clearly
+      second, not equal. Every salon card, every price, every rating, the search bar: all identical to
+      what ships today.
+    </p>
+    <p>
+      The catch: that heading's size isn't a free variable. It's locked. Your own design contract fixes
+      every section heading on the site (rail titles, list headers, all of them) at
+      <code>clamp(18px, 2vw, 20px)</code>, one value, everywhere, on purpose, so headings look the same
+      from screen to screen. This fix breaks that lock for one heading on one page. It is not asking you
+      to loosen the rule everywhere, only to approve one named exception.
+    </p>
+    <div class="arm">
+      <b>Option A, ship as shown.</b> This one heading grows to 30px on category pages only. All six
+      checks pass, nothing else changes, no new copy, no revived feature. The cost is a one-line, named
+      exception to a sitewide lock.
+    </div>
+    <div class="arm">
+      <b>Option B, leave the lock alone.</b> Keep every heading at 18px, including this one. The page
+      keeps failing the two size checks above, because there is no other existing text on this screen
+      big enough to promote without either breaking that same lock or adding something new, which is
+      the other mockup's approach, not this one.
+    </div>
+  </div>
+
+  <div class="correction">
+    <h2>Correction on the numbers I was handed</h2>
+    <p>
+      The brief for this fix said the page measures at 0.71% photo coverage, a 14px headline, and a
+      1.02x size ratio. I ran the project's own measuring script against the live route three separate
+      times (once as the official <code>check-geometry.mjs</code> run, twice more inside a Playwright
+      script that calls that same script's own extraction function, copied verbatim, never reimplemented)
+      and got the identical result every time: 41.75% imagery, an 18px heading, a 1.5x ratio. I could not
+      reproduce the numbers I was handed as the page's resting state. A sibling mockup working the same
+      screen independently reports the same corrected numbers, which is a second, independent
+      confirmation, not just mine.
+    </p>
+    <p>
+      The real defect is smaller than reported: two checks fail today (the heading size and the size
+      ratio), not three, and imagery already clears its floor. The fix above targets exactly those two
+      and clears both.
+    </p>
+  </div>
+</div>
+<script>
+  function applyFix(doc) {
+    if (doc.querySelector('[data-treatment-applied]')) return true;
+    var h2s = Array.prototype.slice.call(doc.querySelectorAll('h2'));
+    var target = h2s.filter(function (h) {
+      return /^Top\s/.test((h.textContent || '').trim());
+    })[0];
+    if (!target) return false;
+    target.style.fontSize = '30px';
+    target.style.fontWeight = '500';
+    target.style.lineHeight = '1.15';
+    target.setAttribute('data-treatment-applied', '1');
+    return true;
+  }
+
+  var started = false;
+  function startAfter() {
+    if (started) return;
+    started = true;
+    var f = document.getElementById('afterFrame');
+    var tries = 0;
+    var MAX_POLLS = 150; // a poll cap, never a displayed count
+    var iv = setInterval(function () {
+      tries++;
+      try {
+        var doc = f.contentDocument;
+        if (doc && applyFix(doc)) {
+          clearInterval(iv);
+        }
+      } catch (e) {}
+      if (tries > MAX_POLLS) clearInterval(iv);
+    }, 200);
+  }
+  document.getElementById('afterFrame').addEventListener('load', startAfter);
+  startAfter();
+</script>
+</body>
+</html>

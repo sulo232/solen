@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -304,13 +305,14 @@ function ScrollCircleButton({
   disabled: boolean;
   onClick: () => void;
 }) {
+  const t = useTranslations("home.discover");
   const Icon = direction === "left" ? ChevronLeft : ChevronRight;
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled}
-      aria-label={direction === "left" ? "Zurückscrollen" : "Weiterscrollen"}
+      aria-label={direction === "left" ? t("scrollLeft") : t("scrollRight")}
       className={cn(
         "grid h-9 w-9 place-items-center rounded-full",
         "border border-s-border bg-white text-s-ink",

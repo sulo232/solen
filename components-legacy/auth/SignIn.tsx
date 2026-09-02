@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Mail, Eye, EyeOff, Loader2 } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
@@ -29,9 +29,14 @@ export default function SignIn() {
   const t = useTranslations("auth") as any;
   const searchParams = useSearchParams() ?? new URLSearchParams();
   const router = useRouter();
-  const rawRedirect = searchParams.get("redirect") ?? "/";
+  const locale = useLocale();
+  // The fallback carries the LOCALE. A bare "/" resolves to the default language, so signing in on
+  // the German site landed you on the English one (measured 2026-08-27: /de, /fr and /it login all
+  // ended on /en, while the register route kept each language).
+  const home = `/${locale}`;
+  const rawRedirect = searchParams.get("redirect") ?? home;
   // SECURITY: Only allow internal relative paths — block external redirects and protocol-relative URLs
-  const redirect = rawRedirect.startsWith("/") && !rawRedirect.startsWith("//") ? rawRedirect : "/";
+  const redirect = rawRedirect.startsWith("/") && !rawRedirect.startsWith("//") ? rawRedirect : home;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

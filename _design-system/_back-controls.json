@@ -1,0 +1,44 @@
+[
+  {
+    "file": "app/[locale]/inspo/board/[id]/page.tsx",
+    "line": 73,
+    "glyph": "ArrowLeft",
+    "iconSize": "18",
+    "box": "10x10"
+  },
+  {
+    "file": "app/[locale]/_components/salon/SalonStickyTabNav.tsx",
+    "line": 188,
+    "glyph": "ArrowLeft",
+    "iconSize": "20",
+    "box": "9x9"
+  },
+  {
+    "file": "app/[locale]/walk-in-pay/page.tsx",
+    "line": 362,
+    "glyph": "ArrowLeft",
+    "iconSize": "22",
+    "box": "11x11"
+  },
+  {
+    "file": "components-legacy/booking/BookingWizard.tsx",
+    "line": 209,
+    "glyph": "ArrowLeft",
+    "iconSize": "22",
+    "box": "11x11"
+  },
+  {
+    "file": "components-legacy/discovery/DetailPage.tsx",
+    "line": 261,
+    "glyph": "ArrowLeft",
+    "iconSize": "18",
+    "box": "11x11"
+  },
+  {
+    "file": "components-legacy/editor/EditorPage.tsx",
+    "line": 173,
+    "glyph": "ArrowLeft",
+    "iconSize": "16",
+    "box": "?"
+  }
+]

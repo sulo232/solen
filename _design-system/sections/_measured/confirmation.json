@@ -1,0 +1,248 @@
+{
+  "folder": "confirmation",
+  "route": "/de/confirmation?booking_id=28b93837-e515-4066-87f2-f75a1150652a",
+  "measuredAtViewport": "402x844",
+  "httpStatus": 200,
+  "settled": true,
+  "redirectedAway": false,
+  "finalUrl": "http://localhost:3457/de/confirmation?booking_id=28b93837-e515-4066-87f2-f75a1150652a",
+  "reachedBy": {
+    "why": "/de/confirmation with no parameters calls notFound() at app/[locale]/confirmation/page.tsx:45 and renders the error state headed 'Diese Seite wurde abgeschnitten.' The page needs booking_id. This record is the REAL confirmation screen, not that error state.",
+    "bookingUsed": {
+      "id": "28b93837-e515-4066-87f2-f75a1150652a",
+      "existing": "yes, seeded. Nothing was created and nothing was written. Found with a read-only service-role SELECT run from a throwaway script in the scratchpad, never in the repo.",
+      "whyThisOne": "Of the 998 seeded bookings it is the most recent one that is status 'confirmed', has a user_id (so the RLS cookie path can read it without an access_token), has a staff_member_id (so the stylist row renders), and carries a reference_code. Ranked on those four and it came first.",
+      "reference_code": "SOL-U4AQ6",
+      "salon": "Blade & Stone, blade-and-stone, Feldbergstrasse 82, Basel",
+      "service": "Bart trimmen, CHF 28, 20 min",
+      "staff": "Deniz Yilmaz",
+      "starts_at": "2026-08-27T13:40:00+00:00, which is 15:40 Europe/Zurich on the day of measurement",
+      "status": "confirmed",
+      "payment_status": "none",
+      "payment_intent_id": null,
+      "vat_rate": null
+    },
+    "authPath": "The COOKIE path, not the guest token path. booking.user_id is 356e0a76-0eb1-4144-9100-184db27403b5, whose auth email is verify-auth-rollout-test@proton.me, so RLS policy bookings_select_own authorizes the read once that user is signed in. No access_token was needed and none was used, because the row is not a guest booking. guest_bookings holds 0 rows in this database and 530 of 998 bookings have a null user_id, but none of those was used here.",
+    "steps": [
+      "1. In the same tab-114 at 402x844, navigate to http://localhost:3457/api/dev/login?email=verify-auth-rollout-test%40proton.me&to=%2Fde%2Fconfirmation%3Fbooking_id%3D28b93837-e515-4066-87f2-f75a1150652a . The dev-login route mints a magic link for that email, writes the session cookies onto its own 307, and redirects to the `to` path, so one navigation both signs in and lands on the screen.",
+      "2. Confirm the screen is the real one and not the error state: document.title reads 'Termin bestätigt!' and the h1 reads the same. The error state's heading is 'Diese Seite wurde abgeschnitten.'",
+      "3. Settle: sample the settle signature from scripts/measure-sections.mjs twice, 4 s apart. Both returned '23|2900|96480'.",
+      "4. Confirm the viewport survived the navigation: innerWidth 402, innerHeight 844, devicePixelRatio 2, scrollY 0.",
+      "5. Run the extractSections function body from scripts/measure-sections.mjs via javascript_tool."
+    ],
+    "measuredAt": "2026-08-27T16:30Z"
+  },
+  "statesThatCouldNotBeMeasured": {
+    "_why": "Not omissions. Each one is gated on data that does not exist anywhere in this database, and the task is read only, so producing it would have meant writing a booking.",
+    "upcomingBooking": "ZERO of the 998 seeded bookings has a starts_at in the future, checked against now with a single query. BookingConfirmation.tsx:258 computes isUpcoming from that, so on every reachable confirmation isUpcoming is false. Two blocks are therefore suppressed on the screen measured here and nothing in this record describes them: the red-text cancel button at line 592, gated on canCancel (line 273, needs isUpcoming), and the reschedule path gated on canReschedule (line 267, needs hoursUntilBooking > 24). The cancel button is a real render site with real JSX, it simply has no data that reaches it in this seed.",
+    "paidBooking": "payment_status on this row is 'none', so isPaid is false. Three things follow. The h1 renders text-s-ink rather than the text-s-success it takes when isPaid (line 451). The green paid pill at line 553, rounded-pill bg-s-success-bg with a 13px Check icon, does not render, and its place is taken by the plain 'Im Salon bezahlen' line at line 559. Only 11 of 998 bookings carry a payment_intent_id at all.",
+    "splitPayment": "The remainingAtSalonLabel branch at line 531, deposit paid online plus a remainder at the salon, needs remaining_at_salon to be set. Exactly 1 of 998 rows has it. Not measured.",
+    "vatLine": "showVat switches the total label between t('totalInclVat') and t('total'). 0 of the 28 salons has vat_registered = true and this booking's vat_rate is null, so the plain 'Gesamtpreis' label rendered. The inkl-MwSt label was not measured.",
+    "guestVariant": "props.isGuest gates the access-link card at line 599, a rounded-card with the raw lookup URL in font-mono-code 13px and a copy button. This booking has a user_id so isGuest is false and that card did not render."
+  },
+  "title": "Termin bestätigt!",
+  "pathname": "/de/confirmation?booking_id=28b93837-e515-4066-87f2-f75a1150652a",
+  "documentHeight": 1155,
+  "screen": {
+    "distinctSizes": [
+      29,
+      24,
+      17,
+      16,
+      15,
+      14.5,
+      13,
+      12.5,
+      12
+    ],
+    "distinctWeights": [
+      "700",
+      "400",
+      "600"
+    ],
+    "textElements": 23,
+    "boldElements": 11
+  },
+  "sizeCountCaveat": "The 16px entry is the sr-only skip link 'Zum Inhalt springen', a 1x1 px clipped anchor that extractSections counts because sr-only uses none of display:none, visibility:hidden or opacity:0. Distinct sizes a reader can see: 8 (29, 24, 17, 15, 14.5, 13, 12.5, 12).",
+  "chromeNotOwnedByThisScreen": "Two of the five bands are the global mobile shell, not confirmation content: section 0 is the sticky global header (84px tall, back arrow plus bell plus menu) and section 4 is the global bottom tab bar (378x58 pill, Suchen / Inspo / Gespeichert / Profil). Both are counted in the screen-level size and weight totals above, because extractSections walks document.body. The per-section specs treat them as chrome.",
+  "sections": [
+    {
+      "index": 0,
+      "tag": "header",
+      "className": "sticky top-0 left-0 right-0 z-50 transition-all duration-300 ease-glide py-5 bg-transparent",
+      "heading": null,
+      "box": { "top": 0, "left": 0, "width": 402, "height": 84 },
+      "surface": { "background": "rgba(0, 0, 0, 0)", "padding": "20px 0px", "borderRadius": "0px" },
+      "textRoles": [],
+      "cards": [],
+      "imagery": { "imageCount": 0, "imageAreaPx": 0 }
+    },
+    {
+      "index": 1,
+      "tag": "main",
+      "className": "isolate pb-[calc(56px+env(safe-area-inset-bottom))] md:pb-[env(safe-area-inset-bottom)]",
+      "heading": "Termin bestätigt!",
+      "box": { "top": 84, "left": 0, "width": 402, "height": 1015 },
+      "surface": { "background": "rgba(0, 0, 0, 0)", "padding": "0px 0px 56px", "borderRadius": "0px" },
+      "textRoles": [
+        { "fontSizePx": 29, "fontWeight": "700", "fontFamily": "Inter Tight", "color": "rgb(10, 10, 10)", "textTransform": "none", "lineHeightPx": 29, "letterSpacing": "-0.58px", "count": 1, "sample": "CHF 28" },
+        { "fontSizePx": 24, "fontWeight": "700", "fontFamily": "Inter Tight", "color": "rgb(10, 10, 10)", "textTransform": "none", "lineHeightPx": 27.6, "letterSpacing": "-0.48px", "count": 1, "sample": "Termin bestätigt!" },
+        { "fontSizePx": 17, "fontWeight": "700", "fontFamily": "Inter Tight", "color": "rgb(10, 10, 10)", "textTransform": "none", "lineHeightPx": 25.5, "letterSpacing": "-0.17px", "count": 1, "sample": "Blade & Stone" },
+        { "fontSizePx": 15, "fontWeight": "600", "fontFamily": "Inter", "color": "rgb(255, 255, 255)", "textTransform": "none", "lineHeightPx": 22.5, "letterSpacing": "normal", "count": 1, "sample": "Kalender hinzufügen" },
+        { "fontSizePx": 15, "fontWeight": "600", "fontFamily": "Inter", "color": "rgb(10, 10, 10)", "textTransform": "none", "lineHeightPx": 22.5, "letterSpacing": "normal", "count": 1, "sample": "Wegbeschreibung" },
+        { "fontSizePx": 14.5, "fontWeight": "600", "fontFamily": "Inter Tight", "color": "rgb(10, 10, 10)", "textTransform": "none", "lineHeightPx": 21.75, "letterSpacing": "-0.145px", "count": 3, "sample": "Donnerstag, 27. August" },
+        { "fontSizePx": 13, "fontWeight": "400", "fontFamily": "Inter", "color": "rgb(107, 107, 107)", "textTransform": "none", "lineHeightPx": 19.5, "letterSpacing": "normal", "count": 2, "sample": "Gesamtpreis" },
+        { "fontSizePx": 13, "fontWeight": "600", "fontFamily": "Inter Tight", "color": "rgb(107, 107, 107)", "textTransform": "none", "lineHeightPx": 19.5, "letterSpacing": "-0.13px", "count": 1, "sample": "SOL-U4AQ6" },
+        { "fontSizePx": 13, "fontWeight": "600", "fontFamily": "Inter", "color": "rgb(39, 110, 241)", "textTransform": "none", "lineHeightPx": 19.5, "letterSpacing": "normal", "count": 1, "sample": "Buchung verwalten" },
+        { "fontSizePx": 12.5, "fontWeight": "400", "fontFamily": "Inter", "color": "rgb(107, 107, 107)", "textTransform": "none", "lineHeightPx": 18.75, "letterSpacing": "normal", "count": 5, "sample": "Feldbergstrasse 82, Basel" },
+        { "fontSizePx": 12, "fontWeight": "600", "fontFamily": "Inter Tight", "color": "rgb(10, 10, 10)", "textTransform": "none", "lineHeightPx": 18, "letterSpacing": "normal", "count": 1, "sample": "DY" }
+      ],
+      "cards": [
+        { "radiusPx": 16, "boxShadow": "rgba(50, 47, 44, 0.09) 0px 2px 8px 0px", "border": "1px solid rgb(228, 228, 231)", "background": "rgb(255, 255, 255)", "padding": "0px", "count": 1, "exampleSize": "362x228" },
+        { "radiusPx": 16, "boxShadow": "rgba(50, 47, 44, 0.09) 0px 2px 8px 0px", "border": "1px solid rgb(228, 228, 231)", "background": "rgb(255, 255, 255)", "padding": "16px", "count": 1, "exampleSize": "362x77" },
+        { "radiusPx": 99, "boxShadow": "none", "border": "none", "background": "rgb(10, 10, 10)", "padding": "0px", "count": 1, "exampleSize": "362x52" },
+        { "radiusPx": 99, "boxShadow": "none", "border": "1px solid rgb(228, 228, 231)", "background": "rgb(255, 255, 255)", "padding": "0px", "count": 1, "exampleSize": "362x50" }
+      ],
+      "imagery": { "imageCount": 1, "imageAreaPx": 96480 }
+    },
+    {
+      "index": 2,
+      "tag": "section",
+      "className": "celebrate-rise mt-5 overflow-hidden rounded-card border border-s-border bg-white shadow-elevation-2",
+      "heading": "Donnerstag, 27. August",
+      "box": { "top": 466, "left": 20, "width": 362, "height": 228 },
+      "surface": { "background": "rgb(255, 255, 255)", "padding": "0px", "borderRadius": "16px" },
+      "textRoles": [
+        { "fontSizePx": 14.5, "fontWeight": "600", "fontFamily": "Inter Tight", "color": "rgb(10, 10, 10)", "textTransform": "none", "lineHeightPx": 21.75, "letterSpacing": "-0.145px", "count": 3, "sample": "Donnerstag, 27. August" },
+        { "fontSizePx": 12.5, "fontWeight": "400", "fontFamily": "Inter", "color": "rgb(107, 107, 107)", "textTransform": "none", "lineHeightPx": 18.75, "letterSpacing": "normal", "count": 4, "sample": "15:40" },
+        { "fontSizePx": 12, "fontWeight": "600", "fontFamily": "Inter Tight", "color": "rgb(10, 10, 10)", "textTransform": "none", "lineHeightPx": 18, "letterSpacing": "normal", "count": 1, "sample": "DY" }
+      ],
+      "cards": [],
+      "imagery": { "imageCount": 0, "imageAreaPx": 0 }
+    },
+    {
+      "index": 3,
+      "tag": "section",
+      "className": "celebrate-rise mt-4 rounded-card border border-s-border bg-white p-4 shadow-elevation-2",
+      "heading": "CHF 28",
+      "box": { "top": 709, "left": 20, "width": 362, "height": 77 },
+      "surface": { "background": "rgb(255, 255, 255)", "padding": "16px", "borderRadius": "16px" },
+      "textRoles": [
+        { "fontSizePx": 29, "fontWeight": "700", "fontFamily": "Inter Tight", "color": "rgb(10, 10, 10)", "textTransform": "none", "lineHeightPx": 29, "letterSpacing": "-0.58px", "count": 1, "sample": "CHF 28" },
+        { "fontSizePx": 13, "fontWeight": "400", "fontFamily": "Inter", "color": "rgb(107, 107, 107)", "textTransform": "none", "lineHeightPx": 19.5, "letterSpacing": "normal", "count": 2, "sample": "Gesamtpreis" }
+      ],
+      "cards": [],
+      "imagery": { "imageCount": 0, "imageAreaPx": 0 }
+    },
+    {
+      "index": 4,
+      "tag": "nav",
+      "className": "md:hidden fixed inset-x-0 bottom-0 z-[700] [body[data-overlay-open]_&]:hidden mx-3 mb-3 rounded-full overflow-hidden mb-[calc(12px+env(safe-area-inset-bottom))]",
+      "heading": "Suchen",
+      "box": { "top": 774, "left": 12, "width": 378, "height": 58 },
+      "surface": { "background": "rgba(255, 255, 255, 0.8)", "padding": "0px", "borderRadius": "9999px" },
+      "textRoles": [
+        { "fontSizePx": 12, "fontWeight": "400", "fontFamily": "Inter", "color": "rgb(107, 107, 107)", "textTransform": "none", "lineHeightPx": 12, "letterSpacing": "normal", "count": 4, "sample": "Suchen" }
+      ],
+      "cards": [],
+      "imagery": { "imageCount": 0, "imageAreaPx": 0 }
+    }
+  ],
+  "bandAnatomy": {
+    "_note": "Separate getBoundingClientRect + getComputedStyle reads in the same settled state and the same tab. Each entry names the selector it came from.",
+    "pageWrapper": [
+      "MAIN.isolate pb-[calc(56px+env(safe-area-inset-bottom))] rect=[0,84,402,1015]",
+      "DIV.min-h-[100dvh] bg-s-bg-surface text-s-ink rect=[0,84,402,959]",
+      "MAIN.mx-auto w-full max-w-[440px] pb-16 rect=[0,84,402,959]"
+    ],
+    "hero": {
+      "wrapper": "DIV.relative h-[240px] w-full overflow-hidden",
+      "rect": [0, 84, 402, 240],
+      "imgRect": [0, 84, 402, 240],
+      "objectFit": "cover",
+      "borderRadius": "0px",
+      "srcHost": "images.unsplash.com via /_next/image",
+      "imageAreaPx": 96480,
+      "note": "Full bleed and flush, no radius, no gradient overlay found: a scan for any element with a gradient backgroundImage returned nothing."
+    },
+    "salonRow": {
+      "element": "A wrapping the salon name, address and a chevron",
+      "rect": [20, 340, 362, 54],
+      "nameRect": [20, 344, 337, 26],
+      "nameFontSize": "17px",
+      "nameFontWeight": "700",
+      "nameFontFamily": "Inter Tight",
+      "addressRect": [36, 372, 153, 19],
+      "addressFontSize": "12.5px",
+      "addressColor": "rgb(107, 107, 107)",
+      "mapPinIcon": { "rect": [20, 375, 12, 12], "color": "rgb(107, 107, 107)", "component": "lucide MapPin size 12" },
+      "chevron": { "rect": [365, 359, 17, 17], "color": "rgb(107, 107, 107)", "component": "lucide ChevronRight size 17" }
+    },
+    "headline": {
+      "selector": "h1",
+      "text": "Termin bestätigt!",
+      "rect": [20, 418, 362, 28],
+      "fontSize": "24px",
+      "fontWeight": "700",
+      "fontFamily": "Inter Tight",
+      "letterSpacing": "-0.48px",
+      "color": "rgb(10, 10, 10)",
+      "colorRule": "BookingConfirmation.tsx:451 sets text-s-success when isPaid, text-s-error when cancelled, text-s-ink otherwise. This booking is neither, so ink."
+    },
+    "noSuccessIcon": "There is no check icon, no green disc and no confetti on this screen. All 16 SVGs in the document were enumerated and every one is accounted for: 3 in the global header, 1 question-mark widget, 2 in the salon row, 2 detail-row icons, 2 button icons, 1 chevron on the manage link, 4 in the bottom tab bar, 1 hidden X. The confirmation is carried by the headline plus the hero photo alone. The one place a Check does appear in this component is inside the paid pill at line 554, which needs isPaid.",
+    "detailCard": {
+      "className": "celebrate-rise mt-5 overflow-hidden rounded-card border border-s-border bg-white shadow-elevation-2",
+      "rect": [20, 466, 362, 228],
+      "borderRadius": "16px",
+      "border": "1px rgb(228, 228, 231)",
+      "boxShadow": "rgba(50, 47, 44, 0.09) 0px 2px 8px 0px",
+      "padding": "0px on the card, 16px on each row",
+      "rows": [
+        { "role": "when", "rect": [21, 467, 360, 75], "padding": "16px", "text": "Donnerstag, 27. August / 15:40 / 20 min", "icon": { "component": "lucide Calendar size 18", "rect": [37, 495, 18, 18], "color": "rgb(107, 107, 107)" } },
+        { "role": "divider", "rect": [21, 541, 360, 1], "borderTop": "1px rgb(228, 228, 231)" },
+        { "role": "what", "rect": [21, 542, 360, 75], "padding": "16px", "text": "Bart trimmen / CHF 28", "icon": { "component": "lucide Scissors size 18", "rect": [37, 571, 18, 18], "color": "rgb(107, 107, 107)" } },
+        { "role": "divider", "rect": [21, 617, 360, 1], "borderTop": "1px rgb(228, 228, 231)" },
+        { "role": "who", "rect": [21, 618, 360, 75], "padding": "16px", "text": "DY / Deniz Yilmaz / Ihr:e Stylist:in", "avatar": { "initialsRect": [37, 641, 28, 28], "initials": "DY", "fontSize": "12px", "fontWeight": "600", "fontFamily": "Inter Tight", "background": "rgba(0, 0, 0, 0)", "borderRadius": "0px", "note": "The initials render with a transparent background and a 0px radius on this row, so there is no visible avatar disc behind them. Measured, not judged." } }
+      ],
+      "primaryLineType": { "fontSize": "14.5px", "fontWeight": "600", "fontFamily": "Inter Tight", "letterSpacing": "-0.145px" },
+      "secondaryLineType": { "fontSize": "12.5px", "fontWeight": "400", "fontFamily": "Inter", "color": "rgb(107, 107, 107)" }
+    },
+    "priceCard": {
+      "className": "celebrate-rise mt-4 rounded-card border border-s-border bg-white p-4 shadow-elevation-2",
+      "rect": [20, 709, 362, 77],
+      "borderRadius": "16px",
+      "boxShadow": "rgba(50, 47, 44, 0.09) 0px 2px 8px 0px",
+      "padding": "16px",
+      "text": "Gesamtpreis / Im Salon bezahlen / CHF 28",
+      "label": { "text": "Gesamtpreis", "fontSize": "13px", "color": "rgb(107, 107, 107)" },
+      "subLabel": { "text": "Im Salon bezahlen", "fontSize": "13px", "color": "rgb(107, 107, 107)" },
+      "amount": { "fontSize": "29px", "fontWeight": "700", "fontFamily": "Inter Tight", "letterSpacing": "-0.58px", "color": "rgb(10, 10, 10)", "fontVariantNumeric": "tabular-nums" }
+    },
+    "actions": {
+      "primary": { "text": "Kalender hinzufügen", "rect": [20, 806, 362, 52], "borderRadius": "99px", "background": "rgb(10, 10, 10)", "color": "rgb(255, 255, 255)", "fontSize": "15px", "fontWeight": "600", "icon": { "component": "lucide Calendar size 17", "rect": [113, 824, 17, 17], "color": "rgb(255, 255, 255)" } },
+      "secondary": { "text": "Wegbeschreibung", "rect": [20, 868, 362, 50], "borderRadius": "99px", "background": "rgb(255, 255, 255)", "border": "1px rgb(228, 228, 231)", "color": "rgb(10, 10, 10)", "fontSize": "15px", "fontWeight": "600", "icon": { "component": "lucide MapPin size 17", "rect": [122, 885, 17, 17], "color": "rgb(10, 10, 10)" }, "gapFromPrimary": "10px, measured 868 minus 858" },
+      "tertiary": "none rendered. The red-text cancel button at line 592 needs canCancel, which needs isUpcoming."
+    },
+    "referenceRow": {
+      "rect": [20, 942, 362, 37],
+      "code": { "value": "SOL-U4AQ6", "rect": [20, 959, 72, 20], "fontSize": "13px", "fontWeight": "600", "fontFamily": "Inter Tight", "fontVariantNumeric": "tabular-nums", "color": "rgb(107, 107, 107)" },
+      "manageLink": { "text": "Buchung verwalten", "rect": [243, 959, 139, 20], "fontSize": "13px", "fontWeight": "600", "color": "rgb(39, 110, 241)", "href": "/de/booking/lookup", "chevron": { "rect": [367, 962, 15, 15], "color": "rgb(39, 110, 241)", "component": "lucide ChevronRight size 15" } }
+    },
+    "entranceMotion": {
+      "keyframes": "confirm-rise",
+      "timing": "0.42s cubic-bezier(0.16, 1, 0.3, 1) both",
+      "delays": [
+        { "target": "h1", "delay": "0.2s" },
+        { "target": "detail card", "delay": "0s" },
+        { "target": "price card", "delay": "0s" },
+        { "target": "Kalender hinzufügen button", "delay": "0.68s" }
+      ],
+      "note": "The two cards carry no delay and the h1 carries 0.2s, so the headline lands after the cards below it. Measured off the computed animation shorthand, not read off the source."
+    },
+    "globalChrome": {
+      "header": { "rect": [0, 0, 402, 84], "className": "sticky top-0 left-0 right-0 z-50 py-5 bg-transparent", "background": "rgba(0, 0, 0, 0)", "backButton": [16, 20, 44, 44], "bellButton": [290, 22, 40, 40], "menuButton": [342, 20, 44, 44] },
+      "bottomTabBar": { "rect": [12, 774, 378, 58], "borderRadius": "9999px", "background": "rgba(255, 255, 255, 0.8)", "items": ["Suchen", "Inspo", "Gespeichert", "Profil"], "labelFontSize": "12px", "iconSize": 24 },
+      "overlapAtRest": "MEASURED, and it is an overlap, not a clearance. At scrollY 0 the fixed tab bar occupies viewport 774 to 832 at z-index 700, and the 'Kalender hinzufügen' button occupies 806 to 858. The two bands overlap by 26px and the bar paints over the button's top half. 311px of scroll is available (document 1155 against viewport 844) and the button clears the bar once scrolled, so this is a first-paint condition, not a permanent one. Recorded as measured, not judged."
+    }
+  }
+}

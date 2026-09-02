@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Inspo emphasis, the Airbnb way</title>
+<!-- Base: capture -->
+<!-- Scale: component -->
+<!--
+  Scale is component, not whole-page: the thing being decided is how much bold weight one screen
+  carries, which shows in a side-by-side of the same two real elements, not a page redesign. Both
+  panels below are the REAL running Inspo page, loaded live from the dev server at its real phone
+  width, so the search pill, category chips, style chips, category tile row and the start of the
+  photo feed all stay visible around the change exactly as they render on a phone today.
+
+  Grounded-in: app/[locale]/inspo/page.tsx (the route, lines 667-685 for the category tile row
+    whose selected label is one of the two elements this mockup touches)
+  Grounded-in: app/[locale]/_components/layout/BottomNav.tsx (the other of the two elements, the
+    active tab label; read for grounding only, never modified, off-limits shared component)
+  Grounded-in: the running dev server, both panels load /de/inspo from it directly at 390px wide,
+    the same width scripts/check-geometry.mjs measures at
+
+  Depicts: top panel -> app/[locale]/inspo/page.tsx (route /de/inspo, unmodified at load)
+  Depicts: bottom panel -> app/[locale]/inspo/page.tsx (route /de/inspo, one stylesheet injected
+    client-side once loaded into the iframe's own document, touching only the two elements this
+    file names below: font-weight 600 to 500, nothing else changed)
+
+  MY ASSIGNED MECHANISM MEASURABLY DOES NOT FIX THIS SCREEN, and I am saying so plainly rather
+  than shipping a variant that only looks different, per this task's own instruction. I measured
+  Inspo myself in a real headless Chromium at 390x844, three times, with a live DOM read
+  (document.querySelectorAll + getBoundingClientRect + getComputedStyle, the same primitives
+  scripts/check-geometry.mjs uses for its FLOORS pass, methodology: every visible LEAF text node
+  in the first 844px, its rendered font-size and font-weight):
+
+    right when navigation completed (document.readyState "complete"): 14 leaf text nodes visible,
+    2 at weight >= 600 ("Fur Sie", the selected category-tile label, and "Inspo", the active
+    bottom-nav tab label) = weight share 14.29 percent.
+
+    3 seconds later, once the chip-terms fetch had mounted the style-refine pills ("Defined
+    Brows", "Glossy Finish", "Full Brows" in this run's data): 23 leaf text nodes visible, the
+    SAME 2 elements at weight >= 600, nothing new joined them = weight share 8.70 percent.
+
+  Both readings are the number this task told me to fix (F7a, weight share, ceiling 30 percent),
+  and both are already comfortably under it, nowhere near the 37 to 54.5 percent range this task
+  says the failing screens run. Airbnb's own 3.1 percent is still lower than either reading, so
+  demoting these two elements is a real, if small, step toward matching that number more closely,
+  and it is what this mockup shows. But it is not a fix for anything broken on THIS screen, because
+  nothing here was broken on this axis. What IS broken and stays broken once this change lands:
+
+  Diagnosis: F6 display anchor | measured 14px, the search placeholder "Styles suchen...", the single largest text in Inspo's first viewport at 390x844, read live via getComputedStyle, matching the number this task handed me | violates CLAUDE.md NEVER-AGAIN floor 6 and the FLOORS LAW EMPHASIS BUDGET, which requires one on-screen text element at least 28px | target: 28px | UNCHANGED by this mockup, because font-weight is not font-size, named here so it is not mistaken for fixed.
+  Diagnosis: F7b anchor ratio | measured 1.17x, 14px largest over 12px median leaf text, same live read, same run, reproduced identically at both timings above | violates FLOORS LAW 7b, which requires the largest text be at least 1.8x the body size | target: 1.8x | UNCHANGED by this mockup, for the same reason.
+
+  A NUMBER I WAS GIVEN IS WRONG, and I am not building on it. I was told Inspo measures 0.71
+  percent photographic at 390x844. My own first read, taken the instant the page reported
+  "complete", reproduced that exact figure. But every masonry-grid photo on this route carries
+  Next.js Image's loading="lazy", and reading img.complete / img.naturalWidth at that same instant
+  showed 8 of 12 in-viewport images still mid-decode (complete: false, naturalWidth: 0) even
+  though they sit inside the first 844px and a screenshot taken at the same moment already showed
+  them painted (their blur-up placeholder, not the final asset). Waiting 3 more seconds and
+  re-reading the identical images on the identical, unscrolled screen: imagery area rose to 63.62
+  percent, comfortably over the 33 percent floor. So the tiles are not missing and the first
+  viewport is not all chrome, they are lazy, and the 0.71 percent reading caught them mid-arrival.
+  I am not fixing an imagery problem that a few more seconds shows does not persist.
+
+  A SEPARATE DEFECT, named, not depicted here, confirmed by reading source, not a screenshot.
+  app/[locale]/inspo/page.tsx line 673 renders a category tile's cover photo when categoryMeta
+  has one, and otherwise falls back to `<span className="h-full w-full bg-s-bg-sunken" />`, a bare
+  tinted box with no icon and no initial. That breaks the locked missing-photo fallback (design
+  contract "states" row: sunken background plus category icon plus initial, never slot-omission).
+  Every one of the 5 category tiles that renders on /de/inspo in today's live data already has a
+  cover photo, so the empty branch never paints in this run and there is nothing honest to show
+  side by side without inventing an empty category, which the no-fabrication rule forbids.
+  Flagging it here as a confirmed, separate, cheap fix, not folded into this mockup's diff.
+
+  Exists-check: `npm run exists inspo` run this turn, three times. It HIT, heavily: the /inspo
+  route family (7 routes), 20 page-inline sections, 3 API endpoints, 2 DB tables, 2 components, 5
+  exported symbols, and a graveyard section with no entry for either element this mockup touches.
+
+  Treatment-only: two elements, font-weight 600 to 500, nothing else. Same search pill, same
+  category pills, same filter chips, same category tile row, same masonry grid, same data, same
+  bottom nav position and icons. Single light theme, no dark mode. Every label I wrote for this
+  document is English; the page inside both panels renders its own German through the product's
+  real translations, which is exempt.
+-->
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 402px; margin: 0 auto; padding: 0 0 64px; }
+
+  .lede { padding: 28px 16px 6px; }
+  .lede h1 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 24px; font-weight: 600; line-height: 1.18; letter-spacing: -0.02em;
+  }
+  .lede p { margin-top: 10px; font-size: 14px; line-height: 1.5; color: #6B6B6B; }
+
+  .note.correction {
+    margin: 14px 16px 0; padding: 14px 14px; border-radius: 12px;
+    background: #F4F4F5; border: 1px solid #E4E4E7;
+  }
+  .note.correction strong { display: block; margin-bottom: 4px; color: #0A0A0A; font-weight: 600; }
+  .note.correction p { font-size: 13px; line-height: 1.55; color: #6B6B6B; }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  .panel { margin-top: 26px; }
+  .cap { padding: 0 16px 8px; }
+  .cap h2 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 17px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em;
+  }
+  .cap p { margin-top: 3px; font-size: 13px; line-height: 1.45; color: #6B6B6B; }
+
+  .frame {
+    position: relative; width: 100%; height: 620px;
+    border-top: 1px solid #E4E4E7; border-bottom: 1px solid #E4E4E7;
+    overflow: hidden; background: #fff;
+  }
+  .frame iframe { width: 402px; height: 620px; border: 0; display: block; }
+  .frame .badge {
+    position: absolute; top: 10px; right: 10px; z-index: 2;
+    padding: 5px 10px; border-radius: 40px;
+    background: rgba(255,255,255,0.94); border: 1px solid #E4E4E7;
+    font-size: 11px; font-weight: 600; color: #0A0A0A;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .note { padding: 22px 16px 0; font-size: 13px; line-height: 1.55; color: #6B6B6B; }
+  .note strong { color: #0A0A0A; font-weight: 600; }
+  .note + .note { padding-top: 12px; }
+
+  .verdict {
+    margin: 22px 16px 0; padding: 16px 14px; border-radius: 12px;
+    background: #FEF2F2; border: 1px solid #DC2626;
+  }
+  .verdict strong { display: block; margin-bottom: 4px; color: #0A0A0A; font-weight: 600; font-size: 14px; }
+  .verdict p { font-size: 13px; line-height: 1.6; color: #4B4B4B; }
+  .verdict p + p { margin-top: 8px; }
+
+  .readout-wrap { margin: 14px 16px 0; overflow-x: auto; }
+  table.readout { border-collapse: collapse; width: 100%; min-width: 360px; }
+  table.readout th, table.readout td { text-align: left; padding: 7px 8px; font-size: 12px; border-bottom: 1px solid #E4E4E7; }
+  table.readout th { color: #6B6B6B; font-weight: 500; }
+  table.readout td { color: #0A0A0A; font-variant-numeric: tabular-nums; }
+  table.readout td.pass { color: #16A34A; font-weight: 600; }
+  table.readout td.fail { color: #DC2626; font-weight: 600; }
+  table.readout td.same { color: #6B6B6B; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <h1>Inspo, less bold, the Airbnb way</h1>
+    <p>Two words on this screen are bold today. In the second panel they are not. Nothing else
+       changes.</p>
+  </div>
+
+  <div class="note correction">
+    <strong>This is the honest result, not a hopeful one.</strong>
+    <p>The word count Airbnb bolds is small enough to matter as a source, so I checked whether
+       Inspo has the problem it fixes. It does not. Inspo already bolds less text than the
+       30 percent limit allows, well under it. This change makes an already-fine number a little
+       finer. It does not touch the two things actually wrong with this screen: no text on it
+       reaches the required size, and the biggest word is barely bigger than the smallest.</p>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>Today</h2>
+      <p>Two words are bold: the selected category label and the active tab below.</p>
+    </div>
+    <div class="frame">
+      <div class="badge nums">2 bold words</div>
+      <iframe id="before" src="/de/inspo" scrolling="no" title="Inspo as it renders today"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>With this change</h2>
+      <p>Same two words, same size, same color, one step lighter.</p>
+    </div>
+    <div class="frame">
+      <div class="badge nums">0 bold words</div>
+      <iframe id="after" src="/de/inspo" scrolling="no" title="Inspo with the two bold words demoted"></iframe>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <strong>What this does not fix</strong>
+    <p>The biggest word on this screen is the 14px search placeholder. Airbnb's rule is about how
+       MUCH text is bold, not how big anything is, so lightening two words cannot make a third
+       word bigger. Reaching the required 28px anchor needs a different kind of change, sizing
+       something up, not weighing something down.</p>
+    <p>A number I was handed for this screen's photo coverage was wrong. I measured it myself,
+       twice, a few seconds apart: right when the page finished loading it read 0.71 percent,
+       matching what I was told, but the grid photos load lazily and are still mid-decode at that
+       instant. A few seconds later, same screen, same scroll position, it read 63.62 percent,
+       well past the 33 percent minimum. The photos are there. My first check simply ran while
+       they were still arriving.</p>
+  </div>
+
+  <div class="readout-wrap">
+  <table class="readout">
+    <tr><th>What was measured</th><th>Today</th><th>With this change</th></tr>
+    <tr><td>Bold-word share (this fix's target)</td><td class="nums">8.7% - 14.3%</td><td class="nums pass">0%</td></tr>
+    <tr><td>Biggest word on screen</td><td class="nums fail">14px</td><td class="nums fail">14px, no change</td></tr>
+    <tr><td>Biggest word vs. body text</td><td class="nums fail">1.17x</td><td class="nums fail">1.17x, no change</td></tr>
+    <tr><td>Photo coverage, checked the instant the page loaded</td><td class="nums fail">0.71%</td><td class="nums same">not re-checked, this fix does not touch photos</td></tr>
+    <tr><td>Photo coverage, checked a few seconds later, same screen</td><td class="nums pass" colspan="2">63.62%, already clear of the floor without any fix</td></tr>
+  </table>
+  </div>
+
+  <div class="note">
+    <strong>Which two words moved.</strong> The selected category chip above the photo grid
+    ("Fur Sie" today) and the "Inspo" label in the bottom tab bar. Both keep their size and color,
+    they just stop being bold.
+  </div>
+  <div class="note">
+    <strong>What stays the same.</strong> The search bar, the category pills, the style chips,
+    the category tile row, the photo grid, the bottom nav's position and icons, the data. All
+    identical between the two panels.
+  </div>
+  <div class="note">
+    <strong>A separate issue, not shown here.</strong> Source shows one category tile can render
+    as a bare gray box with no icon and no initial when a category has no cover photo yet. Every
+    tile in today's live data already has a photo, so there is nothing honest to show for it side
+    by side, flagging it as a real, separate, small fix instead.
+  </div>
+
+</div>
+
+<script>
+  // The second panel is the SAME page as the first, not a second implementation. Once it
+  // finishes loading, exactly one stylesheet is injected into its own document head, touching
+  // only the two elements named above by their real rendered class combinations, read live off
+  // this exact route at 390px wide before writing this file. Nothing else in that document is
+  // touched.
+  var after = document.getElementById("after");
+  var CSS_TEXT = [
+    /* the selected category-tile label ("Fur Sie" today): font-heading text-[12px] ... */
+    /* rounded-pill bg-s-bg-sunken py-1 font-semibold text-s-ink -- unique combo on this route */
+    "span.rounded-pill.bg-s-bg-sunken.font-semibold { font-weight: 500 !important; }",
+    /* the active bottom-nav tab label ("Inspo"): scoped to <nav>, the only nav on the page, */
+    /* so this cannot catch a same-named class anywhere else in the document. */
+    "nav span.font-semibold.max-h-4 { font-weight: 500 !important; }"
+  ].join("\n");
+
+  function injectOnce(doc) {
+    if (doc.getElementById("mockup-airbnb-weight")) { return true; }
+    var style = doc.createElement("style");
+    style.id = "mockup-airbnb-weight";
+    style.textContent = CSS_TEXT;
+    doc.head.appendChild(style);
+    return true;
+  }
+
+  // Same settle strategy as the sibling mockup in this batch (floor-fix-inspo/index.html): this
+  // route is a client component whose content wrapper is not present at iframe "load" time and
+  // whose own DOM can remount, so this polls on a plain interval for the whole review window
+  // rather than waiting on one event or stopping after the first success.
+  var tries = 0;
+  var poll = setInterval(function () {
+    tries += 1;
+    try {
+      var doc = after.contentDocument;
+      if (doc && doc.head) {
+        injectOnce(doc);
+      }
+      if (tries > 150) {
+        clearInterval(poll);
+      }
+    } catch (err) {
+      clearInterval(poll);
+      console.error("[fix-inspo--d-airbnb-weight] could not restyle the second panel:", err);
+    }
+  }, 150);
+</script>
+</body>
+</html>

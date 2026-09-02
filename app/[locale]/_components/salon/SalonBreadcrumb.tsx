@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { ChevronRight } from "lucide-react";
 import type { SalonDetail } from "./_shared";
 import { capitalize, postalToCity } from "./_shared";
@@ -20,6 +21,7 @@ import { formatQuartier } from "@/lib/basel-neighborhoods";
  * Final segment (salon name) is NOT a link — current page.
  */
 export function SalonBreadcrumb({ salon, locale }: { salon: SalonDetail; locale: string }) {
+  const t = useTranslations("breadcrumb");
   const primaryCat = (salon.categories?.[0] ?? "coiffeur").toLowerCase();
 
   // German labels for each category — keeps the route slug English-friendly
@@ -67,7 +69,7 @@ export function SalonBreadcrumb({ salon, locale }: { salon: SalonDetail; locale:
 
   return (
     <nav
-      aria-label="Breadcrumb"
+      aria-label={t("landmark")}
       className="font-body hidden items-center gap-1.5 text-[13px] text-s-ink-2 md:flex"
     >
       {segments.map((seg, i) => (

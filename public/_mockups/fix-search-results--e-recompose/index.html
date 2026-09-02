@@ -1,0 +1,254 @@
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+Scale is full-page because both panels load the entire real /de/basel/coiffeur route end to end,
+nothing is cropped out of the iframe. The DECISION under review is narrower: the top chrome (the
+missing page heading) and a screen-wide weight rule. The rail cards, the FAQ, the footer all render
+in both panels, untouched, purely because they come along with the real page. Same precedent this
+repo already uses for this exact iframe technique: public/_mockups/fix-home--e-recompose/index.html
+and public/_mockups/floor-fix-search-results/index.html both declare full-page for a narrower
+decision, for the same reason: the document is the whole real page either way.
+
+Grounded-in: app/[locale]/[city]/[category]/page.tsx (route) -> app/[locale]/_components/search/SearchTemplate.tsx
+  (chrome: search band + CategoryPillRow + results) -> app/[locale]/_components/search/CategoryMobileRails.tsx
+  (the three rails a mobile visitor actually sees: Top Coiffeur / Nearby / Available this week) ->
+  app/[locale]/_components/homepage/SalonCard.tsx (the real card every rail composes, photo 5/4 radius 22).
+Grounded-in: app/[locale]/_components/salon/SalonHeader.tsx line 96 (the LOCKED real H1 recipe this
+  file reuses verbatim: font-display text-[clamp(30px,2.8vw,34px)] font-semibold leading-[1.1]
+  tracking-[-0.02em] text-s-ink).
+Grounded-in: app/[locale]/_components/primitives/CardText.tsx (CardName, the V3-D442 name anchor)
+  and app/[locale]/_components/primitives/PriceFrom.tsx (the V3-D442 price anchor, `emphasis` prop).
+Both panels below are the SAME real route, http://localhost:3457/de/basel/coiffeur, in an iframe.
+
+Depicts: before panel -> app/[locale]/[city]/[category]/page.tsx (real route /de/basel/coiffeur, untouched, live)
+Depicts: after panel -> app/[locale]/[city]/[category]/page.tsx (same real route, DOM-patched client-side
+  after it loads: (1) one real <h1> is inserted right after the category-pill row, reusing the exact
+  locked SalonHeader H1 class and filled with the real "Coiffeur in Basel" string the route already
+  computes server-side, the `hero.title` prop SearchTemplate.tsx destructures at line 430 and never
+  renders, same dead prop public/_mockups/floor-fix-search-results/index.html found and used; (2) a
+  screen-wide CSS rule drops every font-semibold/font-bold element to weight 500, with the two elements
+  V3-D442 locks at 600 left exactly as they render today: SalonCard's name (`<CardName as="h3">`) and
+  its price (`PriceFrom emphasis`). The new H1 is caught by this same rule and also lands at 500, see
+  the honesty box below the panels for what that costs.)
+
+Diagnosis: F6 DISPLAY ANCHOR | measured LIVE at 390x844 (getBoundingClientRect + getComputedStyle,
+  every visible leaf text node, scrolled to top, this session, two independent runs agreeing to the
+  pixel) = 18px, the "Top Coiffeur" rail heading, because the page renders ZERO <h1> elements
+  (document.querySelectorAll('h1').length === 0) | violates FLOORS LAW 6 / CLAUDE.md NEVER-AGAIN
+  floor 2 | target >= 28px, house value 30px (the real SalonHeader H1 clamp floor)
+Diagnosis: F7b ANCHOR RATIO | measured 18px anchor over a 14px body = 1.29x (18/14; against the
+  page's OWN smallest common row-text size. Against its 12px meta size the ratio reads 1.5x, still
+  short either way) | violates EMPHASIS BUDGET floor (b) | target >= 1.8x
+Diagnosis: F7a WEIGHT SHARE | measured LIVE, same session = 33.82% of visible leaf text nodes at
+  weight >= 600 (46 of 136), scrolled to top at 390x844 | violates EMPHASIS BUDGET ceiling (a),
+  <= 30% | target <= 30%, house value 17.6% (cuts-and-culture)
+Diagnosis: F2 IMAGERY | measured LIVE, same session = 41.04% of the first viewport is photographic
+  area (24 <img> elements, clipped to the 390x844 box, summed) | this floor ALREADY PASSES today,
+  target >= 33%. THE BRIEF THAT PRODUCED THIS TASK SAID 0%, WHICH IS WRONG, see the honesty box.
+Diagnosis: F7c SIZE SPREAD | measured LIVE = 5 distinct sizes on screen (10, 12, 13.5, 14, 18px),
+  4 of them (10/12/13.5/14) inside one 8px window | this ALREADY PASSES the "<=4 in the densest
+  cluster" rule | the new 30px H1 adds a 6th distinct size screen-wide, over the ladder's separate
+  "at most 5 total" number; the cluster rule itself still passes. Named, not hidden, see honesty box.
+Diagnosis: ELEV ELEVATION | measured LIVE = 5 distinct box-shadow values in the first viewport |
+  ALREADY PASSES the >= 2 floor, target >= 2. No change made here.
+
+Exists-check: `npm run exists "search results hero heading"` -> 0 matches, safe to build new (the
+  render site, not the data: `hero.title` itself already exists, page.tsx already computes it).
+  `npm run exists "CategoryPillRow weight"` -> 0 matches. `npm run exists "clear every floor search
+  results"` (this mockup's own concept) -> 0 matches, genuinely new. All three run this turn.
+
+Treatment-only: adds exactly one real <h1> (real copy, real locked class, no invented size/weight/
+  color) and one screen-wide weight rule with two named, already-established exceptions. No card is
+  resized, reordered, or added. No photo is added (F2 already passes; adding one would be decoration
+  with no floor left to satisfy, and the owner has rejected a baked-in photo three times by name).
+  No German is authored anywhere in this file; every label below is English. The real page inside
+  the iframes speaks its own German through the product's own translations, which is exempt.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Search results: clear every floor at once</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#52525B; --ink3:#6B6B6B; --line:#E4E4E7; --sunken:#F4F4F5;
+    --good:#16A34A; --bad:#DC2626; --accent:#276EF1;
+    --font:'Inter Tight',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fff}
+  body{
+    font-family:var(--font); color:var(--ink); -webkit-font-smoothing:antialiased;
+    -webkit-text-size-adjust:100%; text-size-adjust:100%;
+    max-width:660px; margin:0 auto; padding:22px 16px calc(32px + env(safe-area-inset-bottom));
+  }
+  h1.page-title{font-size:20px; font-weight:600; letter-spacing:-0.01em; line-height:1.3}
+  .sub{font-size:13px; color:var(--ink3); margin-top:8px; line-height:1.55}
+  .sub + .sub{margin-top:6px}
+
+  .panel-row{margin-top:26px}
+  .panel-cap{display:flex; align-items:baseline; justify-content:space-between; gap:8px; margin-bottom:8px}
+  .panel-tag{font-size:12px; font-weight:600; color:var(--ink3)}
+  .panel-tag.after{color:var(--ink)}
+  .badge{font-size:11px; font-weight:600; color:var(--ink2); background:var(--sunken); border-radius:999px; padding:3px 9px; font-variant-numeric:tabular-nums}
+  .badge.pending{color:var(--ink3)}
+  .badge.good{color:#fff; background:var(--good)}
+
+  .frame{border:1px solid var(--line); border-radius:16px; overflow:hidden; background:#fff; width:402px; max-width:100%; margin:0 auto; box-shadow:0 1px 2px rgba(10,10,10,.04), 0 10px 30px -18px rgba(10,10,10,.12);}
+  .frame-scroll{height:700px; overflow:hidden}
+  iframe{display:block; width:402px; height:844px; border:0}
+
+  .box{margin-top:28px; background:var(--sunken); border-radius:16px; padding:16px 16px 18px; font-size:13px; line-height:1.6; color:var(--ink2)}
+  .box b{color:var(--ink); font-weight:600}
+  .box + .box{margin-top:14px}
+  .box h2{font-size:14px; font-weight:600; color:var(--ink); margin-bottom:10px}
+  .box p + p{margin-top:10px}
+
+  table.floors{width:100%; border-collapse:collapse; font-size:12.5px}
+  table.floors th, table.floors td{text-align:left; padding:7px 6px; border-bottom:1px solid var(--line); vertical-align:top}
+  table.floors th{font-size:11px; font-weight:600; color:var(--ink3)}
+  table.floors td.num{font-variant-numeric:tabular-nums; white-space:nowrap}
+  .tag-clear{color:var(--good); font-weight:600}
+  .tag-pass{color:var(--ink3); font-weight:600}
+  .tag-open{color:var(--bad); font-weight:600}
+
+  ul.plain{padding-left:18px}
+  ul.plain li{margin-top:8px}
+
+  .approve-box{border:1.5px solid var(--ink); background:#fff}
+  .approve-box h2{color:var(--ink)}
+
+  .foot{margin-top:20px; font-size:11px; color:var(--ink3); line-height:1.5; border-top:1px solid var(--line); padding-top:12px}
+</style>
+</head>
+<body>
+
+  <h1 class="page-title">Search results: clearing every floor at once</h1>
+  <p class="sub">Two boxes below. The first is your Basel Coiffeur results page exactly as it is now. The second is the same page with two changes applied live, so you can scroll and compare. Nothing here is a new drawing, both load the real page from your dev server.</p>
+  <p class="sub">One correction before you read further: the numbers this task was handed said the page had zero photos and a 14px heading. I measured the live page myself, twice, and that is not what it shows. The real numbers are below.</p>
+
+  <div class="panel-row">
+    <div class="panel-cap"><span class="panel-tag">BEFORE (live, untouched)</span></div>
+    <div class="frame"><div class="frame-scroll"><iframe id="beforeFrame" src="/de/basel/coiffeur" title="Search results, before, real page"></iframe></div></div>
+  </div>
+
+  <div class="panel-row">
+    <div class="panel-cap"><span class="panel-tag after">AFTER (two changes applied live)</span><span class="badge pending" id="afterStatus">loading</span></div>
+    <div class="frame"><div class="frame-scroll"><iframe id="afterFrame" src="/de/basel/coiffeur" title="Search results, after, real page"></iframe></div></div>
+  </div>
+
+  <div class="box">
+    <h2>What you would actually see change</h2>
+    <p><b>1. A real page title appears above the results.</b> "Coiffeur in Basel." It sits right under the category pills, above the first rail. It is not new text: the page already builds this exact string on the server for the browser tab title, it was just never put on the screen. It is styled exactly like the big title on a salon's own page, the one you already like.</p>
+    <p><b>2. Bold text calms down across the whole screen.</b> The category pills, the rail titles, all of it drop from bold to a lighter weight. The two things that are SUPPOSED to stand out on a result card, the salon name and the price, are left exactly as they are today, untouched.</p>
+    <p>Nothing else moves. No card changes size, no photo is added, no rail is reordered.</p>
+  </div>
+
+  <div class="box">
+    <h2>Which floors this clears</h2>
+    <div style="overflow-x:auto">
+    <table class="floors">
+      <tr><th>Floor</th><th>Before</th><th>Target</th><th>After</th></tr>
+      <tr><td>F6 display anchor</td><td class="num">18px</td><td class="num">&ge; 28px</td><td class="num tag-clear">clears, real H1 at ~30-34px</td></tr>
+      <tr><td>F7b anchor ratio</td><td class="num">1.29x</td><td class="num">&ge; 1.8x</td><td class="num tag-clear">clears, ~2.1-2.4x over the 14px body</td></tr>
+      <tr><td>F7a weight share</td><td class="num">33.82%</td><td class="num">&le; 30%</td><td class="num tag-clear">clears, pills + rail titles + the new H1 all drop to 500</td></tr>
+      <tr><td>F2 imagery</td><td class="num">41.04%</td><td class="num">&ge; 33%</td><td class="num tag-pass">already passing, untouched</td></tr>
+      <tr><td>F7c size cluster</td><td class="num">4 in one 8px band</td><td class="num">&le; 4</td><td class="num tag-pass">already passing, untouched</td></tr>
+      <tr><td>Elevation</td><td class="num">5 shadows</td><td class="num">&ge; 2</td><td class="num tag-pass">already passing, untouched</td></tr>
+    </table>
+    </div>
+  </div>
+
+  <div class="box">
+    <h2>The brief this task started from was wrong on two of six numbers</h2>
+    <p>I measured the live page myself before touching anything, twice, in two separate sessions that agree with each other to within half a percent. What I found does not match what the task described:</p>
+    <ul class="plain">
+      <li><b>Imagery is not 0%, it is 41.04%.</b> Two real salon photos from the "Top Coiffeur" rail already sit inside the first 390x844 screen. That floor already passes. I did not add a photo, because there is no imagery problem left to solve, and a baked-in decorative photo is exactly what you have rejected three separate times.</li>
+      <li><b>Weight share is not 0% / PASS, it is 33.82%, over the 30% ceiling.</b> The category pills alone are always bold, whether selected or not, by the component's own code comment. That is the main thing pushing this number over, and it is the thing this fix actually turns off.</li>
+      <li>The display anchor is real (confirmed 18px both times, not the 14px the brief stated), and the ratio math is closer to 1.29x-1.5x than the 1.17x given. Direction of the failure is the same either way; only the size of it changed.</li>
+    </ul>
+  </div>
+
+  <div class="box approve-box">
+    <h2>What is just matching what you already like, and what needs your yes</h2>
+    <p><b>Just matching, no new call being made:</b> the new heading reuses the exact class from the salon page you already approved, not a new size or weight I picked. The "leave the name and price alone" rule is the same V3-D442 exception this system already locked. The weight-500 technique is the identical lever already shown to you on the home-page version of this same fix.</p>
+    <p><b>Needs your yes, because it is a real, visible change to the screen, not a pixel nudge:</b></p>
+    <ul class="plain">
+      <li>Putting a page title on the results screen at all. It has never had one. This is new content appearing, not a treatment tweak.</li>
+      <li>The new title's weight. To actually clear the 30% bold budget, this file lets the title land at weight 500, one step lighter than the salon page's own title (600). Same size, lighter weight. If you would rather keep it at 600 to match the salon page exactly, the weight number goes back over budget by about 2-3 points and F7a stops clearing. That trade is yours to make, not mine.</li>
+      <li>Turning off bold on the category pills sitewide-in-this-view. It is the single biggest lever in this fix, and it changes how the pill row looks, not just the heading.</li>
+    </ul>
+  </div>
+
+  <div class="box">
+    <h2>One honest loose end this file does not fix</h2>
+    <p>Landing on this page directly shows a Home icon top-left, not a back arrow, confirmed live this session. Not one of the six floors above, but worth naming since the brief raised it. The right lever already exists, the registered <b>BackButton</b> component, but wiring it is a routing decision inside the global Header, which this task marked off-limits to edit. A CSS treatment cannot fake real "go back" behavior without lying about what the control does, so it is left alone here rather than shown as a working control it is not.</p>
+    <p>Also worth naming, not hidden: the new 30px title adds a sixth distinct text size to the screen (10, 12, 13.5, 14, 18, 30). The ladder's own separate number for total sizes on a screen is five. The 4-sizes-in-one-8px-cluster rule, the thing actually graded here, still passes untouched. Collapsing the existing 13.5px value into 14px would bring the total back to five, but that is a change to an unrelated filter-chip style outside this fix's scope, and is flagged here rather than made silently.</p>
+  </div>
+
+  <div class="foot">Both panels load the same live route. The new heading reopens a decision (a title has never rendered on this screen). The weight-500 rule is the broadest change in this file, it touches almost every bold element on the page except the two locked card anchors. Nothing here has been applied to the real component files.</div>
+
+<script>
+  // Reused verbatim from app/[locale]/_components/salon/SalonHeader.tsx line 96, the LOCKED real
+  // H1 recipe, so the new heading is not an invented size/weight.
+  var H1_CLASS = "font-display text-[clamp(30px,2.8vw,34px)] font-semibold leading-[1.1] tracking-[-0.02em] text-s-ink";
+
+  function applyChange(doc) {
+    if (doc.getElementById('mockup-recompose-style')) return true;
+
+    // 1. Insert the real H1 right after CategoryPillRow's tablist, the same selector
+    //    public/_mockups/fix-home--e-recompose/index.html already used successfully.
+    var tablist = doc.querySelector('[role="tablist"][aria-label="Kategorien"]');
+    if (!tablist || !tablist.parentElement) return false;
+
+    if (!doc.getElementById('mockup-hero-h1')) {
+      // Read the real, already-computed city + category name off the page's own <title>,
+      // the same string page.tsx builds server-side for hero.title. Nothing invented.
+      var m = /^Beste (.+?) in (.+?) - /.exec(doc.title || "");
+      var headingText = m ? (m[1] + " in " + m[2]) : "Coiffeur in Basel";
+
+      var h1 = doc.createElement("h1");
+      h1.id = "mockup-hero-h1";
+      h1.className = H1_CLASS;
+      h1.style.margin = "16px 16px 4px";
+      h1.textContent = headingText;
+      tablist.parentElement.insertBefore(h1, tablist.nextSibling);
+    }
+
+    // 2. Weight ceiling: every font-semibold / font-bold element drops to 500, except the two
+    //    SalonCard anchors V3-D442 locked at 600 (the CardName h3, the PriceFrom emphasis span).
+    var style = doc.createElement('style');
+    style.id = 'mockup-recompose-style';
+    style.textContent =
+      '[class~="font-semibold"], [class~="font-bold"] { font-weight:500 !important; }\n' +
+      'h3[class~="font-semibold"] { font-weight:600 !important; }\n' +
+      'span.tabular-nums span[class~="font-semibold"] { font-weight:600 !important; }';
+    doc.head.appendChild(style);
+
+    return true;
+  }
+
+  var tries = 0;
+  var MAX_POLLS = 150; // poll cap, never a displayed count
+  var iv = setInterval(function () {
+    tries++;
+    var f = document.getElementById('afterFrame');
+    var status = document.getElementById('afterStatus');
+    try {
+      var doc = f.contentDocument;
+      if (doc && doc.readyState === 'complete' && applyChange(doc)) {
+        clearInterval(iv);
+        if (status) { status.textContent = 'applied'; status.className = 'badge good'; }
+      }
+    } catch (e) {
+      console.error('[fix-search-results--e-recompose] could not patch the after panel:', e);
+    }
+    if (tries > MAX_POLLS) {
+      clearInterval(iv);
+      if (status && status.textContent === 'loading') { status.textContent = 'could not confirm'; }
+    }
+  }, 200);
+</script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Category pages: real content, higher and bigger</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/coiffeur/page.tsx, which renders SearchTemplate.tsx
+  (serviceFilter="coiffeur") -> CategoryMobileRails.tsx (the "Top Coiffeur" / Nearby /
+  "Available this week" rails) -> the shared homepage/SalonCard.tsx for every card. Same template,
+  same DOM shape, on /de/nails and /de/spa (only serviceFilter differs) and on /de/basel/coiffeur
+  (verified live: identical CategoryMobileRails/SalonCard geometry, only the chrome ABOVE the
+  rails differs, a compact header instead of the search-pill + category-icon row). This mockup
+  shows /de/coiffeur; the fix generalizes to all three bare category routes unchanged. Even though
+  the DECISION under review here is section-scale (three spacing/size values, not a page redesign),
+  the panels below render the full real route end to end in each iframe, real capture continuing
+  around the treatment, so nothing about the surrounding page is faked or cropped out.
+
+  Depicts: search pill -> app/[locale]/_components/search/SearchTemplate.tsx (the sticky big-search Link, real, unmodified)
+  Depicts: category icon row -> app/[locale]/_components/layout/CategoryPillRow.tsx (real, unmodified, only its padding is treated)
+  Depicts: "Top Coiffeur" and Nearby rails plus real seeded salon cards -> app/[locale]/_components/search/CategoryMobileRails.tsx and app/[locale]/_components/homepage/SalonCard.tsx (real, unmodified, both panels; the after panel is the identical live iframe with three CSS rules injected post-load by this file's own script)
+  Depicts: the mechanism, two paddings tightened and one card-width class widened -> app/[locale]/_components/layout/CategoryPillRow.tsx (pt-5/pb-5 row), app/[locale]/_components/search/SearchTemplate.tsx (Result-grid pt-4), app/[locale]/_components/homepage/SalonCard.tsx (the w-[calc((100vw-44px)/1.5)] class), applied via the injected style block at the bottom of this file, nothing invented
+
+  Diagnosis: category-page imagery share | measured live 41.04% of the 390x844 viewport is real salon photo, via two independent getBoundingClientRect passes against the running /de/coiffeur route this session, a whole-DOM scan and a section-scoped scan, both landed on 41.04% | violates nothing: CLAUDE.md FLOORS LAW 2 (imagery >= 33%) already passes here, so the task brief's 0.71% figure does not reproduce, it is a loading-state skeleton reading, not the settled page, see the correction note below; the floors this screen actually violates are FLOORS LAW 6 (18px anchor vs the 28px floor) and 7b (1.5x ratio vs the 1.8x floor), and this mechanism does not touch either | target: this mockup still executes the assigned push-up-and-grow treatment regardless, and it is measured live inside this same file's after-iframe (getBoundingClientRect against the real DOM at a true 390px viewport, re-verified after fixing a flex-shrink bug that had compressed the first reading) to raise photo share from 41.04% to 49.24% and cut chrome-before-first-photo from 212px to 176px
+
+  Exists-check: `npm run exists "category page card size"` (0 matches), `npm run exists
+  "CategoryMobileRails card width"` (0 matches), `npm run exists "ScrollRow peek"` (0 matches),
+  all run this turn, all safe-to-propose. `npm run exists "CategoryMobileRails"` separately
+  surfaced the 3 real, already-shipped files this mockup is grounded in and reuses, none touched.
+  REMOVED.md checked for "category rail", "scrollrow", "card peek": no hit, this lever was never
+  killed.
+
+  Treatment-only: three CSS values changed on real, existing elements (two paddings tightened,
+  one width class widened). Nothing added, nothing reordered, no copy touched, no component
+  swapped. The one thing this is NOT free of: the width class collides with a dated, owner-named
+  decision, flagged below, not silently overridden.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --border:#E4E4E7; --sunken:#F4F4F5;
+    --accent:#276EF1; --success:#16A34A; --fail:#DC2626;
+    --font-body:'Inter',system-ui,-apple-system,sans-serif;
+    --font-display:'Inter Tight',system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:auto}
+  body{
+    font-family:var(--font-body); background:#fff; color:var(--ink);
+    -webkit-font-smoothing:antialiased; padding:28px 16px 64px;
+  }
+  .wrap{max-width:900px;margin:0 auto}
+  h1.page-title{
+    font-family:var(--font-display); font-size:22px; font-weight:600;
+    letter-spacing:-0.01em; color:var(--ink); margin-bottom:6px;
+  }
+  .lede{font-size:15px; line-height:1.55; color:var(--ink2); max-width:660px; margin-bottom:6px}
+  .lede strong{color:var(--ink); font-weight:600}
+  .shared-note{
+    font-size:13px; line-height:1.5; color:var(--ink2); background:var(--sunken);
+    border-radius:10px; padding:10px 14px; margin:16px 0 28px; max-width:660px;
+  }
+  .shared-note b{color:var(--ink)}
+  .panels{display:flex; flex-direction:column; gap:24px}
+  .panel{border:1px solid var(--border); border-radius:16px; overflow:hidden; background:#fff}
+  .panel-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 16px; border-bottom:1px solid var(--border); background:var(--sunken);
+  }
+  .panel-label{font-family:var(--font-display); font-size:14px; font-weight:600; color:var(--ink)}
+  .panel-label.after{color:var(--accent)}
+  .panel-tag{font-size:11px; font-weight:600; padding:3px 8px; border-radius:999px}
+  .tag-fail{background:#FEE2E2; color:var(--fail)}
+  .tag-pass{background:#DCFCE7; color:var(--success)}
+  .frame-stage{display:flex; justify-content:center; background:#EDEDEF; padding:18px}
+  iframe{
+    width:390px; height:844px; flex-shrink:0; border:0; display:block; background:#fff;
+    border-radius:8px; box-shadow:0 4px 18px rgba(0,0,0,0.10);
+  }
+  .frame-stage{overflow-x:auto}
+  .measure-table{width:100%; border-collapse:collapse; margin-top:28px; font-size:13px}
+  .measure-table caption{
+    text-align:left; font-family:var(--font-display); font-size:16px; font-weight:600;
+    margin-bottom:10px; color:var(--ink);
+  }
+  .measure-table th, .measure-table td{
+    text-align:left; padding:9px 12px; border-bottom:1px solid var(--border);
+  }
+  .measure-table th{font-weight:600; color:var(--ink2); font-size:12px}
+  .status-pass{color:var(--success); font-weight:600}
+  .status-fail{color:var(--fail); font-weight:600}
+  .callout{
+    margin-top:28px; padding:16px 18px; border-radius:12px; border:1px solid var(--border);
+    background:#fff;
+  }
+  .callout h2{font-family:var(--font-display); font-size:16px; font-weight:600; margin-bottom:8px}
+  .callout p{font-size:14px; line-height:1.6; color:var(--ink2); margin-bottom:8px}
+  .callout p:last-child{margin-bottom:0}
+  .callout .arm{margin-top:10px; padding-left:14px; border-left:3px solid var(--border)}
+  .callout .arm b{color:var(--ink)}
+  .correction{
+    margin-top:28px; padding:16px 18px; border-radius:12px;
+    background:var(--sunken); border:1px solid var(--border);
+  }
+  .correction h2{font-family:var(--font-display); font-size:15px; font-weight:600; margin-bottom:8px; color:var(--ink)}
+  .correction p{font-size:13.5px; line-height:1.6; color:var(--ink2); margin-bottom:8px}
+  .correction p:last-child{margin-bottom:0}
+  code{font-family:ui-monospace,monospace; font-size:0.92em; background:#F4F4F5; padding:1px 5px; border-radius:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 class="page-title">Pushing the real salons up and making them bigger</h1>
+  <p class="lede">
+    You asked for the "real content, higher and bigger" fix specifically, so this is not the
+    smallest possible change, it moves real spacing and grows the real cards. Below is your live
+    Coiffeur page today, then the exact same live page with three real spacing and size values
+    changed: less empty air above the first row of salons, and each salon photo drawn bigger.
+  </p>
+  <div class="shared-note">
+    <b>One fix, three pages.</b> Coiffeur, Nails and Spa share this exact rail component
+    (CategoryMobileRails), so this same change applies to all three unchanged.
+  </div>
+
+  <div class="panels">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-label">Live today</span>
+        <span class="panel-tag tag-pass">41.0% photo</span>
+      </div>
+      <div class="frame-stage">
+        <iframe id="beforeFrame" src="/de/coiffeur" title="the real category page, as shipped"></iframe>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-label after">Higher and bigger</span>
+        <span class="panel-tag tag-pass">49.2% photo</span>
+      </div>
+      <div class="frame-stage">
+        <iframe id="afterFrame" src="/de/coiffeur" title="the real category page, cards pushed up and grown"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <table class="measure-table">
+    <caption>What actually moves (measured live, both states, same real route)</caption>
+    <thead>
+      <tr><th>Check</th><th>Live today</th><th>Higher and bigger</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Photo coverage of the first screen</td><td>41.04% <span class="status-pass">already passes (needs 33%)</span></td><td>49.24% <span class="status-pass">passes, wider margin</span></td></tr>
+      <tr><td>Air before the first real photo</td><td>212px of chrome</td><td>176px of chrome (-36px, 17% less)</td></tr>
+      <tr><td>Salon card size (mobile rail)</td><td>231 x 185px, 1.5 cards visible</td><td>277 x 221px, 1.25 cards visible</td></tr>
+      <tr><td>Real salon photos fully or partly on screen</td><td>4 (2 per rail, 2 rails)</td><td>4 (2 per rail, 2 rails, each bigger)</td></tr>
+      <tr><td>Biggest text on screen ("Top Coiffeur")</td><td>18px <span class="status-fail">fails (needs 28px)</span></td><td>18px <span class="status-fail">unchanged, this fix does not touch it</span></td></tr>
+      <tr><td>Biggest text vs. body text</td><td>1.5x <span class="status-fail">fails (needs 1.8x)</span></td><td>1.5x <span class="status-fail">unchanged</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <h2>This fix clears imagery with room to spare. It does not touch the two floors that are
+    actually failing.</h2>
+    <p>
+      Photo coverage was never the broken floor on this screen, it already passes today at
+      41.04%, well past the 33% minimum. "Higher and bigger" still does real, useful work: it
+      moves the first real salon photo 36px higher and grows every card by about 20%, so the
+      screen reads less empty and more like a shop window. But the two checks this screen
+      genuinely fails, the biggest text on the page being only 18px and only 1.5x the body text,
+      are untouched by this mechanism, because neither is a spacing or sizing problem on an
+      existing element, the page has no headline element to begin with. That is a different fix
+      (adding one line of text), being built as a separate variant. Ship both together if you
+      want every check to pass at once; this one alone leaves the anchor checks failing.
+    </p>
+    <div class="arm">
+      <b>Option A, ship the spacing and size change alone.</b> Air trimmed, cards bigger, nothing
+      added. Two floors already passing get healthier margins; the two that were failing stay
+      failing.
+    </div>
+    <div class="arm">
+      <b>Option B, pair it with the headline variant.</b> Add the "Coiffeur" headline (the
+      sibling fix) on top of this spacing change. All checks measured pass together in that
+      case, not verified in this file since it is a different mockup's job.
+    </div>
+  </div>
+
+  <div class="callout">
+    <h2>One value here needs your yes specifically, because it moves a decision you already made</h2>
+    <p>
+      The card-width change (231px to 277px) widens <code>SalonCard.tsx</code>'s mobile width
+      formula from <code>(100vw-44px)/1.5</code> to <code>(100vw-44px)/1.25</code>. That 1.5
+      value is not an accident: the code comment next to it names a dated decision, tagged R4-2,
+      "owner 'V2, not V3': bigger card at ~250px with the next card peeking, was /2.2 ~167px",
+      from July last year. You already chose bigger over smaller once. This mockup asks to go a
+      step further in the same direction you picked, not the opposite direction, but it is still
+      a step past an already-decided number, so it gets its own yes rather than a silent bump.
+      The real cost: the next card's peek shrinks from showing 58% of the second card to showing
+      32% of it, still visibly cropped (the scroll promise holds), just a smaller tease. If
+      shipped, this would use the width override the component already supports
+      (<code>widthClassName</code>), scoped to the category rails only, not a change to the
+      shared default every other SalonCard row uses.
+    </p>
+  </div>
+
+  <div class="correction">
+    <h2>Correction on the numbers I was handed</h2>
+    <p>
+      The brief for this task said the page measures 0.71% photo coverage, a 14px anchor and a
+      1.02x ratio. I could not reproduce that as the settled state. I measured the live
+      <code>/de/coiffeur</code> route twice, independently, with two different scripts run
+      against the running dev server this session (a whole-DOM element scan, and a second,
+      section-scoped scan restricted to the two rail <code>&lt;section&gt;</code> elements): both
+      landed on 41.04%, and the biggest text was 18px ("Top Coiffeur"), both times. The 0.71%/14px
+      reading is real but it is a loading-state snapshot (grey skeleton cards, before the salon
+      photos finish fetching), not the page at rest, the same finding an independent mockup built
+      for this same screen this session also reports. The real defect on this screen is smaller
+      than described: imagery already passes, the anchor and ratio checks are the ones that
+      actually fail, and neither is a spacing problem this mechanism can fix.
+    </p>
+  </div>
+</div>
+<script>
+  function applyFix(doc) {
+    if (!doc || !doc.head) return 0;
+    if (doc.querySelector('style[data-injected-fix]')) return 1;
+    // Only apply once the real rail markup exists, so we are editing the settled
+    // page, not the loading skeleton (mirrors the correction note above).
+    var hasRail = Array.prototype.some.call(doc.querySelectorAll('h2'), function (h) {
+      return /^Top /.test(h.textContent || '');
+    });
+    if (!hasRail) return 0;
+    var style = doc.createElement('style');
+    style.setAttribute('data-injected-fix', '1');
+    style.textContent = [
+      /* CategoryPillRow's real row: pt-5 pb-5 (20px/20px) -> 8px/8px. */
+      '.flex.items-center.gap-2.overflow-x-auto.scrollbar-none.pt-5.pb-5{padding-top:8px!important;padding-bottom:8px!important;}',
+      /* SearchTemplate's real "Result grid" wrapper: pt-4 (16px) -> 4px. */
+      'div[class*="max-w-[1280px]"][class*="pt-4"][class*="pb-12"]{padding-top:4px!important;}',
+      /* SalonCard's real mobile width class, widened one step past the R4-2 pick. */
+      'a[class*="(100vw-44px)/1.5"]{width:calc((100vw - 44px) / 1.25)!important;}'
+    ].join('\n');
+    doc.head.appendChild(style);
+    return 1;
+  }
+
+  var started = false;
+  function startAfter() {
+    if (started) return;
+    started = true;
+    var f = document.getElementById('afterFrame');
+    var tries = 0;
+    var MAX_POLLS = 150; // a poll cap, never a displayed count
+    var iv = setInterval(function () {
+      tries++;
+      try {
+        var doc = f.contentDocument;
+        if (doc && applyFix(doc) > 0) {
+          clearInterval(iv);
+        }
+      } catch (e) {}
+      if (tries > MAX_POLLS) clearInterval(iv);
+    }, 200);
+  }
+  document.getElementById('afterFrame').addEventListener('load', startAfter);
+  startAfter();
+</script>
+</body>
+</html>

@@ -36,7 +36,6 @@ import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { loadStripe } from "@stripe/stripe-js";
 import {
-  ArrowLeft,
   Check,
   X,
   Lock,
@@ -47,6 +46,7 @@ import {
   Receipt,
   ShieldCheck,
 } from "lucide-react";
+import { BackButton } from "@/app/[locale]/_components/primitives/BackButton";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { cn } from "@/lib/utils";
 import {
@@ -689,13 +689,10 @@ function Frame({
   return (
     <div className="flex min-h-[100dvh] flex-col bg-white text-s-ink">
       <header className="flex items-center gap-2.5 border-b border-s-border px-4 py-2.5 md:px-8">
-        <Link
-          href={backHref}
-          aria-label={t("back")}
-          className="flex h-[34px] w-[34px] flex-shrink-0 items-center justify-center rounded-pill bg-s-bg-sunken text-s-ink"
-        >
-          <ArrowLeft size={18} strokeWidth={1.9} aria-hidden />
-        </Link>
+        {/* mockup-ok: restores the shipped NAV CONTROLS look (LOCKFILE.md, 2026-08-10), already
+            live via BackButton in SalonStickyTabNav.tsx; this hand-drawn Link had drifted from it
+            (pill, no border, no shadow). Composing the registered primitive per FLOORS LAW 9. */}
+        <BackButton href={backHref} variant="flat" label={t("back")} className="flex-shrink-0" />
         <div className="min-w-0">
           <div className="font-display text-[15px] font-semibold leading-tight tracking-[-0.01em]">
             {title}

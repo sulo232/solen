@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Notifications, floor fix</title>
+<!-- Base: capture live -->
+<!-- Scale: component -->
+<!--
+  Grounded-in: app/[locale]/notifications/NotificationsClient.tsx (real route: /de/notifications)
+
+  Depicts:
+  panel 1, live inbox -> app/[locale]/notifications/NotificationsClient.tsx (real route via
+    /api/dev/login so the authenticated inbox loads, not the logged-out redirect; unmodified).
+  panel 2, header icon row -> app/[locale]/_components/layout/Header.tsx (real chrome, redrawn
+    static to label its own already-shipped shadow, nothing changed).
+  panel 2, bottom nav bar -> app/[locale]/_components/layout/BottomNav.tsx (real chrome, redrawn
+    static to label its own already-shipped shadow, nothing changed).
+  panel 3, notification rows -> app/[locale]/notifications/NotificationsClient.tsx (real row markup
+    and real copy carried over from the live inbox in panel 1; two rows get a photo swap, NET-NEW:
+    the salon photo is a self-hosted stock placeholder, a static file cannot query the DB for the
+    row's real stored photo).
+
+  Correction (panel 2): a live authenticated measurement (same box-shadow-string method
+    scripts/check-geometry.mjs's ELEVATION check uses: distinct getComputedStyle(el).boxShadow values
+    among visible elements, clipped to the 390x844 viewport) found 2 distinct shadows already on this
+    route, the two circular header buttons and the fixed BottomNav bar. That already clears the floor
+    of 2, so no elevation treatment is proposed.
+
+  Diagnosis 1 (real, unresolved): F2 IMAGERY violated. Measured 0% photographic area in the first
+    viewport of the live /de/notifications route at 390x844 (in-browser DOM scan, same element-set
+    check-geometry.mjs's imagery pass uses: img tags plus backgroundImage not none, clipped to
+    viewport, 2026-08-27). Violates FLOORS LAW 2, imagery presence floor, satisfied by content never
+    decoration. Target is >= 33%. The best-faith row-thumbnail treatment in panel 3 only reaches
+    roughly 4% (two 56x56 thumbnails against a 390x844 viewport works out to 6272px^2 / 329160px^2),
+    nowhere near the floor. Full compliance needs a structural card-format redesign, named as his call
+    at the foot of panel 3, not silently built here.
+
+  Diagnosis 2 (correction, not a violation): the brief given for this task read "elevation 1 distinct
+    shadow, FAIL" for /de/notifications. Live measurement contradicts that: 2 distinct box-shadow
+    values are already present (see panel 2), which already PASSES the floor of 2. Likely source of
+    the stale number: scripts/check-geometry.mjs has no login handling at all (verified by reading it
+    end to end, no cookies/storageState/auth code path exists), so an unauthenticated run of it against
+    /de/notifications lands on the /de/auth/login redirect, not the real inbox, and measures that page
+    instead. Run directly (node scripts/check-geometry.mjs http://localhost:3457/de/notifications,
+    2026-08-27) it reports F6 display anchor 28px PASS on the string "Willkommen zurueck", the login
+    page's own heading, not anything in NotificationsClient.tsx. The brief's other two PASS numbers for
+    this page (anchor 28px, ratio 1.87x) do not match this route's source either: its own heading is a
+    literal text-[20px] (app/[locale]/notifications/NotificationsClient.tsx), so the real on-page
+    anchor is 20px against a 20/13 = 1.54x ratio, both under floor, not the given PASS figures. Left
+    uncorrected here beyond this note: the brief scoped this task to imagery plus elevation only, and
+    the anchor/ratio question needs its own decision on the header, not a silent resize bundled into an
+    unrelated task.
+
+  Exists-check: npm run exists notifications, 17 existing matches, ran again immediately before this
+    write. The route, NotificationsClient, both API endpoints and the notifications DB table (6 live
+    rows) already exist and are reused as-is; nothing here is new. A near-identical grouping mockup
+    already exists at public/_mockups/sweep-notif-grouping/index.html (found by the same exists-check,
+    read before building this file); that one used a tab-switcher banned by the 2026-08-15 CLAUDE.md
+    mockup-scope amendment for section-level decisions, so this file does not copy its interaction
+    pattern, only its real-route grounding.
+
+  Treatment-only: panel 3 changes ONLY the icon-disc-vs-photo-thumbnail treatment on two rows; row
+    order, copy, spacing, and every other row are untouched. Panel 2 changes nothing, it is a
+    correction with two real numbers labelled on a static copy of the real header/nav chrome.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#52525B; --ink3:#6B6B6B; --ink4:#A1A1AA;
+    --sunken:#F4F4F5; --hairline:#E4E4E7; --accent:#276EF1; --success:#16A34A;
+    --font:'Inter Tight',system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  html,body{min-height:100dvh}
+  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased}
+  .col{width:402px;max-width:100%;margin:0 auto}
+  .lucide{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+  .lbl{padding:22px 16px 10px;font-size:13px;font-weight:600;color:var(--ink3)}
+  .lbl b{color:var(--ink);font-weight:600}
+  .cap{padding:10px 16px 26px;font-size:12.5px;line-height:1.55;color:var(--ink2)}
+  .cap b{color:var(--ink);font-weight:600}
+
+  .frame-wrap{width:402px;max-width:100%;margin:0 auto;border:1px solid var(--hairline);border-radius:16px;overflow:hidden}
+  iframe{width:100%;height:844px;border:0;display:block;background:#fff}
+
+  .correct{width:402px;max-width:100%;margin:0 auto;border:1px solid var(--hairline);border-radius:16px;overflow:hidden;background:#fff}
+  .chrome-top{display:flex;align-items:center;justify-content:space-between;padding:14px 16px}
+  .circ{height:44px;width:44px;border-radius:999px;background:#fff;display:grid;place-items:center;position:relative}
+  .circ svg{color:var(--ink)}
+  .rgroup{display:flex;gap:8px}
+  .tag{position:absolute;top:-11px;right:-8px;background:var(--accent);color:#fff;font-size:9.5px;font-weight:700;padding:2px 6px;border-radius:999px;white-space:nowrap}
+  .chrome-nav{margin-top:120px;padding:10px 20px;display:flex;justify-content:space-between;position:relative}
+  .nav-pill{position:absolute;left:12px;right:12px;top:6px;bottom:6px;background:#fff;border-radius:999px;box-shadow:0 6px 24px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.5)}
+  .navi{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;color:var(--ink3);z-index:1;padding:6px 0}
+  .navi svg{width:19px;height:19px}
+  .navi.on{color:var(--ink)}
+  .nav-tag{position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;font-size:9.5px;font-weight:700;padding:2px 6px;border-radius:999px;white-space:nowrap}
+  .measured{margin:34px 16px 16px;padding:12px 14px;background:var(--sunken);border-radius:12px;font-size:11.5px;line-height:1.6;color:var(--ink2);font-variant-numeric:tabular-nums}
+  .measured b{color:var(--ink)}
+
+  .list{width:402px;max-width:100%;margin:0 auto;border:1px solid var(--hairline);border-radius:16px;overflow:hidden;background:#fff}
+  .day{padding:12px 16px 6px;font-size:13px;font-weight:600;color:var(--ink3)}
+  .row{display:flex;align-items:flex-start;gap:12px;padding:14px 16px}
+  .row + .row{border-top:1px solid var(--hairline)}
+  .ic{height:44px;width:44px;flex-shrink:0;border-radius:999px;background:var(--sunken);display:grid;place-items:center}
+  .ic svg{color:var(--ink2)}
+  .ph{height:56px;width:56px;flex-shrink:0;border-radius:14px;overflow:hidden;background:var(--sunken)}
+  .ph img{width:100%;height:100%;object-fit:cover;display:block}
+  .rt{min-width:0;flex:1;padding-top:1px}
+  .rtop{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+  .rtitle{font-size:15px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rdate{flex-shrink:0;font-size:12px;color:var(--ink3)}
+  .rbody{margin-top:2px;font-size:13px;line-height:1.4;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .dot{margin-top:9px;height:8px;width:8px;flex-shrink:0;border-radius:999px;background:var(--accent)}
+  .kept{position:relative}
+  .kept::after{content:"kept";position:absolute;left:-1px;top:-1px;background:var(--ink);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:0 0 8px 0}
+  .changed{position:relative}
+  .changed::after{content:"photo added";position:absolute;left:-1px;top:-1px;background:var(--accent);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:0 0 8px 0}
+
+  .decision{width:402px;max-width:100%;margin:16px auto 40px;padding:16px;border:1px solid var(--hairline);border-radius:16px;background:var(--sunken)}
+  .decision h3{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:8px}
+  .opt{margin-top:10px;padding:10px 12px;background:#fff;border-radius:10px;border:1px solid var(--hairline)}
+  .opt b{display:block;font-size:12.5px;color:var(--ink);margin-bottom:2px}
+  .opt span{font-size:12px;color:var(--ink2);line-height:1.5}
+</style>
+</head>
+<body>
+  <div class="col">
+    <div class="lbl"><b>1. Live now</b> , unmodified /de/notifications</div>
+    <div class="frame-wrap"><iframe src="/api/dev/login?to=/de/notifications" title="live notifications inbox"></iframe></div>
+    <div class="cap">This is the real inbox, loaded fresh in this frame. Zero rows carry a photo. That is floor 2, imagery, and it genuinely fails.</div>
+  </div>
+
+  <div class="col">
+    <div class="lbl"><b>2. Already true</b> , elevation was measured live, not fixed</div>
+    <div class="correct">
+      <div class="chrome-top">
+        <div class="circ"><svg class="lucide" viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></div>
+        <div class="rgroup">
+          <div class="circ">
+            <svg class="lucide" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            <span class="tag">shadow A</span>
+          </div>
+          <div class="circ"><svg class="lucide" viewBox="0 0 24 24"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg></div>
+        </div>
+      </div>
+      <div class="chrome-nav">
+        <div class="nav-pill"></div>
+        <div class="navi on"><svg class="lucide" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Search</div>
+        <div class="navi"><svg class="lucide" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>Inspo</div>
+        <div class="navi"><svg class="lucide" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>Saved</div>
+        <div class="navi">
+          <svg class="lucide" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile
+          <span class="nav-tag">shadow B</span>
+        </div>
+      </div>
+      <div class="measured">
+        <b>Shadow A</b>, header icon buttons: <b>rgba(50,47,44,.09) 0 2px 8px</b><br>
+        <b>Shadow B</b>, fixed bottom nav bar: <b>rgba(0,0,0,.12) 0 6px 24px inset</b><br>
+        2 distinct values, measured live at 390x844, same method the floor checker uses. Floor is 2. This route already clears it.
+      </div>
+    </div>
+    <div class="cap">The brief for this task said elevation was 1 and failing. It is not, on the real authenticated page. Nothing changed in this panel, it is the live chrome with the two shadow sources called out.</div>
+  </div>
+
+  <div class="col">
+    <div class="lbl"><b>3. Proposed</b> , photo on the rows that name a salon</div>
+    <div class="list">
+      <div class="day">Earlier</div>
+      <div class="row changed">
+        <div class="ph"><img src="/_mockups/_assets/salon-photos/p03.jpg" alt=""></div>
+        <div class="rt">
+          <div class="rtop"><span class="rtitle">Customer cancelled: manicure</span><span class="rdate">Jul 18</span></div>
+          <div class="rbody">The manicure booking for Jul 23, 2026...</div>
+        </div>
+        <div class="dot"></div>
+      </div>
+      <div class="row kept">
+        <div class="ic"><svg class="lucide" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div>
+        <div class="rt">
+          <div class="rtop"><span class="rtitle">Salon rejected</span><span class="rdate">Jul 6</span></div>
+          <div class="rbody">Your salon reviewer-batchA-gate-...</div>
+        </div>
+        <div class="dot"></div>
+      </div>
+      <div class="row kept">
+        <div class="ic"><svg class="lucide" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div>
+        <div class="rt">
+          <div class="rtop"><span class="rtitle">Salon rejected</span><span class="rdate">Jul 6</span></div>
+          <div class="rbody">Your salon E2E Test Salon Fix1b 178329326...</div>
+        </div>
+        <div class="dot"></div>
+      </div>
+      <div class="row changed">
+        <div class="ph"><img src="/_mockups/_assets/salon-photos/p07.jpg" alt=""></div>
+        <div class="rt">
+          <div class="rtop"><span class="rtitle">Appointment confirmed</span><span class="rdate">Jun 11</span></div>
+          <div class="rbody">La Belle Ongle, Sat Jun 13 at 14:30</div>
+        </div>
+      </div>
+    </div>
+    <div class="cap">Real row text from the live inbox above, English chrome only. Photo replaces the icon on the two rows that name a real salon (a booking, a confirmed appointment); the two salon-application rows keep the neutral icon, they have no salon to show a photo of. Placeholder photo: a self-hosted stock file standing in for the salon's own stored photo, which the real build would pull by the row's existing salon_slug, nothing invented.</div>
+
+    <div class="decision">
+      <h3>This does not clear floor 2</h3>
+      <div class="cap" style="padding:0 0 4px">Two 56x56 thumbnails against a 390x844 first viewport work out to roughly <b>4%</b> photographic area. The floor is 33%. Getting there needs a bigger call than a row treatment:</div>
+      <div class="opt"><b>A, keep the row format</b><span>Treat the inbox like the exempt list (forms, checkout, legal, receipts already read this way): a system list, not a browsing surface, floor waived by naming it.</span></div>
+      <div class="opt"><b>B, redesign as photo-forward cards</b><span>Each notification becomes a larger card with a real photo leading it, closer to the PDP benchmark. Bigger change, its own mockup, his call before anyone builds it.</span></div>
+    </div>
+  </div>
+</body>
+</html>

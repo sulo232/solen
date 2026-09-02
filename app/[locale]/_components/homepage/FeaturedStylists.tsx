@@ -196,6 +196,7 @@ export default function FeaturedStylists() {
   // 2026-08-15: this label was a hardcoded German literal, so it rendered German on /en,
   // /fr and /it. Same bug class the owner caught on the recently-viewed row that day.
   const t = useTranslations("home.featured");
+  const tCommon = useTranslations("common");
   return (
     <Section>
       <SectionFrame>
@@ -225,7 +226,7 @@ export default function FeaturedStylists() {
                       {s.photoUrl ? (
                         <Image
                           src={s.photoUrl}
-                          alt={`Foto von ${s.name}`}
+                          alt={tCommon("photoOf", { name: s.name })}
                           fill
                           sizes="72px"
                           className="object-cover"

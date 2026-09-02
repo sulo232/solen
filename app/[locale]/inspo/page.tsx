@@ -464,8 +464,11 @@ function DiscoverPageContent() {
     setSearchInput("");
   };
 
+  // pt-0 (was pt-1.5): the extra 6px pushed this page's HomeSearchPill to y18 instead of the
+  // locked y12 every other screen uses (HomeSearchPill.tsx:230-236, "one height, 64, whatever
+  // the scroll position"); removed so this bar sits on the same 12 as home/coiffeur/etc.
   return (
-    <main className="min-h-screen bg-white pt-1.5 pb-24">
+    <main className="min-h-screen bg-white pt-0 pb-24">
       <div className="max-w-7xl mx-auto px-4">
         {/* V3-D410 (user): the page title ("Entdecken") + a "Solen › Entdecken" breadcrumb now live in the global
             header's logo slot (see Header.tsx, route-gated to /inspo) — so the standalone h1 here is removed to
@@ -491,7 +494,31 @@ function DiscoverPageContent() {
             and rendering 16px narrower than every other route. The focused/editable branch and
             the suggestion dropdown reapply `px-4`/`mx-4` themselves so they land back on the
             page's normal content column, only the resting pill bleeds to the compensated edge. */}
-        <div className="relative mb-3 -mx-4">
+        {/* STICKY (2026-08-27, owner "should be, like, a permanent spot"): every other route that
+            carries a search bar pins it on scroll (/de, /de/coiffeur, /de/nails, /de/spa,
+            /de/barbershop, /de/basel/coiffeur, all measured sticky at 390x844); this one was the
+            only STATIC one. Ancestor check done before writing this class, same trap page.tsx:235
+            documents for the home pill: walked every ancestor between this div and <body> (the
+            outer <main id="main-content"> in app/[locale]/layout.tsx, this page's own nested
+            <main>, and the <div className="max-w-7xl mx-auto px-4"> above) and none carries a
+            transform, filter, contain, or a non-visible overflow, so there is no clipped scroll
+            container here the way the home page's root div (`overflow-hidden`) had, and no
+            ancestor fix was needed.
+            `max-md:sticky max-md:top-0 max-md:z-[55]` is copied verbatim off
+            SearchTemplate.tsx:1306, the shared band that already pins the other five (SPA/nails/
+            barbershop/coiffeur/basel-coiffeur go through that one component); it is mobile-only by
+            design (Airbnb shrink-search comment on that line: desktop keeps the search in normal
+            flow), which this page also needs unchanged: unlike /de, /inspo has no `md:` split
+            anywhere else in this file, i.e. no separate desktop search widget, so copying home's
+            OWN `md:hidden` variant instead would have deleted the search bar entirely on desktop.
+            `relative` stays as the unprefixed base (Tailwind's mobile-first cascade lets
+            `max-md:sticky` override it below the breakpoint and leaves it standing at md+), because
+            this wrapper is also the CSS containing block for the absolute suggestion dropdown two
+            lines below (`position: sticky` is a "positioned" value too, so mobile keeps that
+            contract; desktop, where `max-md:sticky` never applies, needs `relative` to keep
+            providing it, which SearchTemplate's own band never had to solve because its dropdown is
+            a separate full-screen overlay, not an absolute child of the band itself). */}
+        <div className="relative max-md:sticky max-md:top-0 max-md:z-[55] bg-white mb-3 -mx-4"> {/* mockup-ok: bg-white restores this HomeSearchPill instance to the same treatment already shipped on /de (page.tsx:255): without it, the transparent padding gap around the pill (HomeSearchPill's own px-4/pt-3, no fill of its own) would let the scrolled feed show through once this wrapper pins, same reasoning as page.tsx:246 */}
           {searchFocused ? (
             <div className="min-w-0 flex-1 px-4">
               <DiscoverySearchBar

@@ -1,0 +1,260 @@
+{
+ "changed": [
+  {
+   "path": "app/[locale]/_components/layout/Header.tsx",
+   "removed": {
+    "ArrowLeft": 2
+   },
+   "added": {
+    "ChevronLeft": 2
+   }
+  },
+  {
+   "path": "app/[locale]/_components/primitives/BackButton.tsx",
+   "removed": {
+    "ArrowLeft": 2,
+    "h-10": 1,
+    "w-10": 1
+   },
+   "added": {
+    "ChevronLeft": 2,
+    "h-11": 1,
+    "w-11": 1,
+    "shadow-elevation-2": 1
+   }
+  },
+  {
+   "path": "app/[locale]/_components/salon/SalonImageGallery.tsx",
+   "removed": {
+    "ArrowLeft": 2,
+    "rounded-full": 1
+   },
+   "added": {}
+  },
+  {
+   "path": "app/[locale]/_components/salon/SalonStickyTabNav.tsx",
+   "removed": {
+    "ArrowLeft": 2,
+    "rounded-full": 1
+   },
+   "added": {}
+  },
+  {
+   "path": "app/[locale]/booking/lookup/page.tsx",
+   "removed": {
+    "ArrowLeft": 2
+   },
+   "added": {}
+  },
+  {
+   "path": "app/[locale]/booking/resend-link/page.tsx",
+   "removed": {
+    "ArrowLeft": 2
+   },
+   "added": {
+    "h-11": 1,
+    "w-11": 1,
+    "rounded-full": 2,
+    "shadow-elevation-2": 1
+   }
+  },
+  {
+   "path": "app/[locale]/inspo/board/[id]/page.tsx",
+   "removed": {
+    "ArrowLeft": 2,
+    "h-10": 1,
+    "w-10": 1
+   },
+   "added": {
+    "ChevronLeft": 2,
+    "h-11": 1,
+    "w-11": 1
+   }
+  },
+  {
+   "path": "app/[locale]/inspo/saved/[id]/page.tsx",
+   "removed": {
+    "ArrowLeft": 2,
+    "h-10": 1,
+    "w-10": 1
+   },
+   "added": {
+    "ChevronLeft": 2,
+    "h-11": 1,
+    "w-11": 1
+   }
+  },
+  {
+   "path": "app/[locale]/inspo/saved/page.tsx",
+   "removed": {
+    "ArrowLeft": 2,
+    "h-10": 1,
+    "w-10": 1,
+    "rounded-full": 1
+   },
+   "added": {}
+  },
+  {
+   "path": "app/[locale]/onboarding/OnboardingFlow.tsx",
+   "removed": {
+    "ArrowLeft": 1,
+    "rounded-full": 1
+   },
+   "added": {
+    "shadow-elevation-2": 1,
+    "ChevronLeft": 1
+   }
+  },
+  {
+   "path": "app/[locale]/queue/[token]/page.tsx",
+   "removed": {
+    "ArrowLeft": 2,
+    "rounded-full": 1,
+    "h-11": 1,
+    "w-11": 1
+   },
+   "added": {}
+  },
+  {
+   "path": "app/[locale]/salon/[slug]/team/page.tsx",
+   "removed": {
+    "ArrowLeft": 2,
+    "h-11": 1,
+    "w-11": 1,
+    "rounded-full": 1
+   },
+   "added": {
+    "shadow-elevation-2": 1,
+    "ChevronLeft": 1
+   }
+  },
+  {
+   "path": "app/[locale]/walk-in-pay/page.tsx",
+   "removed": {
+    "ArrowLeft": 2
+   },
+   "added": {
+    "ChevronLeft": 2
+   }
+  },
+  {
+   "path": "components-legacy/booking/BookingWizard.tsx",
+   "removed": {
+    "ArrowLeft": 3,
+    "h-11": 2,
+    "w-11": 2,
+    "rounded-full": 2,
+    "shadow-whisper": 2
+   },
+   "added": {}
+  },
+  {
+   "path": "components-legacy/discovery/DetailPage.tsx",
+   "removed": {
+    "ArrowLeft": 2,
+    "rounded-full": 1,
+    "h-11": 1,
+    "w-11": 1
+   },
+   "added": {
+    "ChevronLeft": 1
+   }
+  },
+  {
+   "path": "components-legacy/editor/EditorPage.tsx",
+   "removed": {
+    "ArrowLeft": 2
+   },
+   "added": {
+    "ChevronLeft": 2,
+    "h-11": 1,
+    "w-11": 1
+   }
+  },
+  {
+   "path": "components-legacy/refund/RefundCaseView.tsx",
+   "removed": {
+    "ArrowLeft": 1
+   },
+   "added": {
+    "ChevronLeft": 1,
+    "shadow-elevation-2": 1
+   }
+  },
+  {
+   "path": "components-legacy/refund/ReportRefundEntry.tsx",
+   "removed": {
+    "ArrowLeft": 2
+   },
+   "added": {}
+  },
+  {
+   "path": "components-legacy/refund/UpchargeApproveView.tsx",
+   "removed": {
+    "ArrowLeft": 2
+   },
+   "added": {}
+  },
+  {
+   "path": "components-legacy/staff/StaffProfilePage.tsx",
+   "removed": {
+    "ArrowLeft": 2,
+    "rounded-full": 1
+   },
+   "added": {}
+  },
+  {
+   "path": "components-legacy/staff/StaffReviewsSheet.tsx",
+   "removed": {
+    "ArrowLeft": 2,
+    "rounded-full": 1
+   },
+   "added": {
+    "shadow-elevation-2": 1
+   }
+  }
+ ],
+ "unchanged": [
+  "app/[locale]/_components/homepage/CategoryTabs.tsx",
+  "app/[locale]/_components/homepage/FeaturedStylists.tsx",
+  "app/[locale]/_components/homepage/Reviews.tsx",
+  "app/[locale]/_components/homepage/SalonCard.tsx",
+  "app/[locale]/_components/homepage/SearchBar.tsx",
+  "app/[locale]/_components/homepage/SectionHeader.tsx",
+  "app/[locale]/_components/homepage/WalkInBand.tsx",
+  "app/[locale]/_components/layout/CategoryPillRow.tsx",
+  "app/[locale]/_components/layout/Footer.tsx",
+  "app/[locale]/_components/layout/MobileMenu.tsx",
+  "app/[locale]/_components/primitives/DateTimePicker.tsx",
+  "app/[locale]/_components/salon/SalonBreadcrumb.tsx",
+  "app/[locale]/_components/salon/SalonHeader.tsx",
+  "app/[locale]/_components/salon/SalonHero.tsx",
+  "app/[locale]/_components/salon/SalonLightbox.tsx",
+  "app/[locale]/_components/salon/SalonVenuesNearby.tsx",
+  "app/[locale]/_components/search/CategoryHeroCarousel.tsx",
+  "app/[locale]/_components/search/MapSalonDetail.tsx",
+  "app/[locale]/_components/search/SalonResultCard.tsx",
+  "app/[locale]/_components/search/SearchOverlay.tsx",
+  "app/[locale]/_components/search/SearchTemplate.tsx",
+  "app/[locale]/_components/tips/TipSheet.tsx",
+  "app/[locale]/dev/decision-backbutton/page.tsx",
+  "app/[locale]/inspo/page.tsx",
+  "app/[locale]/profile/favorites/page.tsx",
+  "app/[locale]/profile/looks/page.tsx",
+  "app/[locale]/profile/referral/page.tsx",
+  "app/[locale]/profile/stamps/page.tsx",
+  "components-legacy/MapView.tsx",
+  "components-legacy/auth/SignIn.tsx",
+  "components-legacy/booking/StaffProfileSheet.tsx",
+  "components-legacy/dashboard/DashboardLayout.tsx",
+  "components-legacy/dashboard/SalonSwitcher.tsx",
+  "components-legacy/discovery/InlinePrefsPanel.tsx",
+  "components-legacy/discovery/LikeButton.tsx",
+  "components-legacy/discovery/SaveButton.tsx",
+  "components-legacy/discovery/SaveToBoardSheet.tsx",
+  "components-legacy/ui/Breadcrumb.tsx",
+  "components-legacy/ui/ImageUploader.tsx",
+  "components-legacy/ui/PhotoLightbox.tsx",
+  "components/ui/animated-testimonials.tsx"
+ ]
+}

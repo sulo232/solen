@@ -87,9 +87,9 @@ Build order = HIGH impact first. (arch/behavior/copy items are DECISIONS, not A/
 - [x] `verified:` sha 37673276b , the setInterval countdown, secondsLeft/stored state and the redirect notice are removed from app/[locale]/referral/[code]/page.tsx; the user continues via the existing explicit CTA. (BEHAVIOR, not mockup) referral 5-sec auto-redirect [HIGH] , referral/[code]:36 , remove the forced redirect. DONE 2026-07-25: removed the `setInterval` countdown and the `secondsLeft`/`stored`-driven redirect notice; the user now stays on the page and continues only via the existing explicit CTA button (`handleCta`, unchanged). `app/[locale]/referral/[code]/page.tsx`.
 - [x] sweep-notif-grouping [MED] , notifications flat edge-to-edge rows vs grouped card , BUILT
 - [x] (IA DECISION, not visual mockup) sweep-partner-cta [HIGH] , partner 3 CTAs all ink but 3 destinations , unify to one funnel (lead form). Investigated: not a visual A/B (they look identical); a written funnel recommendation, not a mockup. DONE 2026-07-25. Before: (1) hero signup-form submit posts the lead directly, (2) sticky bottom-bar CTA `href="#contact"` scrolls to the hero form, (3) bottom-of-page CTA `Link href="/onboarding/salon?utm_source=partner_page..."` navigated straight into the salon signup wizard, bypassing the lead form entirely. After: CTA (3) now points at `#contact`, the same anchor as the sticky CTA, so all three ink actions funnel to the ONE lead form; the mailto "book a consult" link stays the one secondary text link, unchanged rung. `app/[locale]/partner/page.tsx:494-506` (also dropped the now-unused `Link`/`useLocale` imports this CTA fix orphaned).
-- [x] sweep-rewards-tier-ladder [MED] , ink tiers vs green stepper , BUILT
-- [x] sweep-referral-hero [MED] , gradient vs flat , BUILT
-- [x] sweep-partner-cards [MED] , feature vs category card chrome , BUILT
+- [x] sweep-rewards-tier-ladder [MED] `33310f594` v2, superseded by V3-C3 `67cd05bee` , ink tiers vs green stepper , BUILT in v2 format. NOT a contradiction with V3-C3 below, which shows the same name unticked: this line records the v2 mockup existing, V3-C3 records it needing a rebuild in section-scope format after the owner banned the iframe-switcher on 2026-08-15. Both are now done.
+- [x] sweep-referral-hero [MED] `68ac713ce` v2, superseded by V3-C5 `aea75ac33` , verified: both shas resolve, gradient vs flat , BUILT in v2 format; rebuilt as V3-C5 below.
+- [x] sweep-partner-cards [MED] `fc53aa9be` v2, superseded by V3-C6 `d3dcbbde1` , feature vs category card chrome , BUILT in v2 format; rebuilt as V3-C6 below.
 - [x] sweep-partner-faq [MED] , accordion vs swipe cards , BUILT
 - [x] sweep-warum-badge [MED] , say-once vs badge-on-each , BUILT
 - [x] sweep-help-rows [MED] , grouped card vs flat link list , BUILT
@@ -169,14 +169,82 @@ ProfileTabs and the settings B2 direction are the built result).
   the name at font-weight 500, a third weight. All three undone in the After pane, verified by a
   dispatched click with the values read back. AWAITING HIS PICK on price ink vs grey; the duplicate
   count is a straight bug, not a taste question.
-- [ ] V3-C2 `sweep-booking-payment-selected` , the payment step's selected state: gray fill like every
+- [x] V3-C2 REBUILT 2026-08-28, `16d27c37d`. Ink border as shipped versus the locked gray fill, stacked at real size. REMOVED.md:41 carries an owner rejection of ink and black selected fills sitewide dated 2026-06-29, LATER than the in-code comment claiming a 2026-06-12 payment approval, and its offender list does not name PayConfirmStep, so payment reads as missed by that sweep rather than carved out as a fifth exception.
+  Original question: `sweep-booking-payment-selected` , the payment step's selected state: gray fill like every
   other pill, or the ink border this mockup says you approved in "mockup 24d". That approval could not
   be found in writing and the four named ink exceptions do not include payment.
-- [ ] V3-C3 `sweep-rewards-tier-ladder` , loyalty rank ladder: ink ladder or green stepper. The stepper
+- [x] V3-C3 REBUILT 2026-08-28, `67cd05bee`. Ink node versus green node at the real 24px dot and 10px track geometry, values read out of RewardsView.tsx. Replaced a 2026-08-18 file that was a hand-drawn redraw behind a live-iframe switcher, the banned format, and which only ever rendered ONE outcome with its recommendation baked into its caption.
+  Original question: `sweep-rewards-tier-ladder` , loyalty rank ladder: ink ladder or green stepper. The stepper
   law covers progress trackers and bans green on a node; a rank ladder is neither side of that.
-- [ ] V3-C4 `sweep-rewards-hero-gradient` , rewards hero: ink or the current saturated gradient.
-- [ ] V3-C5 `sweep-referral-hero` , referral hero: gradient or flat white cards.
-- [ ] V3-C6 `sweep-partner-cards` , partner page: do the feature grid and category grid share sunken
+- [x] V3-C4 REBUILT 2026-08-28, `8fb53b36f`. THE PREMISE WAS FALSE, so the question could not be
+  answered as written. There is no gradient on the rewards hero and there never has been one:
+  `app/[locale]/rewards/RewardsView.tsx:117` is `bg-white` with a hairline and `shadow-elevation-1`,
+  and `git log --follow` back to that file's first commit shows no gradient at any point. The
+  gradient the question meant lives on a DIFFERENT route, `components-legacy/loyalty/HeroStampCard.tsx:50`
+  (`linear-gradient(135deg,#1B4D1B,#F3A864)`) on `/profile/stamps`. Verified by the builder with a
+  control and re-verified here.
+  AND THE GRADIENT ARM IS NOT A TASTE CHOICE ANYWAY: white text on that gradient's light stop
+  measures **1.98:1**, under even the 3:1 large-text floor, and the star icon on it is 1.24:1.
+  Ink on white is 19.80:1. WCAG AA is precedence tier 2 and outranks taste, so the mockup shows
+  the comparison and states that only one arm is legal, rather than putting an illegal option to him.
+  SEPARATE DEFECT FOUND IN PASSING, recorded not fixed: the rewards page carries **9 readable text
+  sizes** (10.5 / 11 / 11.5 / 12.5 / 13.5 / 15 / 15.5 / 16 / 34) against a ceiling of 4, plus a
+  decorative 150px `aria-hidden` watermark, and **3 rendered weights** (400 on four unstyled lines,
+  600, 700) against a ceiling of 2. Two independent counts disagreed at first, 10 versus 8-9, and
+  the instrument was changed rather than a side picked: the gap is entirely the watermark and the
+  unstyled-default weight. Not fixed here because it is a real-code change and he has approved none.
+  Original question: rewards hero, ink or the current saturated gradient.
+- [x] V3-C5 REBUILT 2026-08-28, `aea75ac33`. The real gradient captured as a live Playwright screenshot versus the flat recipe the SAME page already ships 12px below it. Measured live: the subtitle reads 4.29:1 at the gradient's dark corner, under the 4.5:1 AA floor, and 5.33:1 uniformly on the flat version. Replaced a file carrying fabricated counts.
+  Original question: `sweep-referral-hero` , referral hero: gradient or flat white cards.
+- [x] V3-C6 REBUILT 2026-08-28, `d3dcbbde1`. THE FINDING OUTRANKED THE QUESTION. The two grids already share 7 of 9 class tokens and differ on exactly two things, the fill (sunken versus white) and one hover behaviour. Each clears the Edge-Visibility floor alone, so the defect is FLOORS LAW 8, they do not match EACH OTHER.
+  Original question: `sweep-partner-cards` , partner page: do the feature grid and category grid share sunken
   chrome or white plus hairline.
-- [ ] V3-C7 `sweep-brand-hero` , brand directory page: full PDP-scale hero or a lighter section title.
-- [ ] V3-C8 `sweep-ueber-uns` , the About page: nothing pins it beyond the general type scale.
+- [x] V3-C7 REBUILT 2026-08-28, `8db61707a`. Replaced a stale 2026-07-19 iframe-toggle version that
+  used an invented name and invented locations. Variant A is the real locked salon-detail H1 at
+  30px/600, ratio 2.14x to the 14px body, which clears the >=28px display anchor and the >=1.8x
+  ratio. Variant B is this page's own section-H2 at 18px/600, ratio 1.29x, which fails both. The
+  page ships 22px/600 at ratio 1.57x today, so it fails both floors right now and there is no
+  photographic focal in that section to exempt it. Section height measured by a real Playwright
+  render through the public tunnel: 241px (28.6% of an 844 viewport) for A against 230px (27.2%)
+  for B, so the floor compliance is the trade, not screen space.
+  **AND A PRODUCT FINDING THAT OUTRANKS THE MOCKUP: `/[locale]/brand/[slug]` CANNOT RENDER FOR
+  ANYONE.** `salon_groups` has ZERO rows, so every brand URL falls through to its not-found branch.
+  Reported by the builder off the admin client, then re-verified by me against the file this
+  project names as column truth: `_inventory/_db-snapshot.json`, captured 2026-08-23, records
+  `{"name": "salon_groups", "rows": 0, "rls": true}` while `salons` in the same list carries 28.
+  (My first reading of that snapshot said the table did not exist at all. That was my traversal
+  being broken, caught by controlling on `bookings` and `salons`, which it also failed to find.
+  The table exists and is empty, which is a different and smaller problem than a missing table.) WHY, per the missing-things protocol: HALF-LANDED. The
+  migration `053_salon_groups.sql` shipped and the route shipped; the seed step was never written.
+  Not a graveyard hit, not superseded, not a design defect. THE FIX FOLLOWS THE REASON: seed it,
+  which taste rule 1 names explicitly as the fix rather than fabrication, since a row read through
+  the UI's normal query is a live source. Until then the hero question is decided on a page no
+  customer can reach, so the mockup is correct and the seeding is the blocker in front of it.
+  Original question: brand directory page: full PDP-scale hero or a lighter section title.
+- [x] V3-C8 BUILT 2026-08-28, `1fa93fa69`. The blocker was mine to clear, not a real wall: `mockup-preflight-manifest.py` wants `npm run exists` in THIS transcript, which never resolves for a Task-spawned subagent but resolves fine for the main thread. Built here directly. Both panes are real Playwright captures of the live page, the second with one injected colour rule, control 0 -> 8 body elements ink. RENDERING CORRECTED TWO OF MY OWN NUMBERS: 8 grey body elements, not 5 (four list items share one class), and the sibling comparison was BACKWARDS, partner is 49% grey so grey body is normal here. The surviving claim is narrower: About is the only marketing page with zero ink body copy. A stale file was already on disk from an earlier attempt, the banned iframe-switcher with three invented headings, so my note saying nothing was written was also wrong. Original state: STILL OPEN, and NOT because the work was not done. 2026-08-28: the
+  diagnosis is finished and the file could not be written, so this stays unticked rather than
+  claiming a mockup that does not exist on disk.
+  **THE DEFECT FOUND, source-certain and needing no render: every non-heading character on the
+  About page, 507 of 507, carries `text-s-ink-2` (#6B6B6B).** Re-verified by me at the element
+  level, which is the sharper cut: the page has exactly 5 `text-s-ink` and 5 `text-s-ink-2`, and
+  they split perfectly by role. Ink is on the three headings only (`page.tsx:16`, `:25`, `:36`);
+  ink-2 is on the subtitle (`:19`), the paragraphs (`:28`) and the promise list (`:39`). Every
+  body element, no exceptions. **CONTROL, and it makes this an outlier rather than a house style:**
+  the two sibling marketing pages go the other way, `warum-solen` at 49 ink against 32 ink-2 and
+  `partner` at 67 against 38. FLOORS LAW 6 says that token is for
+  chevrons, placeholders, timestamps and hints and "stays forbidden on load-bearing copy", and an
+  About page's body IS its load-bearing copy. `app/globals.css:63-64` sets the sitewide body colour
+  to full ink #0A0A0A, and this page opts every paragraph out of that default into the hint grey.
+  Its type is otherwise clean: 3 sizes (36/18/14) and 2 weights (600/400), inside both ceilings.
+  **A LIVE CONTRADICTION INSIDE OUR OWN LOCKED DOCS, surfaced rather than resolved silently:**
+  `LOCKFILE.md` §2.5's Type Role Registry (2026-05-28) locks a "Body" role TO `s-ink-2`/400, which
+  is the exact thing FLOORS LAW 6 (2026-07-21, refined 07-27) forbids on load-bearing prose. By the
+  precedence chain the later dated rule wins, but two locked documents disagree in writing and that
+  is a decision for him, not for a builder.
+  **WHY IT COULD NOT BE WRITTEN, and this is a gate bug, not a missing requirement:**
+  `mockup-preflight-manifest.py`'s exists-check arm refused all five attempts saying `npm run exists`
+  had not run that turn. It had, immediately before each. The builder imported the gate's own
+  `npm_exists_ran()` and called it against its real subagent transcript, which returned True, so the
+  live hook is not resolving `transcript_path` to that file for a Task-spawned subagent. It refused
+  the skip flag, refused a `cp` that would have bypassed PreToolUse entirely, and reverted the repo
+  clean. That is the correct behaviour and the reason this box is honest instead of ticked.

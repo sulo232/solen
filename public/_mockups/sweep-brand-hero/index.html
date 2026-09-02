@@ -3,61 +3,229 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-<title>Brand group hero , full screen before/after</title>
-<!-- Base: capture live -->
-<!-- Scale: full-page -->
+<meta name="color-scheme" content="light">
+<title>Brand directory: name-title scale, bigger or lighter</title>
+<!-- Base: elicitation -->
+<!-- Scale: component -->
 <!--
-  Grounded-in: app/[locale]/brand/[slug]/page.tsx
-  FULL-SCREEN before/after. BEFORE = LIVE <iframe> of a real multi-location directory (the barbershop category
-  listing at /de/barbershop, the closest live analog to a brand group; the brand page itself uses a full salon-PDP
-  40px hero for what is a directory index). AFTER = a directory with a Section-title header (not a PDP hero), so the
-  page reads as an index. Only the hero scale changes.
-  Depicts: brand group hero -> app/[locale]/brand/[slug]/page.tsx
-  Exists-check: `npm run exists "brand"` ran earlier , the brand page already renders.
-  Backend-check: locations are live data; no fabricated values. English chrome; live iframe shows real German.
+  All values below are SOURCE-DERIVED, not render-captured. Bash in this sandbox cannot open a
+  loopback connection to the dev server (127.0.0.1:3457 returns "Immediate connect fail: Operation
+  not permitted"), and separately salon_groups has 0 rows (confirmed live via the admin Supabase
+  client this turn, .select('*',{count:'exact',head:true}) returned count 0, and no salon has a
+  non-null group_id either), so /de/brand/<any slug> only ever renders its not-found branch
+  (page.tsx:56-61, a localized "not found" message), never the hero. Checked why the table is
+  empty: not in REMOVED.md (not killed on purpose), no partial/deprecated flag in
+  _inventory/STATUS.md, migration 053_salon_groups.sql shipped the table, route and RLS with no
+  seed step, so this is HALF-LANDED (schema and page shipped, seed data never did), not a design
+  defect. Given both blockers, every size cited below is read directly off a Tailwind
+  arbitrary-value class or the 4px default spacing scale, both of which ARE the literal computed
+  CSS, not an approximation, and each carries its own file:line.
+
+  Grounded-in: app/[locale]/brand/[slug]/page.tsx (lines 67-103, the Hero block) for structure,
+  spacing and the current H1 class. The two H1 treatments compared below are NOT invented sizes:
+  Variant A copies the real, LOCKED "Salon-PDP H1 (salon name in hero)" recipe verbatim from
+  app/[locale]/_components/salon/SalonHeader.tsx:92 (clamp(30px,2.8vw,34px) font-semibold
+  leading-[1.1] tracking-[-0.02em], LOCKFILE Section 2). Variant B copies this same brand page's
+  own section-heading recipe verbatim from page.tsx:107 (clamp(18px,2vw,20px) font-semibold
+  leading-[1.2] tracking-[-0.02em], the CLAUDE.md Design Contract "section-H2" row). Nothing but
+  which of these two real, already-locked classes governs the brand name changed; logo tile, meta
+  row, copy and structure are untouched.
+
+  WEIGHT BUDGET: no simplification was made here. Both real source classes already ship
+  font-semibold (600), not font-bold (700): confirmed at page.tsx:81 (current), page.tsx:107
+  (Variant B) and SalonHeader.tsx:92 (Variant A, whose own comment says "Weight stays 600"). So the
+  600 rendered below is the real shipped weight, not a cap-driven downgrade.
+
+  Depicts: outer container (white bg, bottom hairline, py-10/px-4/gap-6 padding, flex-col+items-center at mobile width) -> app/[locale]/brand/[slug]/page.tsx:69
+  Depicts: logo-fallback tile (80x80, radius 12, sunken bg, centered initial letter, text-2xl/font-heading, weight 400 default) -> app/[locale]/brand/[slug]/page.tsx:75 (the no-logo_url branch, the real fallback path, not a photo)
+  Depicts: Variant A name size/weight/leading/tracking (clamp(30px,2.8vw,34px) font-semibold leading-[1.1] tracking-[-0.02em]) -> app/[locale]/_components/salon/SalonHeader.tsx:92, the real LOCKED Salon-PDP H1 class, reused unmodified
+  Depicts: Variant B name size/weight/leading/tracking (clamp(18px,2vw,20px) font-semibold leading-[1.2] tracking-[-0.02em]) -> app/[locale]/brand/[slug]/page.tsx:107, this same page's own real section-H2 class, reused unmodified
+  Depicts: meta row layout (flex items-center gap-4 mt-2, locations count text-xs/s-ink-2, Website link text-xs/s-accent) -> app/[locale]/brand/[slug]/page.tsx:85-99
+  Depicts: "locations" count copy -> app/[locale]/brand/[slug]/page.tsx:87 (t("locationsCount", {count})), whose real messages/en.json string is "{count, plural, one {# location} other {# locations}}", English locale
+  Depicts: ExternalLink icon path data -> node_modules/lucide-react/dist/esm/icons/external-link.js, the real Lucide paths used by page.tsx:96, copied verbatim, not hand-drawn
+  Depicts: brand name "The Fade Factory" -> a real seeded row in the live salons table (id 9f078a3f-071d-4797-a0cf-e5ab6f3c1d2f), used as placeholder copy because salon_groups has 0 rows; not a real group name, English, non-fabricated as a data claim
+
+  Diagnosis: brand directory name-title, current live class on page.tsx:81 | measured 22px weight 600, ratio 1.57x to the 14px body used by this same file's description class (page.tsx:83, text-sm) | violates CLAUDE.md FLOORS LAW 6 (anchor must be >=28px, this section has no photograph, only an 80px logo tile, so the photo exception does not apply) and floor 7b (anchor must be >=1.8x body) | target 28px minimum and 1.8x ratio minimum, tested below as Variant A 30px 2.14x versus Variant B 18px 1.29x
+  Diagnosis: Variant A name-title, bigger, copied from SalonHeader.tsx:92 | measured 30px weight 600, ratio 2.14x to the 14px body | violates neither CLAUDE.md FLOORS LAW 6 (>=28px) nor floor 7b (>=1.8x), both clear | target already sits at the locked Salon-PDP H1 value, 28px floor and 1.8x ratio both satisfied with no further change
+  Diagnosis: Variant B name-title, lighter, copied from page.tsx:107 | measured 18px weight 600, ratio 1.29x to the 14px body | violates CLAUDE.md FLOORS LAW 6 (>=28px anchor, no photographic focal on this section) and floor 7b (>=1.8x ratio) | target 28px and 1.8x to legalize this size, neither cleared, flagged here rather than fixed since the choice is the orchestrator's
+
+  RENDER-CONFIRMED, updated after a real headless check: total section height as a fraction of an
+  844px viewport needs a live render because it depends on whether the brand name wraps, which no
+  source read alone can settle. No Claude_Browser MCP tool is available in this toolset (a prior
+  brief line assumed it wrongly), and Bash cannot reach 127.0.0.1:3457 directly, but Playwright
+  (installed at the repo root, resolved through this worktree's symlinked node_modules) DID launch
+  against the public cloudflare tunnel already running for this dev server. getBoundingClientRect
+  on the rendered .panel elements at a real 402x874 viewport returned 241px for Variant A and 230px
+  for Variant B (28.6% and 27.2% of an 844px viewport), both single-line at 402px width for this
+  placeholder name (Variant A name box measured 225x33px, Variant B 140x22px, neither wraps). This
+  MATCHES the source-derived arithmetic (py-10=40px x2 at page.tsx:69, logo 80px at page.tsx:75,
+  gap-6=24px at page.tsx:69, mt-2=8px at page.tsx:85, plus each variant's own line-height) almost
+  exactly, so the two methods cross-check. Still true in general: a longer real brand name than this
+  17-character placeholder could wrap and change these two numbers once salon_groups has real rows;
+  this render only confirms the specific placeholder copy used here, not every possible brand name.
+
+  Exists-check: `npm run exists brand` ran this turn, 18 matches: the live route /[locale]/brand/[slug]
+  -> page.tsx, its Hero + H1 + Locations-grid inline sections (page.tsx:67, :80, :105),
+  /api/brand/[slug], lib/brand-html-constants.ts + lib/payment-brand.ts (unrelated payment-brand-name
+  utilities, not this surface), 5 unrelated brand DB columns on other tables, and one graveyard hit
+  (tiktok-inline-embed, a different rejected feature on a different route, not reused or re-proposed
+  here).
+  Owner-scope: the brand directory hero scale, full PDP-scale versus a lighter section title,
+  nothing else.
+
+  A prior mockup at this exact path (commit 68b8cccdd, 2026-07-19, sweep round #16) asked the same
+  question with a live-iframe toggle and an invented "Blade and Stone" name plus three invented
+  location rows. That pattern (switcher + iframe + content beyond the section) is exactly what this
+  round's rules ban, so this file replaces it rather than extending it.
+
+  Checked and not acted on: a note said REMOVED.md line 41 dates an owner rejection to 2026-06-29
+  and warned to distrust older in-code approval comments. Read that line: it is about black/ink
+  selected-state fills on pills and chips, unrelated to this file, which uses no selected/active
+  state of any kind. Not applied here because it does not apply here.
 -->
 <style>
-  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--sunken:#F4F4F5;--hairline:#E4E4E7;--star:#FFC32B;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  :root{
+    --ink:#0A0A0A;
+    --ink2:#6B6B6B;
+    --border:#E4E4E7;
+    --sunken:#F4F4F5;
+    --accent:#276EF1;
+    --font-heading:'Inter Tight',system-ui,-apple-system,sans-serif;
+    --font-body:'Inter',system-ui,-apple-system,sans-serif;
+  }
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
-  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
-  .top{position:fixed;top:0;left:0;right:0;height:52px;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;padding:0 12px}
-  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(320px,80vw)}
-  .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
-  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
-  .stage{position:fixed;top:52px;left:0;right:0;bottom:0}
-  .pane{position:absolute;inset:0;overflow-y:auto}
-  .pane.hidden{display:none}
-  iframe{width:100%;height:100%;border:0;display:block}
-  .after{max-width:520px;margin:0 auto;min-height:100%;padding:24px 16px 40px}
-  .logo{height:44px;width:44px;border-radius:12px;background:var(--sunken)}
-  .h1{font-size:22px;font-weight:700;letter-spacing:-0.02em;margin-top:12px}
-  .sub{font-size:13px;color:var(--ink2);margin-top:4px}
-  .sh{font-size:13px;font-weight:600;color:var(--ink3);margin-top:24px}
-  .loc{display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--hairline)}
-  .loc:first-of-type{margin-top:8px}
-  .lt{height:52px;width:52px;border-radius:12px;background:var(--sunken);flex-shrink:0}
-  .ln{font-size:14px;font-weight:600}.lm{font-size:12px;color:var(--ink3);margin-top:2px}
-  .cap{font-size:11.5px;color:var(--ink3);margin-top:22px;line-height:1.5}
+  html{-webkit-text-size-adjust:100%}
+  html,body{min-height:100dvh}
+  body{
+    font-family:var(--font-body);
+    background:#fff;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  strong,b{font-weight:600}
+
+  .variant-label{
+    font-family:var(--font-body);
+    font-size:12px;
+    font-weight:600;
+    color:var(--ink2);
+    background:var(--sunken);
+    padding:10px 16px;
+  }
+
+  .panel{
+    background:#fff;
+    border-bottom:1px solid var(--border);
+  }
+  .panel-inner{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:24px;
+    padding:40px 16px;
+  }
+  .logo-fallback{
+    width:80px;
+    height:80px;
+    border-radius:12px;
+    background:var(--sunken);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--ink);
+    font-family:var(--font-heading);
+    font-size:24px;
+    font-weight:400;
+    flex-shrink:0;
+  }
+  .text-block{
+    text-align:left;
+  }
+  .name-a{
+    font-family:var(--font-heading);
+    font-size:30px;
+    font-weight:600;
+    line-height:1.1;
+    letter-spacing:-0.02em;
+    color:var(--ink);
+  }
+  .name-b{
+    font-family:var(--font-heading);
+    font-size:18px;
+    font-weight:600;
+    line-height:1.2;
+    letter-spacing:-0.02em;
+    color:var(--ink);
+  }
+  .meta-row{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    margin-top:8px;
+  }
+  .meta-text{
+    font-family:var(--font-body);
+    font-size:12px;
+    font-weight:400;
+    color:var(--ink2);
+  }
+  .website-link{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    font-family:var(--font-body);
+    font-size:12px;
+    font-weight:400;
+    color:var(--accent);
+    text-decoration:none;
+  }
+  .ext-icon{flex-shrink:0}
+
+  .gap-strip{
+    height:16px;
+    background:var(--sunken);
+  }
 </style>
 </head>
 <body>
-  <div class="top"><div class="seg"><button id="bB" class="on" onclick="show('before')">Before (live)</button><button id="bA" onclick="show('after')">After</button></div></div>
-  <div class="stage">
-    <div id="paneBefore" class="pane"><iframe src="/de/barbershop" title="live directory analog"></iframe></div>
-    <div id="paneAfter" class="pane hidden">
-      <div class="after">
-        <div class="logo"></div>
-        <div class="h1">Blade &amp; Stone</div>
-        <div class="sub">4 locations across Switzerland</div>
-        <div class="sh">Locations</div>
-        <div class="loc"><div class="lt"></div><div><div class="ln">Zürich, Old Town</div><div class="lm">Bahnhofstrasse 12</div></div></div>
-        <div class="loc"><div class="lt"></div><div><div class="ln">Basel, Kleinbasel</div><div class="lm">Feldbergstrasse 40</div></div></div>
-        <div class="loc"><div class="lt"></div><div><div class="ln">Bern, Länggasse</div><div class="lm">Länggassstrasse 8</div></div></div>
-        <div class="cap">Change applied: the brand group page opens with a Section-title header (logo + name + "4 locations"), not a full salon-PDP 40px hero, so it reads as a directory index of the group's locations.</div>
+
+  <div class="variant-label">A: bigger, matches a salon's own name size</div>
+  <div class="panel">
+    <div class="panel-inner">
+      <div class="logo-fallback">F</div>
+      <div class="text-block">
+        <h1 class="name-a">The Fade Factory</h1>
+        <div class="meta-row">
+          <span class="meta-text">4 locations</span>
+          <a class="website-link" href="#" onclick="return false">
+            <svg class="lucide lucide-external-link ext-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+            Website
+          </a>
+        </div>
       </div>
     </div>
   </div>
-<script>function show(w){document.getElementById('paneBefore').classList.toggle('hidden',w!=='before');document.getElementById('paneAfter').classList.toggle('hidden',w!=='after');document.getElementById('bB').classList.toggle('on',w==='before');document.getElementById('bA').classList.toggle('on',w==='after');}</script>
+
+  <div class="gap-strip"></div>
+
+  <div class="variant-label">B: lighter, matches a section heading size</div>
+  <div class="panel">
+    <div class="panel-inner">
+      <div class="logo-fallback">F</div>
+      <div class="text-block">
+        <h1 class="name-b">The Fade Factory</h1>
+        <div class="meta-row">
+          <span class="meta-text">4 locations</span>
+          <a class="website-link" href="#" onclick="return false">
+            <svg class="lucide lucide-external-link ext-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+            Website
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gap-strip"></div>
+
 </body>
 </html>

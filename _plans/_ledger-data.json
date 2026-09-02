@@ -1,0 +1,3190 @@
+{
+ "commits": 66,
+ "files": {
+  ".claude/launch.json": {
+   "add": 30,
+   "commits": [
+    {
+     "sha": "eac28f434",
+     "subject": "The fan-out was ten wide when he asked for tons, and the note that should have said so never fired"
+    },
+    {
+     "sha": "9d2aaa773",
+     "subject": "Give every workstream a unique number, and park the two gray items on a named one-word decision"
+    },
+    {
+     "sha": "8378f389c",
+     "subject": "checkpoint(auto): 3 uncommitted file(s) at turn end"
+    }
+   ],
+   "rem": 0
+  },
+  ".claude/settings.json": {
+   "add": 0,
+   "commits": [
+    {
+     "sha": "fd23bd3b4",
+     "subject": "Unwire the whole-page mockup gate the owner cancelled by name"
+    }
+   ],
+   "rem": 8
+  },
+  ".github/workflows/quality.yml": {
+   "add": 1,
+   "commits": [
+    {
+     "sha": "16eb8782e",
+     "subject": "The design floors check has been green for 30 days because it never loaded a page"
+    }
+   ],
+   "rem": 1
+  },
+  "CLAUDE.md": {
+   "add": 1,
+   "commits": [
+    {
+     "sha": "e90c89a3c",
+     "subject": "The rules said the category page draws its own trail. It draws nothing."
+    }
+   ],
+   "rem": 1
+  },
+  "_design-system/_back-controls.json": {
+   "add": 44,
+   "commits": [
+    {
+     "sha": "dca5ffd6b",
+     "subject": "Back arrow: show the lock before applying it, and count how far it drifted"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/_geometry-report.md": {
+   "add": 331,
+   "commits": [
+    {
+     "sha": "e5844b8f2",
+     "subject": "checkpoint(auto): 3 uncommitted file(s) at turn end"
+    },
+    {
+     "sha": "8d96079a7",
+     "subject": "The floors checker now waits for the page and can sign in"
+    },
+    {
+     "sha": "9d2aaa773",
+     "subject": "Give every workstream a unique number, and park the two gray items on a named one-word decision"
+    }
+   ],
+   "rem": 327
+  },
+  "_design-system/research/FLOORS_LIVE_2026-08-27.md": {
+   "add": 292,
+   "commits": [
+    {
+     "sha": "4d0ee6f7b",
+     "subject": "Close S1: the salon page is the only page in the product that breaks no floor"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/research/FLOORS_SETTLED_2026-08-27.md": {
+   "add": 127,
+   "commits": [
+    {
+     "sha": "8d96079a7",
+     "subject": "The floors checker now waits for the page and can sign in"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/research/FLOORS_WARM_2026-08-27.md": {
+   "add": 38,
+   "commits": [
+    {
+     "sha": "bc65f1ab9",
+     "subject": "One page listing every failing screen, and the three numbers that were wrong"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/_measured/booking-datetime.json": {
+   "add": 231,
+   "commits": [
+    {
+     "sha": "d7c6e79bf",
+     "subject": "Fix the saved-screen route: it was measuring the 404 page"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/_measured/booking-service.json": {
+   "add": 596,
+   "commits": [
+    {
+     "sha": "9b8abd069",
+     "subject": "A tool that dumps each screen's sections, so nine specs share one measurement"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/_measured/booking-staff.json": {
+   "add": 339,
+   "commits": [
+    {
+     "sha": "d7c6e79bf",
+     "subject": "Fix the saved-screen route: it was measuring the 404 page"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/_measured/checkout-pay.json": {
+   "add": 183,
+   "commits": [
+    {
+     "sha": "d7c6e79bf",
+     "subject": "Fix the saved-screen route: it was measuring the 404 page"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/_measured/confirmation.json": {
+   "add": 248,
+   "commits": [
+    {
+     "sha": "d7c6e79bf",
+     "subject": "Fix the saved-screen route: it was measuring the 404 page"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/_measured/de-inspo-saved.json": {
+   "add": 134,
+   "commits": [
+    {
+     "sha": "cc69b05c2",
+     "subject": "The measuring tool called a loading skeleton a finished screen"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/_measured/de-profile-favorites.json": {
+   "add": 413,
+   "commits": [
+    {
+     "sha": "cc69b05c2",
+     "subject": "The measuring tool called a loading skeleton a finished screen"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/_measured/home-feed.json": {
+   "add": 1572,
+   "commits": [
+    {
+     "sha": "9b8abd069",
+     "subject": "A tool that dumps each screen's sections, so nine specs share one measurement"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/_measured/profile-hub.json": {
+   "add": 308,
+   "commits": [
+    {
+     "sha": "9b8abd069",
+     "subject": "A tool that dumps each screen's sections, so nine specs share one measurement"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/_measured/saved-looks.json": {
+   "add": 75,
+   "commits": [
+    {
+     "sha": "d7c6e79bf",
+     "subject": "Fix the saved-screen route: it was measuring the 404 page"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/_measured/saved-salons-saved-looks.json": {
+   "add": 5,
+   "commits": [
+    {
+     "sha": "d7c6e79bf",
+     "subject": "Fix the saved-screen route: it was measuring the 404 page"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/_measured/saved-salons.json": {
+   "add": 411,
+   "commits": [
+    {
+     "sha": "d7c6e79bf",
+     "subject": "Fix the saved-screen route: it was measuring the 404 page"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/_measured/saved.json": {
+   "add": 192,
+   "commits": [
+    {
+     "sha": "d7c6e79bf",
+     "subject": "Fix the saved-screen route: it was measuring the 404 page"
+    },
+    {
+     "sha": "9b8abd069",
+     "subject": "A tool that dumps each screen's sections, so nine specs share one measurement"
+    }
+   ],
+   "rem": 192
+  },
+  "_design-system/sections/_measured/search-results.json": {
+   "add": 771,
+   "commits": [
+    {
+     "sha": "9b8abd069",
+     "subject": "A tool that dumps each screen's sections, so nine specs share one measurement"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/booking-datetime/01-step-chrome.md": {
+   "add": 57,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/booking-datetime/02-stylist-recall-pill.md": {
+   "add": 71,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/booking-datetime/03-day-strip.md": {
+   "add": 90,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/booking-datetime/04-time-slots.md": {
+   "add": 96,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/booking-datetime/05-waitlist.md": {
+   "add": 82,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/booking-datetime/06-continue-bar.md": {
+   "add": 69,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/booking-datetime/README.md": {
+   "add": 153,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/booking-service/01-step-chrome.md": {
+   "add": 89,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/booking-service/02-category-pill-row.md": {
+   "add": 88,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/booking-service/03-service-group-card.md": {
+   "add": 135,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/booking-service/04-running-total-bar.md": {
+   "add": 95,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/booking-service/05-selection-recall-pill.md": {
+   "add": 75,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/booking-service/06-service-detail-sheet.md": {
+   "add": 100,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/booking-service/07-empty-services-state.md": {
+   "add": 90,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/booking-service/README.md": {
+   "add": 176,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/booking-staff/01-step-chrome.md": {
+   "add": 73,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/booking-staff/02-stylist-list.md": {
+   "add": 104,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/booking-staff/03-continue-bar.md": {
+   "add": 86,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/booking-staff/04-profile-sheet.md": {
+   "add": 81,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/booking-staff/README.md": {
+   "add": 153,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/checkout-pay/01-step-chrome.md": {
+   "add": 62,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/checkout-pay/02-summary-card.md": {
+   "add": 98,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/checkout-pay/03-price-card.md": {
+   "add": 86,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/checkout-pay/04-contact-block.md": {
+   "add": 101,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/checkout-pay/05-payment-choice.md": {
+   "add": 93,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/checkout-pay/06-cancellation-banner.md": {
+   "add": 74,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/checkout-pay/07-commit-bar.md": {
+   "add": 96,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/checkout-pay/README.md": {
+   "add": 172,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/confirmation/01-hero.md": {
+   "add": 76,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/confirmation/02-salon-row.md": {
+   "add": 70,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/confirmation/03-headline.md": {
+   "add": 73,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/confirmation/04-detail-card.md": {
+   "add": 90,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/confirmation/05-price-card.md": {
+   "add": 77,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/confirmation/06-actions.md": {
+   "add": 83,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/confirmation/07-reference-footer.md": {
+   "add": 70,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/confirmation/08-guest-access-link.md": {
+   "add": 69,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/confirmation/README.md": {
+   "add": 170,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/home-feed/01-search-and-categories.md": {
+   "add": 110,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/home-feed/02-for-you.md": {
+   "add": 112,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/home-feed/03-top-auf-solen.md": {
+   "add": 105,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/home-feed/04-nearby-map.md": {
+   "add": 114,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/home-feed/05-top-coiffeur.md": {
+   "add": 97,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/home-feed/06-top-barber.md": {
+   "add": 80,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/home-feed/07-top-nails.md": {
+   "add": 76,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/home-feed/08-top-spa.md": {
+   "add": 82,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/home-feed/09-popular-looks.md": {
+   "add": 110,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/home-feed/10-walk-in.md": {
+   "add": 135,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/home-feed/11-reviews.md": {
+   "add": 113,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/home-feed/12-footer.md": {
+   "add": 128,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/home-feed/13-bottom-nav.md": {
+   "add": 102,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/home-feed/README.md": {
+   "add": 183,
+   "commits": [
+    {
+     "sha": "e677e612c",
+     "subject": "Five screens now have a real spec instead of a corpus note"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/profile-hub/01-header-chrome.md": {
+   "add": 49,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/profile-hub/02-identity.md": {
+   "add": 64,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/profile-hub/03-bookings-group.md": {
+   "add": 67,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/profile-hub/04-wallet-group.md": {
+   "add": 53,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/profile-hub/05-personal-group.md": {
+   "add": 57,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/profile-hub/06-settings-row.md": {
+   "add": 50,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/profile-hub/07-sign-out.md": {
+   "add": 54,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/profile-hub/08-bottom-tab-bar.md": {
+   "add": 56,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/profile-hub/09-entity-consistency.md": {
+   "add": 108,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/profile-hub/README.md": {
+   "add": 149,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/saved-looks/01-header-row.md": {
+   "add": 182,
+   "commits": [
+    {
+     "sha": "0fe3cc713",
+     "subject": "The saved looks spec now describes the screen, not its placeholder"
+    },
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 37
+  },
+  "_design-system/sections/saved-looks/02-saved-grid.md": {
+   "add": 220,
+   "commits": [
+    {
+     "sha": "0fe3cc713",
+     "subject": "The saved looks spec now describes the screen, not its placeholder"
+    },
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 43
+  },
+  "_design-system/sections/saved-looks/03-empty-state.md": {
+   "add": 216,
+   "commits": [
+    {
+     "sha": "0fe3cc713",
+     "subject": "The saved looks spec now describes the screen, not its placeholder"
+    },
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 50
+  },
+  "_design-system/sections/saved-looks/04-loading-skeleton.md": {
+   "add": 188,
+   "commits": [
+    {
+     "sha": "0fe3cc713",
+     "subject": "The saved looks spec now describes the screen, not its placeholder"
+    },
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 26
+  },
+  "_design-system/sections/saved-looks/README.md": {
+   "add": 371,
+   "commits": [
+    {
+     "sha": "0fe3cc713",
+     "subject": "The saved looks spec now describes the screen, not its placeholder"
+    },
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 148
+  },
+  "_design-system/sections/saved-salons/01-header-title.md": {
+   "add": 96,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/saved-salons/02-count-line.md": {
+   "add": 87,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/saved-salons/03-saved-grid.md": {
+   "add": 157,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/saved-salons/04-bottom-nav.md": {
+   "add": 110,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/saved-salons/05-empty-state.md": {
+   "add": 108,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/saved-salons/README.md": {
+   "add": 170,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/saved/01-header-title.md": {
+   "add": 53,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/saved/02-count-line.md": {
+   "add": 50,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/saved/03-saved-grid.md": {
+   "add": 65,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/saved/04-empty-state.md": {
+   "add": 69,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/saved/05-saved-looks.md": {
+   "add": 75,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/saved/README.md": {
+   "add": 117,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/search-results/01-header.md": {
+   "add": 74,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/search-results/02-search-band.md": {
+   "add": 126,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/search-results/03-top-category-rail.md": {
+   "add": 102,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/search-results/04-nearby-rail.md": {
+   "add": 77,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/search-results/05-bottom-nav.md": {
+   "add": 86,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/search-results/06-faq.md": {
+   "add": 88,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/search-results/07-footer.md": {
+   "add": 105,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/search-results/08-screen-job.md": {
+   "add": 71,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_design-system/sections/search-results/README.md": {
+   "add": 118,
+   "commits": [
+    {
+     "sha": "7950cc249",
+     "subject": "Nine screens now have a written spec, not just a folder"
+    }
+   ],
+   "rem": 0
+  },
+  "_inventory/STUCK_ROWS.md": {
+   "add": 4,
+   "commits": [
+    {
+     "sha": "8378f389c",
+     "subject": "checkpoint(auto): 3 uncommitted file(s) at turn end"
+    }
+   ],
+   "rem": 4
+  },
+  "_inventory/_stuck-rows.json": {
+   "add": 4,
+   "commits": [
+    {
+     "sha": "8378f389c",
+     "subject": "checkpoint(auto): 3 uncommitted file(s) at turn end"
+    }
+   ],
+   "rem": 4
+  },
+  "_plans/ACTIVE.md": {
+   "add": 102,
+   "commits": [
+    {
+     "sha": "4b581ccdb",
+     "subject": "Point the workstream index at the three questions the mockup will ask him"
+    },
+    {
+     "sha": "3c46def36",
+     "subject": "Close S2, and shrink two of his ten questions to one"
+    },
+    {
+     "sha": "228704e19",
+     "subject": "The back button was never waiting on you, and I had that wrong"
+    },
+    {
+     "sha": "dba7d7325",
+     "subject": "Thirteen more rows judged against the code, and three of them were lying"
+    },
+    {
+     "sha": "17011a4d1",
+     "subject": "Nine more workstreams close, and the survivors name their blocker"
+    },
+    {
+     "sha": "4bc731360",
+     "subject": "Close 20 of the 40 design workstreams, and give every survivor a blocker"
+    },
+    {
+     "sha": "9d2aaa773",
+     "subject": "Give every workstream a unique number, and park the two gray items on a named one-word decision"
+    },
+    {
+     "sha": "16eb8782e",
+     "subject": "The design floors check has been green for 30 days because it never loaded a page"
+    }
+   ],
+   "rem": 101
+  },
+  "_plans/CONTEXT_SNAPSHOT.md": {
+   "add": 110,
+   "commits": [
+    {
+     "sha": "4b581ccdb",
+     "subject": "Point the workstream index at the three questions the mockup will ask him"
+    },
+    {
+     "sha": "f94c3c10c",
+     "subject": "Put all four back-arrow questions on one page, and correct the page's stale numbers"
+    },
+    {
+     "sha": "fa1b7f8bb",
+     "subject": "Record the language work, and correct a reviewer who called an inconsistency a leak"
+    },
+    {
+     "sha": "3eb590a4d",
+     "subject": "The arbitrated search bar plan, and what does not land without him"
+    },
+    {
+     "sha": "e5844b8f2",
+     "subject": "checkpoint(auto): 3 uncommitted file(s) at turn end"
+    },
+    {
+     "sha": "9d2aaa773",
+     "subject": "Give every workstream a unique number, and park the two gray items on a named one-word decision"
+    },
+    {
+     "sha": "bea9c2430",
+     "subject": "checkpoint(auto): 2 uncommitted file(s) at turn end"
+    },
+    {
+     "sha": "d313c9251",
+     "subject": "checkpoint(auto): 1 uncommitted file(s) at turn end"
+    },
+    {
+     "sha": "e85456d8e",
+     "subject": "checkpoint(auto): 1 uncommitted file(s) at turn end"
+    }
+   ],
+   "rem": 143
+  },
+  "_plans/DESIGN_CONSISTENCY_2026-08-27.md": {
+   "add": 1102,
+   "commits": [
+    {
+     "sha": "21d9fd8b3",
+     "subject": "Record the mockup delivery, its PASS, and two readings of mine that were wrong"
+    },
+    {
+     "sha": "b6989aebb",
+     "subject": "Trace the two odd sizes, count the habit at 350, and record one wrong hypothesis"
+    },
+    {
+     "sha": "de086ea0e",
+     "subject": "Name the account screen's seven text sizes, four of them inside 3.5 pixels"
+    },
+    {
+     "sha": "b2bf2696b",
+     "subject": "The search bar does not move between categories, it disappears"
+    },
+    {
+     "sha": "35261dde8",
+     "subject": "Trace the ladder to 10 places, and find that his home page headline is off on phones"
+    },
+    {
+     "sha": "ec9e63eaa",
+     "subject": "Name the cost of the ladder before a builder hits it: 187 headings grow in translation"
+    },
+    {
+     "sha": "fa369117b",
+     "subject": "Three more screens on the ladder, and one reading thrown out instead of published"
+    },
+    {
+     "sha": "1099194e0",
+     "subject": "Measure every customer screen against the ladder he picked, and the home page is 18px"
+    },
+    {
+     "sha": "f94c3c10c",
+     "subject": "Put all four back-arrow questions on one page, and correct the page's stale numbers"
+    },
+    {
+     "sha": "fa1b7f8bb",
+     "subject": "Record the language work, and correct a reviewer who called an inconsistency a leak"
+    },
+    {
+     "sha": "3c46def36",
+     "subject": "Close S2, and shrink two of his ten questions to one"
+    },
+    {
+     "sha": "3eb590a4d",
+     "subject": "The arbitrated search bar plan, and what does not land without him"
+    },
+    {
+     "sha": "84a1e61dc",
+     "subject": "The search bar height was never an open question, and the 84px jump is one regex"
+    },
+    {
+     "sha": "7cc251677",
+     "subject": "Ten questions that were sitting in ten different files, now in one"
+    },
+    {
+     "sha": "cb41a338c",
+     "subject": "Back-arrow box: replace a number I could not defend with one I read"
+    },
+    {
+     "sha": "33f8a1c99",
+     "subject": "Close the German-labels box: 38 fixed, four languages read off the live page"
+    },
+    {
+     "sha": "228704e19",
+     "subject": "The back button was never waiting on you, and I had that wrong"
+    },
+    {
+     "sha": "f0bb32d76",
+     "subject": "Screen specs step is closed; the Inspo half of the search bar step is done"
+    },
+    {
+     "sha": "69ec17e80",
+     "subject": "Record what the nine specs found, and correct two things I had wrong"
+    },
+    {
+     "sha": "5bf9e50e8",
+     "subject": "Measure the search bar on all seven screens that have one"
+    },
+    {
+     "sha": "52b6db2e2",
+     "subject": "Record what S3 and S5 actually landed, and what each still needs"
+    },
+    {
+     "sha": "eac28f434",
+     "subject": "The fan-out was ten wide when he asked for tons, and the note that should have said so never fired"
+    },
+    {
+     "sha": "4d0ee6f7b",
+     "subject": "Close S1: the salon page is the only page in the product that breaks no floor"
+    },
+    {
+     "sha": "16eb8782e",
+     "subject": "The design floors check has been green for 30 days because it never loaded a page"
+    }
+   ],
+   "rem": 46
+  },
+  "_plans/SETTINGS_INSTA_GRAY.md": {
+   "add": 65,
+   "commits": [
+    {
+     "sha": "9d2aaa773",
+     "subject": "Give every workstream a unique number, and park the two gray items on a named one-word decision"
+    },
+    {
+     "sha": "36ccb328b",
+     "subject": "Record the built gray probe and the three dashboard directions, with the Aurora branch name corrected"
+    }
+   ],
+   "rem": 3
+  },
+  "_plans/TEN_ANSWERS_2026-08-27.md": {
+   "add": 134,
+   "commits": [
+    {
+     "sha": "3c46def36",
+     "subject": "Close S2, and shrink two of his ten questions to one"
+    },
+    {
+     "sha": "7cc251677",
+     "subject": "Ten questions that were sitting in ten different files, now in one"
+    }
+   ],
+   "rem": 4
+  },
+  "app/[locale]/_components/homepage/CategoryTabs.tsx": {
+   "add": 7,
+   "commits": [
+    {
+     "sha": "3eb1fee6c",
+     "subject": "Your English, French and Italian site stops speaking German"
+    }
+   ],
+   "rem": 2
+  },
+  "app/[locale]/_components/homepage/FeaturedStylists.tsx": {
+   "add": 2,
+   "commits": [
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    }
+   ],
+   "rem": 1
+  },
+  "app/[locale]/_components/homepage/Reviews.tsx": {
+   "add": 10,
+   "commits": [
+    {
+     "sha": "3eb1fee6c",
+     "subject": "Your English, French and Italian site stops speaking German"
+    },
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    },
+    {
+     "sha": "0661380cd",
+     "subject": "Your English home page said Bewertungen. It says Reviews now"
+    }
+   ],
+   "rem": 5
+  },
+  "app/[locale]/_components/homepage/SalonCard.tsx": {
+   "add": 5,
+   "commits": [
+    {
+     "sha": "3eb1fee6c",
+     "subject": "Your English, French and Italian site stops speaking German"
+    }
+   ],
+   "rem": 3
+  },
+  "app/[locale]/_components/homepage/SearchBar.tsx": {
+   "add": 3,
+   "commits": [
+    {
+     "sha": "3eb1fee6c",
+     "subject": "Your English, French and Italian site stops speaking German"
+    },
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    }
+   ],
+   "rem": 2
+  },
+  "app/[locale]/_components/homepage/SectionHeader.tsx": {
+   "add": 3,
+   "commits": [
+    {
+     "sha": "3eb1fee6c",
+     "subject": "Your English, French and Italian site stops speaking German"
+    }
+   ],
+   "rem": 1
+  },
+  "app/[locale]/_components/homepage/WalkInBand.tsx": {
+   "add": 1,
+   "commits": [
+    {
+     "sha": "0661380cd",
+     "subject": "Your English home page said Bewertungen. It says Reviews now"
+    }
+   ],
+   "rem": 1
+  },
+  "app/[locale]/_components/layout/CategoryPillRow.tsx": {
+   "add": 19,
+   "commits": [
+    {
+     "sha": "3eb1fee6c",
+     "subject": "Your English, French and Italian site stops speaking German"
+    },
+    {
+     "sha": "391ecb23c",
+     "subject": "The search bar stops moving: one spot and one size on all seven screens"
+    }
+   ],
+   "rem": 10
+  },
+  "app/[locale]/_components/layout/Footer.tsx": {
+   "add": 2,
+   "commits": [
+    {
+     "sha": "3eb1fee6c",
+     "subject": "Your English, French and Italian site stops speaking German"
+    }
+   ],
+   "rem": 1
+  },
+  "app/[locale]/_components/layout/Header.tsx": {
+   "add": 74,
+   "commits": [
+    {
+     "sha": "3eb1fee6c",
+     "subject": "Your English, French and Italian site stops speaking German"
+    },
+    {
+     "sha": "391ecb23c",
+     "subject": "The search bar stops moving: one spot and one size on all seven screens"
+    },
+    {
+     "sha": "ee7b06813",
+     "subject": "Every back control on the site is now the triangle he asked for, and 44 across"
+    },
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    }
+   ],
+   "rem": 39
+  },
+  "app/[locale]/_components/layout/MobileMenu.tsx": {
+   "add": 1,
+   "commits": [
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    }
+   ],
+   "rem": 1
+  },
+  "app/[locale]/_components/primitives/BackButton.tsx": {
+   "add": 67,
+   "commits": [
+    {
+     "sha": "f1d504ac4",
+     "subject": "The shared back button can now be a link, which unblocks eight more pages"
+    },
+    {
+     "sha": "ee7b06813",
+     "subject": "Every back control on the site is now the triangle he asked for, and 44 across"
+    },
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    }
+   ],
+   "rem": 24
+  },
+  "app/[locale]/_components/primitives/DateTimePicker.tsx": {
+   "add": 7,
+   "commits": [
+    {
+     "sha": "3eb1fee6c",
+     "subject": "Your English, French and Italian site stops speaking German"
+    }
+   ],
+   "rem": 4
+  },
+  "app/[locale]/_components/salon/SalonBreadcrumb.tsx": {
+   "add": 3,
+   "commits": [
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    }
+   ],
+   "rem": 1
+  },
+  "app/[locale]/_components/salon/SalonHeader.tsx": {
+   "add": 1,
+   "commits": [
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    }
+   ],
+   "rem": 1
+  },
+  "app/[locale]/_components/salon/SalonHero.tsx": {
+   "add": 4,
+   "commits": [
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    }
+   ],
+   "rem": 4
+  },
+  "app/[locale]/_components/salon/SalonImageGallery.tsx": {
+   "add": 30,
+   "commits": [
+    {
+     "sha": "054ae31a3",
+     "subject": "Nine hand-drawn back buttons now come from the one shared button"
+    },
+    {
+     "sha": "ee7b06813",
+     "subject": "Every back control on the site is now the triangle he asked for, and 44 across"
+    },
+    {
+     "sha": "5a9f98944",
+     "subject": "Tapping a salon photo crashed the gallery, on every salon page"
+    }
+   ],
+   "rem": 27
+  },
+  "app/[locale]/_components/salon/SalonLightbox.tsx": {
+   "add": 7,
+   "commits": [
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    }
+   ],
+   "rem": 5
+  },
+  "app/[locale]/_components/salon/SalonStickyTabNav.tsx": {
+   "add": 15,
+   "commits": [
+    {
+     "sha": "054ae31a3",
+     "subject": "Nine hand-drawn back buttons now come from the one shared button"
+    },
+    {
+     "sha": "ee7b06813",
+     "subject": "Every back control on the site is now the triangle he asked for, and 44 across"
+    },
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    }
+   ],
+   "rem": 12
+  },
+  "app/[locale]/_components/salon/SalonVenuesNearby.tsx": {
+   "add": 3,
+   "commits": [
+    {
+     "sha": "3eb1fee6c",
+     "subject": "Your English, French and Italian site stops speaking German"
+    }
+   ],
+   "rem": 1
+  },
+  "app/[locale]/_components/search/CategoryHeroCarousel.tsx": {
+   "add": 4,
+   "commits": [
+    {
+     "sha": "3eb1fee6c",
+     "subject": "Your English, French and Italian site stops speaking German"
+    },
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    }
+   ],
+   "rem": 2
+  },
+  "app/[locale]/_components/search/MapSalonDetail.tsx": {
+   "add": 3,
+   "commits": [
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    }
+   ],
+   "rem": 2
+  },
+  "app/[locale]/_components/search/SalonResultCard.tsx": {
+   "add": 12,
+   "commits": [
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    }
+   ],
+   "rem": 2
+  },
+  "app/[locale]/_components/search/SearchOverlay.tsx": {
+   "add": 1,
+   "commits": [
+    {
+     "sha": "3eb1fee6c",
+     "subject": "Your English, French and Italian site stops speaking German"
+    }
+   ],
+   "rem": 1
+  },
+  "app/[locale]/_components/search/SearchTemplate.tsx": {
+   "add": 15,
+   "commits": [
+    {
+     "sha": "391ecb23c",
+     "subject": "The search bar stops moving: one spot and one size on all seven screens"
+    }
+   ],
+   "rem": 5
+  },
+  "app/[locale]/_components/tips/TipSheet.tsx": {
+   "add": 3,
+   "commits": [
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    }
+   ],
+   "rem": 1
+  },
+  "app/[locale]/booking/lookup/page.tsx": {
+   "add": 17,
+   "commits": [
+    {
+     "sha": "ceec0f825",
+     "subject": "The last six hand-drawn back controls now compose the shared button"
+    },
+    {
+     "sha": "ee7b06813",
+     "subject": "Every back control on the site is now the triangle he asked for, and 44 across"
+    }
+   ],
+   "rem": 13
+  },
+  "app/[locale]/booking/resend-link/page.tsx": {
+   "add": 9,
+   "commits": [
+    {
+     "sha": "ceec0f825",
+     "subject": "The last six hand-drawn back controls now compose the shared button"
+    },
+    {
+     "sha": "ee7b06813",
+     "subject": "Every back control on the site is now the triangle he asked for, and 44 across"
+    }
+   ],
+   "rem": 11
+  },
+  "app/[locale]/dev/decision-backbutton/page.tsx": {
+   "add": 1,
+   "commits": [
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    }
+   ],
+   "rem": 1
+  },
+  "app/[locale]/inspo/board/[id]/page.tsx": {
+   "add": 6,
+   "commits": [
+    {
+     "sha": "ee7b06813",
+     "subject": "Every back control on the site is now the triangle he asked for, and 44 across"
+    },
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    }
+   ],
+   "rem": 4
+  },
+  "app/[locale]/inspo/page.tsx": {
+   "add": 29,
+   "commits": [
+    {
+     "sha": "391ecb23c",
+     "subject": "The search bar stops moving: one spot and one size on all seven screens"
+    },
+    {
+     "sha": "b5c5b28d4",
+     "subject": "Inspo now keeps its search bar on screen like every other page"
+    }
+   ],
+   "rem": 2
+  },
+  "app/[locale]/inspo/saved/[id]/page.tsx": {
+   "add": 3,
+   "commits": [
+    {
+     "sha": "ee7b06813",
+     "subject": "Every back control on the site is now the triangle he asked for, and 44 across"
+    }
+   ],
+   "rem": 3
+  },
+  "app/[locale]/inspo/saved/page.tsx": {
+   "add": 9,
+   "commits": [
+    {
+     "sha": "054ae31a3",
+     "subject": "Nine hand-drawn back buttons now come from the one shared button"
+    },
+    {
+     "sha": "ee7b06813",
+     "subject": "Every back control on the site is now the triangle he asked for, and 44 across"
+    }
+   ],
+   "rem": 10
+  },
+  "app/[locale]/onboarding/OnboardingFlow.tsx": {
+   "add": 10,
+   "commits": [
+    {
+     "sha": "054ae31a3",
+     "subject": "Nine hand-drawn back buttons now come from the one shared button"
+    },
+    {
+     "sha": "ee7b06813",
+     "subject": "Every back control on the site is now the triangle he asked for, and 44 across"
+    },
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    }
+   ],
+   "rem": 9
+  },
+  "app/[locale]/profile/favorites/page.tsx": {
+   "add": 8,
+   "commits": [
+    {
+     "sha": "3eb1fee6c",
+     "subject": "Your English, French and Italian site stops speaking German"
+    }
+   ],
+   "rem": 6
+  },
+  "app/[locale]/profile/looks/page.tsx": {
+   "add": 9,
+   "commits": [
+    {
+     "sha": "3eb1fee6c",
+     "subject": "Your English, French and Italian site stops speaking German"
+    }
+   ],
+   "rem": 6
+  },
+  "app/[locale]/profile/referral/page.tsx": {
+   "add": 16,
+   "commits": [
+    {
+     "sha": "3eb1fee6c",
+     "subject": "Your English, French and Italian site stops speaking German"
+    }
+   ],
+   "rem": 15
+  },
+  "app/[locale]/profile/stamps/page.tsx": {
+   "add": 11,
+   "commits": [
+    {
+     "sha": "3eb1fee6c",
+     "subject": "Your English, French and Italian site stops speaking German"
+    }
+   ],
+   "rem": 10
+  },
+  "app/[locale]/queue/[token]/page.tsx": {
+   "add": 14,
+   "commits": [
+    {
+     "sha": "ceec0f825",
+     "subject": "The last six hand-drawn back controls now compose the shared button"
+    },
+    {
+     "sha": "ee7b06813",
+     "subject": "Every back control on the site is now the triangle he asked for, and 44 across"
+    }
+   ],
+   "rem": 9
+  },
+  "app/[locale]/salon/[slug]/team/page.tsx": {
+   "add": 12,
+   "commits": [
+    {
+     "sha": "ceec0f825",
+     "subject": "The last six hand-drawn back controls now compose the shared button"
+    },
+    {
+     "sha": "ee7b06813",
+     "subject": "Every back control on the site is now the triangle he asked for, and 44 across"
+    }
+   ],
+   "rem": 10
+  },
+  "app/[locale]/walk-in-pay/page.tsx": {
+   "add": 2,
+   "commits": [
+    {
+     "sha": "ee7b06813",
+     "subject": "Every back control on the site is now the triangle he asked for, and 44 across"
+    }
+   ],
+   "rem": 2
+  },
+  "components-legacy/MapView.tsx": {
+   "add": 3,
+   "commits": [
+    {
+     "sha": "3eb1fee6c",
+     "subject": "Your English, French and Italian site stops speaking German"
+    }
+   ],
+   "rem": 1
+  },
+  "components-legacy/auth/SignIn.tsx": {
+   "add": 8,
+   "commits": [
+    {
+     "sha": "bea9c2430",
+     "subject": "checkpoint(auto): 2 uncommitted file(s) at turn end"
+    }
+   ],
+   "rem": 3
+  },
+  "components-legacy/booking/BookingWizard.tsx": {
+   "add": 18,
+   "commits": [
+    {
+     "sha": "054ae31a3",
+     "subject": "Nine hand-drawn back buttons now come from the one shared button"
+    },
+    {
+     "sha": "ee7b06813",
+     "subject": "Every back control on the site is now the triangle he asked for, and 44 across"
+    }
+   ],
+   "rem": 18
+  },
+  "components-legacy/booking/StaffProfileSheet.tsx": {
+   "add": 3,
+   "commits": [
+    {
+     "sha": "3eb1fee6c",
+     "subject": "Your English, French and Italian site stops speaking German"
+    }
+   ],
+   "rem": 2
+  },
+  "components-legacy/dashboard/DashboardLayout.tsx": {
+   "add": 1,
+   "commits": [
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    }
+   ],
+   "rem": 1
+  },
+  "components-legacy/dashboard/SalonSwitcher.tsx": {
+   "add": 3,
+   "commits": [
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    }
+   ],
+   "rem": 1
+  },
+  "components-legacy/discovery/DetailPage.tsx": {
+   "add": 11,
+   "commits": [
+    {
+     "sha": "054ae31a3",
+     "subject": "Nine hand-drawn back buttons now come from the one shared button"
+    },
+    {
+     "sha": "ee7b06813",
+     "subject": "Every back control on the site is now the triangle he asked for, and 44 across"
+    }
+   ],
+   "rem": 11
+  },
+  "components-legacy/discovery/InlinePrefsPanel.tsx": {
+   "add": 3,
+   "commits": [
+    {
+     "sha": "3eb1fee6c",
+     "subject": "Your English, French and Italian site stops speaking German"
+    }
+   ],
+   "rem": 2
+  },
+  "components-legacy/discovery/LikeButton.tsx": {
+   "add": 3,
+   "commits": [
+    {
+     "sha": "3eb1fee6c",
+     "subject": "Your English, French and Italian site stops speaking German"
+    }
+   ],
+   "rem": 1
+  },
+  "components-legacy/discovery/SaveButton.tsx": {
+   "add": 3,
+   "commits": [
+    {
+     "sha": "3eb1fee6c",
+     "subject": "Your English, French and Italian site stops speaking German"
+    }
+   ],
+   "rem": 1
+  },
+  "components-legacy/discovery/SaveToBoardSheet.tsx": {
+   "add": 6,
+   "commits": [
+    {
+     "sha": "3eb1fee6c",
+     "subject": "Your English, French and Italian site stops speaking German"
+    },
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    }
+   ],
+   "rem": 4
+  },
+  "components-legacy/editor/EditorPage.tsx": {
+   "add": 3,
+   "commits": [
+    {
+     "sha": "ee7b06813",
+     "subject": "Every back control on the site is now the triangle he asked for, and 44 across"
+    }
+   ],
+   "rem": 3
+  },
+  "components-legacy/refund/RefundCaseView.tsx": {
+   "add": 9,
+   "commits": [
+    {
+     "sha": "ceec0f825",
+     "subject": "The last six hand-drawn back controls now compose the shared button"
+    },
+    {
+     "sha": "ee7b06813",
+     "subject": "Every back control on the site is now the triangle he asked for, and 44 across"
+    }
+   ],
+   "rem": 11
+  },
+  "components-legacy/refund/ReportRefundEntry.tsx": {
+   "add": 8,
+   "commits": [
+    {
+     "sha": "054ae31a3",
+     "subject": "Nine hand-drawn back buttons now come from the one shared button"
+    },
+    {
+     "sha": "ee7b06813",
+     "subject": "Every back control on the site is now the triangle he asked for, and 44 across"
+    }
+   ],
+   "rem": 12
+  },
+  "components-legacy/refund/UpchargeApproveView.tsx": {
+   "add": 8,
+   "commits": [
+    {
+     "sha": "ceec0f825",
+     "subject": "The last six hand-drawn back controls now compose the shared button"
+    },
+    {
+     "sha": "ee7b06813",
+     "subject": "Every back control on the site is now the triangle he asked for, and 44 across"
+    }
+   ],
+   "rem": 11
+  },
+  "components-legacy/staff/StaffProfilePage.tsx": {
+   "add": 18,
+   "commits": [
+    {
+     "sha": "3eb1fee6c",
+     "subject": "Your English, French and Italian site stops speaking German"
+    },
+    {
+     "sha": "054ae31a3",
+     "subject": "Nine hand-drawn back buttons now come from the one shared button"
+    },
+    {
+     "sha": "ee7b06813",
+     "subject": "Every back control on the site is now the triangle he asked for, and 44 across"
+    },
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    }
+   ],
+   "rem": 17
+  },
+  "components-legacy/staff/StaffReviewsSheet.tsx": {
+   "add": 15,
+   "commits": [
+    {
+     "sha": "3eb1fee6c",
+     "subject": "Your English, French and Italian site stops speaking German"
+    },
+    {
+     "sha": "054ae31a3",
+     "subject": "Nine hand-drawn back buttons now come from the one shared button"
+    },
+    {
+     "sha": "ee7b06813",
+     "subject": "Every back control on the site is now the triangle he asked for, and 44 across"
+    },
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    }
+   ],
+   "rem": 10
+  },
+  "components-legacy/ui/Breadcrumb.tsx": {
+   "add": 1,
+   "commits": [
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    }
+   ],
+   "rem": 1
+  },
+  "components-legacy/ui/ImageUploader.tsx": {
+   "add": 1,
+   "commits": [
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    }
+   ],
+   "rem": 1
+  },
+  "components-legacy/ui/PhotoLightbox.tsx": {
+   "add": 6,
+   "commits": [
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    }
+   ],
+   "rem": 4
+  },
+  "components/ui/animated-testimonials.tsx": {
+   "add": 7,
+   "commits": [
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    }
+   ],
+   "rem": 3
+  },
+  "lib/email-outreach.ts": {
+   "add": 50,
+   "commits": [
+    {
+     "sha": "0c1cb0609",
+     "subject": "The site could not build: node crypto had reached 75 edge routes"
+    }
+   ],
+   "rem": 0
+  },
+  "lib/email-preview-samples.ts": {
+   "add": 2,
+   "commits": [
+    {
+     "sha": "0c1cb0609",
+     "subject": "The site could not build: node crypto had reached 75 edge routes"
+    }
+   ],
+   "rem": 1
+  },
+  "lib/email.ts": {
+   "add": 10,
+   "commits": [
+    {
+     "sha": "0c1cb0609",
+     "subject": "The site could not build: node crypto had reached 75 edge routes"
+    }
+   ],
+   "rem": 29
+  },
+  "messages/de.json": {
+   "add": 80,
+   "commits": [
+    {
+     "sha": "3eb1fee6c",
+     "subject": "Your English, French and Italian site stops speaking German"
+    },
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    },
+    {
+     "sha": "0661380cd",
+     "subject": "Your English home page said Bewertungen. It says Reviews now"
+    }
+   ],
+   "rem": 6
+  },
+  "messages/en.json": {
+   "add": 80,
+   "commits": [
+    {
+     "sha": "3eb1fee6c",
+     "subject": "Your English, French and Italian site stops speaking German"
+    },
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    },
+    {
+     "sha": "0661380cd",
+     "subject": "Your English home page said Bewertungen. It says Reviews now"
+    }
+   ],
+   "rem": 6
+  },
+  "messages/fr.json": {
+   "add": 80,
+   "commits": [
+    {
+     "sha": "3eb1fee6c",
+     "subject": "Your English, French and Italian site stops speaking German"
+    },
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    },
+    {
+     "sha": "0661380cd",
+     "subject": "Your English home page said Bewertungen. It says Reviews now"
+    }
+   ],
+   "rem": 6
+  },
+  "messages/it.json": {
+   "add": 80,
+   "commits": [
+    {
+     "sha": "3eb1fee6c",
+     "subject": "Your English, French and Italian site stops speaking German"
+    },
+    {
+     "sha": "5975ef6f9",
+     "subject": "Stop the English, French and Italian site speaking German to screen readers"
+    },
+    {
+     "sha": "0661380cd",
+     "subject": "Your English home page said Bewertungen. It says Reviews now"
+    }
+   ],
+   "rem": 6
+  },
+  "package.json": {
+   "add": 1,
+   "commits": [
+    {
+     "sha": "d05e31d75",
+     "subject": "A check that finds German baked into a page, because the last sweep said done and was not"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/_floor-fixes-index/index.html": {
+   "add": 354,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    },
+    {
+     "sha": "a96078e1f",
+     "subject": "Say on the page that the counts are not settled, and why every number today was suspect"
+    },
+    {
+     "sha": "bc65f1ab9",
+     "subject": "One page listing every failing screen, and the three numbers that were wrong"
+    }
+   ],
+   "rem": 137
+  },
+  "public/_mockups/back-arrow-to-the-lock/index.html": {
+   "add": 393,
+   "commits": [
+    {
+     "sha": "f94c3c10c",
+     "subject": "Put all four back-arrow questions on one page, and correct the page's stale numbers"
+    },
+    {
+     "sha": "dca5ffd6b",
+     "subject": "Back arrow: show the lock before applying it, and count how far it drifted"
+    }
+   ],
+   "rem": 26
+  },
+  "public/_mockups/compare-back-arrow/index.html": {
+   "add": 338,
+   "commits": [
+    {
+     "sha": "58c0d98de",
+     "subject": "Show every back arrow in the product side by side, at real size"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/compare-barbershop/index.html": {
+   "add": 850,
+   "commits": [
+    {
+     "sha": "aeda84e45",
+     "subject": "The comparison pages now load one panel at a time and admit when a fix did not apply"
+    },
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 89
+  },
+  "public/_mockups/compare-category-pages/index.html": {
+   "add": 505,
+   "commits": [
+    {
+     "sha": "aeda84e45",
+     "subject": "The comparison pages now load one panel at a time and admit when a fix did not apply"
+    },
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 8
+  },
+  "public/_mockups/compare-city-page/index.html": {
+   "add": 721,
+   "commits": [
+    {
+     "sha": "aeda84e45",
+     "subject": "The comparison pages now load one panel at a time and admit when a fix did not apply"
+    },
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 133
+  },
+  "public/_mockups/compare-home/index.html": {
+   "add": 809,
+   "commits": [
+    {
+     "sha": "aeda84e45",
+     "subject": "The comparison pages now load one panel at a time and admit when a fix did not apply"
+    },
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 132
+  },
+  "public/_mockups/compare-inspo/index.html": {
+   "add": 703,
+   "commits": [
+    {
+     "sha": "3a57fd609",
+     "subject": "Make the comparison pages load, and say so when one does not"
+    },
+    {
+     "sha": "aeda84e45",
+     "subject": "The comparison pages now load one panel at a time and admit when a fix did not apply"
+    },
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 74
+  },
+  "public/_mockups/compare-notifications/index.html": {
+   "add": 897,
+   "commits": [
+    {
+     "sha": "aeda84e45",
+     "subject": "The comparison pages now load one panel at a time and admit when a fix did not apply"
+    },
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 166
+  },
+  "public/_mockups/compare-profile-and-settings/index.html": {
+   "add": 1271,
+   "commits": [
+    {
+     "sha": "3a57fd609",
+     "subject": "Make the comparison pages load, and say so when one does not"
+    },
+    {
+     "sha": "aeda84e45",
+     "subject": "The comparison pages now load one panel at a time and admit when a fix did not apply"
+    },
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 219
+  },
+  "public/_mockups/compare-salon-reviews/index.html": {
+   "add": 850,
+   "commits": [
+    {
+     "sha": "3a57fd609",
+     "subject": "Make the comparison pages load, and say so when one does not"
+    },
+    {
+     "sha": "aeda84e45",
+     "subject": "The comparison pages now load one panel at a time and admit when a fix did not apply"
+    },
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 78
+  },
+  "public/_mockups/compare-search-bar-position/index.html": {
+   "add": 229,
+   "commits": [
+    {
+     "sha": "b9b2ae7b6",
+     "subject": "Show where the search bar actually sits on all seven screens"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/compare-search-results/index.html": {
+   "add": 766,
+   "commits": [
+    {
+     "sha": "3a57fd609",
+     "subject": "Make the comparison pages load, and say so when one does not"
+    },
+    {
+     "sha": "aeda84e45",
+     "subject": "The comparison pages now load one panel at a time and admit when a fix did not apply"
+    },
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 52
+  },
+  "public/_mockups/compare-why-solen/index.html": {
+   "add": 1127,
+   "commits": [
+    {
+     "sha": "e5844b8f2",
+     "subject": "checkpoint(auto): 3 uncommitted file(s) at turn end"
+    },
+    {
+     "sha": "3a57fd609",
+     "subject": "Make the comparison pages load, and say so when one does not"
+    },
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 168
+  },
+  "public/_mockups/fix-barbershop--b-hierarchy/index.html": {
+   "add": 466,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-barbershop--c-content-forward/index.html": {
+   "add": 353,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-barbershop--d-airbnb-weight/index.html": {
+   "add": 443,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-barbershop--e-recompose/index.html": {
+   "add": 498,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-category-pages--b-hierarchy/index.html": {
+   "add": 269,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-category-pages--c-content-forward/index.html": {
+   "add": 272,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-category-pages--d-airbnb-weight/index.html": {
+   "add": 282,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-category-pages--e-recompose/index.html": {
+   "add": 240,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-city-page--b-hierarchy/index.html": {
+   "add": 286,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-city-page--c-content-forward/index.html": {
+   "add": 221,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-city-page--d-airbnb-weight/index.html": {
+   "add": 185,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-city-page--e-recompose/index.html": {
+   "add": 291,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-home--b-hierarchy/index.html": {
+   "add": 269,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-home--c-content-forward/index.html": {
+   "add": 200,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-home--d-airbnb-weight/index.html": {
+   "add": 169,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-home--e-recompose/index.html": {
+   "add": 227,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-inspo--b-hierarchy/index.html": {
+   "add": 328,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-inspo--c-content-forward/index.html": {
+   "add": 276,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-inspo--d-airbnb-weight/index.html": {
+   "add": 287,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-inspo--e-recompose/index.html": {
+   "add": 392,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-notifications--b-hierarchy/index.html": {
+   "add": 201,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-notifications--c-content-forward/index.html": {
+   "add": 255,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-notifications--d-airbnb-weight/index.html": {
+   "add": 202,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-notifications--e-recompose/index.html": {
+   "add": 327,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-profile-and-settings--b-hierarchy/index.html": {
+   "add": 368,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-profile-and-settings--c-content-forward/index.html": {
+   "add": 314,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-profile-and-settings--d-airbnb-weight/index.html": {
+   "add": 210,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-profile-and-settings--e-recompose/index.html": {
+   "add": 338,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-salon-reviews--b-hierarchy/index.html": {
+   "add": 238,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-salon-reviews--c-content-forward/index.html": {
+   "add": 326,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-salon-reviews--d-airbnb-weight/index.html": {
+   "add": 319,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-salon-reviews--e-recompose/index.html": {
+   "add": 421,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-search-results--b-hierarchy/index.html": {
+   "add": 327,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-search-results--c-content-forward/index.html": {
+   "add": 339,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-search-results--d-airbnb-weight/index.html": {
+   "add": 251,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-search-results--e-recompose/index.html": {
+   "add": 254,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-why-solen--b-hierarchy/index.html": {
+   "add": 320,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-why-solen--c-content-forward/index.html": {
+   "add": 335,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-why-solen--d-airbnb-weight/index.html": {
+   "add": 425,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/fix-why-solen--e-recompose/index.html": {
+   "add": 609,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/floor-fix-barbershop/index.html": {
+   "add": 485,
+   "commits": [
+    {
+     "sha": "eac28f434",
+     "subject": "The fan-out was ten wide when he asked for tons, and the note that should have said so never fired"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/floor-fix-category-pages/index.html": {
+   "add": 344,
+   "commits": [
+    {
+     "sha": "aeda84e45",
+     "subject": "The comparison pages now load one panel at a time and admit when a fix did not apply"
+    },
+    {
+     "sha": "eac28f434",
+     "subject": "The fan-out was ten wide when he asked for tons, and the note that should have said so never fired"
+    }
+   ],
+   "rem": 14
+  },
+  "public/_mockups/floor-fix-city-page/index.html": {
+   "add": 198,
+   "commits": [
+    {
+     "sha": "eac28f434",
+     "subject": "The fan-out was ten wide when he asked for tons, and the note that should have said so never fired"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/floor-fix-home/index.html": {
+   "add": 153,
+   "commits": [
+    {
+     "sha": "eac28f434",
+     "subject": "The fan-out was ten wide when he asked for tons, and the note that should have said so never fired"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/floor-fix-inspo/index.html": {
+   "add": 259,
+   "commits": [
+    {
+     "sha": "eac28f434",
+     "subject": "The fan-out was ten wide when he asked for tons, and the note that should have said so never fired"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/floor-fix-notifications/index.html": {
+   "add": 214,
+   "commits": [
+    {
+     "sha": "eac28f434",
+     "subject": "The fan-out was ten wide when he asked for tons, and the note that should have said so never fired"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/floor-fix-profile-and-settings/index.html": {
+   "add": 183,
+   "commits": [
+    {
+     "sha": "bc6a54ba0",
+     "subject": "Fifty options, ten per-screen comparison pages, and the index now points at them"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/floor-fix-salon-reviews/index.html": {
+   "add": 319,
+   "commits": [
+    {
+     "sha": "eac28f434",
+     "subject": "The fan-out was ten wide when he asked for tons, and the note that should have said so never fired"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/floor-fix-search-results/index.html": {
+   "add": 295,
+   "commits": [
+    {
+     "sha": "eac28f434",
+     "subject": "The fan-out was ten wide when he asked for tons, and the note that should have said so never fired"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/floor-fix-why-solen/index.html": {
+   "add": 302,
+   "commits": [
+    {
+     "sha": "eac28f434",
+     "subject": "The fan-out was ten wide when he asked for tons, and the note that should have said so never fired"
+    }
+   ],
+   "rem": 0
+  },
+  "public/_mockups/one-ladder-everywhere/index.html": {
+   "add": 410,
+   "commits": [
+    {
+     "sha": "ebe19c4c8",
+     "subject": "One mockup that settles all three: the missing headline, the search bar, the body size"
+    },
+    {
+     "sha": "4b581ccdb",
+     "subject": "Point the workstream index at the three questions the mockup will ask him"
+    }
+   ],
+   "rem": 1
+  },
+  "scripts/check-geometry.mjs": {
+   "add": 228,
+   "commits": [
+    {
+     "sha": "8d96079a7",
+     "subject": "The floors checker now waits for the page and can sign in"
+    },
+    {
+     "sha": "16eb8782e",
+     "subject": "The design floors check has been green for 30 days because it never loaded a page"
+    }
+   ],
+   "rem": 15
+  },
+  "scripts/check-german-a11y.py": {
+   "add": 53,
+   "commits": [
+    {
+     "sha": "4f5629426",
+     "subject": "A counter for the German words a screen reader speaks on the English site"
+    }
+   ],
+   "rem": 0
+  },
+  "scripts/check-hardcoded-copy.mjs": {
+   "add": 208,
+   "commits": [
+    {
+     "sha": "d05e31d75",
+     "subject": "A check that finds German baked into a page, because the last sweep said done and was not"
+    }
+   ],
+   "rem": 0
+  },
+  "scripts/hardcoded-copy-baseline.json": {
+   "add": 14,
+   "commits": [
+    {
+     "sha": "d05e31d75",
+     "subject": "A check that finds German baked into a page, because the last sweep said done and was not"
+    }
+   ],
+   "rem": 0
+  },
+  "scripts/measure-search-bar.mjs": {
+   "add": 80,
+   "commits": [
+    {
+     "sha": "b9b2ae7b6",
+     "subject": "Show where the search bar actually sits on all seven screens"
+    }
+   ],
+   "rem": 0
+  },
+  "scripts/measure-sections.mjs": {
+   "add": 523,
+   "commits": [
+    {
+     "sha": "cc69b05c2",
+     "subject": "The measuring tool called a loading skeleton a finished screen"
+    },
+    {
+     "sha": "d7c6e79bf",
+     "subject": "Fix the saved-screen route: it was measuring the 404 page"
+    },
+    {
+     "sha": "9b8abd069",
+     "subject": "A tool that dumps each screen's sections, so nine specs share one measurement"
+    }
+   ],
+   "rem": 3
+  },
+  "scripts/sweep-back-controls.py": {
+   "add": 70,
+   "commits": [
+    {
+     "sha": "dca5ffd6b",
+     "subject": "Back arrow: show the lock before applying it, and count how far it drifted"
+    }
+   ],
+   "rem": 0
+  }
+ },
+ "mockup_dirs": [
+  "_floor-fixes-index",
+  "back-arrow-to-the-lock",
+  "compare-back-arrow",
+  "compare-barbershop",
+  "compare-category-pages",
+  "compare-city-page",
+  "compare-home",
+  "compare-inspo",
+  "compare-notifications",
+  "compare-profile-and-settings",
+  "compare-salon-reviews",
+  "compare-search-bar-position",
+  "compare-search-results",
+  "compare-why-solen",
+  "fix-barbershop--b-hierarchy",
+  "fix-barbershop--c-content-forward",
+  "fix-barbershop--d-airbnb-weight",
+  "fix-barbershop--e-recompose",
+  "fix-category-pages--b-hierarchy",
+  "fix-category-pages--c-content-forward",
+  "fix-category-pages--d-airbnb-weight",
+  "fix-category-pages--e-recompose",
+  "fix-city-page--b-hierarchy",
+  "fix-city-page--c-content-forward",
+  "fix-city-page--d-airbnb-weight",
+  "fix-city-page--e-recompose",
+  "fix-home--b-hierarchy",
+  "fix-home--c-content-forward",
+  "fix-home--d-airbnb-weight",
+  "fix-home--e-recompose",
+  "fix-inspo--b-hierarchy",
+  "fix-inspo--c-content-forward",
+  "fix-inspo--d-airbnb-weight",
+  "fix-inspo--e-recompose",
+  "fix-notifications--b-hierarchy",
+  "fix-notifications--c-content-forward",
+  "fix-notifications--d-airbnb-weight",
+  "fix-notifications--e-recompose",
+  "fix-profile-and-settings--b-hierarchy",
+  "fix-profile-and-settings--c-content-forward",
+  "fix-profile-and-settings--d-airbnb-weight",
+  "fix-profile-and-settings--e-recompose",
+  "fix-salon-reviews--b-hierarchy",
+  "fix-salon-reviews--c-content-forward",
+  "fix-salon-reviews--d-airbnb-weight",
+  "fix-salon-reviews--e-recompose",
+  "fix-search-results--b-hierarchy",
+  "fix-search-results--c-content-forward",
+  "fix-search-results--d-airbnb-weight",
+  "fix-search-results--e-recompose",
+  "fix-why-solen--b-hierarchy",
+  "fix-why-solen--c-content-forward",
+  "fix-why-solen--d-airbnb-weight",
+  "fix-why-solen--e-recompose",
+  "floor-fix-barbershop",
+  "floor-fix-category-pages",
+  "floor-fix-city-page",
+  "floor-fix-home",
+  "floor-fix-inspo",
+  "floor-fix-notifications",
+  "floor-fix-profile-and-settings",
+  "floor-fix-salon-reviews",
+  "floor-fix-search-results",
+  "floor-fix-why-solen",
+  "one-ladder-everywhere"
+ ],
+ "screen": [
+  "app/[locale]/_components/homepage/CategoryTabs.tsx",
+  "app/[locale]/_components/homepage/FeaturedStylists.tsx",
+  "app/[locale]/_components/homepage/Reviews.tsx",
+  "app/[locale]/_components/homepage/SalonCard.tsx",
+  "app/[locale]/_components/homepage/SearchBar.tsx",
+  "app/[locale]/_components/homepage/SectionHeader.tsx",
+  "app/[locale]/_components/homepage/WalkInBand.tsx",
+  "app/[locale]/_components/layout/CategoryPillRow.tsx",
+  "app/[locale]/_components/layout/Footer.tsx",
+  "app/[locale]/_components/layout/Header.tsx",
+  "app/[locale]/_components/layout/MobileMenu.tsx",
+  "app/[locale]/_components/primitives/BackButton.tsx",
+  "app/[locale]/_components/primitives/DateTimePicker.tsx",
+  "app/[locale]/_components/salon/SalonBreadcrumb.tsx",
+  "app/[locale]/_components/salon/SalonHeader.tsx",
+  "app/[locale]/_components/salon/SalonHero.tsx",
+  "app/[locale]/_components/salon/SalonImageGallery.tsx",
+  "app/[locale]/_components/salon/SalonLightbox.tsx",
+  "app/[locale]/_components/salon/SalonStickyTabNav.tsx",
+  "app/[locale]/_components/salon/SalonVenuesNearby.tsx",
+  "app/[locale]/_components/search/CategoryHeroCarousel.tsx",
+  "app/[locale]/_components/search/MapSalonDetail.tsx",
+  "app/[locale]/_components/search/SalonResultCard.tsx",
+  "app/[locale]/_components/search/SearchOverlay.tsx",
+  "app/[locale]/_components/search/SearchTemplate.tsx",
+  "app/[locale]/_components/tips/TipSheet.tsx",
+  "app/[locale]/booking/lookup/page.tsx",
+  "app/[locale]/booking/resend-link/page.tsx",
+  "app/[locale]/dev/decision-backbutton/page.tsx",
+  "app/[locale]/inspo/board/[id]/page.tsx",
+  "app/[locale]/inspo/page.tsx",
+  "app/[locale]/inspo/saved/[id]/page.tsx",
+  "app/[locale]/inspo/saved/page.tsx",
+  "app/[locale]/onboarding/OnboardingFlow.tsx",
+  "app/[locale]/profile/favorites/page.tsx",
+  "app/[locale]/profile/looks/page.tsx",
+  "app/[locale]/profile/referral/page.tsx",
+  "app/[locale]/profile/stamps/page.tsx",
+  "app/[locale]/queue/[token]/page.tsx",
+  "app/[locale]/salon/[slug]/team/page.tsx",
+  "app/[locale]/walk-in-pay/page.tsx",
+  "components-legacy/MapView.tsx",
+  "components-legacy/auth/SignIn.tsx",
+  "components-legacy/booking/BookingWizard.tsx",
+  "components-legacy/booking/StaffProfileSheet.tsx",
+  "components-legacy/dashboard/DashboardLayout.tsx",
+  "components-legacy/dashboard/SalonSwitcher.tsx",
+  "components-legacy/discovery/DetailPage.tsx",
+  "components-legacy/discovery/InlinePrefsPanel.tsx",
+  "components-legacy/discovery/LikeButton.tsx",
+  "components-legacy/discovery/SaveButton.tsx",
+  "components-legacy/discovery/SaveToBoardSheet.tsx",
+  "components-legacy/editor/EditorPage.tsx",
+  "components-legacy/refund/RefundCaseView.tsx",
+  "components-legacy/refund/ReportRefundEntry.tsx",
+  "components-legacy/refund/UpchargeApproveView.tsx",
+  "components-legacy/staff/StaffProfilePage.tsx",
+  "components-legacy/staff/StaffReviewsSheet.tsx",
+  "components-legacy/ui/Breadcrumb.tsx",
+  "components-legacy/ui/ImageUploader.tsx",
+  "components-legacy/ui/PhotoLightbox.tsx",
+  "components/ui/animated-testimonials.tsx"
+ ]
+}

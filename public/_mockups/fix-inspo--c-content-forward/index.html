@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Inspo: push the real photos up</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/inspo/page.tsx (the real /de/inspo route: search pill, category pill
+    row, filter chip row, category tile row, masonry photo grid, all unmodified except the one
+    rule named below)
+  Grounded-in: app/[locale]/_components/layout/CategoryPillRow.tsx (the SHARED pill row component
+    Inspo and Home both render; its own pt-5/pb-5 class and dated "Balance pass 2026-08-11"
+    comment, read here, not edited, matching the same lever public/_mockups/fix-home--c-content-
+    forward/index.html already shows on Home)
+  Grounded-in: scripts/check-geometry.mjs (the real FLOORS measurement tool; every number below
+    was produced by running it, or by running its own extraction logic, against the live dev
+    server, never estimated)
+  Grounded-in: the running dev server, http://localhost:3457/de/inspo, both panels load it live
+    (before / after, in the before/after sense that governs every mockup in this system, see the
+    mockup-fullscreen requirement)
+
+  Depicts: top panel (untouched) -> app/[locale]/inspo/page.tsx, live iframe, untouched.
+  Depicts: bottom panel (chrome tightened) -> app/[locale]/inspo/page.tsx, same live iframe, with
+    ONE CSS rule injected after load: CategoryPillRow.tsx's own [role="tablist"] padding, 20px
+    top/bottom (pt-5 pb-5) tightened to 12px top/bottom (pt-3 pb-3), the exact same rule the Home
+    content-forward mockup already proposes for the same shared component. Nothing else changes.
+
+  Diagnosis: F2 imagery on a fresh page load | measured 0.71% | violates FLOORS LAW 2 (CLAUDE.md imagery row) | target 33%
+  Diagnosis: F6 display anchor, the search placeholder text | measured 14px | violates FLOORS LAW 6 / NEVER-AGAIN floor 6 | target 28px
+  Diagnosis: F7b anchor ratio, largest text over median body text | measured 1.17x | violates FLOORS LAW 7b / EMPHASIS BUDGET | target 1.8x
+
+  THE NUMBER I WAS HANDED IS REAL, AND IT IS ALSO NOT THE WHOLE STORY. I ran the real check
+  (BASE_URL=http://localhost:3457 node scripts/check-geometry.mjs --floors-only /de/inspo
+  /de/salon/cuts-and-culture) myself, twice, on a fresh dev-server page load. Both times: Inspo
+  imagery = 0.71%, matching the brief exactly. My known-answer control passed both times too: the
+  same run measured the benchmark page (cuts-and-culture) at 34.66%, the exact published number,
+  so the tool itself is trustworthy and this is not a broken instrument.
+
+  But a fresh page load is not a steady state. I built an isolated test (no shared browser tab, no
+  interference) that loads the same real /de/inspo route and waits for every real photo <img> to
+  report .complete and a real naturalWidth, not a fixed timer. Once that happens, the SAME screen
+  measures 65.41% photographic, comfortably past the 33% floor. I ran this multiple times and the
+  gap between 0.71% and 65%+ was consistent and reproducible, not a fluke.
+
+  WHY THE GAP IS REAL: Inspo's chrome (search bar, category pills, filter chips) and its small
+  category-tile-row photos paint fast, some within about a second. The big masonry photo cards,
+  the ones that make up most of the screen's photo area, load through /api/discovery/thumb/..., a
+  route that resizes/re-serves each photo per request. In my testing that took anywhere from about
+  1 second (when the server was warm and idle) to over 45 seconds (while several other sessions
+  were hammering the same dev server at once, which was happening for real while I built this).
+  That is not deliberate lazy-loading, the photos are not gated behind a scroll trigger, they start
+  fetching the moment the page loads. It is a slow delivery pipeline. So the 0.71% number is real
+  and reproducible under a cold or busy load, and it describes the first several seconds a visitor
+  actually sees, not a permanent shortage of real content. check-geometry.mjs's own settle window
+  (about 4.6 seconds) lands squarely inside that window, which is why it reports the failure.
+
+  A sibling investigation already on disk (public/_mockups/floor-fix-inspo/index.html) found the
+  same 65.43% steady-state number independently and called the 0.71% figure simply "wrong." I
+  verified that number myself rather than take it on faith, and I do not agree it is wrong: it is
+  a true reading of a real, if temporary, state of the screen. The steady-state number and the
+  fresh-load number are both real; they are answers to two different questions.
+
+  WHAT MY MECHANISM CAN AND CANNOT DO ABOUT THIS. A slow image pipeline is a backend fix, not a
+  layout one, and this mockup does not touch it. What "push the real content up and make it
+  bigger" CAN do, and what the bottom panel shows: today, 220px of the 844px first screen (26%)
+  is pure chrome with zero photographic content before the first real photo appears (measured: the
+  search row starts at y=6, the category tile row's first real photo starts at y=226). Trimming
+  the shared pill row's own padding, the same lever already shown on Home, reclaims 16px of that
+  chrome. I measured the real effect of this exact change on the real page, images settled, both
+  times: photographic share went from 65.41% to 67.24%. That is a genuine, if modest, gain, and it
+  also means the small category-tile photos (the fast-loading ones) arrive on screen 16px sooner
+  in scroll terms. It does NOT touch F6 or F7b: those measure text size, not photo area, and stay
+  exactly where they were, 14px and 1.17x. Fixing those needs a headline lever, not a content-push
+  one; that is a different mockup's job.
+
+  A SEPARATE DEFECT, confirmed in source, not depicted here. app/[locale]/inspo/page.tsx's
+  category-tile row (the row of round category photos above the main feed) renders `cover ?
+  <img/> : <span className="h-full w-full bg-s-bg-sunken" />` for a category with no cover photo
+  yet: a bare tinted box, no icon, no initial. That breaks the locked missing-photo fallback
+  (design contract "states" row). Every category tile in today's live data already has a cover
+  photo, so this branch never paints right now and there is nothing honest to screenshot side by
+  side without inventing an empty category, which the no-fabrication rule forbids.
+
+  Exists-check: `npm run exists "inspo imagery"` ran this turn, 0 hits. `npm run exists
+    "fix-inspo--c-content-forward"` ran this turn, 0 hits, genuinely new. `npm run exists
+    "CategoryPillRow padding"` ran this turn, 0 hits (it is a Tailwind class inside a shared
+    component, not a named surface the index tracks); the class itself is not new, it already
+    exists at CategoryPillRow.tsx's own `pt-5 pb-5` line with its dated "Balance pass 2026-08-11"
+    comment, which is exactly the value this mockup proposes reopening, same as the Home sibling
+    already does for the same component.
+
+  Treatment-only: one injected CSS rule, `[role="tablist"]{padding-top:12px;padding-bottom:12px}`,
+    applied to the real CategoryPillRow instance inside the live iframe after it loads. Nothing
+    else in the DOM, copy, photo order, or which salons/looks render is touched. Single light
+    theme, no dark mode. Every label I wrote is English; the real page inside both panels renders
+    its own German through the product's translations, which is exempt.
+
+  Measurement note on frame width: the visual demo below runs the iframes at 402px, this repo's
+  standard mockup device width, matching the LOCKFILE mockup base. Every NUMBER cited above and
+  below was measured at the exact 390x844 FLOORS viewport, via the script or an isolated headless
+  run at that exact size, not read off this 402px demo. The two widths are close enough that the
+  demo looks the same, but the cited percentages come from the real measurement, not this frame.
+-->
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 402px; margin: 0 auto; padding: 0 0 56px; }
+
+  .lede { padding: 28px 16px 6px; }
+  .lede h1 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 26px; font-weight: 600; line-height: 1.15; letter-spacing: -0.02em;
+  }
+  .lede p { margin-top: 10px; font-size: 14px; line-height: 1.5; color: #6B6B6B; }
+
+  .note { margin: 16px 16px 0; padding: 14px 14px; border-radius: 12px; font-size: 13px; line-height: 1.55; color: #6B6B6B; }
+  .note strong { color: #0A0A0A; font-weight: 600; }
+  .note.correction { background: #F4F4F5; border: 1px solid #E4E4E7; }
+  .note .nums { font-variant-numeric: tabular-nums; color: #0A0A0A; font-weight: 600; }
+
+  .panel { margin-top: 26px; }
+  .cap { padding: 0 16px 8px; display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+  .cap h2 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 17px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em;
+  }
+  .cap p { margin-top: 3px; font-size: 13px; line-height: 1.45; color: #6B6B6B; }
+
+  .frame {
+    position: relative; width: 100%; height: 660px;
+    border-top: 1px solid #E4E4E7; border-bottom: 1px solid #E4E4E7;
+    overflow: hidden; background: #fff;
+  }
+  .frame iframe { width: 402px; height: 844px; border: 0; display: block; }
+  .frame .badge {
+    position: absolute; top: 10px; right: 10px; z-index: 2;
+    padding: 5px 10px; border-radius: 40px;
+    background: rgba(255,255,255,0.94); border: 1px solid #E4E4E7;
+    font-size: 11px; font-weight: 600; color: #0A0A0A;
+    font-variant-numeric: tabular-nums;
+  }
+  .frame .badge.state-before { color: #6B6B6B; }
+  .frame .badge.state-after { color: #16A34A; }
+
+  .stat { margin: 22px 16px 0; padding: 14px 14px; border-radius: 12px; background: #F4F4F5; border: 1px solid #E4E4E7; display: flex; gap: 16px; }
+  .stat div { flex: 1; }
+  .stat .n { font-size: 19px; font-weight: 600; color: #0A0A0A; font-variant-numeric: tabular-nums; }
+  .stat .l { font-size: 11px; color: #6B6B6B; margin-top: 2px; line-height: 1.4; }
+
+  .foot { margin: 22px 16px 0; padding-top: 12px; border-top: 1px solid #E4E4E7; font-size: 11px; color: #6B6B6B; line-height: 1.55; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <h1>Push Inspo's real photos up</h1>
+    <p>Both boxes below are your real Inspo feed, loaded live, at its real phone size. The second
+       one has one small change: the row of category buttons above the photos loses a little of
+       its own empty space, so the real photos start higher.</p>
+  </div>
+
+  <div class="note correction">
+    <strong>What the first look actually shows.</strong> I was told this screen's first look
+    measures <span class="nums">0.71%</span> photographic, and I reproduced that number myself, on
+    a fresh page load. But I also let the exact same screen keep loading, untouched, and once
+    every real photo finished arriving it measured <span class="nums">65.41%</span>, well past the
+    33% target. Both numbers are real. The gap between them is how long the real photos take to
+    arrive, which was anywhere from about a second to nearly a minute while I tested it, depending
+    on how busy the server was. That is a slow-photo problem, not an empty-screen problem, and it
+    needs a different fix than this one. What this mockup fixes is separate and smaller: shrinking
+    the chrome so whatever loads, loads a little higher and a little bigger.
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <div>
+        <h2>Now, untouched</h2>
+        <p>The real page, exactly as it ships. Scroll inside the box to see the rest of the feed.</p>
+      </div>
+    </div>
+    <div class="frame">
+      <div class="badge state-before" id="beforeStatus">now</div>
+      <iframe id="beforeFrame" src="/de/inspo" title="Inspo, untouched"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <div>
+        <h2>With the chrome tightened</h2>
+        <p>Same real page. The button row above the photos is tightened, so the photos start
+           16 pixels higher.</p>
+      </div>
+    </div>
+    <div class="frame">
+      <div class="badge state-after" id="afterStatus">loading</div>
+      <iframe id="afterFrame" src="/de/inspo" title="Inspo, real photos pushed up"></iframe>
+    </div>
+  </div>
+
+  <div class="stat">
+    <div><div class="n">65.41% &rarr; 67.24%</div><div class="l">real photo share of the first screen, once photos finish loading (measured, both already past the 33% target)</div></div>
+    <div><div class="n">220px &rarr; 204px</div><div class="l">pure chrome height before the first real photo, no photo content at all</div></div>
+  </div>
+
+  <div class="note">
+    <strong>What actually changed.</strong> One padding value, on the row of category buttons
+    (All, Hair, Barber, Nails...) that already sits above your photo feed. It gets 8 pixels less
+    air on top and 8 less on the bottom. The buttons, the search bar, the filter chips, the
+    category photo row, the whole feed below, all identical. No photo was added, removed, or
+    resized.
+  </div>
+  <div class="note">
+    <strong>What this does not fix.</strong> This screen also has no real headline on phone right
+    now, the biggest text on it is the 14px search placeholder. Pushing photos up does not touch
+    that, it needs its own fix. And the slow-photo loading described above is a delivery-speed
+    problem behind the scenes, not something a layout change can solve.
+  </div>
+  <div class="note">
+    <strong>A separate small thing I found.</strong> When a category in that button row has no
+    photo yet, it currently shows as a bare gray box, no icon, nothing. Every category on the site
+    right now happens to have a photo, so this never shows today, but it is a real gap worth a
+    cheap fix on its own.
+  </div>
+
+  <div class="foot">Both boxes load the same real route, not a redraw. The percentages above come
+    from measuring the real page directly (a script that reads every real photo on screen), at its
+    real 390x844 phone size, not from eyeballing this preview.</div>
+
+</div>
+
+<script>
+  // Same mechanism as the Home content-forward mockup: poll the second iframe's own document
+  // until it is ready, then inject one style rule, once. Re-checks on an interval rather than a
+  // single shot, because this page's own content (the masonry grid) keeps re-rendering as data
+  // streams in, which can detach a style tag injected too early.
+  function applyChange(doc) {
+    if (doc.getElementById('cf-inspo-style')) return 1;
+    var tablist = doc.querySelector('[role="tablist"]');
+    if (!tablist) return 0;
+    var st = doc.createElement('style');
+    st.id = 'cf-inspo-style';
+    st.textContent = '[role="tablist"]{padding-top:12px !important;padding-bottom:12px !important}';
+    doc.head.appendChild(st);
+    return 1;
+  }
+  var tries = 0;
+  var MAX_POLLS = 200;
+  var iv = setInterval(function () {
+    tries++;
+    var f = document.getElementById('afterFrame');
+    var status = document.getElementById('afterStatus');
+    try {
+      var doc = f.contentDocument;
+      if (doc && doc.readyState === 'complete' && applyChange(doc) > 0) {
+        if (status) { status.textContent = 'applied'; }
+      }
+    } catch (e) {}
+    if (tries > MAX_POLLS) {
+      clearInterval(iv);
+      if (status && status.textContent === 'loading') { status.textContent = 'could not confirm'; }
+    }
+  }, 200);
+</script>
+</body>
+</html>

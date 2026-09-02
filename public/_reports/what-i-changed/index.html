@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>What I changed while you were gone</title>
+<!--
+  Reference-checked: _design-system/references/airbnb--fonts-vs-ours.md
+  Exists-check: public/_reports/ already exists and holds prior report pages; this is a new
+    report under it, not a new surface. `npm run exists what-i-changed` returns nothing.
+  Grounded-in: _design-system/LOCKFILE.md (the back-control row: circle / 44 / ChevronLeft
+    never ArrowLeft / white / shadow-elevation-2), and the live measurements taken 2026-08-28.
+  Owner-scope: he asked for "what you edit in all of it and what was different and stuff and
+    when you different didn't make a mockup". This is that list and nothing else.
+  Measured, not recalled: every number here came from git with --first-parent --no-merges, from
+    getBoundingClientRect on the running dev server, or from airbnb.ch live at 390x844.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --line:#E4E4E7; --sunken:#F4F4F5;
+    --accent:#276EF1; --good:#16A34A; --bad:#DC2626;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:#fff; color:var(--ink);
+    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:14px; line-height:1.5;
+  }
+  .wrap{max-width:520px;margin:0 auto;padding:24px 16px 72px}
+  h1{font-size:28px;font-weight:600;line-height:1.15;letter-spacing:-0.02em;margin:0 0 8px}
+  h2{font-size:15px;font-weight:600;margin:0 0 10px;letter-spacing:-0.01em}
+  p{margin:0 0 12px}
+  /* the browser default for strong is 700, which would put this page at three weights
+     against the two-weight budget. pin it to the 600 the headings already use. */
+  strong,b{font-weight:600}
+  .meta{font-size:12px;color:var(--ink2)}
+  .card{border:1px solid var(--line);border-radius:16px;padding:16px;margin:0 0 14px;background:#fff}
+  .card.sunk{background:var(--sunken);border-color:transparent}
+  .sec{margin:28px 0 0}
+  .kicker{font-size:12px;color:var(--ink2);margin:0 0 6px}
+
+  .ba{display:grid;grid-template-columns:1fr;gap:8px;margin:12px 0 0}
+  .ba div{padding:10px 12px;border-radius:12px;background:var(--sunken);font-size:14px}
+  .ba .was{color:var(--ink2)}
+  .ba .now{background:#fff;border:1px solid var(--line)}
+
+  .bar{margin:0 0 12px}
+  .bar .lab{display:flex;justify-content:space-between;gap:12px;font-size:14px;margin:0 0 5px}
+  .bar .lab span:last-child{color:var(--ink2);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .bar .track{height:10px;border-radius:6px;background:var(--sunken);overflow:hidden}
+  .bar .fill{height:100%;border-radius:6px;background:var(--ink)}
+  .bar.q .fill{background:var(--accent)}
+  .bar.g .fill{background:var(--good)}
+
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:12px;color:var(--ink2);font-weight:400}
+  td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+  tr:last-child td{border-bottom:0}
+
+  .quote{border-left:2px solid var(--ink);padding:2px 0 2px 12px;margin:10px 0}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  ul{margin:0 0 12px;padding-left:18px}
+  li{margin:0 0 6px}
+  .tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;background:var(--sunken);color:var(--ink2)}
+  .tag.red{background:#FEE2E2;color:var(--bad)}
+  .links a{display:flex;justify-content:space-between;gap:12px;padding:11px 2px;border-bottom:1px solid var(--line);color:var(--ink)}
+  .links a span:last-child{color:var(--accent);font-size:12px;white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>What I changed while you were gone</h1>
+  <p class="meta">28 August 2026. 66 saves, 259 files. Every number here I measured today, and two of
+  them correct something I already told you.</p>
+
+  <div class="sec">
+    <p class="kicker">First, because it is the one thing I told you that was untrue</p>
+    <h2>Two things I reported wrong</h2>
+
+    <div class="card">
+      <p><span class="tag red">wrong</span> &nbsp;I said your search bar disappears on category pages.</p>
+      <p><strong>It does not. It is there and it works.</strong> On your Coiffeur page it sits at the
+      top, 358 wide and 64 tall, the same spot and the same size as on the home page, and tapping it
+      opens the search. I clicked it to be sure: 30,831 characters of the search sheet appear.</p>
+      <p class="meta">Why I got it wrong: I searched the page for buttons and links. Yours is neither,
+      it is a plain box that behaves like a button, so my search came back empty and I read that as
+      missing. The fix I made yesterday was working the whole time.</p>
+    </div>
+
+    <div class="card">
+      <p><span class="tag red">wrong</span> &nbsp;I said the Inspo search bar is 52px narrower.</p>
+      <p><strong>The bar is the same width on all three screens.</strong> What is actually different
+      is that on Inspo your saved-hearts button sits inside the bar and takes 52px of it, so the part
+      you can tap to search is smaller. The bar did not shrink, something moved into it.</p>
+    </div>
+  </div>
+
+  <div class="sec">
+    <p class="kicker">You said: maybe you changed it back to something I did not want</p>
+    <h2>Your back arrow: I changed it to your lock, not away from it</h2>
+
+    <div class="ba">
+      <div class="was">Was: a straight arrow, 40 across, no shadow</div>
+      <div class="now">Now: a triangle, 44 across, with a shadow</div>
+    </div>
+
+    <p style="margin-top:14px">All three of those are your own words, already written down:</p>
+    <div class="quote">"I wanna get, like, not, like, an arrow. Like, I want, like, a good triangle"</div>
+    <div class="quote">"the back button maybe, like, a circle... and, also, like, shadow"</div>
+
+    <p>Your locked table says the same thing in one row: circle, 44 across, triangle and never an
+    arrow, white, shadow. The arrow you had is the thing your own notes call a bug, from a day the
+    shadow silently vanished because of one wrong word in the code.</p>
+
+    <p><strong>So nothing of yours was undone.</strong> 20 pages were each drawing their own back
+    button by hand. They now all use the one shared button, which is why they finally match.</p>
+    <p class="meta">One small thing was mine and not yours: I made the triangle very slightly thinner.
+    Say the word and it goes back.</p>
+
+    <div class="card sunk" style="margin-top:14px">
+      <p><strong>Nine screens still have the old straight arrow, and I left them alone on purpose.</strong>
+      Changing nine more of your screens on my own judgement is the thing you just told me off for.
+      They move the moment you say go.</p>
+      <p style="margin-bottom:0" class="meta">Search results, booking lookup, coming soon, the two
+      onboarding flows, the salon setup wizard, the dashboard frame, the refund case screen, and salon
+      reviews. Not counted: twenty two internal test pages you never see, and three photo galleries
+      where that arrow means previous photo, not back.</p>
+    </div>
+  </div>
+
+  <div class="sec">
+    <p class="kicker">You said: you fucking edit everything</p>
+    <h2>What I actually touched</h2>
+
+    <div class="bar">
+      <div class="lab"><span>Files I saved at all</span><span>259</span></div>
+      <div class="track"><div class="fill" style="width:100%"></div></div>
+    </div>
+    <div class="bar">
+      <div class="lab"><span>Files that build your screens</span><span>62</span></div>
+      <div class="track"><div class="fill" style="width:24%"></div></div>
+    </div>
+    <div class="bar q">
+      <div class="lab"><span>Screens that actually LOOK different</span><span>21</span></div>
+      <div class="track"><div class="fill" style="width:8%"></div></div>
+    </div>
+    <div class="bar g">
+      <div class="lab"><span>Of those 21, the back arrow</span><span>21</span></div>
+      <div class="track"><div class="fill" style="width:8%"></div></div>
+    </div>
+
+    <p style="margin-top:6px"><strong>Every single visible change I made is the back arrow.</strong>
+    The other 41 files changed only what a blind person's screen reader says out loud, because your
+    English, French and Italian pages were reading German words to them. Nothing there moved a pixel.</p>
+  </div>
+
+  <div class="sec">
+    <h2>What I did not change, and this is the part you were worried about</h2>
+    <div class="card sunk">
+      <table>
+        <tr><td>Text sizes anywhere on your site</td><td class="num">0 changed</td></tr>
+        <tr><td>Colours anywhere on your site</td><td class="num">0 changed</td></tr>
+        <tr><td>Layout or spacing on your screens</td><td class="num">0 changed</td></tr>
+      </table>
+    </div>
+    <p>I tried twice to nudge a 13px label to 14px on your account screen. <strong>Your own gate
+    refused both</strong>, because there was no approved mockup for it. That is the rule doing exactly
+    what you set it up to do.</p>
+  </div>
+
+  <div class="sec">
+    <p class="kicker">You asked: how does Airbnb do it</p>
+    <h2>Airbnb answers the 14px question, and the answer is no</h2>
+
+    <p>I opened their Swiss site on a phone-sized screen and measured the real text, just now:</p>
+
+    <table>
+      <tr><th>On Airbnb, phone</th><th>Theirs</th><th>Yours</th></tr>
+      <tr><td>Listing name on a card</td><td class="num">13px</td><td class="num">14px</td></tr>
+      <tr><td>Price and dates on a card</td><td class="num">12px</td><td class="num">12px</td></tr>
+      <tr><td>Section heading</td><td class="num">18px</td><td class="num">18px</td></tr>
+      <tr><td>Biggest text on their home</td><td class="num">18px</td><td class="num">18px</td></tr>
+    </table>
+
+    <p style="margin-top:14px"><strong>Your cards are already right, and my 14px idea was wrong.</strong>
+    Airbnb puts 12px on exactly the text I was going to enlarge. The odd screen out is your salon page
+    at 14px, not your cards.</p>
+
+    <div class="card sunk">
+      <p style="margin:0"><strong>And it backs the call you already made.</strong> You said the home
+      page has no big text on a phone because it was not balanced. Airbnb's phone home has nothing
+      bigger than 18px either. I should not have brought it back up, and I have taken it out.</p>
+    </div>
+  </div>
+
+  <div class="sec">
+    <p class="kicker">You said: I wanna mockup for each one</p>
+    <h2>They exist. I showed you the wrong page.</h2>
+    <p>There is one mockup per screen, for ten screens, plus four alternatives each. I built them and
+    then handed you a single combined page instead, which is the one you just told me off for.</p>
+
+    <div class="links">
+      <a href="/_mockups/compare-home/index.html"><span>Home</span><span>open</span></a>
+      <a href="/_mockups/compare-inspo/index.html"><span>Inspo</span><span>open</span></a>
+      <a href="/_mockups/compare-category-pages/index.html"><span>Category pages</span><span>open</span></a>
+      <a href="/_mockups/compare-search-results/index.html"><span>Search results</span><span>open</span></a>
+      <a href="/_mockups/compare-city-page/index.html"><span>City page</span><span>open</span></a>
+      <a href="/_mockups/compare-barbershop/index.html"><span>Barbershop</span><span>open</span></a>
+      <a href="/_mockups/compare-salon-reviews/index.html"><span>Salon reviews</span><span>open</span></a>
+      <a href="/_mockups/compare-profile-and-settings/index.html"><span>Profile and settings</span><span>open</span></a>
+      <a href="/_mockups/compare-notifications/index.html"><span>Notifications</span><span>open</span></a>
+      <a href="/_mockups/compare-why-solen/index.html"><span>Why Solen</span><span>open</span></a>
+      <a href="/_mockups/back-arrow-to-the-lock/index.html"><span>The back arrow, all 20 places</span><span>open</span></a>
+    </div>
+    <p class="meta" style="margin-top:12px">Every one of these opened and returned its real page when I
+    checked the links, not the site's fallback.</p>
+  </div>
+
+  <div class="sec">
+    <p class="kicker">You asked: where did that harness go</p>
+    <h2>It is a perfect record and it was never a queue</h2>
+    <p>It has 109 rows and <strong>38 of them are design jobs still marked active and never closed.</strong>
+    Several are today's complaint, written down weeks ago:</p>
+    <ul>
+      <li>Sticky search and the category switch. That is the search bar you mentioned.</li>
+      <li>Why Airbnb reads finished and ours reads unfinished.</li>
+      <li>Full frontend sweep, fix every gap, loop till done.</li>
+    </ul>
+    <p><strong>And I made it worse before you stopped me.</strong> I fired a thirteen agent job without
+    writing a row and without reading the 38 already open. That is the exact thing the harness is for.</p>
+  </div>
+
+  <div class="sec">
+    <p class="kicker">Eight more, from the old list</p>
+    <h2>These were sitting on a list you never saw</h2>
+    <p>Eight older questions had mockups built the banned way, as a toggle you had to click to
+    compare. I rebuilt all eight side by side. Three answered themselves once I measured, so those
+    are not questions any more. The list is now empty for the first time.</p>
+
+    <div class="links">
+      <a href="/_mockups/sweep-card-count-dupe/index.html"><span>Salon cards: the price</span><span>open</span></a>
+      <a href="/_mockups/sweep-booking-payment-selected/index.html"><span>Payment: the selected card</span><span>open</span></a>
+      <a href="/_mockups/sweep-rewards-tier-ladder/index.html"><span>Rewards ladder: dot colour</span><span>open</span></a>
+      <a href="/_mockups/sweep-rewards-hero-gradient/index.html"><span>Rewards card</span><span>open</span></a>
+      <a href="/_mockups/sweep-referral-hero/index.html"><span>Invite banner</span><span>open</span></a>
+      <a href="/_mockups/sweep-partner-cards/index.html"><span>Partner page: two grids</span><span>open</span></a>
+      <a href="/_mockups/sweep-brand-hero/index.html"><span>Brand page: the heading</span><span>open</span></a>
+      <a href="/_mockups/sweep-ueber-uns/index.html"><span>About page: grey or black</span><span>open</span></a>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <p><strong>Three that answered themselves.</strong> Your rewards card was supposed to be a
+      choice between black and a colour fade. There is no fade on it and there never was, going back
+      to the day the file was made. On your invite banner the fade is real, and its small print reads
+      at 4.29 where the floor is 4.5, so the flat version the same page already uses just below it is
+      the only legal one. And the two partner grids already share almost everything and differ only in
+      the fill, so neither is wrong on its own, they just do not match each other.</p>
+      <p style="margin-bottom:0"><strong>Three straight bugs, no taste involved.</strong> Every
+      salon card prints the review count twice, once spelled out in grey and once in brackets in
+      blue. Your brand pages cannot be opened by anyone: the heading question is real, but the table
+      those pages read has zero rows in it, so every one of them is a dead link today. And your
+      About page is German in all four languages, typed into the page instead of coming from your
+      translation files, so an English, French or Italian visitor reads German.</p>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>What is yours to decide</h2>
+    <div class="card">
+      <p><strong>1. The salon page at 14px.</strong> It is the only screen at 14. Airbnb says 13.
+      Do I bring it down to match, or leave it and let the cards be the odd ones?</p>
+      <p><strong>2. The saved-hearts button inside the Inspo search bar.</strong> It is the only place
+      anything sits inside the bar. Move it out, or keep it?</p>
+      <p><strong>3. The nine screens still on the old arrow.</strong> One word and they match the
+      other twenty. I will not touch them before that.</p>
+      <p><strong>4. The ten screen mockups above.</strong> Look at any of them
+      and tell me yes or no. Nothing gets built until you do.</p>
+      <p style="margin-bottom:0"><strong>5. Five of the eight older ones.</strong> The price on your
+      salon cards, the selected card on the payment step, the dot colour on your rewards ladder, the
+      heading size on your brand pages, and whether your About page text goes black. The other three
+      answered themselves.</p>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

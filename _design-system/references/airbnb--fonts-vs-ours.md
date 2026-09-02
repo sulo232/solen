@@ -399,3 +399,49 @@ same section-3/6 canvas pipeline against named candidates, not a guess.
 - Font behavior on `/de/coiffeur`'s and `/de/inspo`'s scrolled states, and at any viewport other
   than 390x844.
 - Icons. Explicitly out of scope for this file; a separate agent owns that half of the owner's ask.
+
+---
+
+## ADDED 2026-08-28: the on-screen SIZE ladder of the phone home feed
+
+Owner ask, verbatim: *"the proposed forty p x body. How does Airbnb do? Right? This is what we
+learn from Airbnb."* He was answering my proposal to move a 12px card body to 14px.
+
+This file already held @font-face metrics, byte sizes and cap/x-height ratios. It did NOT hold
+what size the actual feed text renders at, and its own NOT MEASURED list says so. That is the
+axis his question is about, so this section is the new part and nothing above it is restated.
+
+**Captured live, not recalled.** `https://www.airbnb.ch/`, Browser pane at 390x844, logged out,
+2026-08-28. Every visible text node walked, grouped by computed `font-size` and `font-weight`,
+weighted by how many characters render at each. Nodes inside a `[role="dialog"]` excluded (there
+were none on this load, checked and reported empty) and clipped skip-links excluded.
+
+| size / weight | chars on the first screen | what it is |
+|---|---|---|
+| 12px / 400 | 733 | card meta: dates, price, the app-promo line |
+| 14px / 400 | 361 | the top filter row: "Alles", "Unterkünfte" |
+| **13px / 500** | **287** | **the listing name on a card** |
+| 11px / 600 | 117 | the "Gäste-Favorit" badge |
+| **18px / 600** | **102** | **section heading, "Beliebte Unterkünfte in Paris"** |
+| 18px / 700 | 37 | one survey prompt |
+| 14px / 500 | 34 | "Hol dir die App" |
+| 13px / 600 | 26 | "Alle anzeigen" |
+| 10px / 400-500 | 29 | the bottom tab bar |
+
+**Three readings, and the first one reverses a proposal I had already put in front of him.**
+
+1. **Their card title is 13px/500 and their card meta is 12px/400.** Our `SalonCard` renders its
+   rating, category, address and price at 12px. That is Airbnb's own number for the same text, so
+   the card is already right and the 14px proposal was wrong. The screen that is actually the odd
+   one out is the salon detail page at 14px body, not the cards.
+2. **Their section heading is 18px/600.** Our `SectionTitle` is `clamp(18px,2vw,20px)` semibold,
+   which is 18px at 390 wide. Already identical, nothing to change.
+3. **Nothing on their phone home is bigger than 18px.** The only 28px node was the logo's
+   accessible name, which renders no visible glyphs. This is direct support for his settled
+   2026-08-01 call that the phone home carries no display headline: the FLOORS LAW 6 ">= 28px
+   display anchor per customer screen" is satisfied on their home by the photography, exactly as
+   the floor's own "unless the photograph is the focal" clause allows. I re-proposed a 30px home
+   headline on 2026-08-27 without checking this, and he had already decided it.
+
+**NOT measured in this section:** their PDP and search-results ladders (home feed only), any
+viewport other than 390x844, scrolled states, and the .com site (the .ch locale was used).

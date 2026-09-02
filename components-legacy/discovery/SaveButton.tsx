@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Heart } from "lucide-react";
 import SaveToBoardSheet from "./SaveToBoardSheet";
 
@@ -28,6 +29,7 @@ interface SaveButtonProps {
 
 export default function SaveButton(props: SaveButtonProps) {
   const { itemId, initialSaved, isAuthenticated, onAuthPrompt } = props;
+  const tCommon = useTranslations("common");
   const [saved, setSaved] = useState(initialSaved);
   const [sheetOpen, setSheetOpen] = useState(false);
 
@@ -62,7 +64,7 @@ export default function SaveButton(props: SaveButtonProps) {
       <button
         onClick={onClick}
         className="group flex items-center gap-1 text-xs"
-        aria-label={saved ? "Gespeichert" : "Speichern"}
+        aria-label={saved ? tCommon("saved") : tCommon("save")}
         aria-pressed={saved}
       >
         <Heart

@@ -157,6 +157,7 @@
     "search": "Rechercher",
     "menu": "Menu",
     "searchCompact": "Quoi · Où · Quand",
+    "mainNavigation": "Navigation principale",
     "mobileNavigation": "Navigation",
     "loginToSave": "Connectez-vous pour enregistrer des salons",
     "loginToProfile": "Connectez-vous pour voir votre profil",
@@ -164,7 +165,9 @@
     "aboutUs": "À propos",
     "myAccount": "Mon compte",
     "forBusiness": "Pour les salons",
-    "services": "Services"
+    "services": "Services",
+    "homeLinkTitled": "{title}, aller à l'accueil Solen",
+    "homeIconLabel": "Aller à l'accueil"
   },
   "home": {
     "hero_title": "Votre salon à Bâle",
@@ -238,7 +241,8 @@
       "beliebtInBern": "Populaire à Berne",
       "nearbyPros": "Pros près de chez vous",
       "forYou": "Recommandé pour vous",
-      "artistOfMonth": "Artiste du mois"
+      "artistOfMonth": "Artiste du mois",
+      "portraitOf": "Portrait de {name}"
     },
     "trending": {
       "eyebrow": "Tendance",
@@ -327,7 +331,13 @@
       "allWalkIns": "Tous les sans-rendez-vous",
       "untilFree": "avant libre",
       "queueEmpty": "Personne n'attend",
-      "queueAhead": "{n} devant vous"
+      "queueAhead": "{n} devant vous",
+      "reviewsTitle": "Avis",
+      "reviewsLinkLabel": "Tous les avis →",
+      "reviewOpenAria": "Ouvrir l'avis de {name}",
+      "freeNow": "Libre",
+      "waitRange": "{min}-{max} min",
+      "viewSalonAria": "Voir le salon {name}"
     },
     "heroCarousel": {
       "label": "Populaire près de chez vous",
@@ -461,6 +471,7 @@
     }
   },
   "breadcrumb": {
+    "landmark": "Fil d'Ariane",
     "back": "Retour",
     "coiffeur": "Coiffeur",
     "barbershop": "Barbershop",
@@ -524,6 +535,12 @@
     "previousPhoto": "Photo précédente",
     "nextPhoto": "Photo suivante",
     "showPhoto": "Afficher la photo {number}",
+    "photoOf": "Photo de {name}",
+    "photoOfSalon": "Photo {number} de {name}",
+    "photoCountOf": "Photo {number} sur {total}",
+    "photoGalleryLabel": "Galerie de photos, image {number} sur {total}",
+    "closeOverlay": "Fermer",
+    "removeImage": "Supprimer l'image",
     "choose": "Choisir",
     "add": "Ajouter",
     "minutes": "minutes",
@@ -770,7 +787,18 @@
     "women": "Femmes",
     "men": "Hommes",
     "makeup": "Maquillage",
-    "waxing": "Épilation"
+    "waxing": "Épilation",
+    "previous": "Précédent",
+    "percentOffAria": "{percent}% de réduction",
+    "bookWithAria": "{name}, réserver un rendez-vous",
+    "previousMonthAria": "Mois précédent",
+    "unavailable": "Indisponible",
+    "slotTimeAria": "{time} {status}",
+    "mapUnavailable": "Carte indisponible",
+    "viewAll": "Voir tout",
+    "noReviewsForRating": "Aucun avis avec cette note.",
+    "viewReviewsCountAria": "Voir {count} avis",
+    "share": "Partager"
   },
   "cookies": {
     "title": "Nous utilisons des cookies",
@@ -1697,6 +1725,7 @@
       "settings": "Paramètres",
       "verification": "Vérification",
       "backToSite": "Retour au site",
+      "closeMenu": "Fermer le menu",
       "myCalendar": "Mon calendrier",
       "myBreaks": "Mes pauses",
       "myPortfolio": "Mon portfolio",
@@ -4979,7 +5008,8 @@
       "help": "Aide",
       "signIn": "Se connecter ou s'inscrire",
       "whySolen": "Pourquoi Solen",
-      "language": "Francais"
+      "language": "Francais",
+      "selectCity": "Choisir une ville"
     },
     "filterSheet": {
       "title": "Filtres",
@@ -6532,6 +6562,14 @@
     "saved": "Enregistré",
     "saveError": "Échec de l’enregistrement. Veuillez réessayer."
   },
+  "looks": {
+    "title": "Pas encore de looks.",
+    "lead": "Rassemblez votre inspiration depuis les profils de salons et Inspo, vous la retrouverez ici.",
+    "bannerTitle": "Ouvrir Inspo",
+    "bannerSub": "Des looks frais des salons de Bâle",
+    "hintText": "Enregistrez des looks directement depuis le fil Discovery et les portfolios des salons.",
+    "railTitle": "Mieux noté"
+  },
   "notifications": {
     "title": "Notifications",
     "unread": "non lues",
@@ -6593,5 +6631,42 @@
       "title": "Salon refusé",
       "body": "Votre salon {salon} n'a malheureusement pas été approuvé. Motif : {reason}"
     }
+  },
+  "profileFavorites": {
+    "title": "Pas encore de favoris.",
+    "lead": "Appuyez sur le cœur d'un salon pour qu'il apparaisse ici, votre liste pour la prochaine fois.",
+    "bannerTitle": "Ouvrir Inspo",
+    "bannerSub": "Styles, salons et inspiration de Bâle",
+    "hintText": "Vous trouverez le cœur en haut à droite de chaque photo de salon.",
+    "railTitle": "Mieux notés"
+  },
+  "profileStamps": {
+    "title": "Pas encore de tampons.",
+    "lead": "Réservez dans un salon avec carte de fidélité et collectionnez des tampons pour votre prochaine récompense.",
+    "bannerTitle": "Comment ça marche",
+    "bannerSub": "Un tampon par visite, carte complète = récompense",
+    "hintText": "Le tampon est ajouté automatiquement après chaque rendez-vous terminé.",
+    "railTitle": "Populaire à Bâle",
+    "cardsCount": "{count} cartes",
+    "sectionActive": "Actif",
+    "sectionCompleted": "Complété {count}",
+    "rewardAvailable": "Récompense disponible"
+  },
+  "profileReferral": {
+    "loginRequired": "Connexion requise",
+    "loginMessage": "Veuillez vous connecter pour voir vos parrainages.",
+    "login": "Se connecter",
+    "heroSubtitle": "Partagez votre code et recevez CHF 10 de crédit, votre ami reçoit aussi CHF 10 !",
+    "codeLabel": "Votre code de parrainage",
+    "copyCode": "Copier le code",
+    "copyLink": "Copier le lien",
+    "statsTitle": "Vos statistiques",
+    "friendsInvited": "Amis invités",
+    "earned": "Gagné",
+    "howItWorks": "Comment ça marche",
+    "step1": "Partagez votre code de parrainage avec vos amis",
+    "step2": "Votre ami s'inscrit et réserve un rendez-vous",
+    "step3": "Vous recevez tous les deux CHF 10 de crédit !",
+    "shareText": "Salut ! Réserve ton prochain rendez-vous sur Solen et tu reçois CHF 10 de crédit avec mon code : {code}\n{url}"
   }
 }

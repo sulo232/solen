@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Barbershop page: every fix, stacked</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+  This file builds nothing new. It is a single page that stacks six live iframes of the SAME real
+  route, /de/barbershop, one untouched and five with a real proposed fix injected after load, so
+  all six can be scrolled and compared without tapping a switcher. No tabs, no A/B toggle: the
+  owner rejected that shape by name ("I can't even see a difference").
+
+  Grounded-in: app/[locale]/barbershop/page.tsx (the real route, all six panels are live iframes of it)
+  Grounded-in: public/_mockups/floor-fix-barbershop/index.html (panel A's own mechanism, lifted verbatim)
+  Grounded-in: public/_mockups/fix-barbershop--b-hierarchy/index.html (panel B's own mechanism, lifted verbatim)
+  Grounded-in: public/_mockups/fix-barbershop--c-content-forward/index.html (panel C's own mechanism, lifted verbatim)
+  Grounded-in: public/_mockups/fix-barbershop--d-airbnb-weight/index.html (panel D's own mechanism, lifted verbatim)
+  Grounded-in: public/_mockups/fix-barbershop--e-recompose/index.html (panel E's own mechanism, lifted verbatim)
+
+  Depicts: Panel 0 (Now) -> app/[locale]/barbershop/page.tsx, real /de/barbershop route, live iframe, untouched.
+  Depicts: Panel A (Add the photo) -> app/[locale]/barbershop/page.tsx, real route, live iframe, each walk-in card in WalkInBand.tsx gets the real photo its own salon already shows in the rail higher up the same page, matched by name against the live DOM.
+  Depicts: Panel B (One real anchor) -> app/[locale]/barbershop/page.tsx, real route, live iframe, the first rail heading (CategoryMobileRails.tsx) resized 18px to 30px, the walk-in row's repeated availability label resized 20px/600 to 14px/500, the floating map-toggle button 13.5px to 14px.
+  Depicts: Panel C (Bigger real cards) -> app/[locale]/barbershop/page.tsx, real route, live iframe, category-pill row padding 20px to 12px each side, first rail's real salon cards widened from /1.5 to /1.25.
+  Depicts: Panel D (Let bold calm down) -> app/[locale]/barbershop/page.tsx, real route, live iframe, every element rendered at font-weight >=600 forced to 500.
+  Depicts: Panel E (All at once) -> app/[locale]/barbershop/page.tsx, real route, live iframe, rail cards widened from /1.5 to /1.15, the Walk-in section's bold text dropped to 500 and its 20px status word raised to 30px.
+
+  Diagnosis: F2 IMAGERY | measured 21.59% of the first 390x844 viewport | violates FLOORS LAW 2 /
+    LOCKFILE imagery row | target 33%, measured this session against the running /de/barbershop route.
+  Diagnosis: F6 DISPLAY ANCHOR | measured 20px (the walk-in row's own repeated availability word,
+    biggest by accident, not a real heading) | violates FLOORS LAW 6 | target 28px, house value 30px
+    (read off /de/salon/cuts-and-culture, the reference screen this session's ladder locked to).
+  Diagnosis: F7b ANCHOR RATIO | measured 1.67x (20px anchor over a 12px live median) | violates the
+    EMPHASIS BUDGET anchor-ratio floor | target 1.8x, ladder value 2.14x.
+  Diagnosis: F7a WEIGHT SHARE | measured 45.24% (19 of 42 visible leaf-text elements at weight >= 600,
+    over half of it the walk-in row's own second, bold, photo-less copy of names already shown once
+    in the rail above) | violates the EMPHASIS BUDGET ceiling | target 30%, ladder value 30%
+    (cuts-and-culture).
+
+  Diagnosis detail (context, not re-parsed by the gate, the four lines above are what it checks):
+    F7c SIZE SPREAD was measured 5 distinct sizes in the densest 8px window against a ceiling of 4,
+    also failing, but every panel below states its own before/after for this number in its own
+    caption rather than repeating it here a fifth time. None of these numbers were re-measured
+    fresh for THIS assembly page; each is carried over, unchanged, from the builder report that
+    produced the panel it belongs to. Treat every "after" number on this page as reasoned from the
+    component's own committed source or a script run once, live, on the turn that built it, not as
+    independently re-confirmed by this assembly step.
+
+  measure-ok: every number quoted on this page (21.59%, 20px, 1.67x, 45.24%, 5 sizes, and each
+    option's after-number) is OUR OWN screen measured against OUR OWN locked reference screen
+    (/de/salon/cuts-and-culture: 33% imagery, 30px anchor, 2.14x ratio, 30% weight share, 5 distinct
+    sizes with 4 in the densest cluster), not a competitor's raw pixel value carried over unexamined.
+
+  Exists-check: `npm run exists "compare-barbershop"` run this turn, 0 hits, this directory is
+    genuinely new. The five source mockups it draws from were each separately exists-checked by
+    their own builders (see each panel's own file for that record); this file duplicates none of
+    that work, it only reads their already-written stylesheets and scripts and re-applies them
+    verbatim inside a shared page.
+
+  Treatment-only, and this is the treatment for the WHOLE page, not one panel: every stylesheet
+    rule and every DOM patch below is copied byte-for-byte from the five listed source files. No
+    new fix is invented here. The only thing this file adds is the stacking, the captions, and the
+    intro/closing copy, all written in English. The real page inside every iframe renders its own
+    German through the product's own translations, which is exempt.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#52525B; --ink3:#6B6B6B; --line:#E4E4E7; --sunken:#F4F4F5;
+    --good:#16A34A; --bad:#DC2626;
+    --font:'Inter Tight',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #fff; }
+  body{
+    font-family: Inter, var(--font), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 24px 16px calc(40px + env(safe-area-inset-bottom));
+  }
+
+  .intro h1{
+    font-family: var(--font);
+    font-size: clamp(21px, 5vw, 24px); font-weight: 600; letter-spacing: -0.01em; line-height: 1.25;
+  }
+  .intro p{ margin-top: 10px; font-size: 14px; line-height: 1.6; color: var(--ink2); }
+  .intro p + p{ margin-top: 8px; }
+
+  .now-stats{
+    margin-top: 18px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+  }
+  .now-stats .cell{ background: var(--sunken); border-radius: 12px; padding: 10px 8px; }
+  .now-stats .n{ font-size: 17px; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .now-stats .l{ font-size: 10.5px; color: var(--ink3); margin-top: 3px; line-height: 1.3; }
+
+  .panel{ margin-top: 34px; }
+  .panel-cap{ margin-bottom: 8px; }
+  .panel-tag{
+    display: inline-block; font-size: 13px; font-weight: 600; color: var(--ink3);
+  }
+  .panel-tag.now{ color: var(--ink3); }
+  .panel-tag.fix{ color: var(--ink); }
+  .panel h2{ font-family: var(--font); font-size: 17px; font-weight: 600; margin-top: 2px; letter-spacing: -0.01em; }
+  .panel .desc{ margin-top: 5px; font-size: 13px; line-height: 1.55; color: var(--ink2); }
+  .panel .badge{
+    display: inline-block; margin-top: 8px; font-size: 11px; font-weight: 600; color: var(--ink2);
+    background: var(--sunken); border-radius: 999px; padding: 4px 10px; font-variant-numeric: tabular-nums;
+  }
+  .panel .badge.status{ margin-left: 6px; }
+  .panel .badge.status.applied{ color: var(--good); background: #F0FDF4; }
+  .panel .badge.status.failed{ color: var(--bad); background: #FEF2F2; }
+
+  .fail-note{
+    margin-top: 8px; padding: 10px 12px; border-radius: 10px;
+    background: #FEF2F2; border: 1px solid var(--bad);
+    font-size: 12.5px; line-height: 1.55; color: var(--bad);
+  }
+
+  .frame{
+    margin-top: 12px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden;
+    background: #fff; max-width: 390px;
+  }
+  iframe{ display: block; width: 100%; height: 844px; border: 0; }
+  .frame-loading{
+    height: 844px; display: flex; align-items: center; justify-content: center;
+    background: var(--sunken); color: var(--ink3); font-size: 13px; text-align: center; padding: 0 24px;
+  }
+  .frame-loading[hidden]{ display: none; }
+
+  .not-fixed{ margin-top: 10px; font-size: 12.5px; line-height: 1.55; color: var(--ink3); }
+  .not-fixed b{ color: var(--ink2); font-weight: 600; }
+
+  .closer{
+    margin-top: 40px; background: var(--sunken); border-radius: 16px; padding: 18px 16px;
+  }
+  .closer h2{ font-family: var(--font); font-size: 15px; font-weight: 600; margin-bottom: 10px; }
+  .closer ul{ padding-left: 18px; }
+  .closer li{ font-size: 13px; line-height: 1.6; color: var(--ink2); margin-top: 8px; }
+  .closer li b{ color: var(--ink); font-weight: 600; }
+  .closer .divider{ margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+
+  .foot{
+    margin-top: 22px; font-size: 11px; color: var(--ink3); line-height: 1.6;
+    border-top: 1px solid var(--line); padding-top: 12px;
+  }
+</style>
+</head>
+<body>
+
+  <div class="intro">
+    <h1>Six versions of the barbershop page, one under the other</h1>
+    <p>Right now this is the worst-scoring page in the product. The walk-in queue block near the
+       bottom shows real barbers with no photo at all, and it repeats each barber's name in bold a
+       second time, right under the same name already shown once, in a rail higher up, with a
+       photo. The result is less than a quarter of the screen is photography, the single biggest
+       piece of text is a small repeated status word instead of a real heading, and nearly half of
+       all the text on the screen is bold. Below are five different fixes, each applied live to
+       your real, running barbershop page, real salons and real photos, nothing invented. Panels
+       load one at a time, in order, so the browser is never asked to run all six at once. Scroll
+       to compare them one at a time against "Now" at the top.</p>
+    <p>These numbers came off your own salon page for Cuts &amp; Culture, the one screen that
+       already passes every check and the one you said you like. That page is the ruler every fix
+       below is measured against.</p>
+  </div>
+
+  <div class="now-stats">
+    <div class="cell"><div class="n">21.59%</div><div class="l">photo of screen (target 33%)</div></div>
+    <div class="cell"><div class="n">20px</div><div class="l">biggest text (target 30px)</div></div>
+    <div class="cell"><div class="n">1.67x</div><div class="l">headline vs body size (target 1.8x+)</div></div>
+    <div class="cell"><div class="n">45.24%</div><div class="l">text that's bold (target under 30%)</div></div>
+  </div>
+
+  <!-- ================= PANEL 0: NOW ================= -->
+  <div class="panel">
+    <div class="panel-cap">
+      <span class="panel-tag now">Now</span>
+      <h2>The barbershop page as it is today</h2>
+      <div class="desc">Nothing changed here. This is the same live page every panel below is a copy of.</div>
+    </div>
+    <div class="frame" id="wrap-nowFrame">
+      <div class="frame-loading" id="loading-nowFrame">Waiting to load&hellip;</div>
+      <iframe id="nowFrame" data-src="/de/barbershop" title="barbershop page, now, untouched" style="display:none"></iframe>
+    </div>
+  </div>
+
+  <!-- ================= PANEL A: floor-fix-barbershop ================= -->
+  <div class="panel">
+    <div class="panel-cap">
+      <span class="panel-tag fix">Option A</span>
+      <h2>Give the walk-in row the photo it's missing</h2>
+      <div class="claim" id="claimA">
+        <div class="desc">Every barber named in the walk-in queue block already has a real photo on
+          this exact page, in the rail above. This copies that same, already-loaded photo down into
+          the walk-in card next to that barber's name. No new photo is fetched, nothing is invented:
+          a barber whose name doesn't match a photo elsewhere on the page is left exactly as it is
+          today.</div>
+        <span class="badge">moves: photo share, a little</span>
+      </div>
+      <span class="badge status" id="statusA">waiting</span>
+      <div class="fail-note" id="failA" hidden>This option's fix did not apply on this load of the
+        page, most likely because loading six copies of the page at once slowed the browser down.
+        The description above does not describe what you see below. Reload the page to try again.</div>
+    </div>
+    <div class="frame" id="wrap-frameA">
+      <div class="frame-loading" id="loading-frameA">Waiting to load&hellip;</div>
+      <iframe id="frameA" data-src="/de/barbershop" title="barbershop page, option A, add the walk-in photo" style="display:none"></iframe>
+    </div>
+    <div class="not-fixed" id="notfixedA"><b>Does not touch:</b> the 20px status word, the 1.67x ratio, or how
+      much text is bold. Three of the five broken numbers trace back to the salon card's locked
+      name+price pair or to the section titles this page shares with the home page and the other
+      two category pages, and this option deliberately leaves all of that alone.</div>
+  </div>
+
+  <!-- ================= PANEL B: fix-barbershop--b-hierarchy ================= -->
+  <div class="panel">
+    <div class="panel-cap">
+      <span class="panel-tag fix">Option B</span>
+      <h2>Give the page one real heading</h2>
+      <div class="claim" id="claimB">
+        <div class="desc">The biggest text on this screen right now is a small repeated status word
+          inside the walk-in row, big by accident, not because it's the most important thing here.
+          This promotes the first rail's own title ("Top Barber") to a real 30px anchor, shrinks that
+          repeated status word back down to a plain 14px, and evens out one stray button that was
+          sitting at an odd in-between size.</div>
+        <span class="badge">moves: headline size, headline ratio, size spread</span>
+      </div>
+      <span class="badge status" id="statusB">waiting</span>
+      <div class="fail-note" id="failB" hidden>This option's fix did not apply on this load of the
+        page, most likely because loading six copies of the page at once slowed the browser down.
+        The description above does not describe what you see below. Reload the page to try again.</div>
+    </div>
+    <div class="frame" id="wrap-frameB">
+      <div class="frame-loading" id="loading-frameB">Waiting to load&hellip;</div>
+      <iframe id="frameB" data-src="/de/barbershop" title="barbershop page, option B, one real heading" style="display:none"></iframe>
+    </div>
+    <div class="not-fixed" id="notfixedB"><b>Does not touch:</b> photo share (still 21.59%). Bold text drops some,
+      from 45.24% to 38.10%, as a side effect of shrinking the status word, but stays over the 30%
+      ceiling: the rest is the locked salon-card name+price pair or the shared rail titles.</div>
+  </div>
+
+  <!-- ================= PANEL C: fix-barbershop--c-content-forward ================= -->
+  <div class="panel">
+    <div class="panel-cap">
+      <span class="panel-tag fix">Option C</span>
+      <h2>Make the real barber cards bigger</h2>
+      <div class="claim" id="claimC">
+        <div class="desc">Same barbers, same photos, no new card. The first row of real cards gets
+          wider (230px up to 277px, the same lever already proposed for the home page), and the
+          category-pill row above it loses a little of its own padding so the row sits higher on
+          screen. The walk-in block underneath is left completely untouched.</div>
+        <span class="badge">moves: photo share, a bit more than Option A</span>
+      </div>
+      <span class="badge status" id="statusC">waiting</span>
+      <div class="fail-note" id="failC" hidden>This option's fix did not apply on this load of the
+        page, most likely because loading six copies of the page at once slowed the browser down.
+        The description above does not describe what you see below. Reload the page to try again.</div>
+    </div>
+    <div class="frame" id="wrap-frameC">
+      <div class="frame-loading" id="loading-frameC">Waiting to load&hellip;</div>
+      <iframe id="frameC" data-src="/de/barbershop" title="barbershop page, option C, bigger real cards" style="display:none"></iframe>
+    </div>
+    <div class="not-fixed" id="notfixedC"><b>Does not touch:</b> the 20px status word, the 1.67x ratio, or how
+      much text is bold. And photo share still lands short: this viewport only fits about one full
+      card plus a partial peek no matter how wide the card gets, so the lever runs out of headroom
+      around 25 to 26%, short of the 33% floor.</div>
+  </div>
+
+  <!-- ================= PANEL D: fix-barbershop--d-airbnb-weight ================= -->
+  <div class="panel">
+    <div class="panel-cap">
+      <span class="panel-tag fix">Option D</span>
+      <h2>Let bold text calm down</h2>
+      <div class="claim" id="claimD">
+        <div class="desc">Nearly half of the text on this screen is bold right now, the walk-in row's
+          own heading, its status badge, its repeated status word, and a second bold copy of each
+          barber's name and rating the rail above already showed once. This makes every one of those
+          elements one step lighter, weight 500 instead of 600 or heavier. No size, spacing, or
+          colour changes.</div>
+        <span class="badge">moves: how much text is bold, all the way to 0%</span>
+      </div>
+      <span class="badge status" id="statusD">waiting</span>
+      <div class="fail-note" id="failD" hidden>This option's fix did not apply on this load of the
+        page, most likely because loading six copies of the page at once slowed the browser down.
+        The description above does not describe what you see below. Reload the page to try again.</div>
+    </div>
+    <div class="frame" id="wrap-frameD">
+      <div class="frame-loading" id="loading-frameD">Waiting to load&hellip;</div>
+      <iframe id="frameD" data-src="/de/barbershop" title="barbershop page, option D, lighter bold weight" style="display:none"></iframe>
+    </div>
+    <div class="not-fixed" id="notfixedD"><b>Does not touch:</b> photo share, headline size, or headline ratio.
+      Font-weight can't move font-size or image area, so those three numbers land byte-identical to
+      before. This option also reopens a locked value: applied sitewide the same way, it would also
+      demote the salon card's name and price, which LOCKFILE (V3-D442) currently locks at weight
+      600.</div>
+  </div>
+
+  <!-- ================= PANEL E: fix-barbershop--e-recompose ================= -->
+  <div class="panel">
+    <div class="panel-cap">
+      <span class="panel-tag fix">Option E</span>
+      <h2>Do the cards and the walk-in retype together</h2>
+      <div class="claim" id="claimE">
+        <div class="desc">Combines two of the moves above, pushed further: the three real card rails
+          widen from 1.5 cards per screen to 1.15, and inside the walk-in section only, every bold
+          node drops to weight 500 while its one 20px status word grows to a real 30px anchor. This
+          is the option most likely to clear the most floors at once, and the most honest about what
+          it still costs.</div>
+        <span class="badge">moves: headline size, headline ratio, bold share, size spread, photo share</span>
+      </div>
+      <span class="badge status" id="statusE">waiting</span>
+      <div class="fail-note" id="failE" hidden>This option's fix did not apply on this load of the
+        page, most likely because loading six copies of the page at once slowed the browser down.
+        The description above does not describe what you see below. Reload the page to try again.</div>
+    </div>
+    <div class="frame" id="wrap-frameE">
+      <div class="frame-loading" id="loading-frameE">Waiting to load&hellip;</div>
+      <iframe id="frameE" data-src="/de/barbershop" title="barbershop page, option E, everything at once" style="display:none"></iframe>
+    </div>
+    <div class="not-fixed" id="notfixedE"><b>Still short:</b> photo share moves for real, from 21.59% up to
+      roughly 28%, but stops short of the 33% floor. Closing the rest of that gap needs a lever
+      none of these five options use: more real barber content shown higher up the page, not a
+      resize of what's already there.</div>
+  </div>
+
+  <div class="closer">
+    <h2>What's your call, and what's just catching this page up to one it already passes</h2>
+    <ul>
+      <li><b>Your call: whether card width reopens.</b> Options C and E both widen the real
+        barbershop cards past the 1.5-cards-per-screen value approved in July on purpose. Fewer
+        cards are visible per swipe once they're this wide. Options A, B, and D leave card width
+        alone.</li>
+      <li><b>Your call: whether the bold-weight rule reopens sitewide.</b> Option D's full mechanism,
+        applied everywhere the same way, would also demote the salon card's locked name+price pair
+        (LOCKFILE V3-D442). This page's iframe copy never touches that lock, but shipping the
+        pattern for real needs that value reopened by name first.</li>
+      <li><b>Your call: whether the walk-in row keeps its second bold name.</b> Options B and E both
+        shrink or reweight the walk-in row's repeated copy of a name and rating the rail above
+        already shows once. That repeat is real information (queue status), just currently rendered
+        louder than the same name's first, photographed appearance.</li>
+      <li><b>Not your call, these just match the screen you already like:</b> pulling bold text down
+        toward 30%, giving the page one real display anchor instead of a status word that happens to
+        be biggest, and closing in on a 1.8x-or-better headline ratio are all just this screen
+        catching up to the same ladder your own Cuts &amp; Culture salon page already clears. Nothing
+        new is being decided there, it's the same rule applied here that already applies everywhere
+        else.</li>
+      <li><b>Not settled by any of these five:</b> the 33% imagery floor. Every option that touches
+        photo share (A, C, E) moves the number in the right direction and still lands short. Clearing
+        it for real needs more real barber content surfaced higher on the page, which is a content
+        decision, not a treatment this page can show as a CSS-only mockup.</li>
+    </ul>
+    <div class="divider">
+      None of these five options touch a shared component file (SalonCard, Header, SearchTemplate,
+      SalonMobileBookBar, HomeSearchPill, BottomNav). Every change is scoped to this test page's own
+      copy of the real route. Picking one still needs to be built for real, into the actual
+      component or page file, before it ships.
+    </div>
+  </div>
+
+  <div class="foot">
+    All six panels load the same live route, /de/barbershop, from your dev server, not a redraw.
+    Every fix above is copied from its own separate mockup file, named at the top of this page's
+    source, and applied here exactly as it was built there. No shared component was edited to make
+    this page. Panels load one at a time, and any panel whose fix does not apply says so in place,
+    it never leaves a caption describing a change the panel below it did not make.
+  </div>
+
+<script>
+  // Every panel below loads the SAME real /de/barbershop route the Now panel loads. Loading all
+  // six at once overloaded the dev server and the browser badly enough that the fix-detection
+  // polls hit their cap before the target element ever appeared, and once that happened the panel
+  // stayed marked broken for the rest of the page's life. Panels now start ONE AT A TIME: panel 0
+  // starts as soon as the page loads (it's at the top, always on screen), and every panel after it
+  // starts only once the panel before it has settled, applied or failed, AND the panel itself has
+  // scrolled near the viewport. A panel that has not started yet shows a plain loading placeholder
+  // instead of an empty box.
+
+  var POLL_INTERVAL_MS = 150;
+  var POLL_CAP_MS = 60000; // raised from the original short cap so a slow, six-iframe page has room to settle
+  var LOAD_TIMEOUT_MS = POLL_CAP_MS + 5000; // safety net if the iframe itself never fires 'load'
+  var HYDRATION_WATCH_MS = 15000; // keep re-applying a confirmed fix, in case the real page's own hydration overwrites the node just touched
+
+  // The real page renders its server HTML fast, then a client-side effect fetches the walk-in
+  // queue data and only THEN fills the walk-in row with real cards, which is where several of the
+  // measured numbers on this page live. This waits for the walk-in section to contain something
+  // rendered at 20px, its real pre-treatment size.
+  function walkinIsPopulated(doc) {
+    var sec = doc.querySelector('section[aria-label="Walk-in"]');
+    if (!sec) return false;
+    var els = sec.querySelectorAll("*");
+    for (var i = 0; i < els.length; i++) {
+      if (parseFloat(doc.defaultView.getComputedStyle(els[i]).fontSize) === 20) return true;
+    }
+    return false;
+  }
+  function waitForWalkin(doc, cb) {
+    var waited = 0;
+    var iv = setInterval(function () {
+      waited += POLL_INTERVAL_MS;
+      var ready = walkinIsPopulated(doc);
+      if (ready || waited >= POLL_CAP_MS) {
+        clearInterval(iv);
+        cb(ready);
+      }
+    }, POLL_INTERVAL_MS);
+  }
+
+  // ---- Option A: floor-fix-barbershop. Match each walk-in name to a real photo already on the
+  // page, add a 40x40 thumbnail. A name with no match is left untouched. ----
+  function applyA(doc, win) {
+    var candidateImgs = Array.prototype.filter.call(doc.querySelectorAll("img"), function (img) {
+      var r = img.getBoundingClientRect();
+      return r.width > 60 && r.height > 60;
+    });
+    var nameToSrc = {};
+    candidateImgs.forEach(function (img) {
+      var node = img, name = null;
+      for (var i = 0; i < 6 && node; i++) {
+        node = node.parentElement;
+        if (!node) break;
+        var h = node.querySelector("h3, h2");
+        if (h && h.textContent.trim().length > 0 && h.textContent.trim().length < 40) {
+          name = h.textContent.trim();
+          break;
+        }
+      }
+      if (name && !nameToSrc[name]) nameToSrc[name] = img.currentSrc || img.src;
+    });
+    var walkinSection = doc.querySelector('section[aria-label="Walk-in"]');
+    if (!walkinSection) return;
+    var nameSpans = Array.prototype.filter.call(walkinSection.querySelectorAll("span"), function (s) {
+      var cs = win.getComputedStyle(s);
+      return parseFloat(cs.fontSize) === 14 && (parseInt(cs.fontWeight, 10) || 400) >= 600;
+    });
+    nameSpans.forEach(function (span) {
+      var name = span.textContent.trim();
+      var src = nameToSrc[name];
+      if (!src) return;
+      if (span.parentElement.querySelector("img[data-added-thumb]")) return;
+      var im = doc.createElement("img");
+      im.src = src;
+      im.setAttribute("data-added-thumb", "1");
+      im.style.cssText = "width:40px;height:40px;border-radius:10px;object-fit:cover;flex-shrink:0;margin-right:10px;";
+      span.parentElement.style.display = "flex";
+      span.parentElement.style.alignItems = "center";
+      span.parentElement.insertBefore(im, span.parentElement.firstChild);
+    });
+  }
+
+  // ---- Option B: fix-barbershop--b-hierarchy. Promote first rail heading, recede the walk-in
+  // status word, merge the odd-sized map button. ----
+  function applyB(doc, win) {
+    var railH2s = Array.prototype.filter.call(doc.querySelectorAll("h2"), function (h) {
+      return h.className.indexOf("clamp(18px") !== -1;
+    });
+    if (railH2s.length > 0) {
+      railH2s[0].style.fontSize = "30px";
+      railH2s[0].style.lineHeight = "1.1";
+    }
+    var walkinSection = doc.querySelector('section[aria-label="Walk-in"]');
+    if (walkinSection) {
+      Array.prototype.forEach.call(walkinSection.querySelectorAll("*"), function (el) {
+        var cs = win.getComputedStyle(el);
+        if (parseFloat(cs.fontSize) === 20) {
+          el.style.fontSize = "14px";
+          el.style.fontWeight = "500";
+        }
+      });
+    }
+    Array.prototype.forEach.call(doc.querySelectorAll("button"), function (b) {
+      var cs = win.getComputedStyle(b);
+      if (parseFloat(cs.fontSize) === 13.5) {
+        b.style.fontSize = "14px";
+      }
+    });
+  }
+
+  // ---- Option C: fix-barbershop--c-content-forward. Pill padding + widen first card row. ----
+  function applyC(doc) {
+    if (doc.getElementById('cf-content-forward-style')) return;
+    var tablist = doc.querySelector('[role="tablist"][aria-label="Kategorien"]');
+    var railRow = doc.querySelector(".mt-1.flex.gap-3.overflow-x-auto");
+    if (!tablist && !railRow) return;
+    var st = doc.createElement("style");
+    st.id = "cf-content-forward-style";
+    var rules = "";
+    if (tablist) {
+      rules += '[role="tablist"][aria-label="Kategorien"]{padding-top:12px !important;padding-bottom:12px !important}';
+    }
+    if (railRow) {
+      railRow.setAttribute("data-cf-row", "1");
+      rules += '[data-cf-row="1"] > a[href]{width:calc((100vw - 44px) / 1.25) !important}';
+    }
+    st.textContent = rules;
+    doc.head.appendChild(st);
+  }
+
+  // ---- Option D: fix-barbershop--d-airbnb-weight. Every weight>=600 leaf-text node to 500. ----
+  function applyD(doc, win) {
+    function isLeafText(el) {
+      for (var i = 0; i < el.childNodes.length; i++) {
+        var n = el.childNodes[i];
+        if (n.nodeType === 3 && n.textContent.trim().length > 0) return true;
+      }
+      return false;
+    }
+    var all = doc.querySelectorAll("body *");
+    all.forEach(function (el) {
+      if (!isLeafText(el)) return;
+      var cs = win.getComputedStyle(el);
+      var w = parseInt(cs.fontWeight, 10) || 400;
+      if (w >= 600) {
+        el.style.setProperty("font-weight", "500", "important");
+      }
+    });
+  }
+
+  // ---- Option E: fix-barbershop--e-recompose. Widen rail cards to /1.15, retype the Walk-in
+  // section (bold to 500, its 20px status word to 30px). ----
+  function applyE(doc, win) {
+    var cardEls = doc.querySelectorAll('[class*="calc((100vw-44px)/1.5)"]');
+    cardEls.forEach(function (el) {
+      el.style.width = "calc((100vw - 44px) / 1.15)";
+    });
+    var wi = doc.querySelector('section[aria-label="Walk-in"]');
+    if (wi) {
+      wi.querySelectorAll(".font-semibold").forEach(function (el) {
+        el.style.fontWeight = "500";
+      });
+      wi.querySelectorAll("*").forEach(function (el) {
+        if (parseFloat(win.getComputedStyle(el).fontSize) === 20) {
+          el.style.fontSize = "30px";
+        }
+      });
+    }
+  }
+
+  // ---- Sequential load chain, lazy-near-viewport start, and honest failure reporting ----------
+
+  var PANELS = [
+    { frameId: "nowFrame", statusId: null, claimId: null, failId: null, notFixedId: null, apply: null },
+    { frameId: "frameA", statusId: "statusA", claimId: "claimA", failId: "failA", notFixedId: "notfixedA", apply: applyA },
+    { frameId: "frameB", statusId: "statusB", claimId: "claimB", failId: "failB", notFixedId: "notfixedB", apply: applyB },
+    { frameId: "frameC", statusId: "statusC", claimId: "claimC", failId: "failC", notFixedId: "notfixedC", apply: applyC },
+    { frameId: "frameD", statusId: "statusD", claimId: "claimD", failId: "failD", notFixedId: "notfixedD", apply: applyD },
+    { frameId: "frameE", statusId: "statusE", claimId: "claimE", failId: "failE", notFixedId: "notfixedE", apply: applyE }
+  ];
+
+  var nextIndex = 0;
+  var started = {};
+  var isVisible = {};
+
+  function setStatus(panel, text, cls) {
+    if (!panel.statusId) return;
+    var el = document.getElementById(panel.statusId);
+    if (!el) return;
+    el.textContent = text;
+    el.className = "badge status" + (cls ? " " + cls : "");
+  }
+
+  function revealFrame(panel) {
+    var frame = document.getElementById(panel.frameId);
+    var loading = document.getElementById("loading-" + panel.frameId);
+    if (loading) loading.hidden = true;
+    if (frame) frame.style.display = "block";
+  }
+
+  // The panel did not confirm its fix applied. Stop the caption claiming a change happened and
+  // say so in plain English instead, so an unchanged screen never sits next to numbers that
+  // describe a different screen.
+  function showFailure(panel) {
+    if (panel.claimId) {
+      var claim = document.getElementById(panel.claimId);
+      if (claim) claim.hidden = true;
+    }
+    if (panel.notFixedId) {
+      var nf = document.getElementById(panel.notFixedId);
+      if (nf) nf.hidden = true;
+    }
+    if (panel.failId) {
+      var fail = document.getElementById(panel.failId);
+      if (fail) fail.hidden = false;
+    }
+  }
+
+  // Keep re-applying a confirmed fix for a short window after it first lands, because the real
+  // Next.js route hydrates on the client after the initial paint and one option was measured
+  // applying correctly, then being silently discarded when hydration replaced the node.
+  function watchForHydration(panel, doc, win) {
+    if (!doc.body || !window.MutationObserver) return;
+    var reapplyTimer = null;
+    var mo = new MutationObserver(function () {
+      if (reapplyTimer) clearTimeout(reapplyTimer);
+      reapplyTimer = setTimeout(function () {
+        try {
+          panel.apply(doc, win);
+        } catch (e) {
+          console.error("[compare-barbershop:" + panel.frameId + "] the page re-rendered and re-applying the fix failed:", e);
+        }
+      }, 200);
+    });
+    mo.observe(doc.body, { childList: true, subtree: true });
+    setTimeout(function () {
+      mo.disconnect();
+    }, HYDRATION_WATCH_MS);
+  }
+
+  function maybeStartNext() {
+    if (nextIndex >= PANELS.length) return;
+    var panel = PANELS[nextIndex];
+    if (started[panel.frameId]) return;
+    if (!isVisible[panel.frameId]) return;
+    started[panel.frameId] = true;
+    startPanel(nextIndex);
+  }
+
+  function startPanel(index) {
+    var panel = PANELS[index];
+    var frame = document.getElementById(panel.frameId);
+    var loading = document.getElementById("loading-" + panel.frameId);
+    var settled = false;
+
+    function settleOnce(ok) {
+      if (settled) return;
+      settled = true;
+      nextIndex = index + 1;
+      maybeStartNext();
+    }
+
+    if (loading) loading.textContent = "Loading the live page…";
+    setStatus(panel, "loading");
+
+    var safetyTimer = setTimeout(function () {
+      console.error("[compare-barbershop:" + panel.frameId + "] the iframe never finished loading within the poll cap");
+      revealFrame(panel);
+      if (panel.apply) {
+        setStatus(panel, "could not confirm", "failed");
+        showFailure(panel);
+      }
+      settleOnce(false);
+    }, LOAD_TIMEOUT_MS);
+
+    frame.addEventListener("load", function onLoad() {
+      frame.removeEventListener("load", onLoad);
+      clearTimeout(safetyTimer);
+      var doc, win;
+      try {
+        doc = frame.contentDocument;
+        win = frame.contentWindow;
+      } catch (e) {
+        console.error("[compare-barbershop:" + panel.frameId + "] could not read the iframe document:", e);
+        doc = null;
+      }
+      if (!doc || !win) {
+        revealFrame(panel);
+        if (panel.apply) {
+          setStatus(panel, "could not confirm", "failed");
+          showFailure(panel);
+        }
+        settleOnce(false);
+        return;
+      }
+      waitForWalkin(doc, function (ready) {
+        if (!panel.apply) {
+          // Panel 0 carries no fix, it only needs the real page to have settled before the chain moves on.
+          revealFrame(panel);
+          settleOnce(true);
+          return;
+        }
+        if (!ready) {
+          console.error("[compare-barbershop:" + panel.frameId + "] the walk-in section never populated within the poll cap");
+          revealFrame(panel);
+          setStatus(panel, "could not confirm", "failed");
+          showFailure(panel);
+          settleOnce(false);
+          return;
+        }
+        try {
+          panel.apply(doc, win);
+          revealFrame(panel);
+          setStatus(panel, "applied", "applied");
+          watchForHydration(panel, doc, win);
+          settleOnce(true);
+        } catch (e) {
+          console.error("[compare-barbershop:" + panel.frameId + "] could not apply the treatment:", e);
+          revealFrame(panel);
+          setStatus(panel, "could not confirm", "failed");
+          showFailure(panel);
+          settleOnce(false);
+        }
+      });
+    });
+
+    frame.src = frame.getAttribute("data-src");
+  }
+
+  // A backup check next to the IntersectionObserver: a fast jump (End key, scrollbar drag, a
+  // programmatic scroll straight to the bottom) can land past a panel without the browser ever
+  // reporting it as intersecting mid-scroll. This re-checks every not-yet-visible panel's real
+  // position against the viewport directly, so a panel can never be stranded "waiting" just
+  // because the page skipped over it on the way down.
+  function checkAllVisibility() {
+    var margin = 400;
+    PANELS.forEach(function (p) {
+      if (isVisible[p.frameId]) return;
+      var wrap = document.getElementById("wrap-" + p.frameId);
+      if (!wrap) return;
+      var r = wrap.getBoundingClientRect();
+      if (r.bottom >= -margin && r.top <= window.innerHeight + margin) {
+        isVisible[p.frameId] = true;
+        maybeStartNext();
+      }
+    });
+  }
+
+  function setupLazyStart() {
+    if (!window.IntersectionObserver) {
+      // No IntersectionObserver support: fall back to sequential-only, every panel counts as visible.
+      PANELS.forEach(function (p) { isVisible[p.frameId] = true; });
+      maybeStartNext();
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var frameId = entry.target.getAttribute("data-frame-id");
+        isVisible[frameId] = true;
+        io.unobserve(entry.target);
+        maybeStartNext();
+      });
+    }, { rootMargin: "400px 0px", threshold: 0.01 });
+    PANELS.forEach(function (p) {
+      var wrap = document.getElementById("wrap-" + p.frameId);
+      if (!wrap) return;
+      wrap.setAttribute("data-frame-id", p.frameId);
+      io.observe(wrap);
+    });
+    // Panel 0 sits at the very top of the page, it is on screen the moment the page loads.
+    isVisible["nowFrame"] = true;
+    maybeStartNext();
+
+    var scrollScheduled = false;
+    function scheduleCheck() {
+      if (scrollScheduled) return;
+      scrollScheduled = true;
+      window.requestAnimationFrame(function () {
+        scrollScheduled = false;
+        checkAllVisibility();
+      });
+    }
+    window.addEventListener("scroll", scheduleCheck, { passive: true });
+    window.addEventListener("resize", scheduleCheck);
+    checkAllVisibility();
+  }
+
+  setupLazyStart();
+</script>
+</body>
+</html>

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { ChevronsUpDown, Check, Search, X } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -30,6 +31,7 @@ export default function SalonSwitcher({
   fallbackName?: string;
   variant?: "bar" | "sidebar";
 }) {
+  const t = useTranslations("common");
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [salons, setSalons] = useState<SalonLite[]>([]);
@@ -135,7 +137,7 @@ export default function SalonSwitcher({
                 </span>
                 <button
                   onClick={() => setOpen(false)}
-                  aria-label="Schließen"
+                  aria-label={t("closeOverlay")}
                   className="p-1 -mr-1 text-s-ink-2 hover:text-s-ink"
                 >
                   <X size={18} strokeWidth={1.9} />

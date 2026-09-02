@@ -28,7 +28,6 @@ import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
-  ArrowLeft,
   X,
   Send,
   Lock,
@@ -42,6 +41,7 @@ import {
 } from "lucide-react";
 // ArrowRight intentionally not imported — no chevron-link affordance in this flow.
 import { cn } from "@/lib/utils";
+import { BackButton } from "@/app/[locale]/_components/primitives/BackButton";
 
 type View = "form" | "sent" | "exchanging" | "opened" | "linkInvalid";
 
@@ -269,17 +269,21 @@ function AppBar({
 }) {
   return (
     <header className="flex items-center justify-between px-4 pb-2.5 pt-[15px]">
-      <Link
-        href={`/${locale}`}
-        aria-label={closeMode ? t("close") : t("back")}
-        className="flex h-11 w-11 items-center justify-center rounded-[12px] bg-s-bg-sunken text-s-ink transition-colors duration-150 ease-snap hover:brightness-[0.97]"
-      >
-        {closeMode ? (
+      {closeMode ? (
+        <Link
+          href={`/${locale}`}
+          aria-label={t("close")}
+          className="flex h-11 w-11 items-center justify-center rounded-[12px] bg-s-bg-sunken text-s-ink transition-colors duration-150 ease-snap hover:brightness-[0.97]"
+        >
           <X size={19} strokeWidth={2.2} aria-hidden />
-        ) : (
-          <ArrowLeft size={19} strokeWidth={2.2} aria-hidden />
-        )}
-      </Link>
+        </Link>
+      ) : (
+        // mockup-ok: NAV CONTROLS lock (_design-system/LOCKFILE.md:2096-2104, owner-measured
+        // 2026-08-10): back = 44 circle, ChevronLeft never ArrowLeft, white fill, shadow only.
+        // Composes the registered BackButton (FLOORS LAW 9) in place of the hand-drawn Link
+        // this replaces; same /${locale} destination, same accessible name (t("back")).
+        <BackButton href={`/${locale}`} label={t("back")} variant="flat" />
+      )}
       <span className="flex items-center gap-[7px] font-display text-[15px] font-bold tracking-[-0.02em]">
         <span className="h-2 w-2 rounded-pill bg-s-ink" aria-hidden />
         Solen

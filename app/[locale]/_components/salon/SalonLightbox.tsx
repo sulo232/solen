@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { createPortal } from "react-dom";
+import { useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
 /**
@@ -55,6 +56,7 @@ export function SalonLightbox({
   startIndex: number;
   onClose: () => void;
 }) {
+  const t = useTranslations("common");
   const [idx, setIdx] = React.useState(startIndex);
 
   React.useEffect(() => {
@@ -114,7 +116,7 @@ export function SalonLightbox({
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={`Foto-Galerie, Bild ${idx + 1} von ${photos.length}`}
+      aria-label={t("photoGalleryLabel", { number: idx + 1, total: photos.length })}
       className="fixed inset-0 z-[80] flex flex-col bg-black/95"
     >
       {/* Header row — real layout space (not a floating overlay), so the
@@ -122,7 +124,7 @@ export function SalonLightbox({
       <div className="flex shrink-0 items-center justify-end p-4" onClick={closeOnSelf}>
         <button
           type="button"
-          aria-label="Schließen"
+          aria-label={t("closeOverlay")}
           onClick={onClose}
           className="grid h-10 w-10 place-items-center rounded-full bg-white/10 text-white backdrop-blur-md transition-[colors,transform] hover:bg-white/20 active:scale-[0.94] active:duration-[80ms] active:ease-glide"
         >
@@ -142,7 +144,7 @@ export function SalonLightbox({
         {idx > 0 && (
           <button
             type="button"
-            aria-label="Vorheriges Foto"
+            aria-label={t("previousPhoto")}
             onClick={prev}
             className="absolute left-1 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-white backdrop-blur-md transition-[colors,transform] hover:bg-white/20 active:scale-[0.94] active:duration-[80ms] active:ease-glide md:left-4 md:h-11 md:w-11"
           >
@@ -154,14 +156,14 @@ export function SalonLightbox({
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={photos[idx]}
-          alt={`Foto ${idx + 1} von ${photos.length}`}
+          alt={t("photoCountOf", { number: idx + 1, total: photos.length })}
           className="max-h-full max-w-full object-contain"
         />
 
         {idx < photos.length - 1 && (
           <button
             type="button"
-            aria-label="Nächstes Foto"
+            aria-label={t("nextPhoto")}
             onClick={next}
             className="absolute right-1 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-white backdrop-blur-md transition-[colors,transform] hover:bg-white/20 active:scale-[0.94] active:duration-[80ms] active:ease-glide md:right-4 md:h-11 md:w-11"
           >

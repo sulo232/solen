@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Profile and settings: fold seven sizes into four</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/profile/page.tsx + app/[locale]/_components/profile/AccountHub.tsx
+    (the real /de/profile route, both panels for it are live iframes of it).
+  Grounded-in: app/[locale]/profile/settings/page.tsx (the real /de/profile/settings route, both
+    panels for it are live iframes of it).
+  Grounded-in: app/[locale]/_components/layout/Header.tsx line 804 (the shared chrome page-title,
+    `deepPageTitle`, class "font-heading text-[18px] font-bold" -- this is the SAME element on
+    both routes, "Profil" on the hub, "Einstellungen" on settings).
+  Grounded-in: AccountHub.tsx line 140, the account hub's own name heading, already built at
+    "text-[28px] font-semibold" -- this is the anchor recipe this file reuses on the settings
+    panel rather than inventing a new number.
+  Grounded-in: profile/settings/page.tsx line 185 (IdentityBlock), the settings name heading,
+    built at "text-[20px] font-bold" -- a DIFFERENT size and weight from the hub's name, on the
+    same person's name, on two screens of the same feature.
+
+  Depicts:
+    Panel 1 (profile, before) -> app/[locale]/profile/page.tsx, real /de/profile route, live
+      iframe, untouched.
+    Panel 2 (profile, after) -> same real /de/profile route, live iframe, with one script
+      injected after load that resizes text elements already on the page by their CURRENT
+      computed size (not by text match, so it holds across locales). Nothing added, removed,
+      or moved.
+    Panel 3 (settings, before) -> app/[locale]/profile/settings/page.tsx, real
+      /de/profile/settings route, live iframe, untouched.
+    Panel 4 (settings, after) -> same real /de/profile/settings route, live iframe, same
+      technique, different starting sizes.
+
+  CORRECTION, read this before the Diagnosis lines below: three of the six numbers this task
+    handed me do not match what the live site measures today. I measured before writing anything,
+    live, this turn, with the URL re-confirmed in the same JS call that took the measurement
+    (guards against a stray navigation, see the Honesty note lower down):
+
+    /de/profile at 390x844, this turn, confirmed live:
+      display anchor: 28px (the task said 18px) -- this is AccountHub.tsx's own h1, already
+        built at the house 28px/600 recipe.
+      anchor ratio: 28/14 = 2.0x (the task said 1.5x) -- already clears the 1.8x floor.
+      weight share: 8 of 27 visible-text elements = 29.6% (the task said 40%) -- already under
+        the 30% ceiling, barely.
+      size spread: {10,12,13,14,16,18,28} = 7 distinct sizes, 6 of them (10/12/13/14/16/18) packed
+        into one 8px band (the task said size spread PASSES) -- this is the one that actually
+        FAILS, and the task's brief had it backwards for this route.
+      imagery: ~1.1% (the task said 0%) -- both round to "fails the 33% floor", no practical
+        difference.
+      elevation: 2 distinct box-shadow values -- matches the task's number exactly.
+
+    /de/profile/settings at 390x844, this turn, confirmed live:
+      display anchor: 20px (the task said 18px, close but not exact)
+      anchor ratio: 20/14 = 1.43x (the task said 1.5x, close)
+      weight share: 8 of 23 = 34.8% (the task said 40%, close)
+      size spread: {10,12,13,14,15,18,20} = 7 distinct, 6 packed into one 8px band (the task said
+        PASSES -- also backwards here)
+      imagery: ~1.2% (the task said 0%, same practical conclusion)
+      elevation: 2 -- matches.
+
+    So the task's own framing line, "/de/profile and /de/profile/settings measured identical on
+    all six floors", is not what this session's live measurement shows. The two routes are NOT
+    identical: the hub's own name heading was already bumped to the 28px/600 anchor recipe in an
+    earlier session (see AccountHub.tsx's own header comment, item 2, dated in that file), and the
+    settings identity block was not. What IS true on both routes, confirmed live: F2 imagery fails
+    hard, ELEV passes, and F7c size spread fails and was mis-reported as passing. This file treats
+    the two routes as genuinely different starting points that need the same idea applied
+    differently, not one fix copy-pasted twice.
+
+  Diagnosis: F7c SIZE SPREAD | measured 7 distinct sizes (10px 12px 13px 14px 16px 18px 28px) on /de/profile at 390x844, live via getComputedStyle this turn, 6 of them packed into one 8px band from 10px to 18px | violates THE LADDER size-spread ceiling (LOCKFILE emphasis budget: at most 5 distinct sizes, at most 4 inside any 8px window) | target 4 distinct sizes total, 3 inside the tightest 8px band.
+  Diagnosis: F6 DISPLAY ANCHOR | measured 20px weight 700 on /de/profile/settings (profile/settings/page.tsx line 185), live via getComputedStyle this turn, against the same person's name on AccountHub.tsx line 140 one tap away at 28px weight 600 | violates FLOORS LAW 6 (anchor >= 28px) and FLOORS LAW 8 (same entity, two sizes, two screens) | target 28px, matching the hub's own already-built recipe, not a new number.
+  Diagnosis: F7b ANCHOR RATIO | measured 1.43x on /de/profile/settings, live this turn (20px anchor over the 14px body) | violates the EMPHASIS BUDGET anchor-ratio floor of 1.8x | target 2.0x, reached once the anchor above is corrected to 28px, the same ratio /de/profile already clears today.
+
+  Exists-check: `npm run exists AccountHub` ran this turn, 5 hits: the component itself, plus
+    THREE graveyard entries, one of which is the exact tension this file is built on --
+    "the anchor role moves to the first SECTION heading rather than being dropped" (2026-07-28),
+    already the reasoning this mockup extends to the settings screen. `npm run exists
+    SettingsForm` ran this turn, 2 hits (the real component, reused, not rebuilt). `npm run
+    exists "fix-profile-and-settings--b-hierarchy"` ran this turn, 0 hits, this mockup itself
+    is new.
+
+  Treatment-only: font-size and font-weight on existing elements, set by script after each real
+    page has loaded, selected by their CURRENT computed size (a range check, not a text match),
+    so the script does not care which locale is loaded. No DOM node is added, removed, or moved.
+    No copy changes. No section moves. No photo is added (imagery is out of scope for this panel,
+    the owner has rejected a baked-in hero photo three times: "no other company has just image
+    hard coded baked into a random area"). The badge chip and note box below are this REPORT
+    page's own explanatory chrome, not part of any before/after content pane, and use a small
+    10px radius, not the 24px boxed-row-card treatment the owner rejected on this surface.
+
+  Honesty notes:
+    - This browser tab is shared with other agents building sibling variants of this same brief
+      at the same time. Two navigations away from these exact routes happened mid-measurement
+      while this file was being built (one landed on a 404, one landed on an unrelated barbershop
+      category page with 18 photos, which is NOT this screen's imagery number). Every number in
+      the Diagnosis and Correction blocks above was re-taken after re-navigating back to the
+      correct URL, with the URL echoed back inside the same JS call that produced the number, so
+      a stray navigation would show up as a visibly wrong URL string rather than silently
+      corrupting a count. It happened twice, both were caught, and this file is honest about it.
+    - F7a WEIGHT SHARE and F2 IMAGERY are not this panel's job, the same split the sibling
+      home-page hierarchy mockup used. This panel's own change (folding the chrome page title
+      into a smaller, lighter tier) moves weight share in the right direction as a side effect,
+      not because it was asked to: /de/profile goes from 29.6% to about 25.9% (7 of 27), and
+      /de/profile/settings goes from 34.8% to about 30.4% (7 of 23), which is a hair over the 30%
+      ceiling, not under it. That number is reported as-is, not rounded down to look clean.
+    - The AFTER numbers below are arithmetic on the live BEFORE histograms (each changed element's
+      old size is removed from its old bucket and added to its new one), the same reasoning the
+      sibling fix-home mockup used for its own after-number, not a second live re-render of the
+      AFTER panel, for the same reason: this tab is shared and a second render is not more
+      trustworthy than the arithmetic.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --line:#E4E4E7; --sunken:#F4F4F5;
+    --font:'Inter Tight',Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  }
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: var(--ink);
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 402px; margin: 0 auto; padding: 0 0 56px; }
+
+  .lede { padding: 28px 16px 6px; }
+  .lede h1 {
+    font-family: var(--font);
+    font-size: 24px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em;
+  }
+  .lede p { margin-top: 10px; font-size: 14px; line-height: 1.5; color: var(--ink2); }
+
+  .group { margin-top: 30px; padding: 0 16px 6px; }
+  .group h2 {
+    font-family: var(--font);
+    font-size: 15px; font-weight: 600; letter-spacing: -0.01em;
+    padding-top: 4px; border-top: 1px solid var(--line);
+  }
+
+  .panel { margin-top: 18px; }
+  .cap { padding: 0 16px 8px; }
+  .cap h3 {
+    font-family: var(--font);
+    font-size: 15px; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em;
+  }
+  .cap p { margin-top: 3px; font-size: 13px; line-height: 1.45; color: var(--ink2); }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  .frame {
+    position: relative; width: 100%; height: 700px;
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    overflow: hidden; background: #fff;
+  }
+  .frame iframe { width: 402px; height: 1400px; border: 0; display: block; }
+  .frame .badge {
+    position: absolute; top: 10px; right: 10px; z-index: 2;
+    display: flex; flex-direction: column; align-items: flex-end; gap: 2px;
+    padding: 5px 10px; border-radius: 10px;
+    background: rgba(255,255,255,0.94); border: 1px solid var(--line);
+    font-size: 11px; font-weight: 600; color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .frame .badge span:last-child { color: var(--ink2); font-weight: 500; }
+
+  .note { padding: 22px 16px 0; font-size: 13px; line-height: 1.55; color: var(--ink2); }
+  .note strong { color: var(--ink); font-weight: 600; }
+  .note + .note { padding-top: 12px; }
+  .note.warn { color: var(--ink); background: var(--sunken); margin: 22px 16px 0; padding: 14px 14px; border-radius: 10px; }
+  .note.warn strong { display: block; margin-bottom: 4px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <h1>Seven sizes down to four, on both screens</h1>
+    <p>Your profile page already has one thing sized right: your name. Settings does not, your
+       name there is smaller than it is on the page you tapped in from. And on both screens, the
+       small text underneath (badges, subtext, the little grey title at the top) is cut into too
+       many almost-the-same sizes, so nothing reads as a clean second tier. Below, each screen's
+       small text folds into fewer, cleaner steps. Nothing moves. Nothing new is added.</p>
+  </div>
+
+  <div class="group"><h2>Your profile</h2></div>
+
+  <div class="panel">
+    <div class="cap">
+      <h3>Now</h3>
+      <p>Your name is already the biggest thing on the screen. But under it, seven different
+         text sizes are doing the job three could do.</p>
+    </div>
+    <div class="frame">
+      <div class="badge nums"><span>7 sizes</span><span>6 packed together</span></div>
+      <iframe id="pBefore" src="/de/profile" scrolling="no" title="Your profile page as it is today"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h3>With the small text folded together</h3>
+      <p>Same name, same size. The badge, the subtext, and the little grey header title all step
+         into one clean secondary size instead of three near-misses.</p>
+    </div>
+    <div class="frame">
+      <div class="badge nums"><span>4 sizes</span><span>3 in the tightest cluster</span></div>
+      <iframe id="pAfter" src="/de/profile" scrolling="no" title="Your profile page with the small text folded into fewer sizes"></iframe>
+    </div>
+  </div>
+
+  <div class="group"><h2>Settings</h2></div>
+
+  <div class="panel">
+    <div class="cap">
+      <h3>Now</h3>
+      <p>The exact same name, one tap away, renders smaller here (20px) than it does on the
+         profile page (28px). And the same size-crowding problem repeats.</p>
+    </div>
+    <div class="frame">
+      <div class="badge nums"><span>name 20px</span><span>7 sizes total</span></div>
+      <iframe id="sBefore" src="/de/profile/settings" scrolling="no" title="Settings as it is today"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h3>With the name matched to your profile page</h3>
+      <p>Your name here now matches the size it already renders at one tap away, and the small
+         text folds together the same way.</p>
+    </div>
+    <div class="frame">
+      <div class="badge nums"><span>name 28px</span><span>4 sizes total</span></div>
+      <iframe id="sAfter" src="/de/profile/settings" scrolling="no" title="Settings with the name matched to the profile page and small text folded together"></iframe>
+    </div>
+  </div>
+
+  <div class="note warn">
+    <strong>What actually changed.</strong>
+    Two things, both just size and weight on text that is already on the page. First: on both
+    screens, the small badge number, the grey subtext under each row, and the little header
+    title at the very top all step to one matching secondary size, instead of splitting across
+    three sizes that were 1-2px apart and impossible to tell apart on a phone. Second: on the
+    settings screen only, your name grows from 20px to 28px, the exact size it already renders
+    at on the profile page you tapped in from.
+  </div>
+
+  <div class="note">
+    <strong>What this fixes.</strong> Your profile page's name was already a real 28px anchor at
+    a 2.0x ratio over the 14px body, both already clearing the 28px / 1.8x floors. What it was
+    missing was everywhere else: seven distinct sizes on screen, six of them crammed into one
+    8px band. After the fold: four sizes total (12, 14, 15.5, 28), and the tightest cluster now
+    holds three. Settings had the harder problem, its own name never got the anchor treatment at
+    all: 20px is <span class="nums">1.43x</span> the 14px body, under the
+    <span class="nums">1.8x</span> floor. Matching it to the profile page's own 28px recipe gets
+    it to <span class="nums">2.0x</span>, the same ratio, for free, plus the same size-fold as
+    the profile page.
+  </div>
+  <div class="note">
+    <strong>What this does not fix.</strong> Neither screen gets a photo from this panel: both
+    measure at roughly 1% photographic area against the 33% floor, and the fix for that is more
+    real content higher up, not a type-scale change, a different variant of this same brief is
+    built for exactly that. Weight share moves in the right direction as a side effect (folding
+    the header title into a lighter weight) but is not fully solved: profile lands around
+    <span class="nums">25.9%</span> of visible text at weight 600+, comfortably under the 30%
+    ceiling; settings lands around <span class="nums">30.4%</span>, just over it. A third variant
+    of this brief is built specifically for weight.
+  </div>
+  <div class="note">
+    <strong>One number this brief handed me was backwards.</strong> I was told size-spread
+    already passed on both screens and only the anchor needed work. Measured live before touching
+    anything: it is the reverse on your profile page, where the anchor already passes and size-
+    spread is what actually fails. Settings needed both. The full numbers, before and after
+    correction, are in this file's own header comment.
+  </div>
+
+</div>
+
+<script>
+  // Same technique as the sibling home-page hierarchy mockup: the AFTER panel loads the SAME
+  // real route as the BEFORE panel, and after it finishes loading, one script resizes text
+  // elements that are already there. Selection is by the element's CURRENT computed font-size,
+  // not by matching copy, so this holds regardless of which locale the tab happens to render.
+
+  function leafTextEls(doc) {
+    var all = doc.querySelectorAll("body *");
+    var out = [];
+    for (var i = 0; i < all.length; i++) {
+      var el = all[i];
+      if (el.children.length > 0) continue; // only elements carrying their own text directly
+      var text = (el.textContent || "").trim();
+      if (!text) continue;
+      var r = el.getBoundingClientRect();
+      if (r.width <= 0 || r.height <= 0) continue;
+      out.push(el);
+    }
+    return out;
+  }
+
+  // Profile hub: fold the 10px badge, the 13px sublines/stat-digits, and the 18px chrome title
+  // into the existing 12px and 15.5px tiers already on the page (AccountHub.tsx's own eyebrow
+  // and row-label sizes). The 28px name (AccountHub.tsx line 140) and the 14px link are already
+  // right and are left untouched.
+  function foldProfile(doc) {
+    leafTextEls(doc).forEach(function (el) {
+      var size = parseFloat(getComputedStyle(el).fontSize);
+      if (size >= 17 && size <= 19) {
+        // the shared chrome page title (Header.tsx deepPageTitle, 18px/700): folds into the
+        // row-label tier, lighter, so it stops competing with the real anchor below it.
+        el.style.fontSize = "15.5px";
+        el.style.fontWeight = "500";
+      } else if (size >= 9 && size <= 11) {
+        // the notification badge digit (~10px): folds into the 12px eyebrow/meta tier.
+        el.style.fontSize = "12px";
+      } else if (size >= 12.5 && size <= 13.5) {
+        // row sublines + the stamp-count digits (13px): folds into the same 12px tier.
+        el.style.fontSize = "12px";
+      }
+    });
+  }
+
+  // Settings: same fold as the profile hub, PLUS the name heading itself (currently 20px/700,
+  // profile/settings/page.tsx's own IdentityBlock) grows to match the hub's real 28px/600 anchor
+  // recipe exactly, not a new number.
+  function foldSettings(doc) {
+    leafTextEls(doc).forEach(function (el) {
+      var size = parseFloat(getComputedStyle(el).fontSize);
+      if (size >= 19 && size <= 21) {
+        // the identity-block name (~20px/700): becomes the screen's anchor, matched to the
+        // account hub's own recipe (AccountHub.tsx line 140: 28px, weight 600, not 700).
+        el.style.fontSize = "28px";
+        el.style.fontWeight = "600";
+        el.style.letterSpacing = "-0.02em";
+      } else if (size >= 17 && size <= 19) {
+        el.style.fontSize = "15px";
+        el.style.fontWeight = "500";
+      } else if (size >= 9 && size <= 11) {
+        el.style.fontSize = "12px";
+      } else if (size >= 12.5 && size <= 13.5) {
+        el.style.fontSize = "12px";
+      }
+    });
+  }
+
+  function wire(iframeId, applyFn) {
+    var frame = document.getElementById(iframeId);
+    frame.addEventListener("load", function () {
+      try {
+        var doc = frame.contentDocument;
+        if (!doc) return;
+        applyFn(doc);
+        // A couple of client-mounted pieces on these pages (the notification badge count,
+        // the favorites/stamps counts) can settle a moment after first paint; one more pass
+        // catches anything that mounts late without needing a persistent observer.
+        setTimeout(function () { applyFn(doc); }, 500);
+      } catch (err) {
+        console.error("[fix-profile-and-settings--b-hierarchy] could not restyle " + iframeId + ":", err);
+      }
+    });
+  }
+
+  wire("pAfter", foldProfile);
+  wire("sAfter", foldSettings);
+</script>
+</body>
+</html>

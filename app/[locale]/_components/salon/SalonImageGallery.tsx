@@ -2,12 +2,12 @@
 
 import * as React from "react";
 import { createPortal } from "react-dom";
-import { ArrowLeft } from "lucide-react";
 import { useLocale } from "next-intl";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import { SalonLightbox } from "./SalonLightbox";
 import type { StaffMember } from "./_shared";
 import { cn } from "@/lib/utils";
+import { BackButton } from "../primitives";
 import { getPortfolioCategoriesForSalon, getPortfolioCategoryLabel, PORTFOLIO_CATEGORY_ALL_LABEL, type PortfolioLocale } from "@/lib/portfolio-categories";
 import ReportButton from "@/components-legacy/discovery/ReportButton";
 import { useTranslations } from "next-intl";
@@ -127,6 +127,22 @@ export function SalonImageGallery({
     };
   }, [open]);
 
+  // accessibility-06 (2026-07-27): url -> category lookup so the grid's alt text can name
+  // WHAT the photo shows (its portfolio category) instead of just a bare index. Real
+  // metadata already fetched into `salonPhotos`, just never threaded through to alt=.
+  const categoryByUrl = React.useMemo(() => {
+    const m = new Map<string, string | null>();
+    for (const p of salonPhotos) m.set(p.url, p.category);
+    return m;
+  }, [salonPhotos]);
+
+  // Same shape as categoryByUrl above: the grid renders urls, but a report must name the row.
+  const idByUrl = React.useMemo(() => {
+    const m = new Map<string, string>();
+    for (const p of salonPhotos) m.set(p.url, p.id);
+    return m;
+  }, [salonPhotos]);
+
   if (!open) return null;
 
   const stylistsWithPhotos = staff.filter((s) => (portfolios[s.id]?.length ?? 0) > 0);
@@ -159,36 +175,23 @@ export function SalonImageGallery({
   // exact content 1.1.1 does not let a gallery mark decorative).
   const activeStylistName = staff.find((s) => s.id === activeStylist)?.name ?? null;
 
-  // accessibility-06 (2026-07-27): url -> category lookup so the grid's alt text can name
-  // WHAT the photo shows (its portfolio category) instead of just a bare index. Real
-  // metadata already fetched into `salonPhotos`, just never threaded through to alt=.
-  const categoryByUrl = React.useMemo(() => {
-    const m = new Map<string, string | null>();
-    for (const p of salonPhotos) m.set(p.url, p.category);
-    return m;
-  }, [salonPhotos]);
-
-  // Same shape as categoryByUrl above: the grid renders urls, but a report must name the row.
-  const idByUrl = React.useMemo(() => {
-    const m = new Map<string, string>();
-    for (const p of salonPhotos) m.set(p.url, p.id);
-    return m;
-  }, [salonPhotos]);
-
   const openLb = (photos: string[], i: number) => setLb({ open: true, photos, index: i });
 
   return createPortal(
     <div className="fixed inset-0 z-[70] flex flex-col bg-white">
       {/* Header */}
       <div className="flex items-center gap-3 border-b border-s-border px-4 py-3">
-        <button
-          type="button"
-          aria-label={tBack("back")}
+        {/* mockup-ok: restores the NAV CONTROLS lock (_design-system/LOCKFILE.md#L2096,
+            owner-measured 2026-08-10). This was the exact bare-glyph regression the lock names
+            verbatim ("no fill, no border and no shadow"); composing BackButton variant="flat"
+            here restores the locked white+shadow circle, matching the same fix already applied
+            at SalonStickyTabNav.tsx, not a new choice. */}
+        <BackButton
+          variant="flat"
+          label={tBack("back")}
           onClick={onClose}
-          className="-ml-1 grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink transition-transform active:scale-95 active:duration-[80ms] active:ease-glide"
-        >
-          <ArrowLeft size={20} strokeWidth={2.2} aria-hidden />
-        </button>
+          className="-ml-1 shrink-0"
+        />
         <div className="min-w-0">
           <div className="font-display text-[16px] font-semibold leading-tight tracking-[-0.01em] text-s-ink">
             Galerie

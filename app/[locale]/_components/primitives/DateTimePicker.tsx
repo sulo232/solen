@@ -17,7 +17,7 @@ import {
 } from "react-aria-components";
 import { today, getLocalTimeZone, parseTime, type CalendarDate } from "@internationalized/date";
 import { ChevronLeft, ChevronRight, Calendar as CalIcon } from "lucide-react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { Sheet, SheetHeader, SheetBody } from "./Sheet";
 
@@ -365,6 +365,7 @@ function SolenCalendar({ value, onChange, minValue, maxValue, isDateUnavailable,
   // Swiss Monday-first week regardless of locale region. Without the I18nProvider
   // react-aria defaults to en-US ("S M T W T F S", Sunday-first) — wrong for CH.
   const locale = useLocale();
+  const t = useTranslations("common");
   return (
     <I18nProvider locale={locale}>
     <AriaCalendar
@@ -387,7 +388,7 @@ function SolenCalendar({ value, onChange, minValue, maxValue, isDateUnavailable,
         <div className="flex gap-1">
           <Button
             slot="previous"
-            aria-label="Voriger Monat"
+            aria-label={t("previousMonthAria")}
             className={cn(
               "flex items-center justify-center w-9 h-9",
               "bg-transparent border-0 text-s-ink-2 cursor-pointer",
@@ -506,6 +507,7 @@ interface TimeSlotListProps {
 }
 
 function TimeSlotList({ slots, value, onChange, isLoading, isDateSelected, labels, emptySlotContent, selectedTone = "ink" }: TimeSlotListProps) {
+  const t = useTranslations("common");
   // Group slots by period
   const groups = React.useMemo(() => groupByPeriod(slots ?? [], labels), [slots, labels]);
 
@@ -569,7 +571,7 @@ function TimeSlotList({ slots, value, onChange, isLoading, isDateSelected, label
                 type="button"
                 role="option"
                 aria-selected={value === slot.time}
-                aria-label={`${slot.time} Uhr ${slot.available ? "verfügbar" : "nicht verfügbar"}`}
+                aria-label={t("slotTimeAria", { time: slot.time, status: slot.available ? t("available") : t("unavailable") })}
                 disabled={!slot.available}
                 onClick={() => onChange(slot.time)}
                 className={cn(
@@ -688,6 +690,7 @@ export function DateTimePickerRange({
   className,
 }: DateTimePickerRangeProps) {
   const locale = useLocale();
+  const t = useTranslations("common");
   const tz = getLocalTimeZone();
   const minDateResolved = minDate ?? today(tz);
   const L = React.useMemo(() => ({ ...DEFAULT_RANGE_LABELS, ...labels }), [labels]);
@@ -721,7 +724,7 @@ export function DateTimePickerRange({
           {({ state }) => (
             <>
               <header className="flex items-center justify-between mb-3 px-1">
-                <Button slot="previous" aria-label="Voriger Monat" className={RANGE_NAV_BTN}>
+                <Button slot="previous" aria-label={t("previousMonthAria")} className={RANGE_NAV_BTN}>
                   <ChevronLeft className="w-[18px] h-[18px]" strokeWidth={2.5} />
                 </Button>
                 <Button slot="next" aria-label="Nächster Monat" className={RANGE_NAV_BTN}>

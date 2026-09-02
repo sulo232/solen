@@ -3,6 +3,7 @@
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { ArrowRight, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { AnimatePresence, motion, type PanInfo } from "motion/react";
 import {
@@ -75,6 +76,7 @@ function CarouselInner({
   autoplay,
   className,
 }: AnimatedTestimonialsProps) {
+  const t = useTranslations("home.featured");
   const { isOpen } = useMorphingDialog();
   const [active, setActive] = React.useState(0);
 
@@ -169,7 +171,7 @@ function CarouselInner({
                       {/* V3-D101 (2026-05-22): stock photo restored per user. */}
                       <Image
                         src={testimonial.src}
-                        alt={`Portrait von ${testimonial.name}`}
+                        alt={t("portraitOf", { name: testimonial.name })}
                         fill
                         draggable={false}
                         sizes="(max-width: 768px) 100vw, 50vw"
@@ -277,6 +279,8 @@ function CarouselInner({
  * the body content is a scrollable child div.
  */
 function ArtistProfileDialog({ testimonial }: { testimonial: Testimonial }) {
+  const t = useTranslations("home.featured");
+  const tCommon = useTranslations("common");
   const { setIsOpen } = useMorphingDialog();
   const firstName = testimonial.name.split(" ")[0];
 
@@ -291,7 +295,7 @@ function ArtistProfileDialog({ testimonial }: { testimonial: Testimonial }) {
         <button
           type="button"
           onClick={() => setIsOpen(false)}
-          aria-label="Schliessen"
+          aria-label={tCommon("close")}
           className="absolute right-4 top-4 z-30 grid h-10 w-10 place-items-center rounded-full bg-black/30 text-white backdrop-blur-md transition-colors hover:bg-black/45 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
         >
           <X size={18} strokeWidth={1.9} aria-hidden />
@@ -303,7 +307,7 @@ function ArtistProfileDialog({ testimonial }: { testimonial: Testimonial }) {
           <div className="relative h-[55vh] max-h-[460px] w-full overflow-hidden">
             <Image
               src={testimonial.src}
-              alt={`Portrait von ${testimonial.name}`}
+              alt={t("portraitOf", { name: testimonial.name })}
               fill
               sizes="560px"
               className="object-cover object-center"

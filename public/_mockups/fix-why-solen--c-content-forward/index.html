@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Why Solen: real salons pulled up</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+  Scale is declared full-page: every iframe in this file is a live 844px-tall render of a real,
+  full route (the real global header, the real route content, everything a visitor would scroll
+  through), never a fragment. What is DISPLAYED is cropped with a fixed-height overflow:hidden
+  container so this file can focus on the exact 844px window the imagery floor grades, but the
+  underlying document in every iframe is the whole real page, continuing past what is visible,
+  loaded live from the dev server, not a component-scale probe.
+
+  Frame width is 390, not the 402 mockup constant, for the same reason the sibling file at
+  public/_mockups/floor-fix-why-solen/index.html gives: every number here, and every number I
+  was handed, was produced by check-geometry.mjs at a fixed 390x844, and I re-measured live
+  against the running dev server at that same size before writing this file. The outer page
+  shell stays close to the 402 constant (max-width 402 below) so this still reads as a phone
+  mockup; only the measurement iframes are pinned to 390 so every badge below is reproducible.
+
+  Grounded-in: app/[locale]/warum-solen/page.tsx (the real route, both panels load it live)
+  Grounded-in: app/[locale]/[city]/[category]/page.tsx (the real Coiffeur-Basel results route,
+    used unmodified as the source of the real salon cards stitched into panel 2)
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx (the real card rendered on that
+    results route, read for grounding only, never edited)
+
+  Depicts:
+    Panel 1 (top) -> /de/warum-solen, live iframe, completely untouched. This is what a visitor
+      sees today: the global header, the full hero, then the mock-chat explainer section
+      starting to show. No photograph anywhere in it.
+    Panel 2 (bottom) -> two real, live iframes stacked to fill the same 844px window.
+      Top strip: /de/warum-solen again, same live iframe, with its hero's own vertical padding
+        tightened by one injected stylesheet rule after load. Headline, subtitle and button are
+        the same real copy, same real sizes, just less empty space above and below them.
+      Bottom strip: /de/basel/coiffeur, a second live iframe of a real, already-shipped results
+        route, scrolled past its own header and search bar so what shows is the part a customer
+        already sees on that page today: the "Top Coiffeur" heading and two real rows of real
+        salon cards, real photos, real names, real ratings, real prices. Nothing drawn, nothing
+        invented, no src written by me anywhere in this file. The real cards keep their own
+        shipped chrome exactly as is, this file never touches a card's border or shadow.
+
+  Mechanism, and how it differs from the other three arms being built on this same screen right
+    now: this is the "push real content up and make it bigger" lever specifically, not a type-
+    scale fix and not a full recompose. /de/warum-solen has zero real salon content anywhere on
+    it today, confirmed by reading page.tsx end to end: MockChat, MockCompare and MockMap are
+    all hand-drawn CSS shapes with icons, no <img>, no photo, not even below the fold. So the
+    only legal way to satisfy F2 on this page is exactly what the sibling smallest-CSS file
+    already named as "Option B" and left undecided: pull a REAL card grid in from a route that
+    already has one. This file is that option, actually built and actually measured, not just
+    sketched as a choice. The lever has two parts, both real: (1) higher, the hero's own padding
+    is cut so the real content starts sooner; (2) bigger, two full rows of the real SalonCard,
+    at its real 231x249px size, replace what used to be zero photographic area in that same
+    vertical budget.
+
+  Diagnosis: F2 IMAGERY | measured 0% | violates FLOORS LAW 2, imagery >= 33% | target 33%
+  Measured live today at 390x844: no <img> tag and no background-image url() anywhere in the
+  document (confirmed by reading page.tsx: MockChat/MockCompare/MockMap are all divs, borders,
+  and Lucide icons). This matches the number I was handed exactly.
+
+  Diagnosis: F2 IMAGERY, after | measured 41.1% | was 0%, now clears FLOORS LAW 2 | target 33%
+  Computed from live getBoundingClientRect reads, not estimated. Header is untouched at 84px
+  (global Header, off-limits, unchanged in both panels). The hero, live-measured after injecting
+  the two padding rules below, drops from 321px to 175px (both numbers read via
+  getBoundingClientRect on the real <section>, not assumed from the Tailwind class names). That
+  leaves 844 - 84 - 175 = 585px for the card zone. The real Coiffeur-Basel page, measured at the
+  same 390px width: row 1 of SalonCard is 249px tall, its photo the top 185px of that (5:4,
+  231x185, the same ratio and the same "/1.5" width formula named in
+  public/_mockups/fix-home--c-content-forward/index.html); at 390px only one full card (231px)
+  plus a 135px-wide peek of the second card is inside the viewport, since the row is the shared
+  horizontal ScrollRow, not a fixed grid. Stacked in the 585px budget: 22px heading + 23px gap +
+  249px row 1 + 33px gap + 22px heading + 23px gap + 213px of row 2 (its top 213px, which is more
+  than its 185px photo band, so row 2's whole photo is included too) = 585px exactly.
+    row 1 photo area: 185 x (231 + 135) = 67,710px^2
+    row 2 photo area: same card widths, full photo band included = 67,710px^2
+    total photo area: 135,420px^2
+    viewport area at 390x844: 329,160px^2
+    135,420 / 329,160 = 41.14%
+  That clears the 33% floor with room, using two rows already live on the product today.
+
+  Not addressed by this panel, out of this arm's scope: F6 display anchor stays at 27.3px
+  (re-verified live, unchanged, this file does not touch text size, that is the sibling file's
+  job). F7a weight share, F7b anchor ratio, F7c size spread: untouched, same reasoning.
+  ELEVATION: not reverified. I confirmed live that the real SalonCard's inner wrapper carries one
+  shadow value (rgba(50,47,44,0.09) 0px 2px 8px), the card's own shipped whisper shadow, kept
+  exactly as-is, not touched or removed. The tightened hero and its button do not carry a shadow
+  value of their own, matching how they already render in production today, and the global
+  header is likewise the same as on the real page, none of that changed by this file. I could not
+  confirm a second, DISTINCT shadow value survives inside this specific cropped arrangement, so I
+  am not claiming the elevation floor still passes here, only naming what I checked and what I
+  did not.
+
+  Exists-check: `npm run exists warum-solen` run this turn, 21 hits (the route itself, 19 inline
+    section names, the WarumSolenPage symbol). Per protocol that means reuse, which is what both
+    panels do, the real route loaded live, nothing rebuilt. `npm run exists SalonCard` also run
+    this turn: the live component at app/[locale]/_components/homepage/SalonCard.tsx plus 9
+    graveyard entries for retired variants, none touched. Nothing in this file is a new route,
+    component, or migration.
+
+  Treatment-only, panel 2 top strip (the hero): exactly 2 injected CSS rules, applied to the real
+    <section> after the iframe loads, verified live with getBoundingClientRect afterward:
+      padding-top: 20px !important; padding-bottom: 16px !important (was 80px/80px, the mobile
+        value of the shipped py-20 class)
+      the subtitle's margin-top and the button's margin-top tightened by the same stylesheet,
+        4pt-scale values only (10px, 16px), no size, weight, copy, icon or color touched.
+    Panel 2 bottom strip (the cards): zero CSS or JS written into that document itself. I tried
+    scrolling it in-document first, the same technique public/_mockups/floor-fix-why-solen/
+    index.html uses for its own Option B panel, and confirmed live that this specific route does
+    not respond to any scrollTo call (measured: window.scrollY stays 0 no matter what, no
+    scrollable descendant exists on this route either). So the crop is done one level up
+    instead, entirely outside that document: the iframe carries a -171px margin-top inside a
+    585px, overflow:hidden strip in THIS file's own CSS, which reveals the same 171-756 range of
+    the real document (the "Top Coiffeur" heading through two real card rows) without depending
+    on that route's own scroll behavior. Nothing about which salons render, their order, their
+    names, their photos, or their own shipped card chrome is touched.
+
+  Honesty notes:
+    - This reopens the hero's own vertical rhythm. I did not find a dated owner lock on this
+      section's specific py-20/sm:py-32 padding (unlike SalonCard's width formula, which does
+      carry one, named in the fix-home sibling), but cutting 80px of breathing room on both sides
+      down to 20px/16px is still a real taste call, not a free win, and should be shown as one.
+    - The salons shown are Coiffeur Basel results, because that is the only populated category
+      route I could pull real cards from without inventing a new query. A real implementation of
+      this idea on a generic, no-city-no-category page like Why Solen would need its own decision
+      about which salons to show there (nearest to the visitor, city-wide trending, something
+      else), and that decision is not made anywhere in this file.
+    - This mockup finishes what the smallest-CSS sibling file only sketched: its own panel 3
+      showed this exact idea as "Option B: pull real salons in under the headline" and explicitly
+      declined to build or measure it ("I can't fix this with a style change, it needs a call
+      from you"). This file is that option, built and measured, so the owner is now looking at a
+      real number instead of a proposal.
+    - Pulling two full rows down means the mock-chat explainer section, the actual first thing
+      this page currently uses to explain the product, is pushed further down and out of the
+      fold entirely in panel 2. That is a real content trade, proof-of-inventory versus
+      explaining the feature, not a side effect I can style away.
+
+  Every label in this file is English. The frames render the product's own German through its
+  own translations and are exempt. Single light theme, no dark mode.
+-->
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 402px; margin: 0 auto; padding: 0 0 64px; }
+
+  .lede { padding: 28px 16px 6px; }
+  .lede h1 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 24px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em;
+  }
+  .lede p { margin-top: 10px; font-size: 14px; line-height: 1.5; color: #6B6B6B; }
+
+  .panel { margin-top: 28px; }
+  .cap { padding: 0 16px 8px; }
+  .cap h2 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 17px; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em;
+  }
+  .cap p { margin-top: 3px; font-size: 13px; line-height: 1.45; color: #6B6B6B; }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  .device { width: 390px; max-width: 100%; margin: 0 auto; border: 1px solid #E4E4E7; border-radius: 16px; overflow: hidden; background: #fff; position: relative; }
+  .device .badges { position: absolute; top: 10px; left: 10px; right: 10px; z-index: 2;
+    display: flex; flex-wrap: wrap; gap: 6px; }
+  .badge {
+    padding: 5px 9px; border-radius: 40px;
+    background: rgba(255,255,255,0.94); border: 1px solid #E4E4E7;
+    font-size: 11px; font-weight: 600; color: #0A0A0A;
+    font-variant-numeric: tabular-nums;
+  }
+  .badge.fail { color: #DC2626; border-color: rgba(220,38,38,0.35); }
+  .badge.pass { color: #16A34A; border-color: rgba(22,163,74,0.35); }
+
+  .frame { width: 390px; height: 844px; overflow: hidden; }
+  .frame iframe { width: 390px; height: 844px; border: 0; display: block; }
+
+  .stack .strip { width: 390px; overflow: hidden; }
+  .stack .strip iframe { width: 390px; border: 0; display: block; }
+  .strip.top { height: 259px; }
+  .strip.top iframe { height: 844px; }
+  .strip.bottom { height: 585px; }
+  .strip.bottom iframe { height: 844px; margin-top: -171px; }
+  .seam { text-align: center; font-size: 10px; color: #9CA3AF; padding: 3px 0;
+    background: #FAFAFA; border-top: 1px dashed #E4E4E7; border-bottom: 1px dashed #E4E4E7; }
+
+  .stat { margin: 16px; padding-top: 12px; border-top: 1px solid #E4E4E7; display: flex; gap: 14px; }
+  .stat div { flex: 1; }
+  .stat .n { font-size: 17px; font-weight: 600; color: #0A0A0A; font-variant-numeric: tabular-nums; }
+  .stat .l { font-size: 11px; color: #6B6B6B; margin-top: 2px; line-height: 1.3; }
+
+  .note { padding: 16px 16px 0; font-size: 13px; line-height: 1.55; color: #6B6B6B; max-width: 402px; margin: 0 auto; }
+  .note strong { color: #0A0A0A; font-weight: 600; }
+  .note + .note { padding-top: 14px; }
+  .foot { padding: 20px 16px 0; font-size: 11px; color: #9CA3AF; line-height: 1.5;
+    border-top: 1px solid #E4E4E7; margin: 16px; max-width: 402px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <h1>Making real salons the first thing you see</h1>
+    <p>Two versions below. Same real Why Solen page in both, loaded live from your site.
+       The second one pulls real salon cards up under the headline, the same cards your
+       Coiffeur Basel page already shows today.</p>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>1. Now</h2>
+      <p>What's live today. Nothing touched.</p>
+    </div>
+    <div class="device">
+      <div class="badges">
+        <span class="badge fail nums">0% real photo</span>
+      </div>
+      <div class="frame">
+        <iframe id="before" src="/de/warum-solen" scrolling="no" title="Why Solen as it is today"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>2. Real salons pulled up, hero tightened</h2>
+      <p>Same real headline. Real cards from your Coiffeur Basel page underneath.</p>
+    </div>
+    <div class="device">
+      <div class="badges">
+        <span class="badge pass nums" id="afterStatus">41.1% real photo, passes</span>
+      </div>
+      <div class="stack">
+        <div class="strip top">
+          <iframe id="heroFrame" src="/de/warum-solen" scrolling="no" title="Why Solen page, tightened header block"></iframe>
+        </div>
+        <div class="seam">your real card grid continues below, same document</div>
+        <div class="strip bottom">
+          <iframe id="cardsFrame" src="/de/basel/coiffeur" scrolling="no" title="Real salon cards, pulled from your live Coiffeur Basel page"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stat">
+    <div><div class="n">0% &rarr; 41.1%</div><div class="l">real photo area, first 844px</div></div>
+    <div><div class="n">321 &rarr; 175px</div><div class="l">top text block height, measured live</div></div>
+    <div><div class="n">2 rows</div><div class="l">of your real Coiffeur Basel cards now visible</div></div>
+  </div>
+
+  <div class="note">
+    <strong>What actually changed.</strong> The headline, the line under it, and the button are
+    the exact same copy at the exact same size, just with less empty space above and below them.
+    Under that, instead of an empty stretch that used to lead into a mock chat demo, sit two rows
+    of the real salon cards your Coiffeur Basel page already renders today: real names, real star
+    ratings, real prices, real photos, each card keeping its own shipped shadow and shape exactly
+    as it ships. Nothing here is a stock image or a placeholder. I measured every number above off
+    the live pages after making the change, not estimated from the code.
+  </div>
+  <div class="note">
+    <strong>What this costs, and needs your call.</strong> Tightening the top text block this much
+    is a real rhythm change, not a locked value I'm just restoring. And the salons shown are
+    Coiffeur Basel results because that's the only populated route I could pull real cards from
+    without building something new. A real version of this would still need you to decide which
+    salons show on a page that has no city or category of its own, nearest to the visitor,
+    city-wide trending, or something else. I also can't confirm this arrangement keeps the page's
+    second shadow value inside the visible area, so I'm not claiming the elevation floor still
+    passes here, only the photo one.
+  </div>
+
+  <div class="foot">Both device panels are the same real routes running on your dev server, not a
+    redraw. Every measurement above (top text block height, card size, photo area, the 41.1%
+    figure) was read live with getBoundingClientRect at 390x844, then recomputed by hand from
+    those numbers, not estimated from the source code.</div>
+
+</div>
+
+<script>
+  // Panel 2 top strip: the same real /de/warum-solen document as panel 1, with the hero's own
+  // vertical padding tightened after load. Everything else in that document is untouched.
+  var heroFrame = document.getElementById("heroFrame");
+  heroFrame.addEventListener("load", function () {
+    try {
+      var doc = heroFrame.contentDocument;
+      if (!doc) { return; }
+      var h1 = doc.querySelector("h1");
+      var section = h1 ? h1.closest("section") : null;
+      if (!section) { return; }
+      var style = doc.createElement("style");
+      style.textContent =
+        "section.herotight-target{padding-top:20px !important;padding-bottom:16px !important}" +
+        "section.herotight-target p{margin-top:10px !important}" +
+        "section.herotight-target button{margin-top:16px !important}";
+      doc.head.appendChild(style);
+      section.classList.add("herotight-target");
+    } catch (err) {
+      console.error("[fix-why-solen--c-content-forward] could not tighten the top text block:", err);
+    }
+  });
+
+  // Panel 2 bottom strip: the real Coiffeur Basel results page, cropped so what's visible
+  // starts at the "Top Coiffeur" heading (measured live at y=171 in that page's own document)
+  // instead of its own header and search bar. I first tried the win.scrollTo technique
+  // public/_mockups/floor-fix-why-solen/index.html uses for its own Option B panel, and
+  // confirmed live it does not move anything on THIS route: html.scrollHeight (2311) exceeds
+  // clientHeight (844), no scrollable descendant exists either, and window.scrollY stayed 0
+  // after every scrollTo call I tried, on load and by hand. Rather than ship an unverified
+  // scroll call, the crop below is done with a CSS offset instead (the iframe itself shifted
+  // up by 171px inside its fixed-height, overflow:hidden strip), which reveals exactly the
+  // same 171-756 document range without depending on how that route's own scroll behaves.
+  // The scrollTo attempts stay below as a harmless no-op in case a future build of that route
+  // scrolls normally; the real crop is the CSS margin-top on .strip.bottom iframe above.
+  var cardsFrame = document.getElementById("cardsFrame");
+  cardsFrame.addEventListener("load", function () {
+    try {
+      var win = cardsFrame.contentWindow;
+      var doc = cardsFrame.contentDocument;
+      if (!win || !doc) { return; }
+      win.scrollTo(0, 171);
+      if (doc.body) { doc.body.scrollTop = 171; }
+      if (doc.documentElement) { doc.documentElement.scrollTop = 171; }
+    } catch (err) {
+      console.error("[fix-why-solen--c-content-forward] could not scroll the cards panel:", err);
+    }
+  });
+</script>
+</body>
+</html>

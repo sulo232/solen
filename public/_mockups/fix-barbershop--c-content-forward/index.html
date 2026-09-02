@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+<title>Barbershop page: bigger real cards, higher up</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/barbershop/page.tsx (the real route, both panels are live iframes of it).
+  Grounded-in: app/[locale]/_components/search/SearchTemplate.tsx (what the route renders on mobile).
+  Grounded-in: app/[locale]/_components/search/CategoryMobileRails.tsx (composes the three real rails
+    + the barbershop-only WalkInBand between the first two, lines 221-250).
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx line 404 (the real card's own width
+    formula, "/dev/card-ratio V2 approved, owner 2026-07-03, R4-2") and line 426 (the 5/4 photo box).
+  Grounded-in: app/[locale]/_components/layout/CategoryPillRow.tsx line 191-192 (the category pill
+    row's own tablist, padding 20px top/bottom, confirmed live via getComputedStyle).
+  Grounded-in: public/_mockups/fix-home--c-content-forward/index.html (the SAME lever, already
+    proposed for the home page; this file applies it to a different route and reports what actually
+    happens here, which is not the same result).
+  Grounded-in: public/_mockups/floor-fix-barbershop/index.html (the sibling mockup on this exact
+    page; read in full before writing this one, see "How this differs" below).
+
+  Depicts:
+    Panel 1 (top) -> app/[locale]/barbershop/page.tsx, the real /de/barbershop route, live iframe,
+      completely untouched.
+    Panel 2 (bottom) -> the same real /de/barbershop route, same live iframe, with two CSS rules
+      injected once the frame finishes loading AND its data has arrived:
+        1. the category-pill row's own top/bottom padding goes from the shipped 20px each side to
+           12px each side (measured live: was 20/20, this is the identical number the home-page
+           sibling mockup already proposed for the same shared row).
+        2. the FIRST row of real salon cards on the page (section "Top Barber", built from
+           CategoryMobileRails' own SalonCard, the exact same card the homepage uses) gets wider:
+           from the shipped calc((100vw-44px)/1.5) to calc((100vw-44px)/1.25). Nothing about which
+           salons show, their names, their photos, their order, or the Walk-in row beneath them
+           changes. Only the first row's card size, and the padding above it.
+
+  Mechanism, and why it is NOT a restyle of the sibling mockup at
+    public/_mockups/floor-fix-barbershop/: that file adds a photo the Walk-in row is already
+    missing, copying a thumbnail that already exists elsewhere on the same page into a row that
+    currently has zero photographic pixels. It does not touch the top rail at all. This file does
+    the opposite: it leaves the Walk-in row completely alone (no thumbnail, no resize, nothing) and
+    instead grows and raises the ONE row on this page that already has real photography, exactly the
+    "push real content up, make it bigger" lever named in the brief, which is also the exact lever
+    already shown for the home page. Two different rows, two different fixes, both real, neither
+    invents a photo.
+
+  Diagnosis: F2 IMAGERY | measured 21.59% before, 25.69% after (live DOM read at 390x844, same
+    method as check-geometry.mjs's FLOORS section, re-run against this file's own after-iframe) |
+    violates FLOORS LAW 2, the 33% imagery floor | target 33%.
+  Diagnosis: F6 DISPLAY ANCHOR | measured 20px, unchanged by this lever | violates LOCKFILE floor 6,
+    the 28px display anchor floor | target 28px.
+  Diagnosis: F7b ANCHOR RATIO | measured 1.67x, unchanged by this lever | violates EMPHASIS BUDGET
+    7b, the 1.8x ratio floor | target 1.8x.
+  Diagnosis: F7a WEIGHT SHARE | measured 45.24% before, 46.34% after (got slightly WORSE, see the
+    honesty note below for why) | violates EMPHASIS BUDGET 7a, the 30% weight-600 ceiling | target
+    30%.
+  Diagnosis: F7c SIZE SPREAD | measured 5 distinct sizes in an 8px window, unchanged by this lever |
+    violates EMPHASIS BUDGET 7c, the 4-sizes-per-8px ceiling | target 4.
+
+  Diagnosis detail (context, not re-parsed by the gate, see the five lines above for the
+  measured/violates/target triples it checks):
+    Every "before" number above was independently re-measured live against the running dev server
+    at 390x844 before this file was written (not copied from the brief unchecked): all five matched
+    the brief exactly, twenty-one point five nine percent imagery, twenty px anchor, one point six
+    seven x ratio, forty-five point two four percent bold, five sizes in an eight px window spanning
+    twelve, thirteen point five, fourteen, eighteen and twenty. The brief's numbers were correct.
+    The "after" numbers were also measured live, by applying the exact two CSS rules this file
+    injects to the real running page in a browser tab and re-running the same measurement script
+    against the modified real DOM, not estimated from arithmetic.
+    THIS LEVER DOES NOT CLEAR F2. It moves imagery from twenty-one point five nine percent to
+    twenty-five point six nine percent, a real gain of about four percentage points, using zero new
+    photography, but it stops short of the thirty-three percent floor. The honest reason: the
+    visible viewport only has room for roughly one full card plus a partial peek of the next, at any
+    width tested. Making the card wider grows that one card's photo, but it does not add a second
+    full card into the same viewport height, and there is no more real content above the fold to
+    remove, the chrome above the row (search pill + category pills) is already down to about 130px
+    total after the padding cut, most of which is the search bar itself, not spare padding.
+    F6, F7b, and F7c are completely untouched by this lever, for the same reason
+    public/_mockups/floor-fix-barbershop/ names: the biggest text on the page, the anchor ratio, and
+    the size-spread all trace back to the section-title scale (shared with the homepage) and the
+    salon card's own name and price text (LOCKFILE-locked, V3-D442), none of which this file's two
+    CSS rules touch. They are not claimed fixed here.
+    F7a got slightly WORSE, not better. Widening the top card pushes the whole page down slightly,
+    which moved one more non-bold text node below the viewport cutoff. The bold count did not
+    change, but the total visible text count dropped by one, so the percentage rose. This is a real,
+    measured side effect of making the photo bigger, not a rounding artifact, and it is named here
+    rather than left for the reader to notice on their own.
+
+  Exists-check: `npm run exists barbershop` run this turn. HITS: the real route
+    (app/[locale]/barbershop/page.tsx) and two page-inline sections, plus three graveyard entries
+    (makeup/waxing categories, a generic dashboard waiting-list panel, and Walk-in as a category
+    PILL). None of the three graveyard hits are what this file touches: it does not restore a
+    category pill, a waiting-list panel, or a makeup/waxing surface. `npm run exists
+    "fix-barbershop--c-content-forward"` also ran, 0 hits, genuinely new.
+
+  Treatment-only: two injected CSS rules, nothing else in the DOM, copy, order, salon data, or the
+    Walk-in row is touched.
+    1. the category-pill row's own tablist padding-top/padding-bottom: 20px to 12px each side
+       (matches the home-page sibling mockup's same proposed cut on the same shared component).
+    2. the first real salon-card row in the document (the "Top Barber" rail) gets its card links
+       widened from the shipped card-ratio to a wider ratio (twenty-five percent wider). The photo
+       sits inside the card in a full-width box that keeps its aspect ratio, so it grows in lockstep,
+       no separate photo rule needed.
+
+  Honesty notes:
+    - This reopens the same dated, named owner approval the home-page sibling already flagged: the
+      salon card's width formula carries an owner-approved dated note choosing the current width
+      over a wider one. Widening it again on this page is the identical trade the home mockup names:
+      fewer full cards visible per swipe (a bigger peek of one, a smaller peek of the next) in
+      exchange for a bigger photo. Kept at the SAME wider value as the home proposal on purpose
+      (FLOORS LAW 8, "the same thing looks the same everywhere"): a card that changes size on one
+      category page and not another would be a new inconsistency, not a fix.
+    - This does not touch the Walk-in row in any way. It is real, wired, barbershop-only content,
+      and this file leaves it exactly as it renders today, on purpose, so this mockup can be judged
+      on ONE lever at a time against its sibling.
+    - Not attempted: a two-up vertical stack instead of the horizontal scroll, which would show two
+      full photos with no peek or crop instead of one full card plus a partial peek. That is a real
+      structural change (a different layout, not a width override on the existing one) and reopens
+      the horizontal-scroll pattern itself, which several other rails on this same page also use.
+      It would need its own mockup and its own owner call.
+    - The measurement browser tab used for this file's live checks was reached without contention
+      this run (a fresh tab, not one shared with a concurrently-running sibling agent), so both the
+      before and after numbers above were read directly off the real DOM, not estimated.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#52525B; --line:#E4E4E7; --sunken:#F4F4F5;
+    --font:'Inter Tight',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fff}
+  body{
+    font-family:var(--font); color:var(--ink); -webkit-font-smoothing:antialiased;
+    -webkit-text-size-adjust:100%; text-size-adjust:100%;
+    max-width:390px; margin:0 auto; padding:20px 0 calc(28px + env(safe-area-inset-bottom));
+  }
+  /* Every text block gets its OWN 16px side padding; the frame/iframe stay unpadded so the
+     iframe can render at a pixel-exact 390px, the same width the FLOORS check measures at.
+     A frame set via width:100% inside a padded body would render narrower than 390px and every
+     live-measured number below would be quietly wrong, matching real content to a viewport no
+     phone actually has. */
+  h1{font-size:19px; font-weight:600; letter-spacing:-0.01em; line-height:1.3; padding:0 16px}
+  .sub{font-size:13px; color:var(--ink2); margin-top:6px; line-height:1.5; padding:0 16px}
+  .row{display:flex; align-items:center; justify-content:space-between; margin-top:22px; margin-bottom:8px; gap:8px; flex-wrap:wrap; padding:0 16px}
+  .tag{font-size:12px; font-weight:600; color:var(--ink2)}
+  .tag.after{color:var(--ink)}
+  .badges{display:flex; gap:6px; flex-wrap:wrap}
+  .badge{font-size:10.5px; font-weight:600; color:var(--ink2); background:var(--sunken); border-radius:999px; padding:3px 8px; font-variant-numeric:tabular-nums; white-space:nowrap}
+  .badge.pending{color:var(--ink2)}
+  .badge.pass{background:#F0FDF4; color:#166534}
+  .badge.fail{background:#FEF2F2; color:#991B1B}
+  .frame{width:390px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); overflow:hidden; background:#fff}
+  iframe{display:block; width:390px; height:844px; border:0}
+  .note{margin-top:20px; background:var(--sunken); border-radius:16px; padding:16px; font-size:13px; line-height:1.55; color:var(--ink2); margin-left:16px; margin-right:16px}
+  .note b{color:var(--ink); font-weight:600}
+  .note .call{margin-top:12px; padding-top:12px; border-top:1px solid var(--line)}
+  .stat{margin-top:12px; padding-top:12px; border-top:1px solid var(--line); display:flex; gap:14px; flex-wrap:wrap; padding-left:16px; padding-right:16px}
+  .stat div{flex:1; min-width:110px}
+  .stat .n{font-size:18px; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums}
+  .stat .l{font-size:11px; color:var(--ink2); margin-top:2px}
+  .foot{margin-top:20px; font-size:11px; color:var(--ink2); line-height:1.5; border-top:1px solid var(--line); padding-top:12px; padding-left:16px; padding-right:16px}
+</style>
+</head>
+<body>
+  <h1>Making the barbershop page's real photos bigger</h1>
+  <p class="sub">Both boxes below load the real barbershop page, live. The second one has the real top row of salon cards made wider, and a little less empty space above them. Nothing invented, nothing swapped, same salons. Scroll inside each box to compare.</p>
+
+  <div class="row"><span class="tag">PANEL 1: live, untouched</span><div class="badges" id="beforeBadges"><span class="badge pending">measuring...</span></div></div>
+  <div class="frame"><iframe id="beforeFrame" src="/de/barbershop" title="real barbershop page, panel 1, untouched"></iframe></div>
+
+  <div class="row"><span class="tag after">PANEL 2: top row of cards made bigger, chrome tightened</span><div class="badges" id="afterBadges"><span class="badge pending">measuring...</span></div></div>
+  <div class="frame"><iframe id="afterFrame" src="/de/barbershop" title="real barbershop page, panel 2, bigger real cards"></iframe></div>
+
+  <div class="stat">
+    <div><div class="n" id="widthGain">measuring</div><div class="l">real card width, phone screen</div></div>
+    <div><div class="n" id="imgGain">measuring</div><div class="l">imagery share, this screen</div></div>
+  </div>
+
+  <div class="note">
+    <b>What changed:</b> the first row of real barbershop cards, the one already at the top of the page today, gets wider. The category buttons above it also lose a little of their own padding, so the row sits a bit higher too. Nothing else on the page moves: the walk-in queue block underneath is left exactly as it is.
+    <div class="call">
+      <b>What this gets you, and what it does not:</b> real photo area on screen goes up by a few measured points, roughly a fifth more photo than before, using photos the page already has. It does not clear the thirty-three percent target on its own: this screen can only fit about one full card at a time no matter how wide it gets, so growing that one card runs out of room well before it reaches a third of the screen. And the same trade the home-page version of this fix already named applies again here: wider cards means less of the next salon peeks into view per swipe, a size you approved once before at the current width.
+    </div>
+  </div>
+
+  <div class="note">
+    <b>Why this page is different from its neighbours.</b> Barbershop is the one category page with a real, live walk-in queue block sitting right under the top row. A separate mockup at floor-fix-barbershop shows fixing THAT block, by giving it a photo it is currently missing. This mockup does the opposite: it leaves the walk-in block alone and grows the row above it instead. They are two different real fixes to two different real rows on the same page, not two versions of the same idea.
+  </div>
+
+  <div class="foot">Both panels are the same live route, not a redraw. Every number on this page, before and after, is read directly off the real rendered DOM by the script at the bottom of this file, the same way the site's own floor-check script reads it, not typed in by hand and not estimated.</div>
+
+<script>
+  // Same measurement method the site's own floor-check script uses: every visible leaf text
+  // node's computed font-size/weight, and every visible image or background-image's on-screen
+  // area, inside a fixed 390x844 window. Runs against the REAL iframe document.
+  function measureFirstViewport(doc, win, vw, vh) {
+    function isLeafText(el) {
+      for (var i = 0; i < el.childNodes.length; i++) {
+        var n = el.childNodes[i];
+        if (n.nodeType === 3 && n.textContent.trim().length > 0) return true;
+      }
+      return false;
+    }
+    var all = doc.querySelectorAll("body *");
+    var texts = [];
+    var imgArea = 0;
+    for (var k = 0; k < all.length; k++) {
+      var el = all[k];
+      var r = el.getBoundingClientRect();
+      if (r.bottom <= 0 || r.top >= vh || r.right <= 0 || r.left >= vw) continue;
+      if (r.width <= 0 || r.height <= 0) continue;
+      var cs = win.getComputedStyle(el);
+      var tagLower = el.tagName;
+      if (tagLower === "IMG" || (cs.backgroundImage && cs.backgroundImage !== "none")) {
+        var visW = Math.min(r.right, vw) - Math.max(r.left, 0);
+        var visH = Math.min(r.bottom, vh) - Math.max(r.top, 0);
+        if (visW > 0 && visH > 0) imgArea += visW * visH;
+      }
+      if (isLeafText(el)) {
+        texts.push({ size: parseFloat(cs.fontSize), weight: parseInt(cs.fontWeight, 10) || 400 });
+      }
+    }
+    var total = vw * vh;
+    var imgPct = (imgArea / total) * 100;
+    var sizes = texts.map(function (t) { return t.size; });
+    var maxSize = sizes.length ? Math.max.apply(null, sizes) : 0;
+    var sorted = sizes.slice().sort(function (a, b) { return a - b; });
+    var median = sorted.length ? sorted[Math.floor(sorted.length / 2)] : 0;
+    var boldCount = texts.filter(function (t) { return t.weight >= 600; }).length;
+    var boldPct = texts.length ? (boldCount / texts.length) * 100 : 0;
+    var distinct = [];
+    for (var m = 0; m < sizes.length; m++) { if (distinct.indexOf(sizes[m]) === -1) distinct.push(sizes[m]); }
+    distinct.sort(function (a, b) { return a - b; });
+    var denseWindow = 0;
+    for (var i2 = 0; i2 < distinct.length; i2++) {
+      var c = 1;
+      for (var j2 = i2 + 1; j2 < distinct.length; j2++) {
+        if (distinct[j2] - distinct[i2] <= 8) c++;
+      }
+      denseWindow = Math.max(denseWindow, c);
+    }
+    return { imgPct: imgPct, maxSize: maxSize, median: median, ratio: median > 0 ? maxSize / median : 0, boldPct: boldPct, denseWindow: denseWindow, leafCount: texts.length };
+  }
+
+  var DP = 2, ZDP = 0;
+  function renderBadges(el, mm) {
+    var b = function (label, ok) { return '<span class="badge ' + (ok ? "pass" : "fail") + '">' + label + "</span>"; };
+    el.innerHTML =
+      b("imagery " + mm.imgPct.toFixed(DP) + "% (floor 33%)", mm.imgPct >= 33) +
+      b("anchor " + mm.maxSize.toFixed(ZDP) + "px (floor 28px)", mm.maxSize >= 28) +
+      b("bold " + mm.boldPct.toFixed(DP) + "% (ceiling 30%)", mm.boldPct <= 30) +
+      b("ratio " + mm.ratio.toFixed(DP) + "x (floor 1.8x)", mm.ratio >= 1.8) +
+      b(mm.denseWindow + " sizes in 8px (ceiling 4)", mm.denseWindow <= 4);
+  }
+
+  // The page renders server markup fast, then a client effect fetches the salon list and only
+  // THEN fills the top rail with real cards. Wait for a real photo to actually finish loading in
+  // the top rail before measuring, so the numbers reflect the populated page, not a mid-hydration
+  // skeleton state.
+  function topRailPopulated(doc) {
+    var row = doc.querySelector(".mt-1.flex.gap-3.overflow-x-auto");
+    if (!row) return false;
+    var img = row.querySelector("img");
+    return !!(img && img.complete && img.naturalWidth > 0);
+  }
+  function waitForRail(doc, cb) {
+    var waited = 0;
+    var iv = setInterval(function () {
+      waited += 150;
+      var ready = topRailPopulated(doc);
+      if (ready || waited >= 8000) {
+        clearInterval(iv);
+        cb(ready);
+      }
+    }, 150);
+  }
+
+  var beforeFrame = document.getElementById("beforeFrame");
+  var beforeWidthNoted = false;
+  beforeFrame.addEventListener("load", function () {
+    try {
+      var doc = beforeFrame.contentDocument;
+      var win = beforeFrame.contentWindow;
+      if (!doc || !win) return;
+      waitForRail(doc, function () {
+        var mm = measureFirstViewport(doc, win, 390, 844);
+        renderBadges(document.getElementById("beforeBadges"), mm);
+        window.__beforeImg = mm.imgPct;
+        var linkEl = doc.querySelector(".mt-1.flex.gap-3.overflow-x-auto a[href]");
+        if (linkEl) { window.__beforeWidth = Math.round(linkEl.getBoundingClientRect().width * 10) / 10; }
+        updateStats();
+      });
+    } catch (err) {
+      console.error("[fix-barbershop--c-content-forward] could not measure the before panel:", err);
+    }
+  });
+
+  function applyChange(doc) {
+    if (doc.getElementById("cf-content-forward-style")) return 1;
+    var tablist = doc.querySelector('[role="tablist"][aria-label="Kategorien"]');
+    var railRow = doc.querySelector(".mt-1.flex.gap-3.overflow-x-auto");
+    if (!tablist && !railRow) return 0;
+    var st = doc.createElement("style");
+    st.id = "cf-content-forward-style";
+    var rules = "";
+    if (tablist) {
+      rules += '[role="tablist"][aria-label="Kategorien"]{padding-top:12px !important;padding-bottom:12px !important}';
+    }
+    if (railRow) {
+      railRow.setAttribute("data-cf-row", "1");
+      rules += '[data-cf-row="1"] > a[href]{width:calc((100vw - 44px) / 1.25) !important}';
+    }
+    st.textContent = rules;
+    doc.head.appendChild(st);
+    return 1;
+  }
+
+  var afterFrame = document.getElementById("afterFrame");
+  afterFrame.addEventListener("load", function () {
+    try {
+      var doc = afterFrame.contentDocument;
+      var win = afterFrame.contentWindow;
+      if (!doc || !win) return;
+      waitForRail(doc, function () {
+        applyChange(doc);
+        setTimeout(function () {
+          var mm = measureFirstViewport(doc, win, 390, 844);
+          renderBadges(document.getElementById("afterBadges"), mm);
+          window.__afterImg = mm.imgPct;
+          var linkEl = doc.querySelector('[data-cf-row="1"] a[href]');
+          if (linkEl) { window.__afterWidth = Math.round(linkEl.getBoundingClientRect().width * 10) / 10; }
+          updateStats();
+        }, 80);
+      });
+    } catch (err) {
+      console.error("[fix-barbershop--c-content-forward] could not apply/measure the after panel:", err);
+    }
+  });
+
+  function updateStats() {
+    var imgEl = document.getElementById("imgGain");
+    var widthEl = document.getElementById("widthGain");
+    if (imgEl && typeof window.__beforeImg === "number" && typeof window.__afterImg === "number") {
+      imgEl.textContent = window.__beforeImg.toFixed(DP) + "% → " + window.__afterImg.toFixed(DP) + "%";
+    }
+    if (widthEl && typeof window.__beforeWidth === "number" && typeof window.__afterWidth === "number") {
+      widthEl.textContent = window.__beforeWidth + "px → " + window.__afterWidth + "px";
+    }
+  }
+</script>
+</body>
+</html>

@@ -3,59 +3,132 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-<title>Rewards tier ladder , full screen before/after</title>
-<!-- Base: capture live -->
-<!-- Scale: full-page -->
+<meta name="color-scheme" content="light">
+<title>Rewards rank ladder: ink node vs green node</title>
+<!-- Base: elicitation -->
+<!-- Scale: component -->
 <!--
-  Grounded-in: app/[locale]/rewards/page.tsx
-  FULL-SCREEN before/after. BEFORE = LIVE <iframe> of the real rewards page via /api/dev/login?to=/de/rewards
-  (the Base/Gold/Platinum ladder uses a bespoke treatment). AFTER = an ink rank ladder (rank, not a progress
-  step, so it stays ink not the green ProgressStepper). Only the ladder treatment changes.
-  Depicts: rewards status ladder -> app/[locale]/rewards/page.tsx
-  Exists-check: `npm run exists "rewards tier"` ran earlier , the ladder already renders.
-  Backend-check: rank is live loyalty data; no fabricated values. English chrome; live iframe shows real German.
+  Mockup-scope: section
+
+  Grounded-in: app/[locale]/rewards/RewardsView.tsx
+
+  Depicts: rank ladder track (Base, Gold, Platinum) -> app/[locale]/rewards/RewardsView.tsx (ladderPct, the absolute track div around line 143)
+  Depicts: rank ladder node (dot plus label, done/now/todo states) -> app/[locale]/rewards/RewardsView.tsx (LadderNode, lines 39-91)
+  Depicts: current-tier headline and next-tier caption -> app/[locale]/rewards/RewardsView.tsx (status.tier, toNext, ofVisits, lines 129-172)
+
+  Exists-check: `npm run exists rewards` ran this turn, 5 hits (route /[locale]/rewards, component RewardsView, DB column barber_loyalty_programs.reward_service_id, no separate ladder or stepper component). `npm run exists stepper` ran this turn too, 2 REMOVED hits, both scoped to the booking flow and /walk-in-pay ("booking stepper progress-bar step-indicator", "walk-in-pay status stepper"), neither is this surface, so this comparison does not re-propose a killed thing. `npm run exists "tier ladder"` ran this turn, 0 hits.
+
+  A note on the file this replaces, since one already sat at this exact path (2026-08-18): that version is a hand-drawn vertical tier list (bespoke .tier/.tn CSS classes, no real Tailwind tokens) behind a live-iframe Before/After toggle, the whole-page switcher format the owner banned on 2026-08-15 ("stop doing whole page mockup ... make you one section of it ... remove the gate"). It also only rendered ONE outcome (ink) with a recommendation baked into the caption, never the alternative at real size next to it, so the actual A/B question was never visible in one glance. This file replaces it: both options built from the real ladder markup and tokens in RewardsView.tsx, stacked, labelled, no toggle, no iframe.
+
+  Diagnosis: rank ladder reached-node fill | measured 24px node, ink #0A0A0A (bg-s-ink, RewardsView.tsx LadderNode, the done and now states) | violates an unresolved read of LOCKFILE section 13.2, which bans green only on a "stepper" node and never classifies a rank ladder as one, so ink versus green is the open MOCKUP_QUEUE V3-C3 question, not a settled defect | target resolve to one of 24px ink #0A0A0A (current, matches "rank is not a progress step") or 24px green #16A34A (bg-s-success, the state-color reading), both built as options A and B below
+  Diagnosis: green on a node versus green as text | measured contrast 3.30 to 1 on white and 3.00 to 1 on the sunken tray for #16A34A (LOCKFILE section 1 contrast table) | violates WCAG AA 4.5 to 1 for text, it only clears the 3 to 1 graphical-object floor | target if option B is picked, green stays on the 24px node fill and its icon only, every label under every node stays ink or ink-2 in both options, so the AA gap never reaches type
 -->
 <style>
-  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--sunken:#F4F4F5;--hairline:#E4E4E7;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--sunken:#F4F4F5;--hairline:#E4E4E7;--green:#16A34A;--star:#FFC32B;
+    --font:'Inter Tight',system-ui,-apple-system,sans-serif}
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
-  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
-  .top{position:fixed;top:0;left:0;right:0;height:52px;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;padding:0 12px}
-  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(320px,80vw)}
-  .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
-  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
-  .stage{position:fixed;top:52px;left:0;right:0;bottom:0}
-  .pane{position:absolute;inset:0;overflow-y:auto}
-  .pane.hidden{display:none}
-  iframe{width:100%;height:100%;border:0;display:block}
-  .after{max-width:520px;margin:0 auto;min-height:100%;padding:22px 16px 40px}
-  .h1{font-size:22px;font-weight:700;letter-spacing:-0.02em}
-  .ladder{margin-top:16px;background:#fff;border:1px solid var(--hairline);border-radius:16px;overflow:hidden}
-  .tier{display:flex;align-items:center;gap:12px;padding:16px}
-  .tier + .tier{border-top:1px solid var(--hairline)}
-  .tn{height:36px;width:36px;border-radius:999px;background:var(--sunken);display:grid;place-items:center;font-size:13px;font-weight:700;color:var(--ink2)}
-  .tier.now .tn{background:var(--ink);color:#fff}
-  .tl{flex:1}.tlt{font-size:14px;font-weight:600}.tls{font-size:12px;color:var(--ink3);margin-top:1px}
-  .tb{font-size:11px;font-weight:600;color:var(--ink);background:var(--sunken);border-radius:999px;padding:4px 10px}
-  .cap{font-size:11.5px;color:var(--ink3);margin-top:22px;line-height:1.5}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  strong,b{font-weight:600}
+  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:402px;margin:0 auto;padding:28px 16px 56px}
+  .row-label{display:flex;align-items:center;gap:8px;margin:0 0 10px}
+  .row-label + .row-label{margin-top:32px}
+  .swatch{height:16px;width:16px;border-radius:999px;flex:0 0 auto}
+  .swatch.ink{background:var(--ink)}
+  .swatch.green{background:var(--green)}
+  .row-label span{font-size:13.5px;font-weight:600;color:var(--ink2)}
+
+  .card{border:1px solid var(--hairline);border-radius:16px;background:#fff;padding:18px;
+    box-shadow:0 1px 3px rgba(50,47,44,.04),0 1px 2px rgba(50,47,44,.03)}
+  .tier-head{display:flex;align-items:center;gap:8px}
+  .tier-name{font-size:34px;font-weight:600;letter-spacing:-0.02em;line-height:1}
+
+  .ladder{position:relative;margin-top:20px}
+  .track{position:absolute;left:26px;right:26px;top:7px;height:10px;border-radius:999px;overflow:hidden;background:var(--sunken)}
+  .track-fill{height:100%;border-radius:999px}
+  .track-fill.ink{background:linear-gradient(to right,var(--ink),rgba(10,10,10,.6))}
+  .track-fill.green{background:linear-gradient(to right,var(--green),rgba(22,163,74,.6))}
+  .nodes{position:relative;z-index:1;display:flex;align-items:flex-start;justify-content:space-between}
+  .node{display:flex;flex-direction:column;align-items:center;gap:6px}
+  .dot{height:24px;width:24px;border-radius:999px;display:grid;place-items:center}
+  .dot.todo{background:var(--sunken);color:var(--ink2)}
+  .dot.reached-ink{background:var(--ink);color:#fff}
+  .dot.reached-ink.done{background:rgba(10,10,10,.8)}
+  .dot.reached-green{background:var(--green);color:#fff}
+  .dot.reached-green.done{background:rgba(22,163,74,.8)}
+  .node-label{font-size:10.5px;font-weight:600;color:var(--ink2)}
+  .node-label.now{color:var(--ink)}
+
+  .next-row{position:relative;margin-top:18px;display:flex;align-items:baseline;justify-content:space-between}
+  .next-t{font-size:13.5px;font-weight:600;color:var(--ink)}
+  .next-v{font-size:12.5px;font-weight:400;color:var(--ink2);font-variant-numeric:tabular-nums}
+
+  .cap{margin-top:10px;font-size:12.5px;font-weight:400;color:var(--ink2)}
 </style>
 </head>
 <body>
-  <div class="top"><div class="seg"><button id="bB" class="on" onclick="show('before')">Before (live)</button><button id="bA" onclick="show('after')">After</button></div></div>
-  <div class="stage">
-    <div id="paneBefore" class="pane"><iframe src="/api/dev/login?to=/de/rewards" title="live rewards"></iframe></div>
-    <div id="paneAfter" class="pane hidden">
-      <div class="after">
-        <div class="h1">Solen Status</div>
-        <div class="ladder">
-          <div class="tier"><span class="tn">B</span><span class="tl"><div class="tlt">Base</div><div class="tls">Everyone starts here</div></span></div>
-          <div class="tier now"><span class="tn">G</span><span class="tl"><div class="tlt">Gold</div><div class="tls">6+ bookings in 6 months</div></span><span class="tb">You</span></div>
-          <div class="tier"><span class="tn">P</span><span class="tl"><div class="tlt">Platinum</div><div class="tls">15+ bookings in 6 months</div></span></div>
+  <div class="wrap">
+
+    <div class="row-label"><span class="swatch ink" aria-hidden="true"></span><span>A: ink node (current)</span></div>
+    <div class="card">
+      <div class="tier-head">
+        <span class="tier-name">Gold</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFC32B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-award" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+      </div>
+      <div class="ladder">
+        <div class="track"><div class="track-fill ink" style="width:66.7%"></div></div>
+        <div class="nodes">
+          <div class="node">
+            <span class="dot reached-ink done"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check"><path d="M20 6 9 17l-5-5"/></svg></span>
+            <span class="node-label">Base</span>
+          </div>
+          <div class="node">
+            <span class="dot reached-ink"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-award"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg></span>
+            <span class="node-label now">Gold</span>
+          </div>
+          <div class="node">
+            <span class="dot todo"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-crown"><path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/><path d="M5 21h14"/></svg></span>
+            <span class="node-label">Platinum</span>
+          </div>
         </div>
-        <div class="cap">Change applied: the status ladder uses an ink rank treatment (your current tier filled ink), because rank is a standing rank, not a progress step, so it stays ink rather than borrowing the green ProgressStepper.</div>
+      </div>
+      <div class="next-row">
+        <span class="next-t">2 visits to Platinum</span>
+        <span class="next-v">4 of 6 visits</span>
       </div>
     </div>
+    <div class="cap">Node fill and track fill: ink #0A0A0A. Everything else on this card, the tier name, the star-yellow award glyph beside it, the caption row, is real chrome outside the ladder and is unchanged between A and B.</div>
+
+    <div class="row-label"><span class="swatch green" aria-hidden="true"></span><span>B: green node (stepper recipe)</span></div>
+    <div class="card">
+      <div class="tier-head">
+        <span class="tier-name">Gold</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFC32B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-award" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+      </div>
+      <div class="ladder">
+        <div class="track"><div class="track-fill green" style="width:66.7%"></div></div>
+        <div class="nodes">
+          <div class="node">
+            <span class="dot reached-green done"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check"><path d="M20 6 9 17l-5-5"/></svg></span>
+            <span class="node-label">Base</span>
+          </div>
+          <div class="node">
+            <span class="dot reached-green"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-award"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg></span>
+            <span class="node-label now">Gold</span>
+          </div>
+          <div class="node">
+            <span class="dot todo"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-crown"><path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/><path d="M5 21h14"/></svg></span>
+            <span class="node-label">Platinum</span>
+          </div>
+        </div>
+      </div>
+      <div class="next-row">
+        <span class="next-t">2 visits to Platinum</span>
+        <span class="next-v">4 of 6 visits</span>
+      </div>
+    </div>
+    <div class="cap">Node fill and track fill: green #16A34A, the same disc-and-halo recipe section 13.2 uses for a progress stepper. Every label stays ink or ink-2 in both cards, only the dot and the track carry color, so the text never inherits the 3.30 to 1 contrast that fails AA.</div>
+
   </div>
-<script>function show(w){document.getElementById('paneBefore').classList.toggle('hidden',w!=='before');document.getElementById('paneAfter').classList.toggle('hidden',w!=='after');document.getElementById('bB').classList.toggle('on',w==='before');document.getElementById('bA').classList.toggle('on',w==='after');}</script>
 </body>
 </html>

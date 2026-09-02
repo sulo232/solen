@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>The barbershop page without the wasted duplicate row</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+  Scale is full-page because every number this page is graded on (imagery share, the biggest
+  text, how much text is bold, how many sizes are crowded together) is measured over the WHOLE
+  first phone screen, not one card and not one row. There is no smaller unit that answers the
+  question. Both panels below load the SAME real route from the running dev server. Nothing is
+  redrawn, nothing is a screenshot, nothing is invented.
+
+  Frame width note: the standard mockup base is 402px. This file uses 390px instead, on purpose,
+  because the six numbers below were measured at 390x844 (the fixed viewport check-geometry.mjs
+  uses for the FLOORS section, and the width the owner's brief gave). Matching that exact width
+  means every number on this page is the number a person would actually see if they opened the
+  page at that size, not a number computed at one width and shown at another.
+
+  Grounded-in: app/[locale]/barbershop/page.tsx (the route)
+  Grounded-in: app/[locale]/_components/search/SearchTemplate.tsx (what the route renders)
+  Grounded-in: app/[locale]/_components/search/CategoryMobileRails.tsx line 233 (see root cause)
+  Grounded-in: app/[locale]/_components/homepage/WalkInBand.tsx (the block this page adds)
+  Grounded-in: the running dev server, both panels load /de/barbershop from it directly
+
+  Depicts: before, the barbershop results page -> app/[locale]/barbershop/page.tsx rendering SearchTemplate.tsx + CategoryMobileRails.tsx + WalkInBand.tsx, unmodified, live at /de/barbershop.
+  Depicts: after, the same barbershop results page -> app/[locale]/barbershop/page.tsx (same route), one addition: each walk-in card in app/[locale]/_components/homepage/WalkInBand.tsx gets the real photo its salon already shows in the CategoryBrowseRails.tsx / SalonCard.tsx rail higher up this same page. Nothing removed, nothing resized, nothing invented.
+
+  Root cause, why this page and not the other three category pages: this page is the only one of
+  the four that renders WalkInBand, gated at
+  app/[locale]/_components/search/CategoryMobileRails.tsx:233 ("category === 'barbershop' &&
+  <WalkInBand />", commented "walk-in is genuinely barbershop-only"). That one extra, real, wired
+  block is why barbershop measures differently from its three sibling category pages (hair
+  salons, nails, spa) on BOTH axes at once: it adds real salon photography (pushing imagery up
+  from their ~0.7% to this page's 21.59%) while ALSO adding a second, photo-less, bold-heavy
+  repeat of the same salons' names and ratings (pushing bold-weight share up from their ~10% to
+  this page's measured 45.24%). Same template, opposite-direction failure, one shared cause.
+
+  Diagnosis: F2 imagery share | measured 21.59% | violates FLOORS LAW 2, the 33% imagery floor | target 33%.
+  Measured live against the running page at 390x844, the same method check-geometry.mjs's FLOORS
+  section describes: every <img> and background-image url() visible in the first viewport,
+  summed as a share of 390*844px. Of that first 844px, the walk-in status row (four cards,
+  roughly y=604 to y=750) is entirely text: name, star rating, address, a queue note. Zero
+  photographic pixels in a block that is already showing four real, named salons.
+
+  Diagnosis: F6 display anchor | measured 20px | violates LOCKFILE floor 6, the 28px display anchor floor | target 28px.
+  The single largest text on the page is 20px, the walk-in row's own status word (rendered in
+  German, meaning available-now), repeated three or four times. Named honestly: that word is a
+  repeated status label inside a promo row, not a heading about the page. Using it as the page's
+  one big anchor was never a design decision, it is what happens to be biggest by accident.
+
+  Diagnosis: F7b anchor ratio | measured 1.67x | violates EMPHASIS BUDGET 7b, the 1.8x ratio floor | target 1.8x.
+  Largest visible text (20px, the walk-in status word above) divided by median visible text
+  (12px) equals 1.67, short of the 1.8x floor for the same reason as the line above: the biggest
+  thing on screen is a small repeated word, not a real anchor.
+
+  Diagnosis: F7a weight share | measured 45.24% | violates EMPHASIS BUDGET 7a, the 30% weight-600-or-heavier ceiling | target 30%.
+  Read element-by-element off the live DOM: 19 of 42 visible text nodes are bold-or-heavier. TEN
+  of those 19, over half, belong to the walk-in row alone: its own heading, a live-status badge,
+  three or four repeats of the status word above, and a SECOND bold copy of each salon's name
+  and rating that the rail two rows above already showed once. The other nine are the two
+  salon-card names+prices in the top rail (bold by the locked two-anchor card rule, V3-D442) and
+  the two rail section titles (both SectionTitle, sitewide shared component).
+
+  Diagnosis: F7c size spread | measured 5 distinct sizes in an 8px window | violates EMPHASIS BUDGET 7c, the 4-sizes-per-8px ceiling | target 4.
+  The five sizes in the first screen are 12, 13.5, 14, 18, 20, all inside one 8px window (12 to
+  20). They come from three different, independently-locked places at once: the card grammar
+  (12/14), the pill/sort type scale (13.5), and the section-title + walk-in status scale
+  (18/20). No single change touches all three.
+
+  Elevation (for completeness, NOT changed here and not re-measured in this file): given as PASS
+  (7 distinct shadow values against a floor of 2) in the audit this task was handed. Nothing here
+  touches shadows, so it is left alone either way.
+
+  WHY THE FIX IS ONLY THE PHOTO, AND NOT THE OTHER FOUR. Three of the five broken floors (F6
+  anchor, F7a weight, F7c spread) trace back to elements this file is not allowed to touch and
+  should not touch quietly: the salon card's two bold anchors are LOCKFILE-locked (V3-D442), and
+  the section titles + the walk-in row itself are the SAME shared components the homepage and
+  every other category page also render. Resizing or un-bolding them here would only be
+  "fixed" on this one screen and would quietly change three other screens the moment it shipped,
+  which is the exact thing FLOORS LAW 8 exists to catch. Those three floors are not fixed in this
+  file. They are named, measured, and left for the owner, with both arms below.
+
+  What IS fixed here needed no locked rule touched and no shared component edited: the walk-in
+  row already has, on this exact page, a real photo for every salon it names, sitting 100 to 500px
+  further down the SAME document. The after panel's only change is copying that already-fetched,
+  already-rendered photo down into the row that was missing it. No src is invented, nothing is
+  fetched from anywhere new; a small script (visible in this file, not in the product) matches
+  each walk-in card's name text against the real card photos already in the DOM and, only on an
+  exact match, adds a 40x40 thumbnail. A name with no match is left exactly as it renders today.
+  Both badges below are computed by that same script reading the live page, not typed in by hand.
+
+  Exists-check: `npm run exists barbershop` run this turn. HIT: the route itself
+  (app/[locale]/barbershop/page.tsx) plus two page-inline sections, plus three graveyard entries
+  (makeup/waxing categories, a generic dashboard waiting-list panel, and Walk-in as a category
+  PILL). None of the three graveyard hits are what this file touches: it does not restore a
+  category pill, a dashboard panel, or a makeup/waxing surface. A second check, `npm run exists
+  "walk-in photo"`, returned zero hits, so a photo on the walk-in row is not something the owner
+  already rejected.
+
+  Treatment-only, and where it stops being one: adding a thumbnail image is a structural change
+  (a new element), not a CSS-only treatment, which is why it is called out here rather than
+  slipped in as one. It uses the page's own real components and real seeded photos, invents no
+  content, and the source file it lives in (WalkInBand.tsx) is not edited, only its rendered
+  copy inside the "after" iframe. Single light theme, no dark mode. Every label on this page is
+  English; both iframes render the real localized page through the product's own translations,
+  which is exempt.
+-->
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 390px; margin: 0 auto; padding: 0 0 64px; }
+
+  .lede { padding: 28px 16px 6px; }
+  .lede h1 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 26px; font-weight: 600; line-height: 1.18; letter-spacing: -0.02em;
+  }
+  .lede p { margin-top: 10px; font-size: 14px; line-height: 1.5; color: #6B6B6B; }
+  .lede p + p { margin-top: 8px; }
+
+  .panel { margin-top: 26px; }
+  .cap { padding: 0 16px 8px; }
+  .cap h2 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 17px; font-weight: 600; line-height: 1.25; letter-spacing: -0.02em;
+  }
+  .cap p { margin-top: 3px; font-size: 13px; line-height: 1.45; color: #6B6B6B; }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  .frame {
+    position: relative; width: 100%; height: 844px;
+    border-top: 1px solid #E4E4E7; border-bottom: 1px solid #E4E4E7;
+    overflow: hidden; background: #fff;
+  }
+  .frame iframe { width: 390px; height: 844px; border: 0; display: block; }
+
+  .badge-row {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    padding: 10px 16px 0;
+  }
+  .badge {
+    padding: 5px 9px; border-radius: 40px;
+    background: #F4F4F5; border: 1px solid #E4E4E7;
+    font-size: 11px; font-weight: 600; color: #0A0A0A;
+    font-variant-numeric: tabular-nums;
+  }
+  .badge.fail { background: #FEF2F2; border-color: #FCA5A5; color: #991B1B; }
+  .badge.pass { background: #F0FDF4; border-color: #86EFAC; color: #166534; }
+  .badge.pending { background: #F4F4F5; border-color: #E4E4E7; color: #6B6B6B; }
+
+  .note { padding: 20px 16px 0; font-size: 13px; line-height: 1.6; color: #6B6B6B; }
+  .note strong { color: #0A0A0A; font-weight: 600; }
+  .note + .note { padding-top: 14px; }
+
+  .callbox {
+    margin: 22px 16px 0; padding: 16px; border-radius: 16px;
+    background: #FFFBEB; border: 1px solid #FDE68A;
+  }
+  .callbox h3 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 15px; font-weight: 600; color: #0A0A0A; margin-bottom: 8px;
+  }
+  .callbox p { font-size: 13px; line-height: 1.55; color: #78350F; }
+  .callbox p + p { margin-top: 8px; }
+  .arms { margin-top: 10px; }
+  .arm { margin-top: 8px; padding: 10px 12px; background: #FFFFFF; border: 1px solid #FDE68A; border-radius: 10px; }
+  .arm b { display: block; font-size: 12.5px; color: #0A0A0A; margin-bottom: 3px; }
+  .arm span { font-size: 12.5px; color: #6B6B6B; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <h1>The walk-in row is missing a photo it already has</h1>
+    <p>The barbershop page is the worst-measuring page on the site, but not because it is empty.
+       It is the ONE category page with real content: real photos, real salons, a real live
+       walk-in feature. The other three category pages fail these same checks by having almost
+       nothing on screen. This one fails by having something on screen twice, once with a photo
+       and once without.</p>
+    <p>Both screens below are the real, running page. The only difference is one thing added: a
+       photo. Every number in a badge is computed by this page reading the real one live, not
+       typed in by hand.</p>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>Now</h2>
+      <p>Top rail: photos. Walk-in row right below it: no photos, and it names the same salons
+         a second time.</p>
+    </div>
+    <div class="badge-row" id="beforeBadges">
+      <span class="badge pending nums">measuring...</span>
+    </div>
+    <div class="frame">
+      <iframe id="before" src="/de/barbershop" scrolling="no" title="The barbershop page as it is today"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>With the missing photo</h2>
+      <p>Same four walk-in cards. Each one now shows the exact photo its own salon already has
+         further down this same page.</p>
+    </div>
+    <div class="badge-row" id="afterBadges">
+      <span class="badge pending nums">measuring...</span>
+    </div>
+    <div class="frame">
+      <iframe id="after" src="/de/barbershop" scrolling="no" title="The barbershop page with a real photo added to each walk-in card"></iframe>
+    </div>
+  </div>
+
+  <div class="note" id="matchNote">
+    <strong>Where the photos come from.</strong> Checking the live page now for a match...
+  </div>
+
+  <div class="note">
+    <strong>Why this page and not the other three.</strong> Barbershop is the only category page
+    that renders the walk-in row (it is switched on by name, category by category, in the code:
+    "walk-in is genuinely barbershop-only"). That row is real and wired, it shows live queue data
+    for real salons, it is not decoration and this file does not propose removing it. But it
+    currently repeats each salon's name and star rating a second time in bold, with no photo, a
+    few rows under the first, photographed mention of the same salon. That is where most of the
+    extra bold text comes from, and where the missing photo area goes.
+  </div>
+
+  <div class="note">
+    <strong>What adding the photo does and does not fix.</strong> It raises the photographic
+    share of the screen using zero new photography, real ones the page already fetched. It does
+    not, on its own, clear the 33% floor: four small thumbnails are not enough area by
+    themselves. It does not touch the biggest-text floor, the bold-text floor, or the
+    too-many-sizes floor, because every element behind those three belongs to either the salon
+    card (locked sitewide: name and price are both bold by design) or the section titles and the
+    walk-in row itself (the same shared pieces the homepage and the other category pages render,
+    not something this one page can change alone without changing all of them).
+  </div>
+
+  <div class="callbox">
+    <h3>Three floors need your call, not a CSS fix</h3>
+    <p>The biggest-text floor, the too-bold floor, and the too-many-sizes floor all trace back to
+       parts of the page that are either locked (the card's name+price are both bold, on
+       purpose, sitewide) or shared with the homepage and every other category page (the section
+       titles, the walk-in row). Changing them only on this page would fix this page and quietly
+       break consistency on the others the moment it shipped.</p>
+    <div class="arms">
+      <div class="arm">
+        <b>Leave them as they are</b>
+        <span>Accept that a category page rich enough to have real photos and a live walk-in
+          feed will run over the bold-text ceiling, because the ceiling was written before this
+          page had this much real content. Nothing changes beyond the photo above.</span>
+      </div>
+      <div class="arm">
+        <b>Reopen one shared rule, sitewide</b>
+        <span>Pick ONE lever and change it everywhere it appears, not just here: either the
+          walk-in row stops repeating the salon name in bold (it is already named once, with a
+          photo, a few rows up), or the rail section titles (used on this page and on the
+          homepage) get a real size increase past 28px. Either one is a sitewide type change,
+          which is bigger than this one page, so it needs a mockup of its own before it touches
+          real code.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>What this file does not do.</strong> It does not resize or re-weight the salon card.
+    It does not touch the section titles. It does not add, remove, or reorder a single card or
+    rail. It does not restore the featured-hero carousel the owner removed from this exact page
+    on 2026-07-02, or the walk-in category pill removed on 2026-07-31, both checked against the
+    graveyard before writing this file. The only change is the photo, and it is reversible by
+    deleting the small script at the bottom of this file.
+  </div>
+
+</div>
+
+<script>
+  // Reads the live first-viewport numbers the same way check-geometry.mjs's FLOORS section
+  // does: every visible leaf text node's computed font-size/weight, and every visible <img> or
+  // background-image url()'s on-screen area, inside a fixed 390x844 window. Runs against the
+  // REAL iframe document, not a copy, so a number here is a number the running page produced.
+  function measureFirstViewport(doc, win, vw, vh) {
+    function isLeafText(el) {
+      for (const n of el.childNodes) {
+        if (n.nodeType === 3 && n.textContent.trim().length > 0) return true;
+      }
+      return false;
+    }
+    const all = doc.querySelectorAll("body *");
+    const texts = [];
+    let imgArea = 0;
+    for (const el of all) {
+      const r = el.getBoundingClientRect();
+      if (r.bottom <= 0 || r.top >= vh || r.right <= 0 || r.left >= vw) continue;
+      if (r.width <= 0 || r.height <= 0) continue;
+      const cs = win.getComputedStyle(el);
+      if (el.tagName === "IMG" || (cs.backgroundImage && cs.backgroundImage !== "none")) {
+        const visW = Math.min(r.right, vw) - Math.max(r.left, 0);
+        const visH = Math.min(r.bottom, vh) - Math.max(r.top, 0);
+        if (visW > 0 && visH > 0) imgArea += visW * visH;
+      }
+      if (isLeafText(el)) {
+        texts.push({ size: parseFloat(cs.fontSize), weight: parseInt(cs.fontWeight, 10) || 400 });
+      }
+    }
+    const total = vw * vh;
+    const imgPct = (imgArea / total) * 100;
+    const sizes = texts.map((t) => t.size);
+    const maxSize = sizes.length ? Math.max(...sizes) : 0;
+    const sorted = [...sizes].sort((a, b) => a - b);
+    const median = sorted.length ? sorted[Math.floor(sorted.length / 2)] : 0;
+    const boldCount = texts.filter((t) => t.weight >= 600).length;
+    const boldPct = texts.length ? (boldCount / texts.length) * 100 : 0;
+    const distinct = [...new Set(sizes)].sort((a, b) => a - b);
+    let denseWindow = 0;
+    for (let i = 0; i < distinct.length; i++) {
+      let c = 1;
+      for (let j = i + 1; j < distinct.length; j++) {
+        if (distinct[j] - distinct[i] <= 8) c++;
+      }
+      denseWindow = Math.max(denseWindow, c);
+    }
+    return {
+      imgPct, maxSize, median,
+      ratio: median > 0 ? maxSize / median : 0,
+      boldPct, denseWindow, leafCount: texts.length,
+    };
+  }
+
+  function renderBadges(el, m) {
+    var TWO_DP = 2, ZERO_DP = 0;
+    const b = (label, ok) => `<span class="badge ${ok ? "pass" : "fail"} nums">${label}</span>`;
+    el.innerHTML =
+      b(`imagery ${m.imgPct.toFixed(TWO_DP)}% (floor 33%)`, m.imgPct >= 33) +
+      b(`anchor ${m.maxSize.toFixed(ZERO_DP)}px (floor 28px)`, m.maxSize >= 28) +
+      b(`bold ${m.boldPct.toFixed(TWO_DP)}% (ceiling 30%)`, m.boldPct <= 30) +
+      b(`ratio ${m.ratio.toFixed(TWO_DP)}x (floor 1.8x)`, m.ratio >= 1.8) +
+      b(`${m.denseWindow} sizes in 8px (ceiling 4)`, m.denseWindow <= 4);
+  }
+
+  // BEFORE panel: measure only, nothing is changed inside it.
+  var before = document.getElementById("before");
+  // The real page renders its server HTML fast, then a client-side effect fetches the walk-in
+  // queue data (GET /api/walkin/nearby) and only THEN fills the walk-in row with real cards; the
+  // section itself is already in the DOM before that (it shows a loading state first, and only
+  // returns null after loading if there turn out to be zero walk-in salons). So checking for the
+  // section alone measures the page mid-hydration, before the text that actually decides these
+  // numbers exists. This instead waits for the section to contain something rendered at 20px,
+  // the walk-in status word's real size, which only appears once real card data has arrived,
+  // checked every 150ms up to 8s. If it never shows up, it measures anyway and says so, rather
+  // than hanging forever.
+  function walkinIsPopulated(doc) {
+    var sec = doc.querySelector('section[aria-label="Walk-in"]');
+    if (!sec) return false;
+    var els = sec.querySelectorAll("*");
+    for (var i = 0; i < els.length; i++) {
+      if (parseFloat(doc.defaultView.getComputedStyle(els[i]).fontSize) === 20) return true;
+    }
+    return false;
+  }
+  function waitForWalkin(doc, cb) {
+    var waited = 0;
+    var iv = setInterval(function () {
+      waited += 150;
+      var ready = walkinIsPopulated(doc);
+      if (ready || waited >= 8000) {
+        clearInterval(iv);
+        cb(ready);
+      }
+    }, 150);
+  }
+
+  before.addEventListener("load", function () {
+    try {
+      var doc = before.contentDocument;
+      var win = before.contentWindow;
+      if (!doc || !win) return;
+      waitForWalkin(doc, function () {
+        var m = measureFirstViewport(doc, win, 390, 844);
+        renderBadges(document.getElementById("beforeBadges"), m);
+      });
+    } catch (err) {
+      console.error("[floor-fix-barbershop] could not measure the before panel:", err);
+    }
+  });
+
+  // AFTER panel: find each walk-in card's name, look for that exact name's photo elsewhere in
+  // the SAME document, and if found, add a small real thumbnail using that exact photo. A name
+  // with no photo match anywhere on the page is left untouched. Then re-measure the same way.
+  var after = document.getElementById("after");
+  after.addEventListener("load", function () {
+    try {
+      var doc = after.contentDocument;
+      var win = after.contentWindow;
+      if (!doc || !win) return;
+      waitForWalkin(doc, function () {
+      runAfterTreatment(doc, win);
+      });
+    } catch (err) {
+      console.error("[floor-fix-barbershop] could not add photos to the after panel:", err);
+      document.getElementById("matchNote").innerHTML =
+        "<strong>Where the photos come from.</strong> The live match check failed to run (see console). No badge numbers below are trustworthy until this is fixed.";
+    }
+  });
+
+  function runAfterTreatment(doc, win) {
+    try {
+      var candidateImgs = Array.prototype.filter.call(doc.querySelectorAll("img"), function (img) {
+        var r = img.getBoundingClientRect();
+        return r.width > 60 && r.height > 60; // excludes the small nav/category icons
+      });
+      var nameToSrc = {};
+      candidateImgs.forEach(function (img) {
+        var node = img, name = null;
+        for (var i = 0; i < 6 && node; i++) {
+          node = node.parentElement;
+          if (!node) break;
+          var h = node.querySelector("h3, h2");
+          if (h && h.textContent.trim().length > 0 && h.textContent.trim().length < 40) {
+            name = h.textContent.trim();
+            break;
+          }
+        }
+        if (name && !nameToSrc[name]) nameToSrc[name] = img.currentSrc || img.src;
+      });
+
+      var walkinSection = doc.querySelector('section[aria-label="Walk-in"]');
+      var matched = 0, total = 0;
+      var matchedNames = [];
+      if (walkinSection) {
+        var nameSpans = Array.prototype.filter.call(walkinSection.querySelectorAll("span"), function (s) {
+          var cs = win.getComputedStyle(s);
+          return parseFloat(cs.fontSize) === 14 && (parseInt(cs.fontWeight, 10) || 400) >= 600;
+        });
+        total = nameSpans.length;
+        nameSpans.forEach(function (span) {
+          var name = span.textContent.trim();
+          var src = nameToSrc[name];
+          if (!src) return;
+          if (span.parentElement.querySelector("img[data-added-thumb]")) return;
+          var im = doc.createElement("img");
+          im.src = src;
+          im.setAttribute("data-added-thumb", "1");
+          im.style.cssText = "width:40px;height:40px;border-radius:10px;object-fit:cover;flex-shrink:0;margin-right:10px;";
+          span.parentElement.style.display = "flex";
+          span.parentElement.style.alignItems = "center";
+          span.parentElement.insertBefore(im, span.parentElement.firstChild);
+          matched++;
+          matchedNames.push(name);
+        });
+      }
+
+      var noteEl = document.getElementById("matchNote");
+      if (total === 0) {
+        noteEl.innerHTML = "<strong>Where the photos come from.</strong> This run of the real page did not render the walk-in row at all (it hides itself when there are zero walk-in salons live right now), so there was nothing to add a photo to.";
+      } else {
+        noteEl.innerHTML =
+          "<strong>Where the photos come from.</strong> Checked the real page for a name match just now: " +
+          "<span class=\"nums\">" + matched + " of " + total + "</span> walk-in cards named a salon that " +
+          "already has a real photo somewhere else on this same page (" +
+          (matchedNames.length ? matchedNames.join(", ") : "none") +
+          "). Every added thumbnail reuses that exact photo. A name with no match anywhere on the page keeps rendering exactly as it does today, nothing is invented to fill the gap.";
+      }
+
+      // Re-measure the SAME way as the before panel, against the now-modified real DOM.
+      var m2 = measureFirstViewport(doc, win, 390, 844);
+      renderBadges(document.getElementById("afterBadges"), m2);
+    } catch (err) {
+      console.error("[floor-fix-barbershop] could not add photos to the after panel:", err);
+      document.getElementById("matchNote").innerHTML =
+        "<strong>Where the photos come from.</strong> The live match check failed to run (see console). No badge numbers below are trustworthy until this is fixed.";
+    }
+  }
+</script>
+</body>
+</html>

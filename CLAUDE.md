@@ -115,7 +115,7 @@ Frozen single-values. Do NOT re-open any row without the owner saying so by name
 | filter pill | selected = `bg-s-bg-sunken` + `text-s-ink` + semibold (calm gray, never blue-border, never black); unselected = white + hairline, hover deepens text (owner 2026-06-29, supersedes V3-D450) |
 | category tag | neutral — `bg-s-bg-sunken` + `text-s-ink-2`, NO per-category colour (incl. the on-photo eyebrow → `text-white`); owner picked B, V3-D449 |
 | date / time | ONE `DateTimePicker` primitive — `dateLayout` strip (booking) \| calendar (search); booking + search share it. NO bespoke date UI (V3-D445) |
-| nav | sub-page nav is single — the global `Breadcrumb` is excluded on `/{city}/{category}` (SearchTemplate owns it). No stacked home+back (V3-D449) |
+| nav | sub-page nav is single — the global `Breadcrumb` is excluded on `/{city}/{category}`. ~~(SearchTemplate owns it)~~ **CORRECTED 2026-08-27: SearchTemplate does NOT own it and never has.** `app/[locale]/[city]/[category]/page.tsx:222` builds a breadcrumb chain and passes it in; `SearchTemplate.tsx:137` declares the prop and `:429` destructures it; nothing in that file's 2546 lines renders it, and `app/[locale]/search/page.tsx:49` passes a dead one too. Measured live at 1280x900 on `/de/basel/coiffeur`: two nav landmarks, zero breadcrumbs. The exclusion in `Breadcrumb.tsx:51-53` was correct and its comment gives the real reason (on the bare `/de/coiffeur` routes the global bar stacked a second back button under the header home), but it tests the LAST path segment, so it swallowed `/{city}/{category}` too, where nothing took over. This is the half-landed shape: the removal shipped, the replacement did not. Restoring a trail there is a visible change, so it needs a mockup first, not a silent edit. No stacked home+back (V3-D449) |
 | sticky CTA | (hierarchy-density-06) every screen with a single primary commit action reaches it via a sticky/fixed bottom bar OR within ~1 viewport-height scroll of the last required input, regardless of content volume above it, the dense-screen mirror of NEVER-AGAIN floor 3. Existing per-surface implementations: `SalonMobileBookBar` (PDP), the booking running-summary bar (`RESTRAINT_TEST.md`). |
 | theme | **WEB = SINGLE LIGHT THEME, no dark mode** (`tailwind.config.js` darkMode removed 2026-05-02 Q62; Taste Lab "5 no dark mode"). NEVER put `prefers-color-scheme:dark` / `data-theme="dark"` / dark-mode CSS in ANY web file (mockup, analysis page, component, globals) — it renders BLACK and the owner rejected it twice (2026-07-16, 2026-07-21 "only white for web"). Gate: `~/.claude/hooks/white-only-web-gate.py` (built + self-tested; wire on Write/Edit when settings is writable). iOS (`solen-mobile`) keeps dark mode — this is web-only. |
 
@@ -251,10 +251,23 @@ link in an email has **no replay protection at all**: verified on the shipped ro
 no single-use check of any kind. The feature was not cancelled and it was not superseded. It was
 written, reviewed, and stranded on a branch nobody merged. Nothing in this system said so.
 
-**ACTIVE, not a silent default, and CORRECTED 2026-08-24 so the claim matches what runs.** It is
-live as rule 1 of the before-you-write note (`~/.claude/hooks/reply-shape-preflight.py`, verbatim:
-"MISSING NEEDS A REASON. If you call something missing, absent, or never landed, say WHY"), which
-arrives BEFORE the reply is written, so acting on it costs him nothing.
+**ACTIVE, not a silent default. POINTER CORRECTED AGAIN 2026-08-28, and the rule itself never
+moved.** It is live in the output style at `~/.claude/output-styles/plain.md:155`, verbatim:
+*"anything called missing also says WHY (removed on purpose, superseded, never merged, half landed,
+blocked)"*. That file is in context for every message, so acting on it costs him nothing.
+
+~~This line said it was rule 1 of the before-you-write note, `~/.claude/hooks/reply-shape-preflight.py`,
+and quoted "MISSING NEEDS A REASON. If you call something missing, absent, or never landed, say WHY"
+as verbatim from it.~~ **Both halves were false, measured 2026-08-28.** That hook's `main()` prints
+exactly one thing, `decisions_block(...)`, the list of questions he has already answered this
+session. Its `REMINDER` block of twenty numbered rules was retired on 2026-08-26 and has emitted
+nothing since; running the hook and grepping for rules 1, 6, 14, 17 and 20 returns zero for every
+one. And the quoted sentence does not appear in that file at all, at any time, in any form: a grep
+for "MISSING NEEDS A REASON" across it returns 0 hits. So a correction dated 2026-08-24, written to
+make a claim match what runs, was itself wrong within two days and quoted a line that never existed.
+Found by adding a rule to that same dead block as a "harden", running it, and measuring that neither
+the new rule nor any of the twenty above it reached me. The hook now carries a banner saying nothing
+below it is emitted, so the next reader does not add a twenty-second.
 
 ~~This line used to say `~/.claude/hooks/missing-needs-a-reason-gate.py` (Stop) enforced it.~~ That
 file exists, its 11 checks pass, and it is registered in NO settings file and dispatched by no

@@ -903,7 +903,13 @@ export default function SearchTemplate({
     return () => window.removeEventListener("scroll", onScroll);
   }, [scrollProgress, reduce]);
   // mockup-ok: same B6 mechanics fix, values below match the prior locked end-states.
-  const bandPaddingTop = useTransform(scrollProgress, [0, 1], [4, 12]);
+  // Search-bar-one-position fix (owner, 2026-08-27): the bar "moves to other places"
+  // between screens because this band's own top padding ranged 4 to 12. 12 is the
+  // home bar's resting position (HomeSearchPill.tsx:230-236, "One height, 64, whatever
+  // the scroll position") set by commit 7bc5c23ee (2026-08-11). Range collapsed to
+  // [12, 12], same precedent as bandPaddingBottom's [8, 8] below: the scrollProgress /
+  // useTransform mechanism stays wired, only the end-states change.
+  const bandPaddingTop = useTransform(scrollProgress, [0, 1], [12, 12]);
   // I2 mockup-ok (public/_mockups/home-v3/search-a.html .sa-band, "padding 4px 0 8px"):
   // bottom was 0 at rest, approved chrome wants a constant 8. Range collapsed to
   // [8, 8] so the value matches without touching the scrollProgress mechanism itself.
@@ -1131,7 +1137,7 @@ export default function SearchTemplate({
     if (!el || typeof IntersectionObserver === "undefined") return;
     const io = new IntersectionObserver(
       ([entry]) => setMapFabVisible(!entry.isIntersecting),
-      { rootMargin: "-72px 0px 0px 0px", threshold: 0 },
+      { rootMargin: "-82px 0px 0px 0px", threshold: 0 },
     );
     io.observe(el);
     return () => io.disconnect();
@@ -1331,7 +1337,10 @@ export default function SearchTemplate({
               // changing only the one in front of me is the half-a-sweep failure this project keeps
               // naming. Airbnb measured live at 390: 54 tall, radius 40, centred, 19px padding,
               // 12px icon. C keeps our hairline and lift instead of their black ring.
-              "flex h-[54px] w-full cursor-pointer items-center justify-center gap-2 rounded-[40px] border border-s-border bg-white px-[19px] text-center",
+              // Later decision, commit 7bc5c23ee (2026-08-11): "Search bar 59 to 64 tall on his
+              // call. Their proportion gave 59; he asked for more, so it steps to 64 on the same
+              // 4pt scale." That supersedes the 54 measured above; the height below is 64.
+              "flex h-[64px] w-full cursor-pointer items-center justify-center gap-2 rounded-[40px] border border-s-border bg-white px-[19px] text-center",
               // I2 mockup-ok (public/_mockups/home-v3/search-a.html .sa-pill --lift): the
               // V3-D421L "flat at rest, lift only when pinned" scroll-driven shadow is
               // replaced by the approved chrome's constant elevation, so the pill always
@@ -1339,8 +1348,9 @@ export default function SearchTemplate({
               "shadow-elevation-3", // mockup-ok: variant C lift, owner pick 2026-08-10
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               // V3-D421d still holds, "keep the pinned bar the SAME size as normal (no shrink,
-              // owner)": the height is now the fixed h-[54px] above, which is the same at rest and
-              // pinned, so the no-shrink rule is preserved rather than dropped.
+              // owner)": the height is now the fixed h-[64px] above (stepped from 54 to 64 per
+              // commit 7bc5c23ee, 2026-08-11), which is the same at rest and pinned, so the
+              // no-shrink rule is preserved rather than dropped.
             )}
             // I2 mockup-ok: dynamic boxShadow style removed, the shadow-[...] class above
             // now carries the constant approved value. `pillBoxShadow`/`pillShadowOpacity`

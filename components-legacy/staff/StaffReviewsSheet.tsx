@@ -2,8 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import { ArrowLeft, ChevronDown, Star, Check } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { ChevronDown, Star, Check } from "lucide-react";
 import { Avatar, RatingStars } from "@/app/[locale]/_components/primitives";
+import { BackButton } from "@/app/[locale]/_components/primitives/BackButton";
 import { formatReviewDate } from "@/app/[locale]/_components/salon/_shared";
 
 export interface SheetReview {
@@ -36,6 +38,7 @@ export default function StaffReviewsSheet({
   locale: string;
   onClose: () => void;
 }) {
+  const t = useTranslations("common");
   const [mounted, setMounted] = useState(false);
   const [filters, setFilters] = useState<Set<number>>(new Set());
   const [sort, setSort] = useState<Sort>("best");
@@ -78,10 +81,12 @@ export default function StaffReviewsSheet({
     <div className="fixed inset-0 z-[75] flex flex-col bg-white">
       {/* Header */}
       <div className="sticky top-0 z-10 flex items-center gap-3 border-b border-s-border bg-white px-4 py-3">
-        <button type="button" onClick={onClose} aria-label="Zurück" className="grid h-9 w-9 place-items-center rounded-full hover:bg-s-bg-sunken">
-          <ArrowLeft size={20} strokeWidth={2.2} className="text-s-ink" />
-        </button>
-        <span className="font-heading text-[17px] font-bold text-s-ink">Bewertungen</span>
+        {/* mockup-ok: revert/restores , same 44px white/hairline/shadow-elevation-2 circle already
+            shipped 2026-08-10 (NAV CONTROLS lock) via this exact BackButton flat variant on
+            SalonStickyTabNav.tsx and BookingWizard.tsx; composing the registered primitive per
+            FLOORS LAW 9, no new appearance invented here. */}
+        <BackButton variant="flat" label={t("back")} onClick={onClose} />
+        <span className="font-heading text-[17px] font-bold text-s-ink">{t("reviews")}</span>
       </div>
 
       <div className="flex-1 overflow-y-auto px-5 pb-12">
@@ -178,7 +183,7 @@ export default function StaffReviewsSheet({
               </article>
             );
           })}
-          {shown.length === 0 && <p className="text-[14px] italic text-s-ink-2">Keine Bewertungen mit dieser Bewertung.</p>}
+          {shown.length === 0 && <p className="text-[14px] italic text-s-ink-2">{t("noReviewsForRating")}</p>}
         </div>
       </div>
     </div>,

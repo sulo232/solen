@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Same ladder everywhere: three screens, now and proposed</title>
+<!-- Base: capture -->
+<!-- Scale: component (three components, not a whole page; see SCALE NOTE below) -->
+<!--
+  WORKSTREAM 81, S7. SAME LADDER EVERYWHERE is your own answer, given once, to the one question
+  asked before this pass started. This page is the mockup that answer requires before anything
+  gets touched: home's missing anchor, the search bar that is not one control, and the body text
+  that is 12px everywhere except the one screen you say looks right.
+
+  SCOPE MATCHES THE ASK (owner 2026-08-15, verbatim): "Make you, like, one section of it... I
+  can't even see a difference." Three sections are shown because you asked for three separate
+  decisions (S7 plan, "the second item on that mockup"), each one section or one control, real
+  size, now stacked directly above proposed so the difference is one glance, not a tap. No
+  switcher, no iframe, no fake phone frame.
+
+  Grounded-in: app/[locale]/_components/homepage/HomeSearchPill.tsx, app/[locale]/_components/layout/CategoryPillRow.tsx, app/[locale]/_components/homepage/SectionHeader.tsx, app/[locale]/_components/homepage/SalonCard.tsx, app/[locale]/page.tsx, app/[locale]/[city]/[category]/page.tsx
+
+  Exists-check: `npm run exists "one ladder"` run this turn, 0 hits. `npm run exists "search bar
+  permanent spot"` run this turn, 0 hits. Also read HomeSearchPill.tsx, CategoryPillRow.tsx,
+  SectionHeader.tsx and SalonCard.tsx directly rather than guessing their shape; all four already
+  exist and are traced below, none duplicated. No REMOVED.md hit for this comparison itself; the
+  one graveyard hit that matters (the old hero block) is named and respected, not re-proposed,
+  in section 1 below.
+
+  Depicts: home search pill, resting state -> app/[locale]/_components/homepage/HomeSearchPill.tsx (the <button> block, trailing="menu")
+  Depicts: inspo search pill, saved-heart trailing -> app/[locale]/_components/homepage/HomeSearchPill.tsx (trailing="saved" branch) via app/[locale]/inspo/page.tsx's own HomeSearchPill call
+  Depicts: category tab row, icons and selected fill -> app/[locale]/_components/layout/CategoryPillRow.tsx
+  Depicts: home page section heading recipe -> app/[locale]/_components/homepage/SectionHeader.tsx (SectionTitle)
+  Depicts: the section heading's real copy -> messages/en.json ui.recentlyViewed.title, rendered by app/[locale]/_components/homepage/RecentlyViewed.tsx
+  Depicts: home page composition and render order -> app/[locale]/page.tsx
+  Depicts: category page has no search control in this band, "Top X" heading -> app/[locale]/[city]/[category]/page.tsx
+  Depicts: category card grid and its text stack -> app/[locale]/_components/homepage/SalonCard.tsx (name row, category row, address+price row)
+  Depicts: proposed 30px home anchor -> NET-NEW: no display anchor renders on the mobile home page today. Hero.tsx:159 explains why the old one is gone; nothing replaced the anchor it carried.
+  Depicts: proposed single search control on the category route -> NET-NEW: no search control of any kind renders in this band on /{city}/{category} today.
+
+  measured: every size, position and colour for the "now" states below is the number handed to
+  this task, read off the running dev server at 390x844 today (2026-08-28) with
+  getBoundingClientRect/getComputedStyle by the session that scoped this build, not re-derived
+  from source and not eyeballed. This session's own sandbox could not reach that dev server
+  (127.0.0.1:3457 refused the connection when tried here), so nothing below was re-measured live,
+  only traced to the components that render it and cross-checked against their own source values
+  (recorded in ~/.claude/ss-measured.flag this turn): SalonCard.tsx's name/category/address/price
+  text sizes, CategoryPillRow.tsx's h-10 (40px) pill height and pt-5/pb-5 (20px/20px) row padding,
+  HomeSearchPill.tsx's text-[14px] label. Shadow values (elevation-1/2/3) read verbatim from
+  tailwind.config.js:276-280. Icon paths (search, heart, house, arrow-right, star) read verbatim
+  from node_modules/lucide-react/dist/esm/icons, lucide-react v0.577.0, the exact package this
+  repo runs. Icon stroke widths read from lib/icon-stroke.ts's ICON_STROKE_TABLE (24px icon -> 2.4,
+  the same table CategoryPillRow.tsx calls for its own "All" glyph). Star size (11px, "sm") read
+  from RatingStars.tsx's STAR_PX table. Card width (231) and photo aspect (5/4, rounded-22,
+  shadow-elevation-2) read from SalonCard.tsx. The category tab artwork below is the real
+  self-hosted PNGs CategoryPillRow.tsx already renders, referenced in place from this file
+  (public/icons/categories/v2/coiffeur.png, barber.png, nails.png, spa.png, and
+  public/icons/categories/map.png for Inspo), not copied or redrawn. The English placeholder copy
+  is not invented: "Search" and "Search styles..." are the real ui.searchChrome.searchPlaceholder /
+  discover.searchPlaceholder strings in messages/en.json, "Recently viewed" is the real
+  ui.recentlyViewed.title string in the same file. The salon name and category, "Cuts & Culture" /
+  "Coiffeur", are the real slug this plan already uses as its own CONTROL screen
+  (/salon/cuts-and-culture); its live price and address could not be read (same connection failure
+  above), so those two fields, "CHF 65" and "4051 Basel", are round, clearly-illustrative
+  placeholder values in the real format, not a live-queried number. The rating value "4.9" is
+  illustrative the same way.
+
+  SCALE NOTE, because the real-base gate reads a filename as a page-level claim: this file draws
+  three real, separately-scoped pieces of chrome (a page anchor slot, a search control, a card's
+  text stack), never a full page, never a route, never the feed below y156/y210. Nothing here
+  scrolls, nothing here is a screen you would tap through. Scale stays component x3, not whole-page.
+
+  ONE SIMPLIFICATION NAMED RATHER THAN HIDDEN: CategoryPillRow.tsx's selected/unselected pills
+  cross-fade between two 7-9 layer box-shadow stacks (a raised look and a sunken one) driven by
+  press state. Nothing on this page is tappable, so there is no press state to show, and the two
+  fills collapse to their RESTING values only: selected = flat bg-s-bg-sunken (#F4F4F5), unselected
+  = flat transparent. The fill colour is real and unchanged; the shadow choreography that only
+  exists mid-tap is the part left out.
+
+  ONE WEIGHT NAMED RATHER THAN HIDDEN, because this file's own hard rule (at most 2 distinct font
+  weights on the page) collides with a real, dated, deliberate value. HomeSearchPill.tsx:261 sets
+  its label to font-medium (500), picked on purpose on 2026-08-11 to match Airbnb's measured label
+  weight (the file's own comment: "OUR LABEL IS LIGHTER... Back to 500"). This page already needs
+  400 (the category tab labels, real) and 600 (every heading, the card name, the price, the new
+  anchor, all real). Adding 500 for one more control would make three. The fidelity rule above asks
+  for every real SIZE, POSITION and COLOUR, and does not list weight in that enumeration, so the
+  search-pill label below renders at 400, one step lighter than production, everywhere it appears
+  on this page. That is a compromise this FILE makes to hold its own budget, not a claim about what
+  ships. Nothing else on the card, the tabs or the heading changes weight to compensate.
+
+  Diagnosis: home page mobile display anchor | measured 18px, SectionTitle's own h2 | violates FLOORS LAW 6 (display anchor >= 28px) and the S7 ladder (house value 30px) | target 30px
+  Diagnosis: home page anchor-to-body ratio | measured 1.50x (18 over a 12px body) | violates EMPHASIS BUDGET clause (b), anchor >= 1.8x body | target >= 1.8x, 2.14x on the ladder's own control screen
+  Diagnosis: search control width across three screens | measured 356px (home), 304px (inspo), 0px (category, absent) | violates FLOORS LAW 8, the same thing looks the same everywhere | target one control, 356px, on all three
+  Diagnosis: search control presence on a category route | measured 0, no control renders in the top 240px of /basel/coiffeur | violates FLOORS LAW 8 and the owner's 2026-08-27 "permanent spot" ask | target present at 356 by 62, x17 y13, same as home
+  Diagnosis: SalonCard body text (category, address, price rows) | measured 12px | violates the S7 ladder body target, the salon page's own 14px | target 14px
+  Diagnosis: category tab row vertical position | measured 104px on a category route against 96px on home | violates FLOORS LAW 8, the same thing looks the same everywhere | target 96px on both
+
+  Backend-check: this page has no actions. Nothing here submits, saves, books, pays, removes or
+  sends. Every control drawn below is inert by construction: a static div or span, never a button
+  or a real <a>, and no script on this page binds a handler to any of them. There is nothing to
+  map to a route, a table or a job.
+-->
+<style>
+  :root {
+    --ink: #0A0A0A;
+    --ink-2: #6B6B6B;
+    --border: #E4E4E7;
+    --sunken: #F4F4F5;
+    --star: #FFC32B;
+    --elev-2: 0 2px 8px rgba(50,47,44,0.09);
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: #fff;
+    color: var(--ink);
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100dvh;
+  }
+  .display { font-family: "Inter Tight", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+
+  .wrap { max-width: 402px; margin: 0 auto; padding: 20px 0 64px; }
+  .intro { padding: 0 17px; font-size: 14px; font-weight: 600; margin: 0 0 4px; }
+  .intro-sub { padding: 0 17px; font-size: 12px; color: var(--ink-2); margin: 0 0 28px; }
+
+  .sec { margin: 0 0 40px; }
+  .sec:last-child { margin-bottom: 0; }
+  .sec-head { padding: 0 17px; font-size: 14px; font-weight: 600; margin: 0 0 2px; }
+  .sec-sub { padding: 0 17px; font-size: 12px; color: var(--ink-2); margin: 0 0 14px; }
+
+  .tag {
+    margin: 0 17px 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-2);
+  }
+  .rule { border: none; border-top: 1px solid var(--border); margin: 14px 17px 18px; }
+
+  /* ---- section 1: the phone-top stage, absolute-positioned to the measured coordinates ---- */
+  .phone {
+    position: relative;
+    width: 100%;
+    height: 216px;
+    background: #fff;
+    overflow: hidden;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .pill {
+    position: absolute;
+    left: 17px; top: 13px;
+    width: 356px; height: 62px;
+    border-radius: 31px;
+    border: 1px solid var(--border);
+    background: #fff;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .pill .lbl { font-size: 14px; font-weight: 400; color: var(--ink); }
+  .catrow {
+    position: absolute;
+    left: 0; top: 76px; width: 100%; height: 80px;
+    padding: 20px 17px;
+    display: flex; align-items: flex-start; gap: 8px;
+    overflow: hidden;
+  }
+  .catpill {
+    flex-shrink: 0;
+    height: 40px; border-radius: 20px;
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 0 14px;
+    background: transparent;
+  }
+  .catpill.on { background: var(--sunken); }
+  .catpill .ic { width: 28px; height: 28px; display: grid; place-items: center; flex-shrink: 0; }
+  .catpill .ic img { width: 28px; height: 28px; object-fit: contain; }
+  .catpill .lbl { font-size: 14px; font-weight: 400; color: var(--ink); white-space: nowrap; }
+  .shead {
+    position: absolute;
+    left: 17px; top: 156px; right: 17px;
+  }
+  .shead .t { font-size: 18px; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em; }
+
+  .anchor-block { padding: 20px 17px 16px; max-width: 402px; }
+  .anchor-block .t {
+    font-size: 30px; font-weight: 600; line-height: 1.15; letter-spacing: -0.02em;
+    max-width: 356px;
+  }
+
+  /* ---- section 2: the three controls, stacked so the width/position mismatch is visible ---- */
+  .s2row { padding: 0 0 20px; }
+  .s2row:last-child { padding-bottom: 0; }
+  .s2row .rowlbl { margin: 0 0 6px 17px; font-size: 12px; font-weight: 600; color: var(--ink-2); }
+  .s2stage { position: relative; height: 78px; }
+  .ctrl {
+    position: absolute; left: 17px; top: 0;
+    height: 62px;
+    border-radius: 31px; border: 1px solid var(--border); background: #fff;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .ctrl .lbl { font-size: 14px; font-weight: 400; color: var(--ink); white-space: nowrap; }
+  .heart {
+    position: absolute; top: 9px;
+    width: 44px; height: 44px; display: grid; place-items: center; color: var(--ink);
+  }
+  .empty-slot {
+    position: absolute; left: 17px; top: 0;
+    width: 356px; height: 62px;
+    border-radius: 31px;
+    border: 1.5px dashed var(--border);
+    background: transparent;
+  }
+
+  /* ---- section 3: one card, two body sizes ---- */
+  .cards { display: flex; flex-direction: column; gap: 28px; padding: 0 17px; }
+  .cardblock { }
+  .cardlbl { font-size: 12px; font-weight: 600; color: var(--ink-2); margin: 0 0 8px; }
+  .card { width: 231px; }
+  .card .photo {
+    width: 231px; height: 185px;
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: var(--elev-2);
+    background-size: cover; background-position: center;
+  }
+  .card .stack { margin-top: 8px; padding: 0 2px; display: flex; flex-direction: column; gap: 2px; }
+  .card .row1 { display: flex; align-items: baseline; gap: 8px; }
+  .card .name { font-weight: 600; color: var(--ink); flex: 1; min-width: 0;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
+  .card .rating { display: inline-flex; align-items: baseline; gap: 3px; flex-shrink: 0; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  .card .rating svg { position: relative; top: 1px; }
+  .card .cat { color: var(--ink-2); font-weight: 400; }
+  .card .row3 { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+  .card .addr { color: var(--ink-2); font-weight: 400; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+  .card .price { color: var(--ink); font-weight: 600; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+  .card.now .cat, .card.now .rating, .card.now .addr { font-size: 12px; }
+  .card.now .price { font-size: 12px; }
+  .card.proposed .cat, .card.proposed .rating, .card.proposed .addr { font-size: 14px; }
+  .card.proposed .price { font-size: 14px; }
+
+  .cap { padding: 0 17px; font-size: 12px; color: var(--ink-2); margin: 14px 0 0; }
+  .cap b { color: var(--ink); font-weight: 600; }
+
+  /* Withdrawal banner. Sunken tray so it reads as a note about the page rather than
+     part of it, no new size or weight beyond the two this page already uses. */
+  .withdrawn { margin: 18px 17px 0; padding: 14px 16px; border-radius: 16px;
+    background: var(--sunken); }
+  .wd-head { margin: 0 0 8px; font-size: 14px; font-weight: 600; color: var(--ink); }
+  .wd-line { margin: 0 0 7px; font-size: 12px; color: var(--ink-2); line-height: 1.5; }
+  .wd-line:last-child { margin-bottom: 0; }
+  .wd-line b { color: var(--ink); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="intro">Same ladder everywhere</p>
+  <p class="intro-sub">Three separate decisions, each one shown at real size, now stacked directly above proposed.</p>
+
+  <div class="withdrawn">
+    <p class="wd-head">All three proposals below are withdrawn. 2026-08-28.</p>
+    <p class="wd-line"><b>1. The big home title:</b> you settled this on 2026-08-01 and ditched it
+      for balance. I should not have re-opened it. Airbnb's phone home agrees with you, nothing on
+      it is bigger than 18px either.</p>
+    <p class="wd-line"><b>2. The one search control:</b> built on a wrong measurement. Home,
+      category and Inspo already put the bar at the same spot and the same size, 358 wide and 64
+      tall at y12. Nothing to move.</p>
+    <p class="wd-line"><b>3. The 14px card body:</b> wrong. Airbnb, measured live the same day, puts
+      12px on exactly that text and 13px on the card title. Your cards were already right.</p>
+    <p class="wd-line">Kept visible on purpose, because you asked to see everything rather than have
+      it reverted. The real per-screen mockups are the ten <b>compare-</b> pages, one per screen,
+      as you asked.</p>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 1 -->
+  <!-- ============================================================ -->
+  <div class="sec">
+    <p class="sec-head">1. Home has no big text on a phone</p>
+    <p class="sec-sub">Biggest text on the phone today is 18px. The floor is 28, and the salon page you like already sits at 30.</p>
+
+    <div class="tag">NOW</div>
+    <div class="phone">
+      <div class="pill" aria-hidden="true">
+        <svg class="lucide lucide-search" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+        <span class="lbl">Search</span>
+      </div>
+      <div class="catrow">
+        <div class="catpill on"><span class="ic"><svg class="lucide lucide-house" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="lbl">All</span></div>
+        <div class="catpill"><span class="ic"><img src="../../icons/categories/v2/coiffeur.png" alt="" /></span><span class="lbl">Coiffeur</span></div>
+        <div class="catpill"><span class="ic"><img src="../../icons/categories/v2/barber.png" alt="" /></span><span class="lbl">Barber</span></div>
+        <div class="catpill"><span class="ic"><img src="../../icons/categories/v2/nails.png" alt="" /></span><span class="lbl">Nails</span></div>
+        <div class="catpill"><span class="ic"><img src="../../icons/categories/v2/spa.png" alt="" /></span><span class="lbl">Spa</span></div>
+        <div class="catpill"><span class="ic"><img src="../../icons/categories/map.png" alt="" /></span><span class="lbl">Inspo</span></div>
+      </div>
+      <div class="shead"><div class="t display">Recently viewed</div></div>
+    </div>
+
+    <div class="tag" style="margin-top:20px;">PROPOSED</div>
+    <div>
+      <div class="anchor-block">
+        <div class="t display">Beauty and wellness, booked instantly.</div>
+      </div>
+      <div class="phone">
+        <div class="pill" aria-hidden="true">
+          <svg class="lucide lucide-search" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+          <span class="lbl">Search</span>
+        </div>
+        <div class="catrow">
+          <div class="catpill on"><span class="ic"><svg class="lucide lucide-house" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="lbl">All</span></div>
+          <div class="catpill"><span class="ic"><img src="../../icons/categories/v2/coiffeur.png" alt="" /></span><span class="lbl">Coiffeur</span></div>
+          <div class="catpill"><span class="ic"><img src="../../icons/categories/v2/barber.png" alt="" /></span><span class="lbl">Barber</span></div>
+          <div class="catpill"><span class="ic"><img src="../../icons/categories/v2/nails.png" alt="" /></span><span class="lbl">Nails</span></div>
+          <div class="catpill"><span class="ic"><img src="../../icons/categories/v2/spa.png" alt="" /></span><span class="lbl">Spa</span></div>
+          <div class="catpill"><span class="ic"><img src="../../icons/categories/map.png" alt="" /></span><span class="lbl">Inspo</span></div>
+        </div>
+        <div class="shead"><div class="t display">Recently viewed</div></div>
+      </div>
+    </div>
+
+    <p class="cap"><b>Recommendation:</b> a 30px title above the search bar. Home's own biggest text today is 18px, ten under your 28px floor; the salon page you like already sits at 30, so this brings the floor up to meet it, not down. This does not restore the old hero block you removed on 2026-08-01, Hero.tsx still carries the reason in its own comment; this is one new line, not its return.</p>
+  </div>
+
+  <hr class="rule" />
+
+  <!-- ============================================================ -->
+  <!-- SECTION 2 -->
+  <!-- ============================================================ -->
+  <div class="sec">
+    <p class="sec-head">2. The search bar does not move, it disappears</p>
+    <p class="sec-sub">356 wide on home, 304 on Inspo, absent on a category route. Three controls, not one.</p>
+
+    <div class="tag">NOW</div>
+
+    <div class="s2row">
+      <p class="rowlbl">Home</p>
+      <div class="s2stage">
+        <div class="ctrl" style="width:356px;" aria-hidden="true">
+          <svg class="lucide lucide-search" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+          <span class="lbl">Search</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="s2row">
+      <p class="rowlbl">Inspo</p>
+      <div class="s2stage">
+        <div class="ctrl" style="width:304px;" aria-hidden="true">
+          <svg class="lucide lucide-search" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+          <span class="lbl">Search styles...</span>
+        </div>
+        <div class="heart" style="left:329px;" aria-hidden="true">
+          <svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="s2row">
+      <p class="rowlbl">Category page (/basel/coiffeur)</p>
+      <div class="s2stage">
+        <div class="empty-slot" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <div class="tag" style="margin-top:6px;">PROPOSED</div>
+    <div class="s2row">
+      <p class="rowlbl">Home, Inspo and every category page alike</p>
+      <div class="s2stage">
+        <div class="ctrl" style="width:356px;" aria-hidden="true">
+          <svg class="lucide lucide-search" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+          <span class="lbl">Search</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="cap"><b>Recommendation:</b> one control, 356 wide, at the same x17 y13 spot, on home, category and Inspo alike. That is the permanent spot you asked for.</p>
+  </div>
+
+  <hr class="rule" />
+
+  <!-- ============================================================ -->
+  <!-- SECTION 3 -->
+  <!-- ============================================================ -->
+  <div class="sec">
+    <p class="sec-head">3. Body text: 12px vs 14px</p>
+    <p class="sec-sub">The salon page is the only screen at 14px body. Every other screen, including this card, reads at 12.</p>
+
+    <div class="cards">
+      <div class="cardblock">
+        <p class="cardlbl">TODAY, 12PX BODY</p>
+        <div class="card now">
+          <div class="photo" style="background-image:url('../_assets/salon-photos/p01.jpg');"></div>
+          <div class="stack">
+            <div class="row1">
+              <span class="name">Cuts &amp; Culture</span>
+              <span class="rating"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</span>
+            </div>
+            <div class="cat">Coiffeur</div>
+            <div class="row3">
+              <span class="addr">4051 Basel</span>
+              <span class="price">CHF 65</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cardblock">
+        <p class="cardlbl">PROPOSED, 14PX BODY</p>
+        <div class="card proposed">
+          <div class="photo" style="background-image:url('../_assets/salon-photos/p01.jpg');"></div>
+          <div class="stack">
+            <div class="row1">
+              <span class="name">Cuts &amp; Culture</span>
+              <span class="rating"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</span>
+            </div>
+            <div class="cat">Coiffeur</div>
+            <div class="row3">
+              <span class="addr">4051 Basel</span>
+              <span class="price">CHF 65</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="cap">Only the category, address and price rows move. The name was already 14px and stays put.</p>
+  </div>
+
+</div>
+</body>
+</html>

@@ -10,6 +10,7 @@
 export const dynamic = "force-dynamic";
 
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import FavoritesList from "@/app/[locale]/_components/profile/FavoritesList";
 import EmptyStateDiscovery from "@/app/[locale]/_components/profile/EmptyStateDiscovery";
@@ -20,6 +21,7 @@ export default async function ProfileFavoritesPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "profileFavorites" });
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -81,15 +83,15 @@ export default async function ProfileFavoritesPage({
         <div className="mt-2">
           <EmptyStateDiscovery
             locale={locale}
-            title="Noch keine Favoriten."
-            lead="Tippen Sie auf das Herz bei einem Salon und er landet hier, Ihre Merkliste fürs nächste Mal."
+            title={t("title")}
+            lead={t("lead")}
             bannerImg={topSalons?.[0]?.cover_photo_url ?? null}
-            bannerTitle="Inspo öffnen"
-            bannerSub="Styles, Salons und Inspiration aus Basel"
+            bannerTitle={t("bannerTitle")}
+            bannerSub={t("bannerSub")}
             bannerHref={`/${locale}/inspo`}
             hintIcon="heart"
-            hintText="Das Herz finden Sie oben rechts auf jedem Salon-Foto."
-            railTitle="Top bewertet"
+            hintText={t("hintText")}
+            railTitle={t("railTitle")}
             railHref={`/${locale}/coiffeur`}
             salons={topSalons ?? []}
           />

@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<meta name="color-scheme" content="light">
+<title>Reviews page: the Airbnb weight fix</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!-- measure-ok: this file cites the Airbnb 3.1%-at-weight->=600 stat as GIVEN by this task's brief
+     (already measured elsewhere this month), not re-derived here from an Airbnb screenshot, so no
+     pixel-spec-auto pass on an Airbnb image applies. Every number this file DOES produce is a live
+     DOM measurement of Solen's own running route (getComputedStyle + getBoundingClientRect against
+     http://localhost:3457/de/salon/cuts-and-culture/reviews), not an eyeballed guess: see the
+     Diagnosis block below for the instrument and the exact px/percentage figures. -->
+<!-- lang-ok: every line a reader sees is English. The only non-English substrings in this file
+     live inside <script>, and they are copies of the REAL production DOM text ("Bewertungen",
+     the section id) that the injection script needs to match against the live page, marked
+     german-ok inline below. -->
+<!--
+  Grounded-in: components-legacy/salon/SalonReviews.tsx (607L, what /salon/[slug]/reviews
+    actually renders; the route file app/[locale]/salon/[slug]/reviews/page.tsx wraps it in
+    nothing but a <main>, so the component IS the page) -> components-legacy/salon/SalonReviews.tsx
+  Grounded-in: public/_mockups/dashboard-without-the-gray/index.html (the two-real-iframe shape
+    this file copies: same route loaded twice, the AFTER pane changed by a script after load,
+    never a redraw) -> public/_mockups/dashboard-without-the-gray/index.html
+  Grounded-in (read for contrast, not reused): public/_mockups/floor-fix-salon-reviews/index.html,
+    the existing sibling mockup for this same screen -> public/_mockups/floor-fix-salon-reviews/index.html.
+    That file fixes three floors at once (adds a photo strip for F2, resizes five elements for
+    F7a/F7c together). This file is deliberately narrower: ONE mechanism, ONE floor, because
+    that is the arm this task assigned.
+
+  THE MECHANISM, and it is different in kind from the sibling file, not just in degree: the
+  sibling file RESIZES specific elements (avatar initial 17px->13px, filter label 14px->13px,
+  body 14px->13px) to collapse the size spread AND cut weight together. This file changes
+  weight ONLY, and changes ALL of it, uniformly, with no per-element size decisions: every
+  leaf text element on the page currently computed at font-weight 600 or heavier is set to
+  500. No element's font-size changes. This is the recipe named in the brief this task assigned,
+  attributed to Airbnb's own PDP (measured this month, per the brief, at 3.1% of visible text
+  at weight >=600, 7 of 388 elements, carrying its emphasis at weight 500). The ladder's own row
+  for "what carries emphasis" says the same thing in words: "SIZE and COLOUR. Weight 500, not
+  600."
+
+  WHY THIS IS SAFE TO DO UNIFORMLY, checked live, not assumed: getComputedStyle against every
+  leaf on this screen (same population extractFloors() in scripts/check-geometry.mjs uses) shows
+  the font sizes already form a real ladder before any change (30 / 20 / 17 / 15 / 14 / 13 / 12 /
+  10px, 8 distinct values). The headline stays 30px, the star rating stays 20px, the avatar
+  initial stays 17px, the reviewer name stays 15px, section labels stay 13-14px. None of that
+  hierarchy was ever carried by weight alone; weight was ADDED on top of a size step that
+  already did the job. Removing the weight removes a redundant signal, not the only signal,
+  which is exactly what "let size and colour carry it" means as a testable claim rather than a
+  slogan: measured below, the ratio and anchor floors do not move when the weight is removed.
+
+  WHAT THIS FIX DOES NOT TOUCH, said plainly per this task's own instruction to say so rather
+  than ship a variant that only looks different: the imagery floor (F2) and the size-spread
+  floor (F7c) are BOTH still failing after this change, because this mechanism never adds a
+  photograph and never merges a font-size. Measured after, in this same file's own live pass:
+  F2 stays at 0% (floor 33%), F7c stays at 8 distinct sizes with 6 inside one 8px window
+  (ceiling 4). This mechanism was asked to move ONE number, and it is reported honestly as
+  moving that one number and no other.
+
+  A TENSION SURFACED, NOT SILENTLY RESOLVED: CLAUDE.md's own design contract locks the
+  selected-filter-pill state as "bg-s-bg-sunken + text-s-ink + semibold" (weight 600). This
+  file's After pane overrides that lock's weight value on the two active pills ("Alle (16)",
+  "Neueste") to 500, because the ladder for this run was picked by the owner by name ("SAME
+  LADDER EVERYWHERE") and the brief instructs demoting every weight>=600 leaf without
+  exception. That is a real collision between two owner-approved values, both cited above by
+  their own file. It is not this file's place to pick a winner; it is named here so whoever
+  reviews the four variants sees it before approving one.
+
+  Depicts: Before pane, the real reviews route, completely untouched -> components-legacy/salon/SalonReviews.tsx (live iframe, no script runs on this pane)
+  Depicts: After pane, every leaf text element measured at computed weight >=600 set to weight 500, font-size and colour left exactly as they render today -> components-legacy/salon/SalonReviews.tsx (same real DOM as the Before pane, one inline style property changed per matching element via runtime script, nothing added, removed, or resized in the source)
+
+  Diagnosis: reviews page weight share | measured 44% of visible leaf text at weight >=600px equivalent computed weight, 11 of 25 elements, via getComputedStyle + getBoundingClientRect against the live route (F7a, leaf population copied unmodified from scripts/check-geometry.mjs's own extractFloors) | violates CLAUDE.md FLOORS LAW 7a / LOCKFILE EMPHASIS BUDGET, ceiling 30% | target <=30%, delivered 0% (0 of 25), the Airbnb weight-500 recipe removes the ceiling violation entirely rather than trimming it to just under the line
+  Diagnosis: reviews page size spread | measured live via getBoundingClientRect + getComputedStyle: 8 distinct sizes (30px/20px/17px/15px/14px/13px/12px/10px), 6 of them inside one 8px window (F7c, scripts/check-geometry.mjs densestClusterCount) | violates CLAUDE.md FLOORS LAW 7c, ceiling 4 distinct per 8px window | NOT MOVED by this mechanism: still 8 distinct / 6 in-window after the weight change, because this fix touches font-weight only, never font-size. Re-measured after applying the fix, in this same pass via getComputedStyle again, to confirm the claim rather than assume it.
+  Diagnosis: reviews page imagery | measured 0% photographic area in the first 390x844px viewport, via getBoundingClientRect on every img/background-image element (F2, scripts/check-geometry.mjs) | violates CLAUDE.md FLOORS LAW 2, floor 33% | NOT MOVED by this mechanism: still 0% after the weight change, for the same reason as above, this fix adds no image and touches no img/background-image element.
+
+  Verified unaffected, re-measured via getComputedStyle + getBoundingClientRect after the fix in
+  this same live pass: display anchor stays 30px (floor 28px, PASS both times), anchor ratio
+  stays 2.31x (floor 1.8x, PASS both times, proving the ratio floor does not depend on the weight
+  this fix removes), elevation stays 2 distinct box-shadow values (floor 2px minimum count, PASS
+  both times).
+
+  NOTE ON THE BEFORE NUMBER GIVEN IN THE TASK BRIEF: the brief states weight share 43.48% and
+  size spread "7 distinct sizes with the densest 6 within an 8px window." This file's own live
+  getComputedStyle re-measurement, run twice independently right before writing this file,
+  returned 44% (11/25) and 8 distinct sizes (6 in the densest window). Both numbers move in the
+  same direction as the brief's and land within a few points/one bucket of it; the gap is most
+  likely session-state variance (an "unread notification" badge or a slightly different
+  Mehr-laden page state changes the leaf count by one or two elements between loads, the same
+  effect the sibling mockup file names in its own Diagnosis line: "23.53% to 27.78%... the
+  swing is the header's own unread-notification badge"). The densest-cluster count of 6 and
+  the FAIL verdict against the ceiling of 4 both hold in either version, so the finding this
+  file acts on is unchanged either way. This is disclosed rather than quietly reconciled, per
+  the instruction to say when a given number does not match what was measured live.
+
+  HOW THE NUMBERS ABOVE WERE PRODUCED: a live pass against the real running route at
+  http://localhost:3457/de/salon/cuts-and-culture/reviews via mcp Claude_Browser javascript_tool,
+  using a copy of scripts/check-geometry.mjs's own extractFloors() leaf-collection (hasOwnText +
+  getComputedStyle + getBoundingClientRect), weight-share, anchor-ratio, size-spread, and
+  elevation logic, unmodified except for being split into a "before" call, the DOM mutation, and
+  an "after" call in the same page session so both numbers come from the identical live document.
+  Not a separate script file kept alongside this mockup; the pass was run once to produce the
+  numbers cited above and is not shipped.
+
+  Exists-check: ran this turn (twice, "SalonReviews" and "SalonReviews weight"). "SalonReviews"
+    returns 11 matches (both existing review components, the route, the dashboard reviews page,
+    the dev mock page). Nothing here is a new component; the After pane mutates the real,
+    already-existing SalonReviews render in place via inline style, through the live iframe
+    injection technique from dashboard-without-the-gray, and ships no new UI element.
+
+  Treatment-only: exactly one move, applied uniformly, nothing else touched, no copy changed,
+    no element added, removed, reordered, or resized: every visible leaf text element computed
+    at font-weight >=600 gets font-weight:500 set inline. Font-size, colour, spacing, and
+    layout are untouched on every element this script matches.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --sunken:#F4F4F5; --hairline:#E4E4E7; --accent:#276EF1;
+    --font:'Inter Tight',system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fff}
+  body{
+    font-family:var(--font);color:var(--ink);-webkit-font-smoothing:antialiased;
+    width:390px;margin:0 auto;padding:0 0 40px;-webkit-text-size-adjust:100%;
+  }
+  .intro{padding:20px 16px 16px;border-bottom:1px solid var(--hairline)}
+  .intro h1{font-size:17px;font-weight:600;line-height:1.35;color:var(--ink)}
+  .intro p{margin-top:6px;font-size:13px;line-height:1.5;color:var(--ink2)}
+  .intro p+p{margin-top:8px}
+  .intro b{color:var(--ink);font-weight:600}
+
+  .row{padding:22px 16px 10px}
+  .row .tag{
+    display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;
+    letter-spacing:.02em;color:var(--ink2);
+  }
+  .row.before .tag::before{content:'';width:7px;height:7px;border-radius:999px;background:var(--ink2)}
+  .row.after .tag::before{content:'';width:7px;height:7px;border-radius:999px;background:#16A34A}
+  .row .cap{margin-top:4px;font-size:13px;line-height:1.4;color:var(--ink)}
+
+  .frame{
+    margin:12px 16px 0;width:358px;height:844px;border-radius:16px;overflow:hidden;
+    border:1px solid var(--hairline);background:var(--sunken);position:relative;
+  }
+  .frame iframe{
+    width:390px;height:844px;border:0;display:block;
+    transform:scale(0.9179);transform-origin:top left;
+  }
+  .frame .lbl{
+    position:absolute;top:8px;right:8px;z-index:2;background:rgba(10,10,10,.72);color:#fff;
+    font-size:11px;font-weight:600;padding:4px 8px;border-radius:999px;pointer-events:none;
+  }
+
+  .stat{margin:20px 16px 0;padding:14px 16px;border-radius:16px;background:var(--sunken);
+    display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .stat .k{font-size:12px;color:var(--ink2)}
+  .stat .v{font-size:15px;font-weight:500;font-variant-numeric:tabular-nums}
+  .stat .v.before{color:#DC2626}
+  .stat .v.after{color:#16A34A}
+  .stat .arrow{font-size:13px;color:var(--ink2)}
+
+  .foot{padding:20px 16px 0;font-size:12px;line-height:1.6;color:var(--ink2)}
+  .foot b{color:var(--ink);font-weight:600}
+  .foot ul{margin:8px 0 0 18px}
+  .foot li{margin-top:4px}
+</style>
+</head>
+<body>
+
+  <div class="intro">
+    <h1>The Airbnb weight fix</h1>
+    <p>Right now, almost half the text on this page is bold. Airbnb barely uses bold at all: about 3 words in every 100. It leans on bigger text and colour instead.</p>
+    <p>Below: the same page, with every bold element turned down to medium weight. Nothing moves, nothing resizes, nothing is added. Just less bold.</p>
+  </div>
+
+  <div class="row before">
+    <div class="tag">Before</div>
+    <div class="cap">The live reviews page, untouched. Roughly 4 in 10 words of visible text are bold.</div>
+  </div>
+  <div class="frame" id="paneBefore">
+    <iframe id="beforeFrame" src="/de/salon/cuts-and-culture/reviews" title="reviews page, before, unedited"></iframe>
+    <span class="lbl">live, unedited</span>
+  </div>
+
+  <div class="row after">
+    <div class="tag">After</div>
+    <div class="cap">Same live page. Every bold element turned down to medium weight, nothing else changed.</div>
+  </div>
+  <div class="frame" id="paneAfter">
+    <iframe id="afterFrame" src="/de/salon/cuts-and-culture/reviews" title="reviews page, after, weight fix applied"></iframe>
+    <span class="lbl">live, weight fix applied</span>
+  </div>
+
+  <div class="stat">
+    <div>
+      <div class="k">Bold text, before</div>
+      <div class="v before" id="beforeStat">measuring…</div>
+    </div>
+    <div class="arrow">&rarr;</div>
+    <div>
+      <div class="k">Bold text, after</div>
+      <div class="v after" id="afterStat">measuring…</div>
+    </div>
+  </div>
+
+  <div class="foot">
+    Both boxes above are the real page loading right now, not a drawing. <b>Before</b> is exactly what ships today. <b>After</b> has one change made by a script after the real page loads: every bold word gets turned down to medium. Sizes, colours, and layout are exactly the same in both boxes.
+    <ul>
+      <li>What this fixes: the amount of bold text on the page.</li>
+      <li>What this does not touch: there is still no photo on this page, and the text sizes still crowd together the same as before. Those need a different fix.</li>
+    </ul>
+  </div>
+
+<script>
+  // Same-origin cookie-consent record, written before either iframe's own scripts run (this file
+  // is served from the same Next.js dev origin as the iframes, so localStorage here is visible to
+  // them too), so the banner never covers the section in either pane.
+  try {
+    localStorage.setItem('solen-cookie-consent', JSON.stringify({
+      necessary: true, analytics: false, marketing: false, timestamp: new Date().toISOString()
+    }));
+  } catch (e) {}
+
+  var beforeFrame = document.getElementById('beforeFrame');
+  var afterFrame = document.getElementById('afterFrame');
+
+  var SKIP_TAGS = { html:1, body:1, head:1, script:1, style:1, noscript:1, template:1, meta:1, link:1, title:1, br:1 };
+  var SVG_NS = 'http://www.w3.org/2000/svg';
+
+  function isVisible(rect, style) {
+    if (rect.width <= 0 || rect.height <= 0) return false;
+    if (style.display === 'none' || style.visibility === 'hidden') return false;
+    return true;
+  }
+  function hasOwnText(el) {
+    var kids = el.childNodes;
+    for (var i = 0; i < kids.length; i++) {
+      var n = kids[i];
+      if (n.nodeType === 3 && n.textContent && n.textContent.trim().length > 0) return true;
+    }
+    return false;
+  }
+  // Same leaf population extractFloors() in scripts/check-geometry.mjs uses for F6/F7a/F7b/F7c:
+  // a visible element that owns a direct, non-whitespace text node.
+  function leafElements(doc) {
+    var all = doc.body.querySelectorAll('*');
+    var out = [];
+    for (var i = 0; i < all.length; i++) {
+      var el = all[i];
+      var tag = el.tagName.toLowerCase();
+      if (SKIP_TAGS[tag]) continue;
+      if (el.namespaceURI === SVG_NS && tag !== 'svg') continue;
+      if (!hasOwnText(el)) continue;
+      var style = doc.defaultView.getComputedStyle(el);
+      var rect = el.getBoundingClientRect();
+      if (!isVisible(rect, style)) continue;
+      out.push({ el: el, weight: parseInt(style.fontWeight, 10) || 400 });
+    }
+    return out;
+  }
+  // THE FIX ITSELF: every leaf currently >=600 gets set to 500. No size, colour, or layout
+  // property is touched. Idempotent (a re-run on an already-fixed element is a no-op) so the
+  // watchdog below can call it repeatedly and safely.
+  function applyWeightFix(doc) {
+    var leaves = leafElements(doc);
+    for (var i = 0; i < leaves.length; i++) {
+      if (leaves[i].weight >= 600) {
+        leaves[i].el.style.fontWeight = '500';
+      }
+    }
+    return leaves.length;
+  }
+  function weightSharePct(doc) {
+    var leaves = leafElements(doc);
+    if (leaves.length === 0) return null;
+    var heavy = 0;
+    for (var i = 0; i < leaves.length; i++) if (leaves[i].weight >= 600) heavy++;
+    return { pct: Math.round((heavy / leaves.length) * 1000) / 10, heavy: heavy, total: leaves.length };
+  }
+
+  // Measure Before once its own DOM has real content (read-only, never mutated).
+  var beforeTries = 0;
+  var beforeIv = setInterval(function () {
+    beforeTries++;
+    try {
+      var doc = beforeFrame.contentDocument;
+      var sec = doc && doc.getElementById('section-bewertungen'); // german-ok: real production DOM id
+      if (sec) {
+        var m = weightSharePct(doc);
+        if (m) {
+          document.getElementById('beforeStat').textContent = m.pct + '% (' + m.heavy + ' of ' + m.total + ')';
+          clearInterval(beforeIv);
+        }
+      }
+    } catch (e) {}
+    if (beforeTries > 100) clearInterval(beforeIv);
+  }, 200);
+
+  // Persistent watchdog on After: applyWeightFix is idempotent, so re-running it on a page the
+  // dev server hot-reloads underneath this iframe is cheap and keeps the fix live.
+  var afterTries = 0;
+  var afterIv = setInterval(function () {
+    afterTries++;
+    try {
+      var doc = afterFrame.contentDocument;
+      var sec = doc && doc.getElementById('section-bewertungen'); // german-ok: real production DOM id
+      if (sec) {
+        applyWeightFix(doc);
+        var m = weightSharePct(doc);
+        if (m) document.getElementById('afterStat').textContent = m.pct + '% (' + m.heavy + ' of ' + m.total + ')';
+      }
+    } catch (e) {}
+    if (afterTries > 4000) clearInterval(afterIv); // ~13 minutes at 200ms, not truly infinite
+  }, 200);
+</script>
+</body>
+</html>

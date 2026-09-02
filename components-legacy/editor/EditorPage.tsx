@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import { AnimatePresence } from "motion/react";
-import { ArrowLeft, Monitor, Tablet, Smartphone, RotateCcw, Pencil, List } from "lucide-react";
+import { ChevronLeft, Monitor, Tablet, Smartphone, RotateCcw, Pencil, List } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { useWindowSize } from "usehooks-ts";
@@ -167,10 +167,10 @@ export default function EditorPage() {
         {/* Back */}
         <button
           onClick={() => router.push(`/${locale}/dashboard`)}
-          className="p-1.5 rounded-btn hover:bg-s-bg-sunken transition-colors"
+          className="h-11 w-11 p-1.5 rounded-btn hover:bg-s-bg-sunken transition-colors"
           title="Back to Dashboard"
         >
-          <ArrowLeft size={16} strokeWidth={1.9} className="text-s-ink" />
+          <ChevronLeft size={16} strokeWidth={1.9} className="text-s-ink" />
         </button>
 
         {/* URL bar */}

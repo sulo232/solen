@@ -1,0 +1,339 @@
+{
+  "folder": "booking-staff",
+  "route": "/de/salon/cuts-and-culture/booking",
+  "measuredAtViewport": "402x844",
+  "httpStatus": 200,
+  "settled": true,
+  "redirectedAway": false,
+  "finalUrl": "http://localhost:3457/de/salon/cuts-and-culture/booking",
+  "reachedBy": {
+    "why": "The step is React state in components-legacy/booking/BookingWizard.tsx via lib/booking-context. That component reads no searchParams, so ?step=staff cannot select this screen and returns step one instead. The wizard has to be driven.",
+    "salon": "cuts-and-culture (id 5784b1ab-7314-437a-a608-01a729f02cdd). Verified it has MORE THAN ONE staff member before using it: 3 active rows in staff_members (Jonas, Marco, Tim), so BookingWizard's `hasStaffStep = staffList.length > 1` is true and the step is not skipped.",
+    "service": "Herrenschnitt, CHF 45, 30 min. Chosen because staff_services maps all three stylists to it (Herrenschnitt, Bart trimmen and Coupe & Bart are the only three mapped services, each to all three stylists), so StaffStep's `capable` filter drops nobody and the list renders at full width. It also carries zero rows in service_options and zero in service_addons, so the add button commits straight to the cart instead of opening ServiceDetailSheet.",
+    "steps": [
+      "1. Claude_Browser preview_start + navigate to http://localhost:3457/de/salon/cuts-and-culture/booking in tab-114, then tabs_select to FRONT the tab (this pane throttles rAF in background tabs).",
+      "2. resize_window 402x844 on that tab.",
+      "3. On the services step, click the add (Hinzufuegen) button inside the row whose text contains 'Herrenschnitt'. Bottom bar then reads 'CHF 45 / 1 Artikel / 30 Min' and the Weiter button becomes enabled.",
+      "4. Click Weiter. h1 changes from 'Services auswaehlen' to 'Stylist:in auswaehlen'.",
+      "5. Settle: sample the settle signature from scripts/measure-sections.mjs twice, 3 s apart. Both returned '19|2000|9408', two consecutive identical samples, so settled is true.",
+      "6. Run the extractSections function body from scripts/measure-sections.mjs via javascript_tool and save the result under the same top-level keys."
+    ],
+    "inputMethod": "The clicks in steps 3 and 4 were dispatched as HTMLElement.click() through mcp__Claude_Browser__javascript_tool, NOT through mcp__Claude_Browser__computer. The computer left_click action timed out after 30 s on three consecutive attempts (once by ref, twice by coordinate) and delivered nothing: the category pill's aria-pressed and background were unchanged afterwards. The page itself was responsive throughout (javascript_tool round-tripped in well under a second, document.getAnimations() reported 0 running animations, and document.elementFromPoint returned the real button at each target coordinate), so the failure is in the pane's input path, not the page. Recorded because it changes what the measurement proves: the React onClick handlers ran, but no real pointer event, hover state or focus-visible state was exercised.",
+    "notMeasured": "The 'Profil ansehen' link opens StaffProfileSheet, a separate overlay. It was not opened, so nothing here describes it.",
+    "measuredAt": "2026-08-27T16:05Z"
+  },
+  "title": "Book your appointment | Solen",
+  "pathname": "/de/salon/cuts-and-culture/booking",
+  "documentHeight": 900,
+  "screen": {
+    "distinctSizes": [
+      20,
+      16.5,
+      16,
+      15,
+      14,
+      13,
+      12
+    ],
+    "distinctWeights": [
+      "700",
+      "600",
+      "400",
+      "500"
+    ],
+    "textElements": 19,
+    "boldElements": 4
+  },
+  "sizeCountCaveat": "The 16px entry is the sr-only skip link 'Zum Inhalt springen', a 1x1 px clipped anchor. extractSections filters on display/visibility/opacity, none of which sr-only uses, so it counts. Distinct sizes a reader can actually see: 6 (20, 16.5, 15, 14, 13, 12). The same artefact is present in the five files measured by the script itself, so the number is left as the script produces it and the correction is noted rather than applied.",
+  "sections": [
+    {
+      "index": 0,
+      "tag": "main",
+      "className": "isolate pb-[calc(56px+env(safe-area-inset-bottom))] md:pb-[env(safe-area-inset-bottom)]",
+      "heading": "Stylist:in auswählen",
+      "box": {
+        "top": 0,
+        "left": 0,
+        "width": 402,
+        "height": 900
+      },
+      "surface": {
+        "background": "rgba(0, 0, 0, 0)",
+        "padding": "0px 0px 56px",
+        "borderRadius": "0px"
+      },
+      "textRoles": [
+        {
+          "fontSizePx": 20,
+          "fontWeight": "700",
+          "fontFamily": "Inter",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 20,
+          "letterSpacing": "normal",
+          "count": 1,
+          "sample": "CHF 45"
+        },
+        {
+          "fontSizePx": 16.5,
+          "fontWeight": "600",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 24.75,
+          "letterSpacing": "-0.165px",
+          "count": 1,
+          "sample": "Stylist:in auswählen"
+        },
+        {
+          "fontSizePx": 15,
+          "fontWeight": "600",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 22.5,
+          "letterSpacing": "normal",
+          "count": 1,
+          "sample": "Keine Präferenz"
+        },
+        {
+          "fontSizePx": 15,
+          "fontWeight": "500",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 22.5,
+          "letterSpacing": "normal",
+          "count": 3,
+          "sample": "Jonas"
+        },
+        {
+          "fontSizePx": 14,
+          "fontWeight": "600",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(255, 255, 255)",
+          "textTransform": "none",
+          "lineHeightPx": 20,
+          "letterSpacing": "normal",
+          "count": 1,
+          "sample": "Weiter"
+        },
+        {
+          "fontSizePx": 13,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 19.5,
+          "letterSpacing": "normal",
+          "count": 4,
+          "sample": "Maximale Verfügbarkeit"
+        },
+        {
+          "fontSizePx": 12,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 18,
+          "letterSpacing": "normal",
+          "count": 3,
+          "sample": "4.6 ( 16 )"
+        },
+        {
+          "fontSizePx": 12,
+          "fontWeight": "500",
+          "fontFamily": "Inter",
+          "color": "rgb(39, 110, 241)",
+          "textTransform": "none",
+          "lineHeightPx": 18,
+          "letterSpacing": "normal",
+          "count": 3,
+          "sample": "Profil ansehen"
+        },
+        {
+          "fontSizePx": 12,
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "color": "rgb(107, 107, 107)",
+          "textTransform": "none",
+          "lineHeightPx": 16,
+          "letterSpacing": "normal",
+          "count": 1,
+          "sample": "1 Artikel 30 Min"
+        }
+      ],
+      "cards": [
+        {
+          "radiusPx": 16,
+          "boxShadow": "none",
+          "border": "1px solid rgb(228, 228, 231)",
+          "background": "rgb(255, 255, 255)",
+          "padding": "16px",
+          "count": 3,
+          "exampleSize": "370x125"
+        },
+        {
+          "radiusPx": 16,
+          "boxShadow": "none",
+          "border": "1px solid rgb(228, 228, 231)",
+          "background": "rgb(244, 244, 245)",
+          "padding": "16px",
+          "count": 1,
+          "exampleSize": "370x90"
+        },
+        {
+          "radiusPx": 99,
+          "boxShadow": "none",
+          "border": "none",
+          "background": "rgb(10, 10, 10)",
+          "padding": "12px 24px",
+          "count": 1,
+          "exampleSize": "113x44"
+        }
+      ],
+      "imagery": {
+        "imageCount": 3,
+        "imageAreaPx": 9408
+      }
+    },
+    {
+      "index": 1,
+      "tag": "div",
+      "className": "flex items-center justify-between pt-1 pb-1",
+      "heading": "Stylist:in auswählen",
+      "box": {
+        "top": 12,
+        "left": 16,
+        "width": 370,
+        "height": 52
+      },
+      "surface": {
+        "background": "rgba(0, 0, 0, 0)",
+        "padding": "4px 0px",
+        "borderRadius": "0px"
+      },
+      "textRoles": [
+        {
+          "fontSizePx": 16.5,
+          "fontWeight": "600",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 24.75,
+          "letterSpacing": "-0.165px",
+          "count": 1,
+          "sample": "Stylist:in auswählen"
+        }
+      ],
+      "cards": [],
+      "imagery": {
+        "imageCount": 0,
+        "imageAreaPx": 0
+      }
+    }
+  ],
+  "bandAnatomy": {
+    "_note": "Not produced by extractSections. extractSections finds bands by landmark tag or a direct-child heading, and this screen has neither below <main>, so it reports the whole screen as one band. These are separate getBoundingClientRect + getComputedStyle reads taken in the same settled state, in the same tab, so the per-section specs have real numbers. Each entry names the selector it came from.",
+    "backButton": {
+      "selector": "button[aria-label=\"Zurück\"]",
+      "rect": [16, 16, 44, 44],
+      "borderRadius": "9999px",
+      "border": "1px rgb(228, 228, 231)",
+      "background": "rgb(255, 255, 255)",
+      "boxShadow": "rgba(10, 10, 10, 0.04) 0px 1px 3px 0px, rgba(10, 10, 10, 0.1) 0px 10px 28px -14px"
+    },
+    "exitButton": {
+      "selector": "button[aria-label=\"Verlassen\"]",
+      "rect": [342, 16, 44, 44]
+    },
+    "stepTitle": {
+      "selector": "h1",
+      "rect": [60, 26, 282, 25],
+      "fontSize": "16.5px",
+      "fontWeight": "600",
+      "fontFamily": "Inter Tight",
+      "letterSpacing": "-0.165px"
+    },
+    "list": {
+      "selector": "ul",
+      "rect": [16, 64, 370, 499],
+      "gap": "10px",
+      "paddingTop": "4px"
+    },
+    "rows": [
+      {
+        "text": "Keine Präferenz / Maximale Verfügbarkeit",
+        "rect": [16, 68, 370, 90],
+        "borderRadius": "16px",
+        "background": "rgb(244, 244, 245)",
+        "border": "1px rgb(228, 228, 231)",
+        "padding": "16px",
+        "gap": "14px",
+        "boxShadow": "none",
+        "state": "selected on mount"
+      },
+      {
+        "text": "Jonas / DE / EN / FR / 4.6 (16) / Profil ansehen",
+        "rect": [16, 168, 370, 125],
+        "borderRadius": "16px",
+        "background": "rgb(255, 255, 255)",
+        "border": "1px rgb(228, 228, 231)",
+        "padding": "16px",
+        "gap": "14px",
+        "boxShadow": "none"
+      },
+      {
+        "text": "Marco / DE / FR / 4.8 (22) / Profil ansehen",
+        "rect": [16, 303, 370, 125],
+        "borderRadius": "16px",
+        "background": "rgb(255, 255, 255)",
+        "border": "1px rgb(228, 228, 231)",
+        "padding": "16px",
+        "gap": "14px",
+        "boxShadow": "none"
+      },
+      {
+        "text": "Tim / DE / EN / FR / 4.7 (19) / Profil ansehen",
+        "rect": [16, 438, 370, 125],
+        "borderRadius": "16px",
+        "background": "rgb(255, 255, 255)",
+        "border": "1px rgb(228, 228, 231)",
+        "padding": "16px",
+        "gap": "14px",
+        "boxShadow": "none"
+      }
+    ],
+    "avatars": [
+      { "rect": [33, 203, 56, 56], "borderRadius": "9999px", "src": "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=400" },
+      { "rect": [33, 338, 56, 56], "borderRadius": "9999px", "src": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400" },
+      { "rect": [33, 473, 56, 56], "borderRadius": "9999px", "src": "https://images.unsplash.com/photo-1463453091185-61582044d556?w=400" }
+    ],
+    "checkBadge": {
+      "rect": [345, 101, 24, 24],
+      "borderRadius": "9999px",
+      "background": "rgb(10, 10, 10)",
+      "count": 1
+    },
+    "stickyBar": {
+      "selector": "the position:fixed div containing 'Weiter'",
+      "rect": [0, 775, 402, 69],
+      "background": "rgb(255, 255, 255)",
+      "borderTop": "1px rgb(228, 228, 231)",
+      "inner": { "rect": [0, 776, 402, 68], "padding": "12px 16px", "maxWidth": "672px" }
+    },
+    "continueCta": {
+      "rect": [273, 788, 113, 44],
+      "borderRadius": "99px",
+      "background": "rgb(10, 10, 10)",
+      "fontSize": "14px",
+      "fontWeight": "600",
+      "padding": "12px 24px"
+    },
+    "mainElement": {
+      "rect": [0, 0, 402, 900],
+      "padding": "0px 0px 56px",
+      "maxWidth": "none"
+    }
+  }
+}

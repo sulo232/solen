@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Basel city page: weight the Airbnb way</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!-- Scale-note: same tension as fix-home--d-airbnb-weight. F7a weight share is a whole-first-viewport
+     measurement by definition, so a single isolated element could never show the percentage moving.
+     The armed mockup-real-base-gate.py only accepts the literal values "full-page" or "component", and
+     "full-page" is the one that lets the gate see the whole 390x844 viewport this floor is measured
+     against. The header and the note below make the real scope (one screen, one treatment) explicit,
+     named per rule 18 rather than silently picking a value without saying so. -->
+<!-- Reference-checked: _design-system/LOCKFILE.md EMPHASIS BUDGET row ("Airbnb's PDP measures 3.1%,
+     7 of 388, so the honest target is far below 30 rather than just under it"). Owner's 2026-08-12
+     decision ("airbnb te is source of truth") is what ties that number to this fix. -->
+<!--
+  Grounded-in: app/[locale]/[city]/page.tsx (real /de/basel route)
+  Grounded-in: components-legacy/CityPage.tsx (the component that route renders)
+  Depicts:
+    BEFORE panel -> app/[locale]/[city]/page.tsx via components-legacy/CityPage.tsx, live iframe
+      of the real http://localhost:3457/de/basel route, untouched.
+    AFTER panel -> the same real route, same live iframe, with ONE CSS rule injected after load:
+      every element carrying Tailwind's .font-semibold utility (font-weight:600) is forced to
+      font-weight:500. Nothing else changes. This is the arm named "emphasis the Airbnb way":
+      demote weight, let size and colour carry hierarchy, matching LOCKFILE's own EMPHASIS BUDGET
+      row and the identical mechanism already tested on the home page (fix-home--d-airbnb-weight)
+      and category pages (fix-category-pages--d-airbnb-weight).
+
+  Diagnosis: F7a weight share | measured 47.06% (8/17 visible leaf-text elements at weight>=600) | violates LOCKFILE EMPHASIS BUDGET / CLAUDE.md FLOORS LAW 7a ceiling | target 30%
+  Diagnosis: F7a weight share after the fix | measured 5.88% (1/17, re-run same script post-injection) | PASS, well clear of 30% | target 30%
+  Diagnosis: F6 display anchor (untouched by this mechanism) | measured 25px ("Salons in Basel") | violates CLAUDE.md NEVER-AGAIN floor 6 / LOCKFILE EMPHASIS BUDGET | target 28px
+  Diagnosis: F7b anchor ratio (untouched by this mechanism) | measured 1.79x (25px/14px, max/median) | violates LOCKFILE EMPHASIS BUDGET anchor-ratio row, misses by 0.01x | target 1.8x
+  Diagnosis: F2 imagery (untouched by this mechanism) | measured 41.48% of the first viewport, once the salon list has finished its client-side fetch | PASSES FLOORS LAW 2 / LOCKFILE imagery row | target 33%
+
+  Diagnosis detail (context, not re-parsed by the gate, the five lines above are what it checks):
+  measured live against the running dev server at http://localhost:3457/de/basel, viewport
+  390x844, using the exact leaf-text population and clip-to-viewport logic from
+  scripts/check-geometry.mjs (own-text-node leaves, visible, at least partly on-screen), executed
+  directly in the live DOM via the Claude_Browser javascript_tool (Bash cannot reach localhost in
+  this sandbox, confirmed separately, not assumed). The 8 heavy elements before the fix: the
+  notification-badge "3" (10px, weight 700, Tailwind .font-bold, a different utility from the one
+  this fix touches), the "Basel" breadcrumb label (12px, 600), the "Salons in Basel" H1 itself
+  (25px, 600), the four category pills "Alle Kategorien" / "Coiffeur" / "Barbershop" / "Nagel"
+  (14px, 600 each, all four bold regardless of which one is selected), and the "4.2" rating value
+  on the first salon card (14px, 600). After injecting `.font-semibold{font-weight:500 !important}`
+  and re-measuring on the same live DOM, only the "3" badge remains heavy, because it is bold, not
+  semibold, and this mechanism does not touch that utility.
+
+  TWO NUMBERS I WAS HANDED DO NOT MATCH WHAT I MEASURED, NAMED PLAINLY RATHER THAN BUILT ON.
+  I was told weight share was 54.55% and imagery was 0%. My own live measurement, run twice with
+  a fresh tab to rule out a stale page state, reads 47.06% weight and 41.48% imagery once the page
+  has finished loading its salon list. A sibling mockup at floor-fix-city-page/ (already on disk)
+  independently measured 43.75% weight and 43.18% imagery on the same route with the project's own
+  check-geometry.mjs script. All three readings agree the weight floor fails by a wide margin and
+  the imagery floor passes; only the exact percentage differs, likely because /de/basel fetches its
+  salon list client-side, so a screenshot taken in the roughly half-second gray-skeleton window
+  before that fetch resolves reads 0% imagery and a different leaf count for weight, and I
+  reproduced that exact skeleton frame myself two seconds after navigation before it finished
+  loading. I am reporting my own measured numbers as the ground truth for this file and flagging
+  the mismatch rather than silently using the number I was given.
+
+  Exists-check: `npm run exists "font-semibold weight 500 airbnb"` and `npm run exists
+    "fix-city-page--d-airbnb-weight"` both ran this turn, both 0 hits. This mockup directory is
+    genuinely new. The .font-semibold utility is Tailwind's own, used sitewide, not a
+    Solen-authored component, so there is nothing to extend, only a stylesheet override to test.
+
+  Treatment-only: ONE injected stylesheet rule on the AFTER iframe only,
+    `.font-semibold{font-weight:500 !important}`. No element is added, removed, resized, or
+    recoloured. No DOM structure, copy, spacing, or image changes. No hero photo added (the owner
+    has rejected a baked-in hero photo three times: "no other company has just image hard coded
+    baked into a random area").
+
+  Honesty notes:
+    - This mechanism can only ever move F7a. It cannot move F6, F7b, or F2, because none of those
+      three floors are about weight. The heading stays 25px and the ratio stays 1.79x either way.
+      Reporting this plainly rather than shipping a panel that looks different but leaves those
+      failures exactly where they were.
+    - The anchor ratio miss is 0.01x, one hundredth of the floor. Naming it as the hair it is,
+      not dramatising it as a bigger gap than it measures.
+    - This is a global utility-class override for the purpose of this test panel. Shipping it for
+      real would need scoping (a wrapper class, not a sitewide .font-semibold override), since that
+      utility is used across the whole product, not just this screen. That scoping question is not
+      this mockup's decision to make silently, so it is named here rather than solved.
+    - A sibling mockup (floor-fix-city-page) fixes the SAME weight-share failure with a different,
+      more surgical mechanism: it demotes only the three unselected category pills, and only to
+      400, while separately growing the heading to 28px. That variant clears F6 and F7b too. This
+      variant is the blanket Airbnb-style demotion the brief specifically asked for, and it is
+      honestly a cruder tool even though the swing is bigger (47.06% to 5.88%): it also flattens
+      the "Basel" breadcrumb and the rating value, elements the other variant leaves alone. Both
+      are real, different mechanisms; this file is not a restyle of that one.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#52525B; --line:#E4E4E7; --sunken:#F4F4F5;
+    --accent:#276EF1;
+    --font:'Inter Tight',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fff}
+  body{
+    font-family:var(--font); color:var(--ink); -webkit-font-smoothing:antialiased;
+    -webkit-text-size-adjust:100%; text-size-adjust:100%;
+    max-width:402px; margin:0 auto; padding:20px 16px calc(28px + env(safe-area-inset-bottom));
+  }
+  h1{font-size:19px; font-weight:600; letter-spacing:-0.01em; line-height:1.3}
+  .sub{font-size:13px; color:var(--ink2); margin-top:6px; line-height:1.5}
+  .row{display:flex; align-items:center; justify-content:space-between; margin-top:22px; margin-bottom:8px}
+  .tag{font-size:12px; font-weight:600; color:var(--ink2)}
+  .tag.after{color:var(--ink)}
+  .badge{font-size:11px; font-weight:600; color:var(--ink2); background:var(--sunken); border-radius:999px; padding:3px 9px}
+  .badge.ok{color:#16A34A; background:#F0FDF4}
+  .frame{border:1px solid var(--line); border-radius:16px; overflow:hidden; background:#fff}
+  iframe{display:block; width:100%; height:844px; border:0}
+  .stat-row{display:flex; gap:8px; margin-top:10px}
+  .stat{flex:1; background:var(--sunken); border-radius:12px; padding:10px 12px}
+  .stat .num{font-size:20px; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums}
+  .stat .num.good{color:#16A34A}
+  .stat .lbl{font-size:11px; color:var(--ink2); margin-top:2px}
+  .note{margin-top:24px; background:var(--sunken); border-radius:16px; padding:16px; font-size:13px; line-height:1.55; color:var(--ink2)}
+  .note b{color:var(--ink); font-weight:600}
+  .note .call{margin-top:12px; padding-top:12px; border-top:1px solid var(--line)}
+  .note + .note{margin-top:12px}
+  .foot{margin-top:20px; font-size:11px; color:var(--ink2); line-height:1.5; border-top:1px solid var(--line); padding-top:12px}
+</style>
+</head>
+<body>
+  <h1>Making text weight do less work on the Basel city page</h1>
+  <p class="sub">Same page, twice. In the second one, everything that is bold right now (the heading, the "Basel" label, all four category buttons, the star rating) gets a little lighter. Nothing moves, resizes, or changes colour. Scroll inside each box to compare.</p>
+
+  <div class="stat-row">
+    <div class="stat"><div class="num">47.06%</div><div class="lbl">text at heavy weight, before</div></div>
+    <div class="stat"><div class="num good">5.88%</div><div class="lbl">text at heavy weight, after</div></div>
+  </div>
+
+  <div class="row"><span class="tag">BEFORE (live, untouched)</span></div>
+  <div class="frame"><iframe id="beforeFrame" src="/de/basel" title="real Basel city page, before"></iframe></div>
+
+  <div class="row"><span class="tag after">AFTER (bold text lightened)</span><span class="badge" id="afterStatus">loading</span></div>
+  <div class="frame"><iframe id="afterFrame" src="/de/basel" title="real Basel city page, after (weight demoted)"></iframe></div>
+
+  <div class="note">
+    <b>What changed:</b> right now, close to half the text you can see on this page is bold: the "Salons in Basel" heading, the small "Basel" label above it, all four category buttons (even the three you have not tapped), and the star rating on the first salon card. When that much is bold, bold stops meaning anything, it just reads busy. This test makes that same text a touch lighter (medium instead of semibold) everywhere on the screen. The sizes stay exactly the same, so you can still tell the heading from a button from a rating, that job just moves from weight to size and position, which is already how the page is laid out.
+    <div class="call">
+      <b>What this does not fix:</b> two other things are still off on this screen and this change cannot touch them, because they are about SIZE, not weight. The heading is still only 25px (the floor is 28px), and it is only 1.79 times the body text size (the floor is 1.8 times, a difference of one hundredth). Those need a size fix, not a weight fix. This test does not touch the photos either, and it does not need to: measured fresh, the photo on this page already covers 41% of the first screen, comfortably past the third-of-the-screen floor.
+    </div>
+  </div>
+  <div class="note">
+    A different, smaller fix for this exact page already exists (floor-fix-city-page): it only lightens the three category buttons you are not standing on, and separately grows the heading to 28px, which clears both the size floors this file leaves untouched. This file is the other approach: a blanket "make everything bold a bit lighter" pass, which is a bigger percentage swing (down to 5.88%) but a cruder tool, since it also lightens the "Basel" label and the star rating that the other fix leaves alone.
+  </div>
+
+  <div class="foot">Both panels are the same live route, not a redraw. I was handed 54.55% weight and 0% imagery as the starting numbers for this page; measuring it myself, twice, live, I get 47.06% and 41.48%. Both readings agree the weight floor fails badly and the photo floor already passes, so the fix below still targets the real problem, but the exact number I was given for imagery does not match what the page actually renders once its salon list finishes loading, and I am not building on a number I could not reproduce.</div>
+
+<script>
+  function applyChange(doc){
+    if (doc.getElementById('weight-500-style')) return 1;
+    if (!doc.querySelector('.font-semibold')) return 0;
+    var st = doc.createElement('style');
+    st.id = 'weight-500-style';
+    st.textContent = '.font-semibold{font-weight:500 !important}';
+    doc.head.appendChild(st);
+    return 1;
+  }
+  var tries = 0;
+  var MAX_POLLS = 150; // poll cap, never a displayed count
+  var iv = setInterval(function () {
+    tries++;
+    var f = document.getElementById('afterFrame');
+    var status = document.getElementById('afterStatus');
+    try {
+      var doc = f.contentDocument;
+      if (doc && doc.readyState === 'complete' && applyChange(doc) > 0) {
+        clearInterval(iv);
+        if (status) { status.textContent = 'applied'; status.className = 'badge ok'; }
+      }
+    } catch (e) {}
+    if (tries > MAX_POLLS) {
+      clearInterval(iv);
+      if (status && status.textContent === 'loading') { status.textContent = 'could not confirm'; }
+    }
+  }, 200);
+</script>
+</body>
+</html>

@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Category pages: weight the Airbnb way</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/coiffeur/page.tsx, which renders
+  app/[locale]/_components/search/SearchTemplate.tsx (serviceFilter="coiffeur"). The exact same
+  SearchTemplate component renders /de/nails and /de/spa too (app/[locale]/nails/page.tsx,
+  app/[locale]/spa/page.tsx, same component, only serviceFilter differs). Bold text on this screen
+  comes from two real files: app/[locale]/_components/search/CategoryMobileRails.tsx line 95 (the
+  "Top X" / "In der Naehe" rail headings, font-semibold) and
+  app/[locale]/_components/homepage/SalonCard.tsx lines 84, 517 (the discount pill and the salon
+  name, both font-semibold). All reused for grounding, none touched: this mockup edits nothing in
+  the real files, it injects one stylesheet into a live copy of the real page.
+
+  Reference-checked: _design-system/LOCKFILE.md (line ~2044, EMPHASIS BUDGET row: "Airbnb's PDP
+  measures 3.1% (7 of 388)"). This is the project's own prior measurement of Airbnb, cited here
+  rather than re-guessed; I did not re-capture Airbnb myself this turn, I reused the existing
+  measured citation.
+
+  Depicts: search bar, filter pill row, "Top X" / "In der Naehe" rails, salon cards -> app/[locale]/_components/search/SearchTemplate.tsx + CategoryMobileRails.tsx + CategoryBrowseRails.tsx (all real, unmodified, both panels)
+  Depicts: the weight-500 treatment -> NET-NEW: a single injected style rule that exists only inside this mockup's second iframe, demonstrating font-semibold at weight 500 instead of 600; it is not a product surface, it is the mechanism itself
+  Depicts: /de/nails and /de/spa sharing this exact mechanism -> app/[locale]/nails/page.tsx, app/[locale]/spa/page.tsx (same SearchTemplate component, same font-semibold classes, only the category word differs)
+
+  Diagnosis: category page weight-carried emphasis vs the owner's own named source of truth | measured 28.13% (9/32 elements) of visible text at weight>=600, all Tailwind font-semibold on the rail headings, the salon names and the price chip | violates the binary-triggers ladder's own instruction, "what carries emphasis: SIZE and COLOUR, weight 500 not 600, Airbnb runs 3.1%" (CLAUDE.md, owner 2026-08-12 "airbnb te is source of truth") | target under 5%, reached 0% (0/32) by demoting font-semibold to font-weight:500 site-wide on this page copy
+  Diagnosis: category page display anchor and anchor ratio, left untouched by a weight-only treatment | measured 18px anchor ("Top Coiffeur") and 1.5x ratio, identical before and after this fix is applied | violates FLOORS LAW 6 (display anchor >= 28px) and 7b (anchor ratio >= 1.8x), neither of which a font-weight change can move | target 28px anchor and 1.8x ratio, NOT reached here; that fix needs a bigger element, not a lighter one, see the sibling mockup public/_mockups/floor-fix-category-pages
+
+  Exists-check: `npm run exists "category page weight"`, `npm run exists "font-semibold demote"` and
+  `npm run exists "weight share treatment"` all ran this turn, all 0 matches (safe to propose new).
+  `npm run exists "CategoryMobileRails"` ran too (from the sibling mockup's own turn, reused here):
+  3 matches, all real and already shipped, reused for grounding, not touched.
+
+  Treatment-only: one CSS rule injected into the second iframe only (`.font-semibold{font-weight:500}`),
+  nothing else touched: no layout, no copy, no colour, no spacing, no size. The first iframe is the
+  real page with zero modification.
+
+  IMPORTANT CORRECTION on the brief's own numbers for this screen. The brief's "WHAT THIS SCREEN
+  FAILS" block (imagery 0.71%, anchor 14px, ratio 1.02x, weight 10% PASS) is real but it is a
+  LOADING-STATE reading, not the settled page: the heading it measured reads "Coiffeur Schweizweit"
+  (a skeleton label), not "Top Coiffeur" (the real rail heading). Reproduced 3x live against
+  http://localhost:3457 with the project's own scripts/check-geometry.mjs AND independently with a
+  hand-written replica of its own extractFloors() leaf-scan run directly in the browser after the
+  page settles: both methods agree on ONE stable resting state, imagery 41.75% PASS, anchor 18px
+  FAIL, weight 28.13% (9/32) PASS, ratio 1.5x FAIL, size spread PASS, elevation 7 PASS. Two floors
+  fail here (F6, F7b), not three, and F7a (weight share, this mockup's assigned floor) already
+  PASSES before any fix, both under the check-geometry.mjs run and the direct DOM measurement. The
+  same correction is independently reported by the sibling mockup public/_mockups/floor-fix-category-pages,
+  which measured the identical settled numbers.
+
+  Honest finding, stated plainly per the brief's own instruction: THIS SCREEN DOES NOT FAIL F7A.
+  The mechanism assigned to this mockup (demote weight 600 to 500) is applied below and genuinely
+  moves the weight number from 28.13% to 0%, well past Airbnb's own 3.1% benchmark. But because the
+  floor it targets was already passing, this move does not flip any FAIL to PASS. It also cannot
+  touch F6 or F7b (display anchor, anchor ratio): those depend on the SIZE of the biggest element,
+  which a font-weight change never moves. Removing weight from the rail heading actually makes it
+  read slightly LESS prominent, not more, since weight was one of the two signals (with size) making
+  it read as a heading at all. The real fix for F6/F7b is a bigger heading, shown in the sibling
+  mockup named above. This mockup is the honest report that its assigned mechanism, run correctly,
+  does not move this screen's real problem.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --border:#E4E4E7; --sunken:#F4F4F5;
+    --accent:#276EF1; --success:#16A34A; --fail:#DC2626;
+    --font-body:'Inter',system-ui,-apple-system,sans-serif;
+    --font-display:'Inter Tight',system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:auto}
+  body{
+    font-family:var(--font-body); background:#fff; color:var(--ink);
+    -webkit-font-smoothing:antialiased; padding:28px 16px 64px;
+  }
+  .wrap{max-width:900px;margin:0 auto}
+  h1.page-title{
+    font-family:var(--font-display); font-size:22px; font-weight:600;
+    letter-spacing:-0.01em; color:var(--ink); margin-bottom:6px;
+  }
+  .lede{font-size:15px; line-height:1.55; color:var(--ink2); max-width:660px; margin-bottom:6px}
+  .lede strong{color:var(--ink); font-weight:600}
+  .shared-note{
+    font-size:13px; line-height:1.5; color:var(--ink2); background:var(--sunken);
+    border-radius:10px; padding:10px 14px; margin:16px 0 28px; max-width:660px;
+  }
+  .shared-note b{color:var(--ink)}
+  .panels{display:flex; flex-direction:column; gap:24px}
+  .panel{border:1px solid var(--border); border-radius:16px; overflow:hidden; background:#fff}
+  .panel-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 16px; border-bottom:1px solid var(--border); background:var(--sunken);
+  }
+  .panel-label{font-family:var(--font-display); font-size:14px; font-weight:600; color:var(--ink)}
+  .panel-label.after{color:var(--accent)}
+  .panel-tag{
+    font-size:11px; font-weight:600; padding:3px 8px; border-radius:999px;
+    text-transform:none;
+  }
+  .tag-pass{background:#DCFCE7; color:var(--success)}
+  .tag-flat{background:var(--sunken); color:var(--ink2)}
+  .frame-stage{display:flex; justify-content:center; background:#EDEDEF; padding:18px}
+  iframe{
+    width:390px; height:760px; border:0; display:block; background:#fff;
+    border-radius:8px; box-shadow:0 4px 18px rgba(0,0,0,0.10);
+  }
+  .measure-table{width:100%; border-collapse:collapse; margin-top:28px; font-size:13px}
+  .measure-table caption{
+    text-align:left; font-family:var(--font-display); font-size:16px; font-weight:600;
+    margin-bottom:10px; color:var(--ink);
+  }
+  .measure-table th, .measure-table td{
+    text-align:left; padding:9px 12px; border-bottom:1px solid var(--border);
+  }
+  .measure-table th{font-weight:600; color:var(--ink2); font-size:12px; text-transform:none}
+  .status-pass{color:var(--success); font-weight:600}
+  .status-fail{color:var(--fail); font-weight:600}
+  .status-flat{color:var(--ink2); font-weight:600}
+  .callout{
+    margin-top:28px; padding:16px 18px; border-radius:12px; border:1px solid var(--border);
+    background:#fff;
+  }
+  .callout h2{font-family:var(--font-display); font-size:16px; font-weight:600; margin-bottom:8px}
+  .callout p{font-size:14px; line-height:1.6; color:var(--ink2); margin-bottom:8px}
+  .callout p:last-child{margin-bottom:0}
+  .correction{
+    margin-top:28px; padding:16px 18px; border-radius:12px;
+    background:var(--sunken); border:1px solid var(--border);
+  }
+  .correction h2{font-family:var(--font-display); font-size:15px; font-weight:600; margin-bottom:8px; color:var(--ink)}
+  .correction p{font-size:13.5px; line-height:1.6; color:var(--ink2); margin-bottom:8px}
+  .correction p:last-child{margin-bottom:0}
+  code{font-family:ui-monospace,monospace; font-size:0.92em; background:#F4F4F5; padding:1px 5px; border-radius:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 class="page-title">The weight fix does not fix this screen</h1>
+  <p class="lede">
+    Solen.ch/de/coiffeur already keeps bold text under control: <strong>28% of the text on the
+    screen is bold, under our own 30% limit.</strong> Airbnb, the site you named as our source of
+    truth, runs its bold text much lower, at 3%. Below is the real page today, then the same real
+    page with almost every bold word turned to a normal medium weight, the way Airbnb does it. Look
+    closely: the two panels barely look different. That is the honest result, not a mistake in the
+    mockup. This screen's real problem is that nothing on it is BIG, and turning bold words into
+    medium words does not make anything bigger.
+  </p>
+  <div class="shared-note">
+    <b>One mechanism, three pages.</b> Coiffeur, Nails and Spa are the exact same template with a
+    different word swapped in. This weight fix applies to all three the same way, and does the
+    same small amount of nothing on all three.
+  </div>
+
+  <div class="panels">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-label">Live today</span>
+        <span class="panel-tag tag-pass">bold text: 28%, already under the limit</span>
+      </div>
+      <div class="frame-stage">
+        <iframe id="beforeFrame" src="/de/coiffeur" title="the real category page, as shipped"></iframe>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-label after">With the weight fix</span>
+        <span class="panel-tag tag-flat">bold text: 0%, but the real problem stays</span>
+      </div>
+      <div class="frame-stage">
+        <iframe id="afterFrame" src="/de/coiffeur" title="the real category page, with every semibold word demoted to medium"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <table class="measure-table">
+    <caption>What actually changes (measured live on this worktree's dev server, both panels, same real page)</caption>
+    <thead>
+      <tr><th>Check</th><th>Live today</th><th>With the weight fix</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Photo coverage of the screen</td><td>41.75% <span class="status-pass">pass</span></td><td>41.75% <span class="status-pass">pass</span> (unchanged)</td></tr>
+      <tr><td>Biggest text on screen</td><td>18px, "Top Coiffeur" <span class="status-fail">fail</span> (needs 28px)</td><td>18px, "Top Coiffeur" <span class="status-fail">fail</span> (unchanged, this fix cannot move it)</td></tr>
+      <tr><td>Biggest text vs. body text</td><td>1.5x <span class="status-fail">fail</span> (needs 1.8x)</td><td>1.5x <span class="status-fail">fail</span> (unchanged, weight is not size)</td></tr>
+      <tr><td>Share of bold (weight 600+) text</td><td>28.13% (9 of 32 elements) <span class="status-pass">pass</span> (limit 30%)</td><td>0% (0 of 32 elements) <span class="status-pass">pass</span>, far past Airbnb's own 3%</td></tr>
+      <tr><td>Text-size variety</td><td class="status-pass">pass</td><td class="status-pass">pass</td></tr>
+      <tr><td>Depth / shadow variety</td><td class="status-pass">pass</td><td class="status-pass">pass</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <h2>What this mechanism was asked to fix, and what it actually fixed</h2>
+    <p>
+      This mockup's one job was the weight fix: take every piece of bold (weight 600) text on the
+      category page and turn it to a plain medium weight (500), the way Airbnb does, so size and
+      colour carry attention instead of boldness. I built exactly that, as one injected style rule,
+      nothing else touched. It works: every bold word on the screen, the "Top Coiffeur" heading, the
+      four salon names, the price chip, all move from weight 600 to weight 500, and the bold share
+      of the screen drops from 28% to 0%.
+    </p>
+    <p>
+      What it does not do is fix anything, because there was nothing broken on this specific check.
+      Ahead of this fix, 28% of the screen's text was bold, already under our own 30% ceiling. Once
+      applied, it is 0%. Both numbers pass. The screen's two real failures, an 18px biggest-text
+      element where the rule wants 28px, and a 1.5x size step where the rule wants 1.8x, are both
+      about SIZE, and a font-weight rule cannot change a font-size number. I checked: the "Top
+      Coiffeur" heading measures 18px with the fix off and 18px with the fix on, on every run.
+    </p>
+    <p>
+      One thing to flag rather than hide: taking weight away from the rail heading, without adding
+      size, makes it read as slightly LESS of a heading, not more, since weight was one of the two
+      things (with its 18px size) telling your eye it was a heading at all. Look at the two panels
+      above; "Top Coiffeur" is a little harder to pick out in the second one. If this fix ships
+      alone, the page gets flatter, not clearer. It needs to ship together with a real size fix, not
+      instead of one.
+    </p>
+  </div>
+
+  <div class="correction">
+    <h2>Correction on the numbers I was handed for this screen</h2>
+    <p>
+      The brief said this screen measures at 0.71% photo coverage, a 14px heading, a 1.02x size
+      ratio and effectively no hierarchy. I could reproduce those exact numbers, but only as a
+      LOADING-state reading: the heading text at that moment reads "Coiffeur Schweizweit", a
+      skeleton label, not the real "Top Coiffeur" heading the page settles on. I ran the project's
+      own measuring script three times against this worktree's dev server (localhost:3457) and,
+      separately, wrote a byte-for-byte copy of that script's own weight and size logic and ran it
+      directly in the browser once the page finished loading. Both methods agree on one stable
+      resting state: 41.75% photo coverage, an 18px heading, a 1.5x ratio, and 28.13% bold text. Two
+      checks fail on the settled page, not three, and the weight check (this mockup's job) already
+      passes, both in the loading snapshot (10%) and the settled page (28.13%).
+    </p>
+    <p>
+      This is the same correction the sibling mockup for this screen (floor-fix-category-pages)
+      already reports, reached independently. I am naming it again here because my own assigned
+      floor, F7a weight share, is the one the brief's stale numbers got most wrong: the brief's
+      "measured today" block already said weight share passes at 10%, and my own measurement agrees
+      it passes, just at a higher, settled number (28.13%). At no point, loading or settled, does
+      this screen actually fail the weight-share floor.
+    </p>
+  </div>
+</div>
+<script>
+  function findFix(doc) {
+    var target = doc.querySelector('.font-semibold, [class*="font-semibold"]');
+    if (!target) return 0;
+    if (doc.querySelector('[data-injected-fix]')) return 1;
+
+    var style = doc.createElement('style');
+    style.setAttribute('data-injected-fix', '1');
+    style.textContent = '.font-semibold,[class*="font-semibold"]{font-weight:500 !important;}';
+    doc.head.appendChild(style);
+    return 1;
+  }
+
+  var started = false;
+  function startAfter() {
+    if (started) return;
+    started = true;
+    var f = document.getElementById('afterFrame');
+    var tries = 0;
+    var MAX_POLLS = 150; // a poll cap, never a displayed count
+    var iv = setInterval(function () {
+      tries++;
+      try {
+        var doc = f.contentDocument;
+        if (doc && findFix(doc) > 0) {
+          clearInterval(iv);
+        }
+      } catch (e) {}
+      if (tries > MAX_POLLS) clearInterval(iv);
+    }, 200);
+  }
+  document.getElementById('afterFrame').addEventListener('load', startAfter);
+  startAfter();
+</script>
+</body>
+</html>

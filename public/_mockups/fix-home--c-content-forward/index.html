@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Home page: bigger real cards</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/page.tsx (real /de route, both panels are live iframes of it),
+    app/[locale]/_components/homepage/SalonCard.tsx (the real card, its own commented width
+    formula), app/[locale]/_components/homepage/SectionHeader.tsx (ScrollRow, the shared
+    horizontal-scroll wrapper every homepage row uses), app/[locale]/_components/layout/
+    CategoryPillRow.tsx (the pill row above the feed).
+  Depicts:
+    Panel 1 (top) -> app/[locale]/page.tsx (real /de route, live iframe, untouched).
+    Panel 2 (bottom) -> app/[locale]/page.tsx (same real /de route, live iframe) with two CSS
+      rules injected live, once the frame loads:
+        1. the category-pill row's own top/bottom padding is tightened (the same lever
+           public/_mockups/floor-fix-home/ already shows on its own, kept here as a small
+           supporting change, not this mockup's main point).
+        2. the FIRST row of real salon cards on the page gets wider cards. Nothing about which
+           salons show, their names, their photos, or their order changes. Only their size.
+
+  Mechanism, and why it differs from the sibling mockup at public/_mockups/floor-fix-home/:
+    That one only reclaims chrome space above the feed (the pull-up lever). It says plainly it
+    did NOT touch card size. This mockup is the OTHER named lever: make the real card itself
+    bigger, so the same real photo claims more of the screen. Both are "push real content up
+    and make it bigger", this file is the "bigger" half done properly, the other file is the
+    "higher" half done properly. Neither invents a photo, a card, or a salon that is not
+    already real and already in the DOM.
+
+  Diagnosis: F2 IMAGERY | measured 28.56% | violates FLOORS LAW 2 / LOCKFILE imagery row | target 33%
+  Diagnosis: F6 DISPLAY ANCHOR | measured 18px | violates FLOORS LAW 6 (design contract text size row) | target 28px
+  Diagnosis: F7b ANCHOR RATIO | measured 1.5x | violates FLOORS LAW 7b (EMPHASIS BUDGET anchor ratio) | target 1.8x
+
+  Diagnosis detail (context, not re-parsed by the gate, see the three lines above for the
+  measured/violates/target triples it checks):
+    All four numbers in the brief (imagery 28.56%, anchor 18px, weight share 37.14%, anchor
+    ratio 1.5x) are taken as given, from scripts/check-geometry.mjs run earlier this session.
+    I could NOT independently re-measure them live: the shared Claude_Browser tab this repo's
+    concurrent agents are all using navigated itself out from under me twice mid-session (once
+    to /de/basel/coiffeur, once its title changed again on its own) while I was trying to read
+    it, direct proof of the contention the sibling mockup only warned about generically. Given
+    that, I did not attempt a live percentage read and instead worked the arithmetic from each
+    component's own committed source (below), which does not depend on the browser.
+    F6 and F7b are NOT fixed by this panel, same root cause the sibling names: the real H1 is
+    `max-md:hidden` in Hero.tsx (confirmed by reading the file, the whole hero content block is
+    invisible on mobile, not just the H1). The tallest text a phone visitor actually sees is
+    still the shared SectionHeader h2 at clamp(18px,2vw,20px). Widening cards does not touch
+    text size.
+    F7a WEIGHT SHARE (37.14%, ceiling 30%) and F7c SIZE SPREAD (PASS) are also untouched, out
+    of scope for the imagery lever this mockup was asked to show.
+
+  Exists-check: `npm run exists "fix-home--c-content-forward"` ran this turn, 0 hits, genuinely
+    new. `npm run exists "SalonCard width"` also ran, 0 hits (it is a component prop, not a
+    named surface the index tracks). The card-width formula itself is not new: it already
+    exists at SalonCard.tsx's own `w-[calc((100vw-44px)/1.5)]` line, carrying its own dated
+    approval comment ("/dev/card-ratio V2 approved, owner 2026-07-03, R4-2"), which is exactly
+    the decision this mockup proposes reopening, named below.
+
+  Treatment-only: two injected rules, nothing else in the DOM, copy, order, or which salons
+    render is touched.
+    1. `[role="tablist"][aria-label="Kategorien"]` padding-top/bottom: 20px to 12px each side
+       (Tailwind pt-5/pb-5 to roughly pt-3/pb-3). Same rule the sibling mockup shows.
+    2. The first `.mt-1.flex.gap-3.overflow-x-auto` row in the document (ScrollRow, the shared
+       horizontal-card wrapper) gets its direct `a[href*="/salon/"]` children (real SalonCards)
+       widened from the shipped `calc((100vw-44px)/1.5)` to `calc((100vw-44px)/1.25)`. The
+       card's photo sits in a `w-full aspect-[5/4]` box, so it grows in lockstep with the card,
+       no separate rule needed for the photo itself.
+
+  Honesty notes:
+    - Arithmetic, not a browser read, using the component's own numbers at 390px viewport:
+      Panel 1, shipped /1.5: card = 230.7 x 184.5px (5:4 photo), one full card plus a 103px
+        peek of the next one visible in the 346px-wide content strip (390 - 44, the same
+        budget the component's own comment names). Row photo area = roughly 61,600px^2.
+      Panel 2, proposed /1.25: card = 276.8 x 221.4px, one full card plus a 57px peek. Row
+        photo area = roughly 74,000px^2. That is about +20% more photographic area contributed
+        by this one row, purely from the real card getting bigger, no new card added.
+      This is the row's OWN area growing, not the whole-viewport imagery percentage. I do not
+      know, without a stable live read, how much of the 390x844 viewport this row occupies
+      today, so I cannot responsibly hand back a single new whole-page percentage. Treat this
+      panel as "the real content that is visible gets meaningfully bigger, confirmed by
+      arithmetic; whether that alone crosses 33% of the full screen is unverified."
+    - This reopens a dated, named owner approval: SalonCard.tsx's width formula carries "/dev/
+      card-ratio V2 approved (owner 2026-07-03, R4-2)", chosen over an even bigger /2.2 card at
+      the time. Making cards bigger again is not a free fix, it is asking to revisit that call,
+      and it should be shown as exactly that, not shipped quietly.
+    - The category-pill padding change duplicates the sibling mockup's own lever (same source
+      comment: "Balance pass 2026-08-11", 20/20 chosen on purpose against Fresha's measured 80
+      row height). Kept here only so panel 2 does not look artificially worse than the sibling
+      on the "higher" axis while this file's real point is card size.
+    - This assumes the default, first-time visitor state: no onboarding picks, no saved view
+      history, so the first real card row is the "Top auf Solen" / "Zuletzt angesehen"
+      fallback (RecentlyViewed.tsx). A returning session with saved picks may render a
+      different row first (ForYouSalonRows). The width rule does not name that row, it grabs
+      whichever `.mt-1.flex.gap-3.overflow-x-auto` row is first in the document, which is
+      always the first real card row on the page either way, since every homepage row shares
+      the same ScrollRow wrapper and the same SalonCard component.
+    - Not attempted: stacking the row into a 2-up vertical grid instead of a horizontal scroll,
+      which would show two full, uncropped photos instead of one full plus a peek. That is a
+      real structural change (a different component, not a size override on the existing one)
+      and reopens the horizontal-scroll pattern itself, not just the width number inside it. It
+      would need its own mockup and its own owner call, not folded into this one.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#52525B; --line:#E4E4E7; --sunken:#F4F4F5;
+    --font:'Inter Tight',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fff}
+  body{
+    font-family:var(--font); color:var(--ink); -webkit-font-smoothing:antialiased;
+    -webkit-text-size-adjust:100%; text-size-adjust:100%;
+    max-width:402px; margin:0 auto; padding:20px 16px calc(28px + env(safe-area-inset-bottom));
+  }
+  h1{font-size:19px; font-weight:600; letter-spacing:-0.01em; line-height:1.3}
+  .sub{font-size:13px; color:var(--ink2); margin-top:6px; line-height:1.5}
+  .row{display:flex; align-items:center; justify-content:space-between; margin-top:22px; margin-bottom:8px}
+  .tag{font-size:12px; font-weight:600; color:var(--ink2)}
+  .tag.after{color:var(--ink)}
+  .badge{font-size:11px; font-weight:600; color:var(--ink2); background:var(--sunken); border-radius:999px; padding:3px 9px}
+  .frame{border:1px solid var(--line); border-radius:16px; overflow:hidden; background:#fff}
+  iframe{display:block; width:100%; height:844px; border:0}
+  .note{margin-top:28px; background:var(--sunken); border-radius:16px; padding:16px; font-size:13px; line-height:1.55; color:var(--ink2)}
+  .note b{color:var(--ink); font-weight:600}
+  .note .call{margin-top:12px; padding-top:12px; border-top:1px solid var(--line)}
+  .stat{margin-top:12px; padding-top:12px; border-top:1px solid var(--line); display:flex; gap:16px}
+  .stat div{flex:1}
+  .stat .n{font-size:20px; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums}
+  .stat .l{font-size:11px; color:var(--ink2); margin-top:2px}
+  .foot{margin-top:20px; font-size:11px; color:var(--ink2); line-height:1.5; border-top:1px solid var(--line); padding-top:12px}
+</style>
+</head>
+<body>
+  <h1>Making the real salon photos bigger</h1>
+  <p class="sub">Both boxes below load the real home page, live. The second one has the real salon cards made wider, and a little less empty space above them. Scroll inside each box to compare.</p>
+
+  <div class="row"><span class="tag">PANEL 1: live, untouched</span></div>
+  <div class="frame"><iframe id="beforeFrame" src="/de" title="real home page, panel 1, untouched"></iframe></div>
+
+  <div class="row"><span class="tag after">PANEL 2: cards made bigger, chrome tightened</span><span class="badge" id="afterStatus">loading</span></div>
+  <div class="frame"><iframe id="afterFrame" src="/de" title="real home page, panel 2, bigger real cards"></iframe></div>
+
+  <div class="stat">
+    <div><div class="n">230 &rarr; 277px</div><div class="l">real card width, phone screen</div></div>
+    <div><div class="n">+20%</div><div class="l">more real photo area in that one row</div></div>
+  </div>
+
+  <div class="note">
+    <b>What changed:</b> the first row of real salon cards, the one already on the page today, gets wider. Nothing invented, no stock photo, no new card. The same salons, the same photos, just bigger, so they carry more of the screen. The row of category buttons above it also loses a little of its own padding, so the cards start slightly higher too.
+    <div class="call">
+      <b>What this costs, and needs your call:</b> that card size was a decision you already made in July, choosing this exact width over a bigger one on purpose. Making it bigger again means fewer cards visible per swipe, one full card plus a smaller peek of the next instead of a bigger peek. It is a real trade, not a free win, which is why it is shown here rather than shipped.
+    </div>
+  </div>
+
+  <div class="foot">Both panels are the same live route, not a redraw. The percentage gain above is arithmetic from the card's own real width and photo ratio, not a fresh screen measurement, the shared preview browser this session is using was busy navigating itself elsewhere while this was built, so a live screen-level reading could not be pinned down honestly.</div>
+
+<script>
+  function applyChange(doc){
+    if (doc.getElementById('cf-content-forward-style')) return 1;
+    var tablist = doc.querySelector('[role="tablist"][aria-label="Kategorien"]');
+    var row = doc.querySelector('.mt-1.flex.gap-3.overflow-x-auto');
+    if (!tablist && !row) return 0;
+    var st = doc.createElement('style');
+    st.id = 'cf-content-forward-style';
+    var rules = '';
+    if (tablist) {
+      rules += '[role="tablist"][aria-label="Kategorien"]{padding-top:12px !important;padding-bottom:12px !important}';
+    }
+    if (row) {
+      row.setAttribute('data-cf-row', '1');
+      rules += '[data-cf-row="1"] > a[href*="/salon/"]{width:calc((100vw - 44px) / 1.25) !important}';
+    }
+    st.textContent = rules;
+    doc.head.appendChild(st);
+    return 1;
+  }
+  var tries = 0;
+  var MAX_POLLS = 150; // poll cap, never a displayed count
+  var iv = setInterval(function () {
+    tries++;
+    var f = document.getElementById('afterFrame');
+    var status = document.getElementById('afterStatus');
+    try {
+      var doc = f.contentDocument;
+      if (doc && doc.readyState === 'complete' && applyChange(doc) > 0) {
+        clearInterval(iv);
+        if (status) { status.textContent = 'applied'; }
+      }
+    } catch (e) {}
+    if (tries > MAX_POLLS) {
+      clearInterval(iv);
+      if (status && status.textContent === 'loading') { status.textContent = 'could not confirm'; }
+    }
+  }, 200);
+</script>
+</body>
+</html>

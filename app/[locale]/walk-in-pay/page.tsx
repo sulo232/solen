@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale } from "next-intl";
 import { motion } from "motion/react";
-import { Star, MapPin, Lock, Check, AlertTriangle, ArrowLeft, Scissors, Clock, Info, ArrowRight } from "lucide-react";
+import { Star, MapPin, Lock, Check, AlertTriangle, ChevronLeft, Scissors, Clock, Info, ArrowRight } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import WalkInPaymentForm from "@/components-legacy/barber/WalkInPaymentForm";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
@@ -359,7 +359,7 @@ export default function WalkInPayPage() {
             aria-label={l.back}
             className="grid h-11 w-11 place-items-center rounded-xl bg-white text-s-ink shadow-[0_6px_18px_rgba(26,18,9,0.10)] transition-transform duration-200 active:scale-[0.94]"
           >
-            <ArrowLeft size={22} strokeWidth={2.2} />
+            <ChevronLeft size={22} strokeWidth={2.2} />
           </button>
         </div>
       )}

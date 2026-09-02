@@ -91,6 +91,7 @@ function SwissFlag() {
 
 export default function Footer({ locale }: { locale: string }) {
   const tFooter = useTranslations("footer");
+  const tNav = useTranslations("navigation");
   const p = `/${locale}`;
 
   return (
@@ -121,7 +122,7 @@ export default function Footer({ locale }: { locale: string }) {
           <div className="col-span-2 md:col-span-1">
             <Link
               href={p}
-              aria-label="Solen Startseite"
+              aria-label={tNav("homeLink")}
               className="font-display inline-flex items-baseline text-[22px] font-bold leading-none tracking-normal text-s-ink"
             >
               Solen

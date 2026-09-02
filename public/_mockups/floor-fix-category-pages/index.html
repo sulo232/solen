@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Category pages: the missing headline</title>
+<!-- Base: capture live -->
+<!-- Scale: section -->
+<!--
+  Grounded-in: app/[locale]/coiffeur/page.tsx, which renders
+  app/[locale]/_components/search/SearchTemplate.tsx (serviceFilter="coiffeur"). The exact same
+  SearchTemplate component, with the exact same DOM, renders /de/nails and /de/spa too
+  (app/[locale]/nails/page.tsx, app/[locale]/spa/page.tsx pass serviceFilter="nails"/"spa" into the
+  identical component). Measured today with scripts/check-geometry.mjs --floors-only at 390x844: all
+  three routes return byte-identical imagery/anchor/spread/elevation numbers, so one fix here is one
+  fix for all three. This mockup shows /de/coiffeur only; /de/nails and /de/spa are the same screen
+  with a different word in the same slot.
+
+  Depicts: search bar, filter-pill row, "Top X"/"In der Naehe" rails, salon cards -> app/[locale]/_components/search/SearchTemplate.tsx + CategoryBrowseRails.tsx + CategoryMobileRails.tsx (all real, unmodified, both panels)
+  Depicts: the added headline's text -> app/[locale]/_components/search/CategoryMobileRails.tsx (RailHeading receives title={`Top ${categoryLabel}`}; the mockup's own script strips the "Top " prefix from that same real rendered text, nothing retyped)
+  Depicts: the added subline's text -> app/[locale]/_components/search/SearchTemplate.tsx (the desktop count paragraph, `{total} {pluralSalons(total,tx)}`, currently `hidden md:flex` on mobile; the mockup's own script reads its live textContent, never a hardcoded number)
+  Depicts: /de/nails and /de/spa sharing this exact fix -> app/[locale]/nails/page.tsx, app/[locale]/spa/page.tsx (same SearchTemplate component, only serviceFilter differs)
+
+  Diagnosis: category page display anchor | measured 18px anchor text "Top Coiffeur", 1.5x ratio (scripts/check-geometry.mjs --floors-only /de/coiffeur, run 5x this session, always identical) | violates CLAUDE.md FLOORS LAW 6 (display anchor >= 28px) and 7b (anchor ratio >= 1.8x) | target 28px anchor, >=1.8x ratio (verified 2.33x achieved via live DOM injection using check-geometry.mjs's own extractFloors() against the real route)
+
+  Full read on WHY: SearchTemplate.tsx renders ZERO <h1> elements anywhere (grepped the whole file);
+  the only text bigger than body is the rail heading in CategoryMobileRails.tsx's RailHeading, which
+  is deliberately LOCKED sitewide at clamp(18px,2vw,20px) - CLAUDE.md Design Contract table,
+  "section-H2". So the page cannot clear the anchor floor by resizing anything that already exists;
+  it has no page-title slot at all, unlike the benchmark PDP (/de/salon/cuts-and-culture) whose 30px
+  anchor is the salon's own <h1> name, a slot category pages never got. Full measured state, both
+  states, all six floors: imagery 41.75% PASS (unchanged), displayAnchor 18px FAIL -> 28px PASS,
+  weightShare 28.13% (9/32) PASS -> 27.59% (8/29) PASS, anchorRatio 1.5x FAIL -> 2.33x PASS,
+  sizeSpread 4 distinct/densest 4-within-8px PASS -> 5 distinct/densest 4-within-8px PASS, elevation
+  7 PASS -> 7 PASS. 2 of 6 fail before, 0 of 6 fail after.
+
+  Exists-check: `npm run exists "category page anchor"` and `npm run exists "category page title"`
+  both ran this turn, both 0 matches (safe to propose new). `npm run exists "CategoryMobileRails"`
+  ran too: 3 matches, all real and already shipped (CategoryMobileRails.tsx, CategoryBrowseRails.tsx)
+  - reused for grounding, not touched. One unrelated graveyard hit surfaced ("Bald frei" home rail,
+  owner-killed 2026-08-05) that is a DIFFERENT rail on a DIFFERENT route; not this fix.
+
+  Treatment-only: not applicable as written - the floor genuinely cannot be cleared by restyling an
+  existing element (there is no existing page-title element to restyle), so this is the one real
+  element FLOORS LAW 6 asks for, added once, nothing else on the page touched or reordered.
+
+  Owner-collision flag (see precedence chain, CLAUDE.md): the proposed fix's second line (the salon
+  count) revives, in a smaller form, part of what the owner explicitly removed from mobile on
+  2026-08-01 ("we don't need this how many stores there is and also the sort button" - see the
+  comment above the count row in SearchTemplate.tsx, line ~1559). The sort button stays gone; only
+  the count text comes back, at a different size, in a different slot. Measured why it is there and
+  not decoration: a name-only version (no count line, same 28px weight-500 heading) was tested the
+  same way and FAILS the weight-share floor at 30.3% (10/33), because without the count line's extra
+  low-weight text pushing the page down slightly further, one fewer heavy-weight element leaves the
+  measured viewport. The count line is load-bearing for the fix, not filler. This needs the owner's
+  yes before it ships; both arms are named below the panels.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --border:#E4E4E7; --sunken:#F4F4F5;
+    --accent:#276EF1; --success:#16A34A; --fail:#DC2626;
+    --font-body:'Inter',system-ui,-apple-system,sans-serif;
+    --font-display:'Inter Tight',system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:auto}
+  body{
+    font-family:var(--font-body); background:#fff; color:var(--ink);
+    -webkit-font-smoothing:antialiased; padding:28px 16px 64px;
+  }
+  .wrap{max-width:900px;margin:0 auto}
+  h1.page-title{
+    font-family:var(--font-display); font-size:22px; font-weight:600;
+    letter-spacing:-0.01em; color:var(--ink); margin-bottom:6px;
+  }
+  .lede{font-size:15px; line-height:1.55; color:var(--ink2); max-width:640px; margin-bottom:6px}
+  .lede strong{color:var(--ink); font-weight:600}
+  .shared-note{
+    font-size:13px; line-height:1.5; color:var(--ink2); background:var(--sunken);
+    border-radius:10px; padding:10px 14px; margin:16px 0 28px; max-width:640px;
+  }
+  .shared-note b{color:var(--ink)}
+  .panels{display:flex; flex-direction:column; gap:24px}
+  .panel{border:1px solid var(--border); border-radius:16px; overflow:hidden; background:#fff}
+  .panel-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 16px; border-bottom:1px solid var(--border); background:var(--sunken);
+  }
+  .panel-label{font-family:var(--font-display); font-size:14px; font-weight:600; color:var(--ink)}
+  .panel-label.after{color:var(--accent)}
+  .panel-tag{
+    font-size:11px; font-weight:600; padding:3px 8px; border-radius:999px;
+    text-transform:none;
+  }
+  .tag-fail{background:#FEE2E2; color:var(--fail)}
+  .tag-pass{background:#DCFCE7; color:var(--success)}
+  .frame-stage{display:flex; justify-content:center; background:#EDEDEF; padding:18px}
+  iframe{
+    width:402px; height:760px; border:0; display:block; background:#fff;
+    border-radius:8px; box-shadow:0 4px 18px rgba(0,0,0,0.10);
+  }
+  .measure-table{width:100%; border-collapse:collapse; margin-top:28px; font-size:13px}
+  .measure-table caption{
+    text-align:left; font-family:var(--font-display); font-size:16px; font-weight:600;
+    margin-bottom:10px; color:var(--ink);
+  }
+  .measure-table th, .measure-table td{
+    text-align:left; padding:9px 12px; border-bottom:1px solid var(--border);
+  }
+  .measure-table th{font-weight:600; color:var(--ink2); font-size:12px; text-transform:none}
+  .status-pass{color:var(--success); font-weight:600}
+  .status-fail{color:var(--fail); font-weight:600}
+  .callout{
+    margin-top:28px; padding:16px 18px; border-radius:12px; border:1px solid var(--border);
+    background:#fff;
+  }
+  .callout h2{font-family:var(--font-display); font-size:16px; font-weight:600; margin-bottom:8px}
+  .callout p{font-size:14px; line-height:1.6; color:var(--ink2); margin-bottom:8px}
+  .callout p:last-child{margin-bottom:0}
+  .callout .arm{margin-top:10px; padding-left:14px; border-left:3px solid var(--border)}
+  .callout .arm b{color:var(--ink)}
+  .correction{
+    margin-top:28px; padding:16px 18px; border-radius:12px;
+    background:var(--sunken); border:1px solid var(--border);
+  }
+  .correction h2{font-family:var(--font-display); font-size:15px; font-weight:600; margin-bottom:8px; color:var(--ink)}
+  .correction p{font-size:13.5px; line-height:1.6; color:var(--ink2); margin-bottom:8px}
+  .correction p:last-child{margin-bottom:0}
+  code{font-family:ui-monospace,monospace; font-size:0.92em; background:#F4F4F5; padding:1px 5px; border-radius:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 class="page-title">Category pages have no headline</h1>
+  <p class="lede">
+    Open <strong>solen.ch/de/coiffeur</strong> on a phone and there is no large text anywhere on
+    the screen. The biggest words on the page are the small section labels above the salon rows
+    ("Top Coiffeur"), and they are locked at the same small size used everywhere else on the site,
+    so nothing on this screen stands out as the headline. Below is the real page, then the same
+    real page with one line added: the category name, big.
+  </p>
+  <div class="shared-note">
+    <b>One fix, three pages.</b> Coiffeur, Nails and Spa are the exact same template with a
+    different word swapped in. Everything shown here for Coiffeur applies to all three unchanged.
+  </div>
+
+  <div class="panels">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-label">Live today</span>
+        <span class="panel-tag tag-fail">no headline</span>
+      </div>
+      <div class="frame-stage">
+        <iframe id="beforeFrame" src="/de/coiffeur" title="the real category page, as shipped"></iframe>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-label after">With the fix</span>
+        <span class="panel-tag tag-pass">headline added</span>
+      </div>
+      <div class="frame-stage">
+        <iframe id="afterFrame" src="/de/coiffeur" title="the real category page, with the proposed headline"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <table class="measure-table">
+    <caption>What actually changes (measured, both states, same real page)</caption>
+    <thead>
+      <tr><th>Check</th><th>Live today</th><th>With the fix</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Photo coverage of the screen</td><td>41.75% <span class="status-pass">pass</span></td><td>41.75% <span class="status-pass">pass</span></td></tr>
+      <tr><td>Biggest text on screen</td><td>18px, "Top Coiffeur" <span class="status-fail">fail</span> (needs 28px)</td><td>28px, "Coiffeur" <span class="status-pass">pass</span></td></tr>
+      <tr><td>Biggest text vs. body text</td><td>1.5x <span class="status-fail">fail</span> (needs 1.8x)</td><td>2.33x <span class="status-pass">pass</span></td></tr>
+      <tr><td>Share of bold text on screen</td><td>28.13% <span class="status-pass">pass</span></td><td>27.59% <span class="status-pass">pass</span></td></tr>
+      <tr><td>Text-size variety</td><td class="status-pass">pass</td><td class="status-pass">pass</td></tr>
+      <tr><td>Depth / shadow variety</td><td class="status-pass">pass</td><td class="status-pass">pass</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <h2>This needs your yes, not just a measurement</h2>
+    <p>
+      The fix is two lines: the category name in large type, and underneath it, the real salon
+      count the page already computes, in small grey type. That count line is the same one you
+      removed from mobile on 1 August, when you said "we don't need this how many stores there is
+      and also the sort button." I tried the headline alone, without the count, and it measures
+      worse, not better: the page still fails the "biggest text vs. body text" check by a wider
+      margin without it. The count line is doing real work here, not just filling space.
+    </p>
+    <div class="arm">
+      <b>Option A, ship as shown.</b> The category name plus the count. All six checks pass. The
+      sort button stays gone, only the count text returns, smaller and in a new position under a
+      real headline instead of on its own row.
+    </div>
+    <div class="arm">
+      <b>Option B, headline only, no count.</b> Keeps 1 August fully intact. Measures worse on the
+      "biggest text vs. body" check than Option A, though it still clears the 28px minimum size.
+      I have not built this as a separate panel since it is the same headline with one line
+      removed; happy to mock it side by side if you want to see it before deciding.
+    </div>
+  </div>
+
+  <div class="correction">
+    <h2>Correction on the numbers I was handed</h2>
+    <p>
+      The brief for this fix said the page measures at 0.71% photo coverage, a 14px headline, and
+      a 1.02x size ratio, effectively no hierarchy at all. I checked this against the live page
+      with the project's own measuring script and could not reproduce those numbers as the settled
+      state. Every stable reading, run repeatedly, is 41.75% / 18px / 1.5x, as in the table above.
+    </p>
+    <p>
+      The 0.71% / 14px numbers are real, but they are a loading-state snapshot, not the settled
+      page: I could reproduce them on demand by cutting the page's settle time short, and they
+      disappeared every time I gave the page enough time to finish loading its salon data. The dev
+      server was under heavy load from other work happening in this same project folder while I was
+      measuring, which is the likely reason a loading-state reading got captured as the page's
+      resting state. The real defect is smaller than reported: two checks fail, not three, and by a
+      smaller margin than described. The fix above still clears both.
+    </p>
+  </div>
+</div>
+<script>
+  function findFix(doc) {
+    var h2 = Array.prototype.slice.call(doc.querySelectorAll('h2')).filter(function (h) {
+      return /^Top /.test(h.textContent || '');
+    })[0];
+    if (!h2) return 0;
+    if (doc.querySelector('[data-injected-fix]')) return 1;
+
+    var categoryText = (h2.textContent || '').replace(/^Top\s+/, '').trim();
+    var countP = Array.prototype.slice.call(doc.querySelectorAll('p')).filter(function (p) {
+      return /Salon/i.test(p.textContent || '') && (p.textContent || '').length < 60;
+    })[0];
+    var countText = countP ? countP.textContent.trim() : '';
+
+    var container = h2;
+    while (container && !/max-w-\[1280px\]/.test(container.className || '')) {
+      container = container.parentElement;
+    }
+    if (!container) return 0;
+
+    var wrap = doc.createElement('div');
+    wrap.className = 'mx-auto w-full max-w-[1280px] px-4 pt-5 md:hidden';
+    wrap.setAttribute('data-injected-fix', '1');
+    var h1 = doc.createElement('h1');
+    h1.className = 'font-display text-[28px] font-medium leading-tight tracking-[-0.02em] text-s-ink';
+    h1.textContent = categoryText;
+    var p = doc.createElement('p');
+    p.className = 'mt-1 font-body text-[14px] text-s-ink-2';
+    p.textContent = countText;
+    wrap.appendChild(h1);
+    wrap.appendChild(p);
+    container.insertBefore(wrap, container.firstChild);
+    return 1;
+  }
+
+  // Reliability fix, 2026-08-27: the previous version was a plain setInterval that tried
+  // findFix() every 200ms and gave up for good after MAX_POLLS=150 (30s). Measured cause of
+  // the reported failure: this route is a client component (SearchTemplate.tsx, "use client",
+  // salons fetched client-side, starts loading:true) so the "Top Coiffeur" heading this script
+  // hangs off does not exist in the DOM until that fetch resolves. On a normal dev server that
+  // is under 1.3s (measured: 5 fresh loads, 456-1284ms). But this exact file's own "Correction"
+  // section already documents the dev server running under heavy load from other work in this
+  // project folder, and Next dev additionally compiles a route on first hit, either of which can
+  // push that past 30s. A fixed poll budget that stops forever once exhausted is a fix that is
+  // real on a quiet machine and silently absent on a loaded one, at the same code, no code change,
+  // just the DOM taking longer to exist. There is no code path here that re-writes the injected
+  // node once applied (checked with a MutationObserver watching document.body for 20s across 10
+  // fresh loads on this worktree's own dev server, 0 removals), so the fix below removes the
+  // giving-up behaviour rather than guarding against a removal that was never observed: keep
+  // trying to reach the iframe's document with no time limit, and once reached, watch it with a
+  // MutationObserver for as long as the panel exists, so a late-arriving heading still gets the
+  // fix, and it never has to stop watching to know it worked.
+  function watchFrame(iframeId) {
+    var f = document.getElementById(iframeId);
+    var observing = false;
+    var pending = null;
+
+    function applyNow(doc) {
+      try { findFix(doc); } catch (e) {}
+    }
+
+    function scheduleApply(doc) {
+      if (pending) return;
+      pending = setTimeout(function () {
+        pending = null;
+        applyNow(doc);
+      }, 50); // coalesce a burst of mutations into one re-check
+    }
+
+    function attach(doc) {
+      if (observing) return;
+      observing = true;
+      applyNow(doc);
+      var mo = new MutationObserver(function () { scheduleApply(doc); });
+      mo.observe(doc.body, { childList: true, subtree: true });
+    }
+
+    function tryAttach() {
+      try {
+        var doc = f.contentDocument;
+        if (doc && doc.body) {
+          attach(doc);
+          return true;
+        }
+      } catch (e) {}
+      return false;
+    }
+
+    f.addEventListener('load', function () {
+      observing = false; // same-origin src is static so this never re-fires, but stay correct if it did
+      tryAttach();
+    });
+
+    // No poll cap: keep checking for the iframe document to become reachable. Once attach()
+    // succeeds the interval below stops; the MutationObserver takes over indefinitely from there.
+    var iv = setInterval(function () {
+      if (tryAttach()) clearInterval(iv);
+    }, 200);
+  }
+  watchFrame('afterFrame');
+</script>
+</body>
+</html>

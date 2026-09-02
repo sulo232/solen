@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Home page: pull the feed up</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/page.tsx (real /de route, both panels are live iframes of it).
+  Depicts:
+    BEFORE panel -> app/[locale]/page.tsx (real /de route, live iframe, untouched).
+    AFTER panel -> app/[locale]/page.tsx (same real /de route, live iframe) with one CSS rule
+      injected on the category-pill row from app/[locale]/_components/layout/CategoryPillRow.tsx,
+      pulling the feed up so slightly more of the first salon-card row from
+      app/[locale]/_components/homepage/RecentlyViewed.tsx sits inside the first 844px.
+
+  Diagnosis: F2 IMAGERY | measured 28.56% | violates FLOORS LAW 2 / LOCKFILE imagery row | target 33%
+  Diagnosis: F6 DISPLAY ANCHOR | measured 18px | violates FLOORS LAW 6 (design contract text size row) | target 28px
+  Diagnosis: F7b ANCHOR RATIO | measured 1.5x | violates FLOORS LAW 7b (EMPHASIS BUDGET anchor ratio) | target 1.8x
+
+  Diagnosis detail (context, not re-parsed by the gate, see the three lines above for the
+  measured/violates/target triples it checks):
+    F2 measured live via scripts/check-geometry.mjs --floors-only at 390x844 on /de.
+    F6 confirmed live via getBoundingClientRect on the rendered /de page at 390x844: the real
+      H1 (31.2px) sits inside a block classed max-md:hidden in Hero.tsx, so on a phone it does
+      not render at all. The tallest TEXT actually on screen is the shared SectionHeader H2
+      (clamp(18px,2vw,20px)). This panel does not fix F6, see the note below the panels.
+      german-ok: the section titles this compares are the real product's own German copy,
+      named only to point at the live elements measured, not authored UI text.
+    F7b is the same root cause as F6 (18 / 12 median = 1.5x), not fixed by this panel either.
+    F7a WEIGHT SHARE 37.14% (ceiling 30%) and F7c SIZE SPREAD PASS were also measured but are
+      untouched by this panel; out of scope for the imagery lever this mockup was asked to show.
+
+  Exists-check: `npm run exists "floor-fix-home"` and `npm run exists "CategoryPillRow"` both
+    ran this turn. "floor-fix-home" (this mockup itself) returned 0 hits, genuinely new.
+    "CategoryPillRow" returned 4 hits, it already exists and is SHARED with
+    app/[locale]/inspo/page.tsx (owner ask, 2026-08-10), so the injected rule below is scoped
+    to this iframe only, it does not touch the component file or the Inspo page. Real shipping
+    would need a home-only wrapper class, or an explicit yes that the tighter spacing is fine
+    on Inspo too, named below.
+
+  Treatment-only: ONE injected rule, padding-top and padding-bottom on the
+    [role="tablist"][aria-label="Kategorien"] row, 20px to 12px each side (Tailwind pt-5/pb-5
+    to roughly pt-3/pb-3). Nothing else in the DOM, copy, or component is touched. No hero
+    photo added (out of scope by the brief, and the owner has rejected a baked-in hero photo
+    three times: "no other company has just image hard coded baked into a random area").
+
+  Honesty notes:
+    - That 20px/20px padding was itself a dated, named owner call: "Balance pass 2026-08-11"
+      comment in CategoryPillRow.tsx reads "20/20, their measured row height 80 against our
+      64, same 40px pill with more air so it stops dominating." This mockup proposes partly
+      undoing that call to buy imagery back. That is a real conflict, not a free fix, and it
+      is why this stays a mockup and not a committed change.
+    - I could not get a clean live re-measurement of the AFTER panel's resulting imagery
+      percentage: this repo's Claude_Browser session is shared with other concurrent activity
+      (multiple unrelated tabs already open on localhost:3457, several unrequested navigations
+      mid-session), so a number here would not be trustworthy. What is certain, because it is
+      arithmetic, not a browser read: reclaiming 16px of vertical chrome lets 16px more of
+      whatever sits at the bottom of the viewport into frame. Whether that 16px is card photo
+      or card text depends on exact scroll position and was not re-verified live. Treat the
+      AFTER panel as "moves the right direction, exact resulting percentage unverified."
+    - This one panel does not close the F2 gap on its own (16px reclaimed against a roughly
+      4.4 percentage-point / roughly 14,600px^2 shortfall). The other lever the brief named,
+      slightly bigger cards, was not built as a second panel because the card-width formula
+      (w-[calc((100vw-44px)/1.5)]) is itself a dated, named owner approval (2026-07-03,
+      "/dev/card-ratio V2 approved, R4-2") and stacking a second live-DOM edit past the first
+      would make this mockup show two reopened decisions instead of one, worse for judging
+      either on its own. Named as the second arm in the note below the panels instead.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#52525B; --line:#E4E4E7; --sunken:#F4F4F5;
+    --font:'Inter Tight',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fff}
+  body{
+    font-family:var(--font); color:var(--ink); -webkit-font-smoothing:antialiased;
+    -webkit-text-size-adjust:100%; text-size-adjust:100%;
+    max-width:402px; margin:0 auto; padding:20px 16px calc(28px + env(safe-area-inset-bottom));
+  }
+  h1{font-size:19px; font-weight:600; letter-spacing:-0.01em; line-height:1.3}
+  .sub{font-size:13px; color:var(--ink2); margin-top:6px; line-height:1.5}
+  .row{display:flex; align-items:center; justify-content:space-between; margin-top:22px; margin-bottom:8px}
+  .tag{font-size:12px; font-weight:600; color:var(--ink2)}
+  .tag.after{color:var(--ink)}
+  .badge{font-size:11px; font-weight:600; color:var(--ink2); background:var(--sunken); border-radius:999px; padding:3px 9px}
+  .frame{border:1px solid var(--line); border-radius:16px; overflow:hidden; background:#fff}
+  iframe{display:block; width:100%; height:844px; border:0}
+  .note{margin-top:28px; background:var(--sunken); border-radius:16px; padding:16px; font-size:13px; line-height:1.55; color:var(--ink2)}
+  .note b{color:var(--ink); font-weight:600}
+  .note .call{margin-top:12px; padding-top:12px; border-top:1px solid var(--line)}
+  .arms{margin-top:8px; padding-left:18px}
+  .arms li{margin-top:6px}
+  .foot{margin-top:20px; font-size:11px; color:var(--ink2); line-height:1.5; border-top:1px solid var(--line); padding-top:12px}
+</style>
+</head>
+<body>
+  <h1>Pulling the feed up on the home page</h1>
+  <p class="sub">Both boxes below load the real home page. The second one has one small spacing change applied live. Scroll down inside each box to compare.</p>
+
+  <div class="row"><span class="tag">BEFORE (live, untouched)</span></div>
+  <div class="frame"><iframe id="beforeFrame" src="/de" title="real home page, before"></iframe></div>
+
+  <div class="row"><span class="tag after">AFTER (spacing tightened above the feed)</span><span class="badge" id="afterStatus">loading</span></div>
+  <div class="frame"><iframe id="afterFrame" src="/de" title="real home page, after (spacing tightened)"></iframe></div>
+
+  <div class="note">
+    <b>What changed:</b> the row of category pills above the feed had 20px of air above and below it, added on purpose last month so it would not feel cramped. This test brings that back down to 12px, which lets the salon cards start about 16px higher on the screen. That is the whole change.
+    <div class="call">
+      <b>What this does not fix, and needs your call:</b> the home page has no large heading at all on a phone right now. The big headline exists in the code but is switched off below desktop size, on purpose, from when you said the old hero was cluttering the page. So the biggest text a phone visitor sees today is a small 18px section title, not a real headline.
+      <ul class="arms">
+        <li><b>Option A:</b> bring back a real headline on phones, sized properly. This reopens the call that removed it.</li>
+        <li><b>Option B:</b> leave it as is and treat the salon photos themselves as the visual lead of the screen instead of a headline. No hero photo either way, that stays off the table.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="foot">Both panels are the same live route, not a redraw. The category-pill row is shared with the Inspo page, so this same spacing change would touch that page too unless it is scoped to home only.</div>
+
+<script>
+  function applyChange(doc){
+    if (doc.getElementById('floor-fix-home-style')) return 1;
+    var tablist = doc.querySelector('[role="tablist"][aria-label="Kategorien"]');
+    if (!tablist) return 0;
+    var st = doc.createElement('style');
+    st.id = 'floor-fix-home-style';
+    st.textContent = '[role="tablist"][aria-label="Kategorien"]{padding-top:12px !important;padding-bottom:12px !important}';
+    doc.head.appendChild(st);
+    return 1;
+  }
+  var tries = 0;
+  var MAX_POLLS = 150; // poll cap, never a displayed count
+  var iv = setInterval(function () {
+    tries++;
+    var f = document.getElementById('afterFrame');
+    var status = document.getElementById('afterStatus');
+    try {
+      var doc = f.contentDocument;
+      if (doc && doc.readyState === 'complete' && applyChange(doc) > 0) {
+        clearInterval(iv);
+        if (status) { status.textContent = 'applied'; }
+      }
+    } catch (e) {}
+    if (tries > MAX_POLLS) {
+      clearInterval(iv);
+      if (status && status.textContent === 'loading') { status.textContent = 'could not confirm'; }
+    }
+  }, 200);
+</script>
+</body>
+</html>

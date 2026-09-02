@@ -1,0 +1,772 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<meta name="color-scheme" content="light">
+<title>Reviews page: five fixes, stacked</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!-- lang-ok: every line a reader sees on this page is English. The only non-English substrings in
+     this file live inside <script>, and they are copies of the REAL production DOM id and REAL
+     production button/label text, needed so each injected fix can find the right live elements.
+     Each one is marked german-ok inline, on its own line, same convention as every sibling file
+     this page assembles. -->
+<!--
+  Grounded-in: components-legacy/salon/SalonReviews.tsx (607L, what /de/salon/cuts-and-culture/reviews
+    actually renders end to end; app/[locale]/salon/[slug]/reviews/page.tsx wraps it in nothing but
+    a <main>, so the component IS the page for this route)
+  Grounded-in: public/_mockups/floor-fix-salon-reviews/index.html (variant A, smallest possible CSS
+    change, its exact applyFix() logic reproduced in the "A" panel below, byte-identical to the
+    element-matching rules, nothing re-derived)
+  Grounded-in: public/_mockups/fix-salon-reviews--b-hierarchy/index.html (variant B, hierarchy first,
+    its exact applyFix() logic reproduced in the "B" panel below)
+  Grounded-in: public/_mockups/fix-salon-reviews--c-content-forward/index.html (variant C, real
+    content higher and bigger, its exact applyFix() logic reproduced in the "C" panel below)
+  Grounded-in: public/_mockups/fix-salon-reviews--d-airbnb-weight/index.html (variant D, the Airbnb
+    weight recipe, its exact applyWeightFix() logic reproduced in the "D" panel below)
+  Grounded-in: public/_mockups/fix-salon-reviews--e-recompose/index.html (variant E, clears every
+    floor at once by reusing the registered SalonReviews + Avatar recipe, its exact applyFix() +
+    insertPhotoIfReady() logic reproduced in the "E" panel below)
+
+  WHAT THIS FILE IS: not a sixth mechanism. Every fix below is lifted verbatim from the five files
+  named above, each already built, measured and reported independently this same session. This page
+  only assembles them onto one scroll so they can be compared side by side instead of five separate
+  links. No new treatment is invented here; every stylesheet/script block below is a copy of the
+  matching source file's own applyFix (or applyWeightFix) function.
+
+  WHY STACKED, NEVER TABBED: CLAUDE.md's mockup-first block, amended 2026-08-15, verbatim: "Make
+  you, like, one section of it... remove the gate or anything that's making you do this shit so
+  annoying," closing with the switcher-plus-iframe template banned by name: "I can't even see a
+  difference." Six panels sit stacked below (the untouched page, then five fixes), all real, all
+  live, compared by scrolling, never by tapping.
+
+  Depicts: "Now" panel, the real reviews route, completely untouched -> components-legacy/salon/SalonReviews.tsx (607L, live iframe, no injection runs on this pane)
+  Depicts: "A" panel, five inline size/weight nudges + a photo strip -> components-legacy/salon/SalonReviews.tsx lines 305, 333, 395, 403, 447 (existing elements, inline styles set in place)
+  Depicts: "B" panel, every text size inside the review section collapsed onto three rank tiers -> components-legacy/salon/SalonReviews.tsx, all text-size classes on that file, script-applied inline overrides only
+  Depicts: "C" panel, a real photo pushed above the heading + five spacing values compacted -> components-legacy/salon/SalonReviews.tsx, the section-bewertungen wrapper and its five direct child blocks
+  Depicts: "D" panel, every leaf text element at weight >=600 turned down to weight 500 -> components-legacy/salon/SalonReviews.tsx (same real DOM, one inline style property changed per matching element)
+  Depicts: "E" panel, card wrapper + registered avatar recipe + dropped label + size/weight merges + a photo -> app/[locale]/_components/salon/SalonReviews.tsx (352L, the registered component, recipes reproduced on the legacy DOM by script, nothing imported) and app/[locale]/_components/primitives/Avatar.tsx (the registered Avatar primitive, its avatarColor() function reproduced verbatim)
+  Depicts: photo strip on panels A, C and E -> NET-NEW on this route: no photo currently renders anywhere on /reviews; each strip's src is read live, at runtime, from app/[locale]/_components/salon/SalonDetailV3.tsx's own real cover-photo render on the parent PDP, never typed into this file
+
+  Diagnosis: reviews page imagery | measured 0% photographic area in the first 390x844 viewport (F2, scripts/check-geometry.mjs extractFloors, live route, reported independently by three of the five source files) | violates CLAUDE.md FLOORS LAW 2, floor 33% | target >=33%, panels A/C/E each clear it (35.55% / 34.36% / 35.55%), panels B/D do not touch it (stay 0%)
+  Diagnosis: reviews page weight share | measured 43.48% to 44% of visible leaf text at weight >=600 depending on session state, 10-11 of 23-25 elements (F7a, live route, all five source files independently re-measured this same number within session variance) | violates CLAUDE.md FLOORS LAW 7a, ceiling 30% | target <=30%, panel D clears it hardest (0%), panel E clears it (12.5%), panel A lands under it (23.53% to 27.78%), panels B/C do not touch it (stay at the failing number)
+  Diagnosis: reviews page size spread | measured 7 to 8 distinct sizes with 6 inside one 8px window (F7c, live route, all five source files independently re-measured this same number within session variance) | violates CLAUDE.md FLOORS LAW 7c, ceiling 4 distinct per 8px window | target <=4, panels A/B/E clear it (4 in the densest window), panels C/D do not touch it (stay at 6)
+
+  Verified unaffected across all five source files, re-confirmed rather than re-measured here:
+  display anchor stays 30px (floor 28px), anchor ratio stays 2.14x to 2.31x (floor 1.8x), elevation
+  stays at 2 or rises to 3 (floor 2). None of the five mechanisms knocks any of these three over.
+
+  HOW THE NUMBERS ABOVE WERE PRODUCED: this file measures nothing new. Every number in the
+  Diagnosis lines is copied from the Diagnosis lines already written and independently verified in
+  the five source files this page assembles, each of which ran a standalone copy of
+  scripts/check-geometry.mjs's own extractFloors() against the live route before and after its own
+  fix. This file's own script performs the same DOM injections those files already proved correct;
+  it does not re-derive the numbers, it reuses them.
+
+  Exists-check: ran this turn. `npm run exists "SalonReviews"` returns 4 components (both existing
+    review components, the overhaul dev copy, and the dev-mock Screen) + 1 route + 6 exported
+    symbols; every panel below reuses the live route through injection, nothing rebuilt, nothing
+    new created by this comparison file itself.
+
+  Treatment-only: this file adds no new treatment of its own. It reproduces, unmodified, the five
+    already-built and already-reported fixes named in the Grounded-in list above, each isolated to
+    its own AFTER iframe, so the owner can scroll past all five real, live results in one pass.
+-->
+<!--
+  RELIABILITY FIX, added after the header block above (that block is left untouched by request):
+  a read-only checker reading each iframe's DOM directly found that panels B, C and E never applied
+  their fix when all six real copies of the reviews route loaded at once, while their captions kept
+  stating the change as fact. Loading six (plus the hidden seventh, harvest) live Next.js routes on
+  one page overloads the dev server badly enough that fix-detection can time out before the target
+  element ever appears, which is a loading-order problem, not a problem with any individual fix.
+
+  None of the applyFix/applyWeightFix functions below changed. What changed is WHEN each iframe gets
+  a src and HOW long and how visibly this page waits for confirmation:
+    1. The six visible panels (Now, A, B, C, D, E) now load strictly one at a time: a panel's iframe
+       gets no src until the panel before it has settled (its fix confirmed applied, or confirmed
+       failed after its budget). The hidden harvest frame (a different route, needed early by A/C/E)
+       loads in parallel with that chain rather than serialized into it, so at most two real routes
+       are ever loading at once instead of seven.
+    2. On top of that chain, a panel also will not start loading until it is near the viewport
+       (IntersectionObserver, generous rootMargin), so a reader on a phone who never scrolls to E
+       never makes this page fetch E's real route at all.
+    3. Every panel shows a plain "Loading" overlay in its frame until it settles, so a queued-but-
+       not-yet-started panel is never mistaken for a broken empty box.
+    4. Per-panel confirmation budget raised to 60 seconds (up from an effective ~30s expectation).
+       If a panel still cannot confirm within that budget, its badge changes to "could not confirm",
+       its caption is replaced at runtime with a plain-English statement that the change did not
+       apply on this load, and every claimed number in that panel is hidden, not left sitting next
+       to an unchanged screen.
+    5. Once a panel does confirm, a MutationObserver (for the four panels that mark themselves with
+       a data-* attribute) watches for the real page re-rendering over the injected fix and re-runs
+       the same apply function if the marker disappears; panel D, which has no marker of its own,
+       keeps a slow safety-net re-apply instead. This is the mechanism the diagnosis asked for: one
+       variant was measured applying and then being silently discarded by hydration.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#52525B; --ink3:#6B6B6B; --line:#E4E4E7; --sunken:#F4F4F5;
+    --good:#16A34A; --bad:#DC2626; --accent:#276EF1;
+    --font:'Inter Tight',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fff}
+  body{
+    font-family:var(--font); color:var(--ink); -webkit-font-smoothing:antialiased;
+    -webkit-text-size-adjust:100%; text-size-adjust:100%;
+    max-width:700px; margin:0 auto; padding:24px 16px calc(40px + env(safe-area-inset-bottom));
+  }
+
+  .intro{padding-bottom:18px; border-bottom:1px solid var(--line)}
+  .intro h1{font-size:20px; font-weight:600; letter-spacing:-0.01em; line-height:1.3}
+  .intro p{margin-top:10px; font-size:14px; line-height:1.6; color:var(--ink2)}
+  .intro p+p{margin-top:8px}
+  .intro b{color:var(--ink); font-weight:600}
+
+  .panel{margin-top:32px}
+  .panel-head{display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:4px}
+  .panel-name{font-size:15px; font-weight:600; color:var(--ink)}
+  .panel-name .letter{display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:6px; background:var(--sunken); color:var(--ink2); font-size:12px; font-weight:700; margin-right:8px; vertical-align:middle}
+  .panel-name.now .letter{background:var(--ink); color:#fff}
+  .badge{font-size:11px; font-weight:600; color:var(--ink2); background:var(--sunken); border-radius:999px; padding:3px 9px; font-variant-numeric:tabular-nums; white-space:nowrap}
+  .badge.pending{color:var(--ink3)}
+  .badge.failed{color:var(--bad); background:#FEF2F2}
+  .panel-cap{font-size:13px; line-height:1.55; color:var(--ink2); margin-bottom:10px}
+  .panel-cap b{color:var(--ink); font-weight:600}
+  .panel-move{margin-top:4px; font-size:12px; color:var(--ink2)}
+  .panel-move .num-before{color:var(--bad); font-weight:600; font-variant-numeric:tabular-nums}
+  .panel-move .num-after{color:var(--good); font-weight:600; font-variant-numeric:tabular-nums}
+
+  .frame{position:relative; border:1px solid var(--line); border-radius:16px; overflow:hidden; background:var(--sunken); max-width:390px; margin:10px auto 0}
+  .frame iframe{display:block; width:100%; height:844px; border:0; background:#fff}
+  .frame-loading{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:var(--sunken); color:var(--ink3); font-size:13px; font-weight:500; z-index:2}
+  #harvestFrame{position:fixed; left:-9999px; top:0; width:390px; height:844px; border:0}
+
+  .box{margin-top:36px; background:var(--sunken); border-radius:16px; padding:16px 16px 18px; font-size:13px; line-height:1.6; color:var(--ink2)}
+  .box b{color:var(--ink); font-weight:600}
+  .box h2{font-size:14px; font-weight:600; color:var(--ink); margin-bottom:10px}
+  .box ul{margin:8px 0 0 18px}
+  .box li{margin-top:6px}
+  .box li b{color:var(--ink)}
+
+  .foot{margin-top:20px; font-size:11px; color:var(--ink3); line-height:1.5; border-top:1px solid var(--line); padding-top:12px}
+</style>
+</head>
+<body>
+
+  <div class="intro">
+    <h1>The reviews page, five ways to fix it</h1>
+    <p>Right now this page has no photo of the salon, almost half its text is bold, and its text
+      sizes are crowded together with no clear order. The salon page one tap before it does not
+      have any of these problems.</p>
+    <p>Below: the real page as it ships today, then five different real fixes, each already built
+      and measured. Every box is the actual live page loading right now, not a drawing. Panels load
+      one at a time as you scroll, so a box that says "Loading" simply has not had its turn yet.</p>
+  </div>
+
+  <div class="panel" data-panel="now">
+    <div class="panel-head"><span class="panel-name now"><span class="letter">0</span>Now, live and untouched</span></div>
+    <div class="panel-cap">What ships today. <b>No photo</b> anywhere on the screen. <b>About 4 in
+      10 words are bold.</b> <b>Seven or eight different text sizes</b> crowd together right below
+      the heading.</div>
+    <div class="frame"><iframe id="nowFrame" data-src="/de/salon/cuts-and-culture/reviews" title="reviews page, now, unedited"></iframe><div class="frame-loading" id="loadingNow">Loading</div></div>
+  </div>
+
+  <div class="panel" data-panel="A">
+    <div class="panel-head"><span class="panel-name"><span class="letter">A</span>Smallest possible change</span><span class="badge pending" id="statusA">loading</span></div>
+    <div class="panel-cap">Nudges five specific pieces of text smaller (avatar letters, the filter
+      label, the review text, the write-review button) and adds the salon's own photo at the top.
+      Touches the least code of any option here.</div>
+    <div class="panel-move">Photo share: <span class="num-before">0%</span> &rarr; <span class="num-after">35.55%</span> (target 33%+)</div>
+    <div class="frame"><iframe id="afterFrameA" data-src="/de/salon/cuts-and-culture/reviews" title="reviews page, variant A, floor fix applied"></iframe><div class="frame-loading" id="loadingA">Loading</div></div>
+  </div>
+
+  <div class="panel" data-panel="B">
+    <div class="panel-head"><span class="panel-name"><span class="letter">B</span>Hierarchy first</span><span class="badge pending" id="statusB">loading</span></div>
+    <div class="panel-cap">Keeps the page title as the biggest text and the star-rating number as
+      the second-biggest. Everything else on the screen, names, dates, the filter label, the review
+      text, drops to one shared smaller size. Adds no photo.</div>
+    <div class="panel-move">Crowded sizes: <span class="num-before">8 sizes, 6 crammed together</span> &rarr; <span class="num-after">3 distinct sizes</span> (target 4 or fewer)</div>
+    <div class="frame"><iframe id="afterFrameB" data-src="/de/salon/cuts-and-culture/reviews" title="reviews page, variant B, hierarchy fix applied"></iframe><div class="frame-loading" id="loadingB">Loading</div></div>
+  </div>
+
+  <div class="panel" data-panel="C">
+    <div class="panel-head"><span class="panel-name"><span class="letter">C</span>Real content, higher and bigger</span><span class="badge pending" id="statusC">loading</span></div>
+    <div class="panel-cap">Puts a real photo of the salon at the top and tightens the space around
+      the heading, rating and filter row so the first review still starts on screen. Cost, stated
+      plainly: the first review's comment now starts just past the fold, where before the full
+      comment and the salon's reply were both visible.</div>
+    <div class="panel-move">Photo share: <span class="num-before">0%</span> &rarr; <span class="num-after">34.36%</span> (target 33%+, just clears it)</div>
+    <div class="frame"><iframe id="afterFrameC" data-src="/de/salon/cuts-and-culture/reviews" title="reviews page, variant C, content-forward fix applied"></iframe><div class="frame-loading" id="loadingC">Loading</div></div>
+  </div>
+
+  <div class="panel" data-panel="D">
+    <div class="panel-head"><span class="panel-name"><span class="letter">D</span>Emphasis the Airbnb way</span><span class="badge pending" id="statusD">loading</span></div>
+    <div class="panel-cap">Turns every bold word on the page down to medium weight. Nothing moves,
+      nothing resizes, no photo is added. Airbnb's own page runs about 3 words bold in every 100;
+      this does the same recipe here.</div>
+    <div class="panel-move">Bold text: <span class="num-before">44%</span> &rarr; <span class="num-after">0%</span> (target 30% or under)</div>
+    <div class="frame"><iframe id="afterFrameD" data-src="/de/salon/cuts-and-culture/reviews" title="reviews page, variant D, Airbnb weight fix applied"></iframe><div class="frame-loading" id="loadingD">Loading</div></div>
+  </div>
+
+  <div class="panel" data-panel="E">
+    <div class="panel-head"><span class="panel-name"><span class="letter">E</span>Clear every floor at once</span><span class="badge pending" id="statusE">loading</span></div>
+    <div class="panel-cap">Rebuilds this page from the exact same pieces the salon page above it
+      already uses: a soft-edged card, grey avatars instead of blue, no redundant filter label,
+      less bold, plus the real photo. The most changed of the five, and the only one that moves all
+      three failing numbers at once.</div>
+    <div class="panel-move">Photo share: <span class="num-before">0%</span> &rarr; <span class="num-after">35.55%</span></div>
+    <div class="panel-move">Bold text: <span class="num-before">44%</span> &rarr; <span class="num-after">12.5%</span></div>
+    <div class="panel-move">Crowded sizes: <span class="num-before">8</span> &rarr; <span class="num-after">4</span></div>
+    <div class="frame"><iframe id="afterFrameE" data-src="/de/salon/cuts-and-culture/reviews" title="reviews page, variant E, recompose fix applied"></iframe><div class="frame-loading" id="loadingE">Loading</div></div>
+  </div>
+
+  <iframe id="harvestFrame" data-src="/de/salon/cuts-and-culture" title="hidden: reads the real cover photo from the live parent page"></iframe>
+
+  <div class="box">
+    <h2>What is his call, and what is just matching the salon page he already likes</h2>
+    <ul>
+      <li><b>His call:</b> which of these five to ship, or whether to combine pieces of more than
+        one (for example, D's weight recipe plus C's photo placement).</li>
+      <li><b>His call:</b> which photo to show. All three photo options here read the salon's own
+        cover photo live, the only real photo this route can honestly reach today, since no
+        individual review has a photo of its own yet. Adding real photos to individual reviews
+        later is a separate, bigger decision about shared data, not shown here.</li>
+      <li><b>His call:</b> variant E also shrinks the avatar circle from 56px to 44px, as part of
+        matching the registered size exactly rather than keeping the old size with just a new
+        colour.</li>
+      <li><b>His call:</b> variant D turns the filter chips' own bold weight down to medium too,
+        which touches a separately locked rule (selected filter pills are meant to stay
+        semibold/600). Named here as a real collision between two decisions, not resolved
+        silently.</li>
+      <li><b>Not his call, already decided:</b> the target numbers themselves (photo at least a
+        third of the screen, bold text under 30%, at most 4 sizes crowded together, the 30px
+        heading). Those came from the salon page he already approved and apply the same way to
+        every option above.</li>
+      <li><b>Not his call, already decided:</b> variant E's card, grey-avatar and no-label recipe
+        are not new designs, they are copies of what the salon page already ships for this same
+        review content today.</li>
+    </ul>
+  </div>
+
+  <div class="foot">Every box above loads the real running route from this dev server. Nothing is
+    redrawn, invented, or hardcoded. Nothing has been applied to the real component files
+    themselves; every change lives only inside this comparison page's own script. A panel whose
+    badge reads "could not confirm" did not apply on this load; reload the page to try again.</div>
+
+<script>
+  var SECTION_ID = 'section-bewertungen'; // german-ok: real production DOM id, shared by every panel below
+
+  // Same-origin cookie-consent record, written before any iframe's own scripts run (this mockup
+  // file is served from the same Next.js origin as the iframes, so localStorage here is visible
+  // to them too), so the banner never covers the section in any pane. Each iframe's src is assigned
+  // by the load sequencer below, never set twice.
+  try {
+    localStorage.setItem('solen-cookie-consent', JSON.stringify({
+      necessary: true, analytics: false, marketing: false, timestamp: new Date().toISOString()
+    }));
+  } catch (e) { console.error('[compare-salon-reviews] could not pre-set cookie consent in localStorage', e); }
+
+  var nowFrame = document.getElementById('nowFrame');
+  var afterFrameA = document.getElementById('afterFrameA');
+  var afterFrameB = document.getElementById('afterFrameB');
+  var afterFrameC = document.getElementById('afterFrameC');
+  var afterFrameD = document.getElementById('afterFrameD');
+  var afterFrameE = document.getElementById('afterFrameE');
+  var harvestFrame = document.getElementById('harvestFrame');
+
+  function markApplied(id) {
+    var el = document.getElementById(id);
+    if (el && el.textContent === 'loading') { el.textContent = 'applied'; el.classList.remove('pending'); }
+  }
+
+  function hideLoadingOverlay(key) {
+    var el = document.getElementById('loading' + key);
+    if (el) el.style.display = 'none';
+  }
+
+  function markPanelFailed(letter) {
+    var statusEl = document.getElementById('status' + letter);
+    if (statusEl) {
+      statusEl.textContent = 'could not confirm';
+      statusEl.classList.remove('pending');
+      statusEl.classList.add('failed');
+    }
+    var panelEl = document.querySelector('.panel[data-panel="' + letter + '"]');
+    if (!panelEl) return;
+    var capEl = panelEl.querySelector('.panel-cap');
+    if (capEl) {
+      capEl.innerHTML = '<b style="color:var(--bad)">This change did not apply on this load.</b> ' +
+        'The dev server was likely still busy with an earlier panel when this one\'s time budget ran ' +
+        'out. Reload the page to try again.';
+    }
+    var moves = panelEl.querySelectorAll('.panel-move');
+    for (var i = 0; i < moves.length; i++) moves[i].style.display = 'none';
+  }
+
+  // ---- harvest the real cover photo from the real parent page, once, shared by panels A/C/E.
+  // Hidden, never rendered to the viewer, used only to read one live src string. Nothing here is
+  // typed as a fixed URL. Runs in parallel with the six visible panels below rather than serialized
+  // into that chain: it is a second real route, but a single background one, not six-at-once.
+  var realPhotoSrc = null;
+  (function startHarvest() {
+    harvestFrame.src = harvestFrame.getAttribute('data-src');
+    pollUntil(
+      function () {
+        var doc;
+        try { doc = harvestFrame.contentDocument; } catch (e) { console.error('[compare-salon-reviews] cannot read harvest document', e); return false; }
+        var img = doc && doc.querySelector('img[src*="supabase"], img[src^="http"], img[src^="/_next/image"]');
+        if (img && img.src) { realPhotoSrc = img.src; return true; }
+        return false;
+      },
+      function () { /* photo found, nothing else to do here */ },
+      function () { console.error('[compare-salon-reviews] could not harvest a real cover photo within budget; panels A/C/E will run their text fix without a photo strip'); },
+      60000, 500
+    );
+  })();
+
+  // ===================================================================================
+  // PANEL A , reproduced from public/_mockups/floor-fix-salon-reviews/index.html, byte-identical
+  // element-matching logic, nothing re-derived.
+  // ===================================================================================
+  function applyFixA(doc, photoSrc) {
+    var section = doc.getElementById(SECTION_ID);
+    if (!section) return false;
+    if (section.getAttribute('data-floor-fix-a')) return true;
+
+    if (photoSrc) {
+      var strip = doc.createElement('div');
+      strip.style.margin = '0 -16px 20px';
+      strip.style.height = '300px';
+      strip.style.overflow = 'hidden';
+      strip.style.position = 'relative';
+      strip.style.background = '#F4F4F5';
+      var img = doc.createElement('img');
+      img.src = photoSrc;
+      img.alt = '';
+      img.style.width = '100%';
+      img.style.height = '100%';
+      img.style.objectFit = 'cover';
+      img.style.display = 'block';
+      strip.appendChild(img);
+      section.parentElement.insertBefore(strip, section);
+    }
+
+    var all = section.querySelectorAll('*');
+    for (var i = 0; i < all.length; i++) {
+      var el = all[i];
+      if (el.children.length > 0) continue;
+      var t = (el.textContent || '').trim();
+      if (!t) continue;
+      var cs = doc.defaultView.getComputedStyle(el);
+      var size = parseFloat(cs.fontSize);
+      var weight = parseInt(cs.fontWeight, 10);
+
+      if (/^[A-Z]$/.test(t) && Math.abs(size - 17) < 0.5) {
+        el.style.fontSize = '13px';
+        el.style.fontWeight = '500';
+      }
+      if (t === 'Filtern nach') { // german-ok: real production label text
+        el.style.fontSize = '13px';
+        el.style.fontWeight = '400';
+      }
+      if (Math.abs(size - 15) < 0.5 && weight >= 600 && el.tagName !== 'SPAN') {
+        el.style.fontWeight = '500';
+      }
+      if (Math.abs(size - 12) < 0.5 && weight < 600) {
+        el.style.fontSize = '13px';
+      }
+      if (Math.abs(size - 14) < 0.5 && weight < 600 && el.tagName === 'P') {
+        el.style.fontSize = '13px';
+      }
+      if (t === 'Bewertung schreiben' || t === 'Write a review') { // german-ok: real production button copy
+        el.style.fontSize = '15px';
+      }
+    }
+
+    section.setAttribute('data-floor-fix-a', '1');
+    return true;
+  }
+
+  // ===================================================================================
+  // PANEL B , reproduced from public/_mockups/fix-salon-reviews--b-hierarchy/index.html
+  // ===================================================================================
+  function applyFixB(doc) {
+    var section = doc.getElementById(SECTION_ID);
+    if (!section) return false;
+    if (section.getAttribute('data-rank-fix-b')) return true;
+
+    var all = section.querySelectorAll('*');
+    for (var i = 0; i < all.length; i++) {
+      var el = all[i];
+      if (el.children.length > 0) continue;
+      var t = (el.textContent || '').trim();
+      if (!t) continue;
+      var cs = doc.defaultView.getComputedStyle(el);
+      var size = parseFloat(cs.fontSize);
+      if (Math.abs(size - 30) < 0.5) continue; // rank 1, the anchor, untouched
+      if (Math.abs(size - 20) < 0.5) continue; // rank 2, the rating number, untouched
+      if (Math.abs(size - 14) < 0.5) continue; // already at rank 3
+      el.style.fontSize = '14px';
+    }
+
+    section.setAttribute('data-rank-fix-b', '1');
+    return true;
+  }
+
+  // ===================================================================================
+  // PANEL C , reproduced from public/_mockups/fix-salon-reviews--c-content-forward/index.html
+  // ===================================================================================
+  function applyFixC(doc, photoSrc) {
+    var section = doc.getElementById(SECTION_ID);
+    if (!section) return false;
+    if (section.getAttribute('data-content-fix-c')) return true;
+
+    if (photoSrc) {
+      var strip = doc.createElement('div');
+      strip.style.margin = '-24px -16px 20px';
+      strip.style.height = '290px';
+      strip.style.overflow = 'hidden';
+      strip.style.position = 'relative';
+      strip.style.background = '#F4F4F5';
+      var img = doc.createElement('img');
+      img.src = photoSrc;
+      img.alt = '';
+      img.style.width = '100%';
+      img.style.height = '100%';
+      img.style.objectFit = 'cover';
+      img.style.display = 'block';
+      strip.appendChild(img);
+      section.parentElement.insertBefore(strip, section);
+    }
+
+    var wrap = section.querySelector(':scope > div.mt-3');
+    if (wrap) wrap.style.marginTop = '8px';
+
+    var ratingRow = section.querySelector('.mt-5');
+    if (ratingRow) ratingRow.style.marginTop = '12px';
+    var filterWrap = section.querySelector('.mt-6');
+    if (filterWrap) filterWrap.style.marginTop = '16px';
+    var filterLabel = Array.prototype.find.call(section.querySelectorAll('p'), function (p) {
+      return p.textContent.trim() === 'Filtern nach'; // german-ok: real production label text
+    });
+    if (filterLabel) filterLabel.style.marginBottom = '6px';
+
+    var sortRow = Array.prototype.find.call(section.querySelectorAll('div'), function (d) {
+      return d.className && d.className.indexOf('mb-4') !== -1 && d.className.indexOf('mt-6') !== -1 && d.className.indexOf('border-t') !== -1;
+    });
+    if (sortRow) {
+      sortRow.style.marginTop = '14px';
+      sortRow.style.paddingTop = '10px';
+      sortRow.style.marginBottom = '10px';
+    }
+
+    section.setAttribute('data-content-fix-c', '1');
+    return true;
+  }
+
+  // ===================================================================================
+  // PANEL D , reproduced from public/_mockups/fix-salon-reviews--d-airbnb-weight/index.html
+  // ===================================================================================
+  var SKIP_TAGS = { html:1, body:1, head:1, script:1, style:1, noscript:1, template:1, meta:1, link:1, title:1, br:1 };
+  var SVG_NS = 'http://www.w3.org/2000/svg';
+  function hasOwnText(el) {
+    var kids = el.childNodes;
+    for (var i = 0; i < kids.length; i++) {
+      var n = kids[i];
+      if (n.nodeType === 3 && n.textContent && n.textContent.trim().length > 0) return true;
+    }
+    return false;
+  }
+  function isVisibleD(rect, style) {
+    if (rect.width <= 0 || rect.height <= 0) return false;
+    if (style.display === 'none' || style.visibility === 'hidden') return false;
+    return true;
+  }
+  function leafElementsD(doc) {
+    var all = doc.body.querySelectorAll('*');
+    var out = [];
+    for (var i = 0; i < all.length; i++) {
+      var el = all[i];
+      var tag = el.tagName.toLowerCase();
+      if (SKIP_TAGS[tag]) continue;
+      if (el.namespaceURI === SVG_NS && tag !== 'svg') continue;
+      if (!hasOwnText(el)) continue;
+      var style = doc.defaultView.getComputedStyle(el);
+      var rect = el.getBoundingClientRect();
+      if (!isVisibleD(rect, style)) continue;
+      out.push({ el: el, weight: parseInt(style.fontWeight, 10) || 400 });
+    }
+    return out;
+  }
+  function applyWeightFixD(doc) {
+    var leaves = leafElementsD(doc);
+    for (var i = 0; i < leaves.length; i++) {
+      if (leaves[i].weight >= 600) leaves[i].el.style.fontWeight = '500';
+    }
+    return leaves.length > 0;
+  }
+
+  // ===================================================================================
+  // PANEL E , reproduced from public/_mockups/fix-salon-reviews--e-recompose/index.html
+  // ===================================================================================
+  var AVATAR_PALETTE = [
+    { bg: '#F5F5F4', fg: '#0A0A0A' },
+    { bg: '#E7E5E4', fg: '#0A0A0A' },
+    { bg: '#D6D3D1', fg: '#0A0A0A' },
+    { bg: '#A8A29E', fg: '#FFFFFF' }
+  ];
+  function avatarColor(name) {
+    var firstCharIndex = 0;
+    var ch = (name || '?').charCodeAt(firstCharIndex) || 0;
+    return AVATAR_PALETTE[ch % AVATAR_PALETTE.length];
+  }
+  function applyFixE(doc) {
+    var section = doc.getElementById(SECTION_ID);
+    if (!section) return false;
+    if (section.getAttribute('data-recompose-fix-e')) return true;
+
+    section.classList.add('rounded-[24px]', 'border', 'border-s-border', 'bg-white', 'shadow-whisper', 'p-5');
+
+    var all = section.querySelectorAll('*');
+    var i, el;
+    for (i = 0; i < all.length; i++) {
+      el = all[i];
+      if (el.className && typeof el.className === 'string' && el.className.indexOf('bg-s-accent-pale') !== -1) {
+        var nameEl = el.parentElement && el.parentElement.querySelector('.truncate.text-\\[15px\\]');
+        var name = nameEl ? nameEl.textContent.trim() : (el.textContent || '?').trim();
+        var colour = avatarColor(name);
+        el.style.background = colour.bg;
+        el.style.color = colour.fg;
+        el.style.width = '44px';
+        el.style.height = '44px';
+        el.style.fontSize = '15px';
+        el.classList.remove('h-14', 'w-14', 'text-[17px]', 'text-s-accent', 'bg-s-accent-pale');
+      }
+    }
+
+    for (i = 0; i < all.length; i++) {
+      el = all[i];
+      if (el.children.length > 0) continue;
+      var t = (el.textContent || '').trim();
+      if (!t) continue;
+
+      if (t === 'Filtern nach') { // german-ok: real production label text
+        el.remove();
+        continue;
+      }
+
+      var cs = doc.defaultView.getComputedStyle(el);
+      var weight = parseInt(cs.fontWeight, 10);
+      var size = parseFloat(cs.fontSize);
+
+      if (Math.abs(size - 14) < 0.5 && !el.closest('button')) {
+        el.style.fontSize = '13px';
+      }
+      if (weight >= 600 && !(el.tagName === 'H2' && Math.abs(size - 30) < 0.5)) {
+        el.style.fontWeight = '500';
+      }
+    }
+
+    section.setAttribute('data-recompose-fix-e', '1');
+    return true;
+  }
+  function insertPhotoIfReadyE(doc, photoSrc) {
+    if (!photoSrc) return false;
+    var section = doc.getElementById(SECTION_ID);
+    if (!section) return false;
+    if (doc.getElementById('mockup-photo-strip-e')) return true;
+
+    var strip = doc.createElement('div');
+    strip.id = 'mockup-photo-strip-e';
+    strip.style.margin = '0 -16px 20px';
+    strip.style.height = '300px';
+    strip.style.overflow = 'hidden';
+    strip.style.position = 'relative';
+    strip.style.background = '#F4F4F5';
+    var img = doc.createElement('img');
+    img.src = photoSrc;
+    img.alt = '';
+    img.style.width = '100%';
+    img.style.height = '100%';
+    img.style.objectFit = 'cover';
+    img.style.display = 'block';
+    strip.appendChild(img);
+    section.parentElement.insertBefore(strip, section);
+    return true;
+  }
+
+  // ===================================================================================
+  // LOAD SEQUENCER, replaces the old six-at-once burst. One panel loads at a time; a panel does
+  // not start until the one before it has settled (fix confirmed applied, or confirmed failed
+  // after its own budget) AND it is near the viewport. None of the apply* functions above changed;
+  // only when and how reliably this page calls them did.
+  // ===================================================================================
+  function pollUntil(fn, onSuccess, onTimeout, budgetMs, tickMs) {
+    var start = Date.now();
+    var iv = setInterval(function () {
+      var ok = false;
+      try { ok = !!fn(); } catch (e) { console.error('[compare-salon-reviews] poll attempt threw', e); ok = false; }
+      if (ok) { clearInterval(iv); onSuccess(); return; }
+      if (Date.now() - start >= budgetMs) { clearInterval(iv); onTimeout(); }
+    }, tickMs);
+    return iv;
+  }
+
+  var PANELS = [
+    {
+      key: 'A', iframeId: 'afterFrameA', markerAttr: 'data-floor-fix-a',
+      apply: function (doc, photoSrc) { return applyFixA(doc, photoSrc); }
+    },
+    {
+      key: 'B', iframeId: 'afterFrameB', markerAttr: 'data-rank-fix-b',
+      apply: function (doc) { return applyFixB(doc); }
+    },
+    {
+      key: 'C', iframeId: 'afterFrameC', markerAttr: 'data-content-fix-c',
+      apply: function (doc, photoSrc) { return applyFixC(doc, photoSrc); }
+    },
+    {
+      key: 'D', iframeId: 'afterFrameD', markerAttr: null,
+      apply: function (doc) { return applyWeightFixD(doc); }
+    },
+    {
+      key: 'E', iframeId: 'afterFrameE', markerAttr: 'data-recompose-fix-e',
+      apply: function (doc, photoSrc) { var textOk = applyFixE(doc); insertPhotoIfReadyE(doc, photoSrc); return textOk; }
+    }
+  ];
+  function panelByKey(key) {
+    for (var i = 0; i < PANELS.length; i++) if (PANELS[i].key === key) return PANELS[i];
+    return null;
+  }
+
+  // Survive the real page re-rendering over an already-applied fix (measured: hydration can
+  // discard an injected node after the fix was confirmed). For the four panels that mark
+  // themselves with a data-* attribute, a MutationObserver re-runs the same apply function the
+  // moment that marker goes missing. Panel D carries no marker, so it keeps a slow safety-net
+  // re-apply instead; applyWeightFixD is idempotent-safe to call repeatedly.
+  function attachHydrationGuard(cfg) {
+    var iframe = document.getElementById(cfg.iframeId);
+    if (cfg.markerAttr) {
+      var check = function () {
+        var doc;
+        try { doc = iframe.contentDocument; } catch (e) { console.error('[compare-salon-reviews] hydration guard lost access to panel ' + cfg.key, e); return; }
+        if (!doc) return;
+        var section = doc.getElementById(SECTION_ID);
+        if (section && !section.getAttribute(cfg.markerAttr)) {
+          try { cfg.apply(doc, realPhotoSrc); } catch (e) { console.error('[compare-salon-reviews] hydration re-apply failed for panel ' + cfg.key, e); }
+        }
+      };
+      try {
+        var doc0 = iframe.contentDocument;
+        if (doc0 && doc0.body) {
+          var mo = new MutationObserver(function () { check(); });
+          mo.observe(doc0.body, { childList: true, subtree: true, attributes: true });
+        }
+      } catch (e) { console.error('[compare-salon-reviews] could not attach MutationObserver for panel ' + cfg.key, e); }
+    } else {
+      var reapplyCount = 0;
+      var slowIv = setInterval(function () {
+        reapplyCount++;
+        try {
+          var doc = iframe.contentDocument;
+          if (doc) cfg.apply(doc, realPhotoSrc);
+        } catch (e) { console.error('[compare-salon-reviews] safety re-apply failed for panel ' + cfg.key, e); }
+        if (reapplyCount > 600) clearInterval(slowIv); // ~30 minutes at 3s ticks, not truly infinite
+      }, 3000);
+    }
+  }
+
+  var QUEUE_KEYS = ['now', 'A', 'B', 'C', 'D', 'E'];
+  var qi = 0;
+  var nearViewport = {};
+  var startedKey = {};
+
+  function frameContainerFor(key) {
+    var iframeEl = key === 'now' ? nowFrame : document.getElementById(panelByKey(key).iframeId);
+    return iframeEl ? iframeEl.closest('.frame') : null;
+  }
+
+  var io = new IntersectionObserver(function (entries) {
+    for (var i = 0; i < entries.length; i++) {
+      var entry = entries[i];
+      if (entry.isIntersecting) {
+        var key = entry.target.getAttribute('data-queue-key');
+        nearViewport[key] = true;
+        io.unobserve(entry.target);
+        advanceQueue();
+      }
+    }
+  }, { rootMargin: '600px 0px 600px 0px', threshold: 0 });
+
+  QUEUE_KEYS.forEach(function (key) {
+    var el = frameContainerFor(key);
+    if (el) { el.setAttribute('data-queue-key', key); io.observe(el); }
+  });
+
+  function advanceQueue() {
+    if (qi >= QUEUE_KEYS.length) return;
+    var key = QUEUE_KEYS[qi];
+    if (startedKey[key]) return;
+    if (!nearViewport[key]) return;
+    startedKey[key] = true;
+    startPanel(key);
+  }
+
+  function settleAndAdvance() {
+    qi++;
+    advanceQueue();
+  }
+
+  function startPanel(key) {
+    if (key === 'now') { startNow(); return; }
+    var cfg = panelByKey(key);
+    var iframe = document.getElementById(cfg.iframeId);
+    iframe.src = iframe.getAttribute('data-src');
+    pollUntil(
+      function () {
+        var doc;
+        try { doc = iframe.contentDocument; } catch (e) { console.error('[compare-salon-reviews] cannot read document for panel ' + key, e); return false; }
+        if (!doc) return false;
+        return cfg.apply(doc, realPhotoSrc);
+      },
+      function () {
+        hideLoadingOverlay(key);
+        markApplied('status' + key);
+        attachHydrationGuard(cfg);
+        settleAndAdvance();
+      },
+      function () {
+        hideLoadingOverlay(key);
+        markPanelFailed(key);
+        console.error('[compare-salon-reviews] panel ' + key + ' did not confirm its fix within the 60 second budget');
+        settleAndAdvance();
+      },
+      60000, 500
+    );
+  }
+
+  function startNow() {
+    var settled = false;
+    var fallback = setTimeout(function () {
+      if (settled) return;
+      settled = true;
+      hideLoadingOverlay('Now');
+      console.error('[compare-salon-reviews] now panel did not fire a load event within the 60 second budget');
+      settleAndAdvance();
+    }, 60000);
+    nowFrame.addEventListener('load', function onNowLoad() {
+      if (settled) return;
+      settled = true;
+      clearTimeout(fallback);
+      hideLoadingOverlay('Now');
+      settleAndAdvance();
+    }, { once: true });
+    nowFrame.src = nowFrame.getAttribute('data-src');
+  }
+
+  advanceQueue(); // covers the case where "now" is already in view before the observer's first tick
+</script>
+</body>
+</html>
