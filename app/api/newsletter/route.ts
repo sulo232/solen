@@ -4,12 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
-import { validateBody } from "@/lib/validations";
-import { z } from "zod";
-
-const newsletterSchema = z.object({
-  email: z.string().email().max(255),
-});
+import { validateBody, newsletterSchema } from "@/lib/validations";
 
 export async function POST(req: NextRequest) {
   // Rate limit by IP (public route)

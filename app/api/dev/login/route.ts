@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { createAdminSupabaseClient } from "@/lib/supabase";
+import { isSafeRelativePath } from "@/lib/url-safety";
 
 // ─────────────────────────────────────────────────────────────
 // DEV-ONLY login. Signs in a TEST salon-owner fixture via a
@@ -37,11 +38,8 @@ export async function GET(req: NextRequest) {
   //    tunnel/proxy (e.g. cloudflared) req.url's host is localhost, which would otherwise redirect to
   //    https://localhost:3000/... and dead-end the device. A relative path stays on the current host.
   const rawToPath = req.nextUrl.searchParams.get("to") || "/de/dashboard";
-  // SECURITY: same guard as app/api/auth/callback/route.ts. Block protocol-relative
-  // URLs and backslashes (new URL() treats "\" as "/" per the WHATWG spec, so
-  // "/\evil.com" would otherwise pass a bare startsWith("/") check).
-  const isSafeToPath = rawToPath.startsWith("/") && !rawToPath.startsWith("//") && !rawToPath.includes("\\");
-  const toPath = isSafeToPath ? rawToPath : "/";
+  // SECURITY: shared guard (lib/url-safety.ts), same one app/api/auth/callback/route.ts uses.
+  const toPath = isSafeRelativePath(rawToPath) ? rawToPath : "/";
   const res = new NextResponse(null, { status: 307, headers: { Location: toPath } });
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

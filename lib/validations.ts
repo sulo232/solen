@@ -1413,7 +1413,7 @@ export const offPeakNotificationSchema = z.object({
 });
 
 export const newsletterSchema = z.object({
-  email: z.string().email(),
+  email: z.string().email().max(255),
   locale: z.enum(["de", "en", "fr", "it"]).default("de"),
 });
 

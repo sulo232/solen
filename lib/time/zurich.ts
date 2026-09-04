@@ -16,3 +16,18 @@ export function zurichWallClockToUtc(dateStr: string, hours: number, minutes: nu
   const offsetMs = asZurich.getTime() - asUtc.getTime();
   return new Date(guess.getTime() - offsetMs);
 }
+
+// Reverse direction: a true UTC instant -> its Zurich-local calendar day, "YYYY-MM-DD".
+// Any consumer bucketing a timestamptz (e.g. availability_slots.starts_at) by day must go
+// through this, not a raw string prefix of the UTC ISO value: a slot whose Zurich-local
+// start is between 00:00 and 02:00 sits on the PREVIOUS UTC day, so a startsWith(dayIso)
+// prefix match silently drops it from that day's view.
+const ZURICH_YMD_FMT = new Intl.DateTimeFormat("en-CA", {
+  timeZone: "Europe/Zurich",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+export function zurichYmd(d: Date): string {
+  return ZURICH_YMD_FMT.format(d);
+}

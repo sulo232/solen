@@ -7,6 +7,7 @@ export const dynamic = "force-dynamic";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { isSafeRelativePath } from "@/lib/url-safety";
 import OnboardingFlow from "./OnboardingFlow";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
@@ -44,7 +45,7 @@ export default async function OnboardingPage({
       : {};
 
   const raw = typeof sp?.redirect === "string" ? sp.redirect : "";
-  const redirectTo = raw.startsWith("/") && !raw.startsWith("//") ? raw : `/${locale}`;
+  const redirectTo = isSafeRelativePath(raw) ? raw : `/${locale}`;
 
   return (
     <main className="min-h-screen bg-white">
