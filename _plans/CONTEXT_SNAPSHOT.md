@@ -2,28 +2,31 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-09-04T16:02:09 (trigger: auto)
+- taken: 2026-09-04T16:35:09 (trigger: auto)
 - branch: claude/cloud-code-codex-migration-86a820
 
 ## git
 ```
-cc20232f2 Two stray dump files from March leave the repo root
-1b1d1eab2 Merge branch 'merge-staging-2026-09-02'
-99d4f388e WIP: gray-settings plan notes found unsaved in the main folder (2026-08-27), kept before the branch merges
-8b6b426cd Merge branch 'claude/airbnb-animated-icons-ee4329' into merge-staging-2026-09-02
-f2b3bf1cb Merge branch 'claude/stress-test-gates-hooks-6dc8e8' into merge-staging-2026-09-02
+70b8027b7 A test or unlisted salon's page and its search-engine tags are no longer reachable by guessing the address
+086c789f7 Plan notes corrected against today's code: four dead-feature claims were stale, one receipt-link 'fixed' claim checked the wrong link, and CLAUDE.md pointed column checks at a file that holds no columns
+1fe6a4d1e Dashboard calendar: day buckets pinned to Swiss time, and a deleted slot refreshes the list like the other edits do
+622826785 Booking screen and booking API now agree on the payment mode; a cancelled prepaid booking releases its card hold at once
+4410ad507 Merge the salon-page styling branch (claude/pdp-styling-updates-b2582b): his 2026-08-15/16 salon-page decisions reach main
 ```
 ```
-M .claude/launch.json
- M _design-system/_geometry-report.md
- M _plans/ACTIVE.md
- M app/api/cron/affinity-recompute/route.ts
- M app/api/cron/db-backup/route.ts
- M app/api/cron/discovery-ai-backfill/route.ts
- M app/api/cron/discovery-deadcheck/route.ts
- M app/api/cron/process-deletions/route.ts
- M app/api/cron/salon-engagement-recompute/route.ts
-?? _plans/EVERYTHING_TO_CODEX_2026-09-04.md
+M _plans/CONTEXT_SNAPSHOT.md
+ M _plans/EVERYTHING_TO_CODEX_2026-09-04.md
+ M _plans/GAP_FIXES.md
+ M app/[locale]/_components/profile/AccountHub.tsx
+ M app/[locale]/bookings/[id]/refund/page.tsx
+ M app/[locale]/bookings/[id]/upcharge/page.tsx
+ M app/[locale]/dashboard/services/page.tsx
+ M app/[locale]/profile/page.tsx
+ M app/api/admin/solen-score/recalculate/route.ts
+ M app/api/services/[id]/photos/route.ts
+ M app/sitemap.ts
+ M components-legacy/refund/RefundCaseView.tsx
+ M lib/validations.ts
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
@@ -73,23 +76,15 @@ M .claude/launch.json
 
 ## EVERYTHING_TO_CODEX_2026-09-04.md
 Open boxes:
-- [ ] 1b. Consolidated list of STILL-OPEN items from the 12 prior audit/plan files, each verified against current code
 - [ ] 1c. Backend silent no-op hunt: phantom columns, dead filters, consent flags nobody reads
 - [ ] 1d. Frontend gaps: dead links, orphaned routes, decorative (rendered-but-unwired) features, i18n parity
-- [ ] 1e. DB drift: migration files vs live snapshot; the four security migrations from 2026-08-14
 - [ ] 1f. Design: measured taste walk on the real phone screens (home, search, PDP, booking, profile, dashboard)
 - [ ] 2a. Fix every STILL-OPEN non-design item, coder + reviewer loop, one commit per verified chunk
 - [ ] 2b. Design findings become mockups (one section each, real page copy, English), never direct edits
-- [ ] 3a. Register this batch here and in ACTIVE.md
 - [ ] 3b. After each wave, one short question to him only if the next wave depends on it; otherwise park and continue
-- [ ] 4a. Waves of 4 readers/coders/reviewers, never one lone helper on a splittable job
 - [ ] 5a. Council pass over every fix batch before commit
-- [ ] 6a. Classify the 15 unmerged branches (type, conflicts, migrations, live-session check)
 - [ ] 6b. Merge the 4 newer zero-conflict branches (email, offline-booking, pdp-styling, harness-everth) after his word on the live one
 - [ ] 6c. The 11 old branches: his 2026-08-14 call was "lift features, never merge wholesale". Ask whether "merge everything" overrides it; if not, lift the named features and delete the rest with recovery shas recorded
-- [ ] 7a. Live research: what Codex supports today (hooks, skills, plugins, agents, memory, MCP, AGENTS.md)
-- [ ] 7b. Mapping table: every Claude Code piece we use -> Codex equivalent or "lost"
-- [ ] 7c. Migration plan, ordered, with what each step drops
 - [ ] 7d. Build the Codex-side files (AGENTS.md, config.toml, skills, prompts) once he picks the shape
 - [ ] 8a. Screenshots of the real screens at phone size
 - [ ] 8b. Measured diagnosis per screen (sizes, weights, spacing, contrast, balance, colour provenance)
