@@ -215,6 +215,7 @@ Rewritten 2026-09-04 late evening after his second round of answers. Gone from t
 6. **Saved boards.** Three boards exist in the database, zero pins, and nothing on the site links to them. My pick: bury the feature (hide the routes, keep the tables). Say "delete" if you want the tables gone too, or "keep" to leave it.
 
 ## Log
+- 2026-09-04, night: Map button / cookie banner layering committed 101e7f276 after a round-2 PASS (round 1 found the offset math wrong, the button painting over the banner text and over the search panel; all three fixed). Parked from that review: the search panel's raw layer numbers 100 to 102 are off the locked ladder, and the Map button also renders on desktop (pre-existing, untouched). main fast-forwarded, production copy rebuilding.
 - 2026-09-04, later: sort fix committed cd25a9303 after a round-2 PASS; page-morph error screen fix eb75d4c8d; the six cloud functions deleted on his yeah (0 left). Map pill / cookie banner fix in its final check.
 - 21:30 walk done, council done, 15 fixes committed, mockup and Airbnb comparison in flight, offline-booking lift script ready (not run, tree not clean yet).
 - 23:10 every box closed or parked. 19 fixes committed (last: cleanup de8715bfc, calendar 3cdc94a96), mockup page e9d5b648c, Airbnb comparison 19fe1d95e, offline-booking lifted 051c7a3e0 (then e7919894c put back seven files the lift script had wrongly removed: ACTIVE.md, CONTEXT_SNAPSHOT.md, launch.json, four generated reports). Next: fast-forward main to this branch, closing readback with the parked decisions.
