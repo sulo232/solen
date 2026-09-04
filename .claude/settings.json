@@ -87,25 +87,11 @@
           {
             "type": "command",
             "command": "f=\"$CLAUDE_PROJECT_DIR/.claude/hooks/backend-doc-pointer.py\"; [ -r \"$f\" ] || exit 0; python3 \"$f\""
-          },
-          {
-            "type": "command",
-            "command": "f=\"$CLAUDE_PROJECT_DIR/.claude/hooks/frontend-doc-pointer.py\"; [ -r \"$f\" ] || exit 0; python3 \"$f\""
           }
         ]
       }
     ],
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/api-route-discriminate-reminder.py"
-          }
-        ]
-      }
-    ],
+    "PostToolUse": [],
     "PreToolUse": [
       {
         "matcher": "Write|Edit|MultiEdit",
@@ -161,10 +147,6 @@
           },
           {
             "type": "command",
-            "command": "f=\"$CLAUDE_PROJECT_DIR/.claude/hooks/frontend-doc-pointer.py\"; [ -r \"$f\" ] || exit 0; python3 \"$f\""
-          },
-          {
-            "type": "command",
             "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/no-getsession-authz-gate.py"
           },
           {
@@ -190,10 +172,6 @@
           {
             "type": "command",
             "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/mockup-no-flat-gate.py"
-          },
-          {
-            "type": "command",
-            "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/mockup-diagnosis-gate.py"
           },
           {
             "type": "command",
@@ -246,10 +224,6 @@
           },
           {
             "type": "command",
-            "command": "f=\"$CLAUDE_PROJECT_DIR/.claude/hooks/frontend-doc-pointer.py\"; [ -r \"$f\" ] || exit 0; python3 \"$f\""
-          },
-          {
-            "type": "command",
             "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/no-getsession-authz-gate.py"
           },
           {
@@ -275,10 +249,6 @@
           {
             "type": "command",
             "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/mockup-no-flat-gate.py"
-          },
-          {
-            "type": "command",
-            "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/mockup-diagnosis-gate.py"
           },
           {
             "type": "command",
@@ -312,10 +282,6 @@
           {
             "type": "command",
             "command": "f=\"$CLAUDE_PROJECT_DIR/.claude/hooks/backend-doc-pointer.py\"; [ -r \"$f\" ] || exit 0; python3 \"$f\""
-          },
-          {
-            "type": "command",
-            "command": "f=\"$CLAUDE_PROJECT_DIR/.claude/hooks/frontend-doc-pointer.py\"; [ -r \"$f\" ] || exit 0; python3 \"$f\""
           },
           {
             "type": "command",
