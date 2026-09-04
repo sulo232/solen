@@ -42,7 +42,7 @@ vi.mock("@/lib/stripe", async (importOriginal) => {
   };
 });
 
-import { applyCustomerCancelMoney, type CustomerCancelBookingRow } from "@/lib/bookings/customer-cancel-money";
+import { applyCustomerCancelMoney, resolveCustomerCancelPolicy, type CustomerCancelBookingRow } from "@/lib/bookings/customer-cancel-money";
 
 const admin = {} as any; // never touched directly; only threaded through to the mocked calls.
 
@@ -240,5 +240,73 @@ describe("applyCustomerCancelMoney: uncaptured-hold release (deposit_held)", () 
     const result = await applyCustomerCancelMoney(db, heldBooking(), FLAT_POLICY, "customer cancel");
 
     expect(result.refundAmount).toBe(0);
+  });
+});
+
+describe("resolveCustomerCancelPolicy: snapshot vs live-salon policy resolution", () => {
+  const LIVE_SALON = { cancellation_fee_type: "percentage", cancellation_fee_value: 50, free_cancel_hours: 48 };
+
+  it("uses every field from a complete snapshot, ignoring a different live salon policy", () => {
+    const snapshot = { cancellation_fee_type: "flat", cancellation_fee_value: 20, free_cancel_hours: 24 };
+
+    const result = resolveCustomerCancelPolicy("b-1", snapshot, LIVE_SALON);
+
+    expect(result).toEqual(snapshot);
+  });
+
+  it("falls back to every field from the live salon and warns once (booking id + policy_snapshot) when snapshot is null", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    const result = resolveCustomerCancelPolicy("b-42", null, LIVE_SALON);
+
+    expect(result).toEqual(LIVE_SALON);
+    expect(warnSpy).toHaveBeenCalledTimes(1);
+    expect(warnSpy.mock.calls[0][0]).toContain("b-42");
+    expect(warnSpy.mock.calls[0][0]).toContain("policy_snapshot");
+
+    warnSpy.mockRestore();
+  });
+
+  it("falls back only the missing field (cancellation_fee_type) to the live salon, keeps the other snapshot fields, and does NOT warn (the function only warns when the snapshot object itself is missing/malformed, not per missing field)", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const partialSnapshot = { cancellation_fee_value: 20, free_cancel_hours: 24 }; // no cancellation_fee_type
+
+    const result = resolveCustomerCancelPolicy("b-2", partialSnapshot, LIVE_SALON);
+
+    expect(result).toEqual({
+      cancellation_fee_type: LIVE_SALON.cancellation_fee_type, // fell back
+      cancellation_fee_value: 20, // stayed from snapshot
+      free_cancel_hours: 24, // stayed from snapshot
+    });
+    expect(warnSpy).not.toHaveBeenCalled();
+
+    warnSpy.mockRestore();
+  });
+
+  it("treats a non-object snapshot (a string or a number) as missing: live salon wins on every field, and warns", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    const stringResult = resolveCustomerCancelPolicy("b-3", "not-an-object" as any, LIVE_SALON);
+    const numberResult = resolveCustomerCancelPolicy("b-4", 42 as any, LIVE_SALON);
+
+    expect(stringResult).toEqual(LIVE_SALON);
+    expect(numberResult).toEqual(LIVE_SALON);
+    expect(warnSpy).toHaveBeenCalledTimes(2);
+
+    warnSpy.mockRestore();
+  });
+
+  it("returns calculateCancellationFee's own defaults when both snapshot and live salon are null: null fee type, null fee value, 24 free_cancel_hours", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    const result = resolveCustomerCancelPolicy("b-5", null, null);
+
+    expect(result).toEqual({
+      cancellation_fee_type: null,
+      cancellation_fee_value: null,
+      free_cancel_hours: 24,
+    });
+
+    warnSpy.mockRestore();
   });
 });
