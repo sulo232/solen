@@ -14,7 +14,18 @@ export async function GET(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
 
-  const { data, error } = await supabase.from("profiles").select("*").eq("id", user.id).single();
+  // Explicit column list (profile-allowlist slice): every field a GET /api/profile consumer
+  // actually reads (audited via `grep -rn "api/profile" app components components-legacy lib`),
+  // plus `id` and `role` (the latter used just below for the admin-preview check). Never "*" on
+  // this table again, same reasoning as the PATCH branch below: a column added later for another
+  // purpose (e.g. a moderation/ban field) must never leak to the browser by default.
+  const { data, error } = await supabase
+    .from("profiles")
+    .select(
+      "id, role, display_name, phone_number, hair_type, hair_length, hair_thickness, hair_beard, disc_gender, disc_hair_length, disc_hair_texture, disc_profile_set, staff_salon_id, customer_preferences"
+    )
+    .eq("id", user.id)
+    .single();
   if (error) return NextResponse.json({ message: error.message, code: "DB_ERROR" }, { status: 500 });
 
   // Admin preview mode: if admin has a preview cookie, return target salon's data
