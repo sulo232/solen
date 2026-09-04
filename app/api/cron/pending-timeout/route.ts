@@ -7,6 +7,7 @@ import { getServerEnv } from "@/lib/env";
 import { verifyCronSecret } from "@/lib/cron-auth";
 import { withCronRun } from "@/lib/cron-run";
 import { resolveSwissLocale } from "@/lib/format";
+import { issueRefund } from "@/lib/bookings/issue-refund";
 
 export async function GET(req: NextRequest) {
   const cronSecret = getServerEnv().CRON_SECRET;
@@ -29,17 +30,28 @@ export async function GET(req: NextRequest) {
     .limit(50);
 
   let cancelled = 0;
+  const errors: string[] = [];
 
   for (const booking of pendingBookings ?? []) {
-    // 1. Update status
-    await admin
+    // 1. Update status. Re-assert status="pending_approval" in the WHERE, select the
+    // changed row back, and skip if it did not match, so a booking the salon approved
+    // between the SELECT above and this UPDATE is never clobbered back to cancelled.
+    const { data: cancelledRow } = await admin
       .from("bookings")
       .update({
         status: "cancelled",
         cancellation_reason: "automatic_timeout_no_response",
         cancelled_at: new Date().toISOString(),
       })
-      .eq("id", booking.id);
+      .eq("id", booking.id)
+      .eq("status", "pending_approval")
+      .select("id")
+      .maybeSingle();
+
+    if (!cancelledRow) {
+      console.error(`[cron/pending-timeout] booking ${booking.id} no longer pending_approval (changed between select and update), skipping`);
+      continue;
+    }
 
     // 2. Free the slot
     await admin
@@ -66,19 +78,55 @@ export async function GET(req: NextRequest) {
       } catch (err) { console.error("[cron/pending-timeout] cancellation email failed:", err); }
     }
 
-    // Since they were pending approval, payment was likely held/authorized, so we might need to cancel Stripe intent
-    // But standard Stripe holds expire naturally after 7 days if uncaptured, or we could cancel explicitly:
+    // Since they were pending approval, payment was likely held/authorized. Check the live
+    // PI status first: only requires_capture / requires_confirmation / requires_payment_method
+    // are cancellable. If it already succeeded (a full-prepay booking's money was captured),
+    // cancelling would throw and, worse, leave the customer cancelled-but-charged, so route
+    // that case through the canonical refund chokepoint (lib/bookings/issue-refund.ts) instead.
     if (booking.payment_intent_id) {
       try {
         const { getStripe } = await import("@/lib/stripe");
         const stripe = getStripe();
-        await stripe.paymentIntents.cancel(booking.payment_intent_id).catch((err) => console.error("[CronPendingTimeout] failed to cancel Stripe payment intent:", err));
-      } catch (err) { console.error("[cron/pending-timeout] Stripe payment intent cancel failed:", err); }
+        const intent = await stripe.paymentIntents.retrieve(booking.payment_intent_id);
+
+        if (
+          intent.status === "requires_capture" ||
+          intent.status === "requires_confirmation" ||
+          intent.status === "requires_payment_method"
+        ) {
+          await stripe.paymentIntents.cancel(booking.payment_intent_id).catch((err) => {
+            console.error("[cron/pending-timeout] failed to cancel Stripe payment intent:", err);
+            errors.push(`booking ${booking.id}: Stripe cancel failed: ${err instanceof Error ? err.message : String(err)}`);
+          });
+        } else if (intent.status === "succeeded") {
+          const paidCents = (booking.paid_amount as number | null) ?? 0;
+          const alreadyRefunded = (booking.refunded_amount as number | null) ?? 0;
+          const refundCents = paidCents - alreadyRefunded;
+          if (refundCents > 0) {
+            try {
+              await issueRefund({
+                db: admin,
+                source: "booking",
+                id: booking.id,
+                amountCents: refundCents,
+                actor: "system",
+                reason: "automatic_timeout_no_response: PI already captured, refunding instead of cancel",
+              });
+            } catch (refundErr) {
+              console.error(`[cron/pending-timeout] failed to refund captured payment for booking ${booking.id}:`, refundErr);
+              errors.push(`booking ${booking.id}: refund failed: ${refundErr instanceof Error ? refundErr.message : String(refundErr)}`);
+            }
+          }
+        }
+      } catch (err) {
+        console.error("[cron/pending-timeout] failed to retrieve/cancel Stripe payment intent:", err);
+        errors.push(`booking ${booking.id}: Stripe retrieve/cancel failed: ${err instanceof Error ? err.message : String(err)}`);
+      }
     }
 
     cancelled++;
   }
 
-  return { cancelled, processed: cancelled };
+  return { cancelled, processed: cancelled, errors };
   });
 }

@@ -54,14 +54,39 @@ export async function GET(req: NextRequest) {
   const { data: bookings } = await query.limit(100);
 
   let completed = 0;
+  const errors: string[] = [];
   for (const booking of bookings ?? []) {
-    await admin
-      .from("bookings")
-      .update({ status: "completed", completed_at: now })
-      .eq("id", booking.id);
-    completed++;
+    try {
+      // Re-assert status="confirmed" in the WHERE (the state the SELECT above filtered
+      // on), select the changed row back, and skip if it did not match, so a booking
+      // that moved between the SELECT and this UPDATE (cancelled, disputed, already
+      // completed by the salon) is never force-flipped to completed under it.
+      const { data: updatedRow, error } = await admin
+        .from("bookings")
+        .update({ status: "completed", completed_at: now })
+        .eq("id", booking.id)
+        .eq("status", "confirmed")
+        .select("id")
+        .maybeSingle();
+
+      if (error) {
+        console.error(`[cron/auto-complete] update failed for booking ${booking.id}:`, error.message);
+        errors.push(`booking ${booking.id}: update failed: ${error.message}`);
+        continue;
+      }
+
+      if (!updatedRow) {
+        console.error(`[cron/auto-complete] booking ${booking.id} no longer confirmed (changed between select and update), skipping`);
+        continue;
+      }
+
+      completed++;
+    } catch (err) {
+      console.error(`[cron/auto-complete] threw for booking ${booking.id}:`, err);
+      errors.push(`booking ${booking.id}: ${err instanceof Error ? err.message : String(err)}`);
+    }
   }
 
-  return { completed, processed: completed };
+  return { completed, processed: completed, errors };
   });
 }
