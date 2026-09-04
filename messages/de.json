@@ -4001,6 +4001,7 @@
     "emailNotifications": "E-Mail-Benachrichtigungen",
     "notifBookings": "Buchungen",
     "notifBookingsDesc": "Bestätigungen, Erinnerungen, Stornierungen",
+    "notifSmsDesc": "Terminerinnerungen per SMS",
     "notifDeals": "Angebote & Deals",
     "notifDealsDesc": "Last-Minute und Sonderangebote",
     "notifNewSalons": "Neue Salons",

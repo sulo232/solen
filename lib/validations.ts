@@ -173,6 +173,10 @@ export const updateProfileSchema = z.object({
   onboarding_completed: z.boolean().optional(),
   notification_email: z.boolean().optional(),
   notification_sms: z.boolean().optional(),
+  // Marketing consent (defect-2 fix): lives on notification_preferences.deals_enabled, not
+  // on profiles, but arrives in the same PATCH body as the other switches (app/api/profile
+  // PATCH splits it out before the profiles .update()).
+  deals_enabled: z.boolean().optional(),
   phone_number: z.string().max(20).optional().nullable(),
   disc_gender: z.enum(["male", "female", "unisex"]).nullable().optional(),
   disc_hair_texture: z.string().max(30).nullable().optional(),

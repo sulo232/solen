@@ -60,12 +60,14 @@ export async function GET(request: NextRequest) {
   // sent-once guard, email+locale lookup) into ONE IN-list query each,
   // instead of one query per candidate.
   const [{ data: prefRows }, { data: nudgedRows }, { data: profileRows }] = await Promise.all([
-    admin.from("notification_preferences").select("user_id, rebooking_enabled").in("user_id", userIds),
+    admin.from("notification_preferences").select("user_id, deals_enabled, rebooking_enabled").in("user_id", userIds),
     admin.from("notifications").select("user_id").eq("type", "rebooking_nudge").gte("created_at", cutoffStr).in("user_id", userIds),
     admin.from("profiles").select("id, email, locale").in("id", userIds),
   ]);
 
-  const prefsByUser = new Map((prefRows ?? []).map((p) => [p.user_id, p.rebooking_enabled]));
+  const prefsByUser = new Map(
+    (prefRows ?? []).map((p) => [p.user_id, { deals: p.deals_enabled, rebooking: p.rebooking_enabled }])
+  );
   const alreadyNudgedUsers = new Set((nudgedRows ?? []).map((r) => r.user_id));
   const profileByUser = new Map((profileRows ?? []).map((p) => [p.id, p]));
 
@@ -74,7 +76,13 @@ export async function GET(request: NextRequest) {
 
   for (const booking of candidateList) {
     const userId = (booking as any).user_id;
-    if (prefsByUser.get(userId) === false) continue;
+    // seo-comms-11 (defect-2 fix, 2026-09-04): this nudge isn't tied to a booking the
+    // user just made, so it's marketing, same class as welcome-series day3/day7, and the
+    // customer has exactly one visible switch for that: notification_preferences.deals_enabled.
+    // rebooking_enabled stays as a second, OFF-only gate (no screen sets it to true today,
+    // so it can only suppress a send, never cause one that deals_enabled alone wouldn't).
+    const prefs = prefsByUser.get(userId);
+    if (prefs?.deals !== true || prefs?.rebooking === false) continue;
     if (alreadyNudgedUsers.has(userId)) continue;
 
     const profile = profileByUser.get(userId);

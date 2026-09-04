@@ -68,8 +68,15 @@ export async function GET(request: NextRequest) {
     const alreadySent = new Set((alreadySentRows ?? []).map((r) => r.user_id));
 
     for (const profile of profiles) {
-      // Check notification preferences
-      if (prefsByUser.get(profile.id) === false) continue;
+      // seo-comms-11 (defect-1 fix, 2026-09-04): day 3 and day 7 are promotional nudges
+      // (discover salons / book your first appointment), so they require an explicit
+      // OPT-IN on notification_preferences.deals_enabled, mirrored from the same
+      // opt-in pattern app/api/off-peak/route.ts already uses (`.eq("deals_enabled", true)`).
+      // This was previously an opt-out check (`=== false`), which sent promo email to
+      // every profile since nothing in the codebase ever writes that column to false. Day 0
+      // is the transactional welcome email tied directly to account creation (same class as
+      // a booking confirmation) and is sent unconditionally, same as before.
+      if (daysAgo !== 0 && prefsByUser.get(profile.id) !== true) continue;
 
       const email = profile.email;
       if (!email) continue;

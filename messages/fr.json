@@ -4001,6 +4001,7 @@
     "emailNotifications": "Notifications par e-mail",
     "notifBookings": "Réservations",
     "notifBookingsDesc": "Confirmations, rappels, annulations",
+    "notifSmsDesc": "Rappels de rendez-vous par SMS",
     "notifDeals": "Offres & Promos",
     "notifDealsDesc": "Offres de dernière minute et spéciales",
     "notifNewSalons": "Nouveaux salons",

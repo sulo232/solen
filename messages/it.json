@@ -3983,6 +3983,7 @@
     "emailNotifications": "Notifiche e-mail",
     "notifBookings": "Prenotazioni",
     "notifBookingsDesc": "Conferme, promemoria, cancellazioni",
+    "notifSmsDesc": "Promemoria appuntamenti via SMS",
     "notifDeals": "Offerte & Promozioni",
     "notifDealsDesc": "Offerte last-minute e speciali",
     "notifNewSalons": "Nuovi saloni",

@@ -35,6 +35,14 @@ export default async function NotificationsSettingsPage({ params }: { params: Pr
     .maybeSingle();
   if (error) console.error("[Settings/notifications] profile fetch error:", error.message);
 
+  // Marketing consent (defect-2 fix): lives on notification_preferences, not profiles.
+  const { data: prefs, error: prefsError } = await supabase
+    .from("notification_preferences")
+    .select("deals_enabled")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (prefsError) console.error("[Settings/notifications] notification_preferences fetch error:", prefsError.message);
+
   const allowed: SettingsLocale[] = ["de", "en", "fr", "it"];
   const profileLocale = (allowed as string[]).includes(profile?.locale ?? "")
     ? (profile!.locale as SettingsLocale)
@@ -55,6 +63,7 @@ export default async function NotificationsSettingsPage({ params }: { params: Pr
             locale: profileLocale,
             notification_email: profile?.notification_email ?? true,
             notification_sms: profile?.notification_sms ?? true,
+            deals_enabled: prefs?.deals_enabled ?? false,
           }}
         />
       </div>

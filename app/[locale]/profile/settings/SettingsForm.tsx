@@ -62,6 +62,9 @@ export interface SettingsInitial {
   locale: SettingsLocale;
   notification_email: boolean;
   notification_sms: boolean;
+  // Marketing consent (defect-2 fix, 2026-09-04): notification_preferences.deals_enabled,
+  // fetched + resent by every settings sub-page loader same as the two switches above.
+  deals_enabled: boolean;
 }
 
 // White-first override for the sub-pages (LOCFILE input law defaults to a sunken #F4F4F5 fill;
@@ -104,6 +107,7 @@ export default function SettingsForm({
           locale: form.locale,
           notification_email: form.notification_email,
           notification_sms: form.notification_sms,
+          deals_enabled: form.deals_enabled,
         }),
       });
       if (!res.ok) {
@@ -413,7 +417,10 @@ export default function SettingsForm({
             label={tp("emailNotifications")} subLabel={tp("notifBookingsDesc")} />
           <Switch checked={form.notification_sms}
             onCheckedChange={(v) => set("notification_sms", v)}
-            label="SMS" subLabel={tp("notifDealsDesc")} />
+            label="SMS" subLabel={tp("notifSmsDesc")} />
+          <Switch checked={form.deals_enabled}
+            onCheckedChange={(v) => set("deals_enabled", v)}
+            label={tp("notifDeals")} subLabel={tp("notifDealsDesc")} />
         </div>
 
         <button type="submit" disabled={saving}
@@ -502,7 +509,10 @@ export default function SettingsForm({
               label={tp("emailNotifications")} subLabel={tp("notifBookingsDesc")} />
             <Switch checked={form.notification_sms}
               onCheckedChange={(v) => set("notification_sms", v)}
-              label="SMS" subLabel={tp("notifDealsDesc")} />
+              label="SMS" subLabel={tp("notifSmsDesc")} />
+            <Switch checked={form.deals_enabled}
+              onCheckedChange={(v) => set("deals_enabled", v)}
+              label={tp("notifDeals")} subLabel={tp("notifDealsDesc")} />
           </div>
         </section>
 

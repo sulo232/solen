@@ -54,12 +54,12 @@ export async function GET(req: NextRequest) {
   // instead of one query per birthday profile. Email now comes straight from
   // the profiles select above instead of a per-row auth.admin.getUserById call.
   const profileIds = birthdayProfiles.map((p) => p.id);
-  // seo-comms-06 (2026-07-27): a birthday message is MARKETING (a celebratory,
-  // not-booking-triggered send), not TRANSACTIONAL, so it must honor the same
-  // notification_preferences.deals_enabled check welcome-series and rebooking-nudge
-  // already apply. Batched into the same IN-list query shape those crons use, mirrored
-  // verbatim (see _backend-system/LAW.md section 18 for the full transactional/
-  // marketing classification table this fix closes one row of).
+  // seo-comms-06 (2026-07-27, corrected 2026-09-04): a birthday message is MARKETING
+  // (a celebratory, not-booking-triggered send), not TRANSACTIONAL, so it requires an
+  // explicit OPT-IN on notification_preferences.deals_enabled, same as welcome-series'
+  // day 3 / day 7 stages. This was previously an opt-out check (`!== false`), which sent
+  // to every profile since nothing in the codebase ever writes that column to false.
+  // Batched into the same IN-list query shape those crons use.
   const [{ data: alreadySentRows }, { data: prefRows }] = await Promise.all([
     admin.from("notifications").select("user_id").eq("type", "birthday_message").gte("created_at", yearStart).in("user_id", profileIds),
     admin.from("notification_preferences").select("user_id, deals_enabled").in("user_id", profileIds),
@@ -68,7 +68,7 @@ export async function GET(req: NextRequest) {
   const prefsByUser = new Map((prefRows ?? []).map((p) => [p.user_id, p.deals_enabled]));
 
   const tasks = birthdayProfiles.filter((p) =>
-    !!p.email && !alreadySent.has(p.id) && prefsByUser.get(p.id) !== false
+    !!p.email && !alreadySent.has(p.id) && prefsByUser.get(p.id) === true
   );
 
   // Concurrency-capped sends (cap 5): one recipient's failure never blocks the rest,

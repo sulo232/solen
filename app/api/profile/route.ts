@@ -64,15 +64,30 @@ export async function PATCH(request: NextRequest) {
   const { data: validated, error: valError } = validateBody(updateProfileSchema, body);
   if (valError) return NextResponse.json({ message: valError.message, code: "VALIDATION_ERROR" }, { status: 400 });
 
+  // deals_enabled (marketing consent) lives on notification_preferences, not profiles
+  // (defect-2 fix); split it out before the profiles update so it never lands there.
+  const { deals_enabled, ...profileFields } = validated;
+
   // customer_preferences is a strongly-typed zod object (JSON body field, always JSON-serializable at
   // runtime); cast to the generated Json column type.
   const { data, error } = await supabase
     .from("profiles")
-    .update({ ...validated, customer_preferences: validated.customer_preferences as Json | undefined })
+    .update({ ...profileFields, customer_preferences: profileFields.customer_preferences as Json | undefined })
     .eq("id", user.id)
     .select()
     .single();
   if (error) return NextResponse.json({ message: error.message, code: "DB_ERROR" }, { status: 500 });
+
+  // Only upsert when the caller actually sent this key. Every settings sub-page loads and
+  // resends the real fetched value regardless of which slice it renders (same convention as
+  // notification_email/notification_sms), so this fires on every save, always with the
+  // customer's real current choice, never a silent reset.
+  if (deals_enabled !== undefined) {
+    const { error: prefsError } = await supabase
+      .from("notification_preferences")
+      .upsert({ user_id: user.id, deals_enabled }, { onConflict: "user_id" });
+    if (prefsError) console.error("[api/profile] notification_preferences upsert failed:", prefsError.message);
+  }
 
   return NextResponse.json({ data });
 }

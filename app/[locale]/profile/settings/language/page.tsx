@@ -35,6 +35,15 @@ export default async function LanguageSettingsPage({ params }: { params: Promise
     .maybeSingle();
   if (error) console.error("[Settings/language] profile fetch error:", error.message);
 
+  // Marketing consent (defect-2 fix): lives on notification_preferences, not profiles.
+  // Fetched + resent here too (not rendered on this slice) so this save never resets it.
+  const { data: prefs, error: prefsError } = await supabase
+    .from("notification_preferences")
+    .select("deals_enabled")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (prefsError) console.error("[Settings/language] notification_preferences fetch error:", prefsError.message);
+
   const allowed: SettingsLocale[] = ["de", "en", "fr", "it"];
   const profileLocale = (allowed as string[]).includes(profile?.locale ?? "")
     ? (profile!.locale as SettingsLocale)
@@ -55,6 +64,7 @@ export default async function LanguageSettingsPage({ params }: { params: Promise
             locale: profileLocale,
             notification_email: profile?.notification_email ?? true,
             notification_sms: profile?.notification_sms ?? true,
+            deals_enabled: prefs?.deals_enabled ?? false,
           }}
         />
       </div>
