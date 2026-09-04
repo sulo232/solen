@@ -108,7 +108,7 @@ is missing? Like, what formula, what principle, what is actually missing? becaus
 - [ ] 10f. "Isn't 'from' not allowed anymore?" Research the stranded card decisions (the 2026-07-13 converged card on its branch) against main's SalonCard; report what is missing on main and why; lift what he approved if it never landed.
 - [ ] 10g. The 11 old branches: archive tag on every one (done in this turn, nothing deleted); per branch, is anything IMPORTANT missing on main (lift it) and which carry DESIGN DIRECTION changes (report, do not merge). Deletion still needs one word.
 - [ ] 10h. Harness branch: leave it, they are still working on it. Nothing to do.
-- [ ] 10i. Codex: import everything. Direction confirmed; the handoff document is for later (his word). Tell him now, from the live docs: what is different from Claude Code, what Codex does, how the 8 helpers and 3 workflow scripts have to be rewritten.
+- [x] 10i. Codex: import everything. Direction confirmed; the handoff document is for later (his word). Tell him now, from the live docs: what is different from Claude Code, what Codex does, how the 8 helpers and 3 workflow scripts have to be rewritten.
 - [ ] 10j. Cloud functions: delete the six (his "yeah"), or the exact command if it cannot be done from here. Explain "post-booking preferences" in plain words.
 - [ ] 10k. Booking reminders by email too: the customer chooses email or SMS (the two switches already exist in settings); build the email reminder next to the SMS one, honouring both switches; coder + reviewer, prove, commit.
 - [ ] 10l. Backend perfect before handoff: a fresh audit over every backend system with adversarial verification, then fix every confirmed item with coder + reviewer, commit each.
@@ -160,6 +160,42 @@ Everything below is a real file on this Mac, counted, not estimated.
 | design law | 343 documents | `_design-system/` |
 | remembered facts | 128 | the project memory folder |
 | the rulebook itself | 70,467 bytes project + 21,757 global | `CLAUDE.md` x2 |
+
+### 10i ANSWERED, 2026-09-04, verified against the official manual on this Mac, not from memory
+
+**THE PREMISE WAS WRONG, and this is the good news.** He was told the checks would not carry over and
+that the helpers are a different shape. Half of that is false. Codex has a hook system that is close to
+a SUPERSET of Claude Code's, with the same event names (`PreToolUse`, `PostToolUse`, `UserPromptSubmit`,
+`Stop`, `SessionStart`, plus `PermissionRequest`, `PreCompact`, `SubagentStart` and more), and it can
+BLOCK a tool call the same way, by exit code 2 with a reason, or by a deny decision. It can even rewrite
+a tool call in flight, which Claude Code cannot. And `/import` converts hooks, subagents, skills, MCP
+servers, the instruction file and project memories in one step. Source: the official manual mirrored on
+this machine at 15:46 today, cross-checked against strings inside the installed binary.
+
+**Codex is already on this Mac.** Not through npm: it ships inside the ChatGPT desktop app, version
+`0.145.0-alpha.18`, and `~/.codex/` is already set up with his approval and sandbox posture matching
+what he runs here.
+
+**What genuinely has no equivalent, the short list:**
+1. **The orchestration scripts.** No pipeline or parallel primitive, no script format. Two of the three
+   are just "send N helpers, merge findings" and become plain instructions. The third, the build-and-review
+   loop, has a real counter and a pass/fail branch, so that one wants the TypeScript SDK.
+2. **Per-helper tool lists.** A Codex helper cannot be restricted to a named set of tools. All eight lose
+   that; the coarse controls are the sandbox mode and which servers it can see.
+3. **The 128 hand-written memories.** Codex memories are generated automatically into a database, not
+   curated files. `/import` claims to carry them; that claim needs checking on two or three before trusting.
+4. **Registration is no longer the same as armed.** Every hook is fingerprinted and INERT until approved
+   one by one, and editing one makes it inert again. With 239 registrations that is the single biggest
+   day-one difference.
+
+**TWO CONCRETE THINGS TO SET, both measured:**
+- `project_doc_max_bytes` defaults to 32,768 bytes. The project rulebook alone is 70,467. At the default,
+  more than half of it is silently dropped. The staged config already raises it to 131,072, which is right.
+- Skills go in `.agents/skills`, NOT `.codex/skills`. The staged installer already targets the right path.
+
+**Order of operations, and it is his call which:** run `/import` inside Codex FIRST and diff its result
+against the hand-staged port, rather than installing the hand port blind. `/import` has to be typed inside
+the Codex app; it cannot be run from here.
 
 ## Parked decisions (for him, in his words)
 
