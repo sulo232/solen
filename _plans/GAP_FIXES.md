@@ -38,7 +38,23 @@ Full per-gap analysis: public/_reports/gap-decisions + scratchpad/decisions.json
 - [x] #36 VERIFIED ALREADY CLEAN (no code change needed). Grepped every review DISPLAY .tsx: NONE render per-dimension score bars. The phantom score_* columns are referenced write-side only (app/api/reviews/route.ts folds the 3 sub-scores into the weighted `rating`, never writes the nonexistent columns). No fabricated dimension UI to drop. Corrected the one stale comment. NOT re-opened as an add-columns feature (owner call, out of scope).
 - [ ] #55 PARKED , owner fork. /inspo/board/[id] + /inspo/saved/[id] routes EXIST but are orphaned. Whether to LINK them depends on whether "boards/collections" is a live feature or a ditched one , the code contradicts itself: inspo/page.tsx:294 "collections ditched 2026-06-23" vs a live /api/discovery/boards/[id] + board detail page (V3-D414) + inspo/page.tsx:447 "boards + personalized". Needs the owner to say: is boards/collections LIVE (surface + link) or DITCHED (correct comments + graveyard the orphans)? Surfaced at close.
 - [x] #56 (verified fixed 2026-09-04: app/[locale]/inspo/page.tsx lines 131-136 and 183-207 hydrate savedIds from /api/discovery/saves?ids=1 on load) Session-only saved state -> hydrate savedIds from /api/discovery/saves on load. (unblocked; safe real fix, does NOT depend on the #55/#57 boards fork.)
-- [ ] #57 PARKED with #55 (same boards/collections fork). "surface boards or fix the comment+logic" is the opposite-direction fork above.
+- [ ] #57 PARKED with #55 (same boards/collections fork).
+**#55 AND #57 ANSWERED 2026-09-04, measured, so this is now a one-word decision rather than a research question.**
+The saved-boards feature is HALF-LANDED, and the numbers say so plainly. The two pages exist
+(`/inspo/board/[id]`, `/inspo/saved/[id]`), the endpoint exists (`/api/discovery/boards`), and the tables exist.
+But `discovery_boards` holds 3 rows and `discovery_board_pins` holds **ZERO**, so not one photo has ever been
+saved into a board. And nothing anywhere on the site links to either page: a search across app, components and
+components-legacy returns exactly one hit, and it is a comment. So no customer can reach a board, and if one
+could, it would be empty.
+
+MY RECOMMENDATION: bury it. Saving a look already works without boards, the heart on a look writes through
+`/api/discovery/save`, so boards are a second, competing way to save the same thing. Finishing them means
+building a save-to-board control, a board picker, and a place to link them from, to add a feature that
+duplicates one that already works. The other option, if he wants it, is to finish it properly, and that is a
+design job with a mockup, not a code cleanup.
+Either way this stops being a contradiction in the code: burying it means the graveyard line plus correcting
+the two comments that disagree with each other.
+ "surface boards or fix the comment+logic" is the opposite-direction fork above.
 - [x] #44 DONE + reviewer PASS 6/6. Added an honest Stempel row linking the still-live /profile/stamps (distinct from /rewards Solen Status). Commit 7ce6d21ed.
 - [x] #46 DONE + reviewer PASS. Added a Benachrichtigungen row linking /notifications from the profile hub. Commit 7ce6d21ed.
 
@@ -78,12 +94,17 @@ design, #14 promo fields arrive pre-filled, #15 no-fabricate staff slot (correct
   LIVE-VERIFIED via RLS simulation as a non-owner customer (kunde, sub=7c88e454) against a salon they don't own:
   available slots readable = 1660 (was 0), booked slots readable = 0 (no over-exposure). Migration applied live +
   committed. Related degradation still open below.
-- [ ] RELATED (not the booking blocker, separate design call): app/api/availability/[salon_id]/route.ts and
+- [x] RELATED, CLOSED 2026-09-04 by the calendar work in workstream 113: app/api/availability/[salon_id]/route.ts and
   app/api/slots/route.ts (GET) read ALL statuses via the SESSION client to compute the calendar / fully-booked
   view. With the new policy a non-owner now sees only `available` rows through the session client, so booked
   slots are invisible to those two read paths , the calendar can no longer distinguish "booked" from "free".
   Needs a SECURITY DEFINER RPC or a status-only rollup view (return counts/booleans, never booked_by/client_id).
   NOT urgent for launch (booking POST works); flag before the calendar's fully-booked UI is relied on.
+  DELIVERED: this is exactly what `slot_day_summary` and `slot_day_status_summary` are. Both are live in the
+  database, both are SECURITY DEFINER, and both return COUNTS ONLY (day, total, available, booked, blocked),
+  never booked_by or client_id, checked against pg_proc on 2026-09-04. The dashboard month grid reads them
+  through GET /api/slots?summary=1, so the owner's calendar can tell booked from free again without any
+  customer row being exposed. Verified on a real salon: 26 days, 4,281 slots.
 
 ## Method
 Layered loop per fix (coder + loop-reviewer), one commit per gap, live-verify. Backend-touching
