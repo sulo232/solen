@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { flushSync } from "react-dom";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion, type Transition } from "motion/react";
 import {
   Calendar,
@@ -106,7 +106,6 @@ const PERIODS: { label: string; value: string; icon: LucideIcon }[] = [
 ];
 
 export function SearchBar() {
-  const router = useRouter();
   const params = useParams<{ locale: string }>()!;
   const locale = params?.locale ?? "de";
 
@@ -137,13 +136,13 @@ export function SearchBar() {
       setOverlayOpen(true);
     }
   };
-  const [service, setService] = React.useState("");
-  const [stadt, setStadt] = React.useState("");
+  const [service] = React.useState("");
+  const [stadt] = React.useState("");
   // V2-D49: zeit splits into structured (date + period) + derived display string.
   // Display label is computed from the structured state — keeps the rest of the
   // collapsed/expanded UI ("Zeit" placeholder vs picked label) untouched.
-  const [zeitDate, setZeitDate] = React.useState<CalendarDate | null>(null);
-  const [zeitPeriod, setZeitPeriod] = React.useState<string>("");
+  const [zeitDate] = React.useState<CalendarDate | null>(null);
+  const [zeitPeriod] = React.useState<string>("");
   const zeit = React.useMemo(() => {
     if (!zeitDate) return zeitPeriod ? PERIODS.find((p) => p.value === zeitPeriod)?.label ?? "" : "";
     // CalendarDate.toDate returns a Date; extract ISO date then format via the
@@ -271,7 +270,6 @@ export function SearchBar() {
             ariaLabel="Service suchen"
             value={service || "Service"}
             isPlaceholder={!service}
-            isFirst
             onClick={() => openOverlay("service")}
           />
           <CollapsedRow
@@ -366,14 +364,12 @@ function CollapsedRow({
   ariaLabel,
   value,
   isPlaceholder,
-  isFirst,
   onClick,
 }: {
   icon: React.ReactNode;
   ariaLabel: string;
   value: string;
   isPlaceholder: boolean;
-  isFirst?: boolean;
   onClick: () => void;
 }) {
   return (
