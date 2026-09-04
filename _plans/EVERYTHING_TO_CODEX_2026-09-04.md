@@ -161,6 +161,8 @@ Everything below is a real file on this Mac, counted, not estimated.
 | remembered facts | 128 | the project memory folder |
 | the rulebook itself | 70,467 bytes project + 21,757 global | `CLAUDE.md` x2 |
 
+- [x] CORRECTION 2026-09-04 (his words: "Number three. I don't even understand what the fuck you just said") about my Codex answer, point 3, which said hooks are "fingerprinted" and "registered but unapproved". What changed: re-explained in plain words (every check I carry over to Codex is switched off until he approves it once inside Codex, and switches off again whenever I edit it, so his checks cannot run behind his back). Rule applied from then on: no Codex internals in a reply unless he asked by name. verified: this file, section 10i below, carries the plain version.
+
 ### 10i ANSWERED, 2026-09-04, verified against the official manual on this Mac, not from memory
 
 **THE PREMISE WAS WRONG, and this is the good news.** He was told the checks would not carry over and
