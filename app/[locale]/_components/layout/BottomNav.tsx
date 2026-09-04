@@ -182,7 +182,15 @@ export default function BottomNav({ locale }: { locale: string }) {
       className={cn(
         // md:hidden , desktop already carries the full nav inside the header, and adding a second
         // one there would be the dashboard mistake on a different surface.
-        "md:hidden fixed inset-x-0 bottom-0 z-[700]",
+        //
+        // Z-INDEX FIX (2026-09-04): was a raw z-[700], the tooltip lock layer, which put a
+        // persistent nav bar above sheets, modals and toasts, most concretely the favorites
+        // Undo toast (z-toast 600), whose button was unreachable underneath the nav. That
+        // number carried no stacking rationale in the commit that introduced it (git log
+        // -S"z-[700]"), it only recorded 700 as the shipped value. Now `z-nav` (150, tailwind
+        // config zIndex block): above ordinary page content, below sheet-bg (400) so every
+        // locked overlay layer covers the nav as intended.
+        "md:hidden fixed inset-x-0 bottom-0 z-nav",
         // N1 (2026-08-11): a full-screen sheet owns the bottom of the phone while it is up.
         // The search panel sets data-overlay-open on the body, and the nav was crossing its
         // Suchen button by 12px, measured. This hides rather than unmounts so the bar does not

@@ -30,11 +30,11 @@ import { FROM_LABEL } from "../search/SalonResultCard";
  * Universal color formula (§16.3.0): bg rgba(<hue>, 0.22) + border 0.32 +
  * deep-version-of-hue text + backdrop-filter blur(14px) saturate(1).
  *
+ * Photo is a real `next/image` (below); the heart persists via
+ * `POST /api/favorites/toggle` (see `HeartButton.tsx`), not local state only.
+ *
  * NOT included in this commit:
- *   - Real `next/image` backed by Supabase Storage CDN — uses `<img>` w/
- *     prop-passed src for now; falls back to category tile if no photo.
- *   - Backend save mutation, HeartButton is local state only (Phase 1 wiring).
- *   - Skeleton loader (§16.7) — separate SalonCardSkeleton component (later).
+ *   - Skeleton loader (§16.7), a separate SalonCardSkeleton component (later).
  */
 
 const cardCategoryColors = {

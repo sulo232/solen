@@ -321,6 +321,12 @@ module.exports = {
         55: '55',
         60: '60',
         70: '70',
+        // "nav": persistent bottom chrome (BottomNav). Above ordinary page content
+        // (highest in-page usage is 90, OfflineBanner) and below every layer in the
+        // V3 lock below, so a sheet, modal, toast or the cookie banner always covers
+        // it. Added 2026-09-04, replacing a raw z-[700] that sat inside the tooltip
+        // layer and blocked the toast Undo button underneath it.
+        nav: '150',
         // ── V3 z-index lock (V2-D18, 2026-05-09) — LIVE_TRUTH §8 ──
         // Use as `z-modal-bg`, `z-modal`, `z-toast` etc in className.
         // Backdrop / surface pairs follow §8 naming: `*-bg` for the dim layer,
