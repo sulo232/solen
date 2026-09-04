@@ -11,7 +11,7 @@ import { resolveBookingActor } from "@/lib/bookings/authorize";
 import { writeCaseEvent, chargeUpcharge, ChargeUpchargeError } from "@/lib/bookings/dispute-engine";
 import { notifyUpchargeCharged } from "@/lib/bookings/notify-upcharge";
 import { reportError } from "@/lib/error-report";
-import { sendEmail } from "@/lib/email";
+import { sendEmail, EmailLocale } from "@/lib/email";
 
 // SP-3 Endpoints 6 (POST salon upcharge request) + 7 (PATCH customer respond).
 //
@@ -173,9 +173,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     console.warn("[booking-disputes] RESEND_API_KEY not set — skipping upcharge email");
   } else {
     let customerEmail: string | null = booking.guest_email ?? null;
+    // seo-comms-04 style: resolve the customer's locale from profiles.locale (bookings has
+    // no locale column, and a guest_bookings row has none either, same source and guest
+    // fallback as lib/bookings/notify-upcharge.ts).
+    let customerLocale: EmailLocale = "de";
     if (!customerEmail && booking.user_id) {
-      const { data: cust } = await admin.from("profiles").select("email").eq("id", booking.user_id).single();
+      const { data: cust } = await admin.from("profiles").select("email, locale").eq("id", booking.user_id).single();
       customerEmail = cust?.email ?? null;
+      customerLocale = (cust?.locale as EmailLocale) ?? "de";
     }
     if (customerEmail) {
       // H8: deep-link to the customer approve/decline screen so the email is actionable.
@@ -186,7 +191,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       } catch {
         baseUrl = "https://www.solen.ch";
       }
-      const upchargeUrl = `${baseUrl}/de/bookings/${bookingId}/upcharge`;
+      const upchargeUrl = `${baseUrl}/${customerLocale}/bookings/${bookingId}/upcharge`;
       try {
         await sendEmail({
           from: "support@solen.ch",
