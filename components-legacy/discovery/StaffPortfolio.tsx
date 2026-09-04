@@ -14,7 +14,6 @@ interface StaffMember {
 interface PortfolioImage {
   id: string;
   image_url: string;
-  caption: string | null;
 }
 
 interface StaffPortfolioProps {
@@ -32,11 +31,15 @@ export default function StaffPortfolio({ staff, salonId, instagramUrl, onBookWit
     let cancelled = false;
     async function load() {
       try {
-        const res = await fetch(`/api/salons/${salonId}/staff/${staff.id}/portfolio`);
+        const res = await fetch(`/api/staff/${staff.id}/profile`);
         if (res.ok && !cancelled) {
           const data = await res.json();
-          if (!cancelled) setImages(data.images ?? []);
+          if (!cancelled) setImages(data.portfolio ?? []);
+        } else if (!cancelled) {
+          console.error("[StaffPortfolio] failed to load portfolio:", res.status);
         }
+      } catch (err) {
+        if (!cancelled) console.error("[StaffPortfolio] failed to load portfolio:", err);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -94,7 +97,7 @@ export default function StaffPortfolio({ staff, salonId, instagramUrl, onBookWit
         <div className="grid grid-cols-3 gap-1.5">
           {images.slice(0, 6).map((img) => (
             <div key={img.id} className="aspect-square rounded-btn overflow-hidden relative">
-              <Image src={img.image_url} alt={img.caption ?? ""} fill className="object-cover" sizes="33vw" />
+              <Image src={img.image_url} alt="" fill className="object-cover" sizes="33vw" />
             </div>
           ))}
         </div>

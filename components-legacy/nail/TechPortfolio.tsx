@@ -9,10 +9,6 @@ import type { NailStyleCategory, NailShape, NailMaterial } from "@/lib/types";
 interface PortfolioImage {
   id: string;
   image_url: string;
-  nail_style?: NailStyleCategory | null;
-  nail_shape?: NailShape | null;
-  nail_material?: NailMaterial | null;
-  caption?: string | null;
   sort_order: number;
 }
 
@@ -70,26 +66,28 @@ export default function TechPortfolio({ staffId, staffName, salonSlug, initialIm
   const fetchImages = useCallback(async (pageNum: number, append: boolean) => {
     setLoading(true);
     try {
-      const params = new URLSearchParams({ page: String(pageNum), limit: String(limit ?? 20) });
-      if (filterStyle) params.set("nail_style", filterStyle);
-      if (filterShape) params.set("nail_shape", filterShape);
-      if (filterMaterial) params.set("nail_material", filterMaterial);
-
-      const res = await fetch(`/api/nail-tech/${staffId}/portfolio?${params}`);
-      if (!res.ok) return;
+      const res = await fetch(`/api/staff/${staffId}/profile`);
+      if (!res.ok) {
+        console.error("[TechPortfolio] failed to load portfolio:", res.status);
+        return;
+      }
       const data = await res.json();
-      const items: PortfolioImage[] = data.images ?? [];
+      const items: PortfolioImage[] = data.portfolio ?? [];
 
       if (append) {
         setImages((prev) => [...prev, ...items]);
       } else {
         setImages(items);
       }
-      setHasMore(items.length >= (limit ?? 20));
+      // The profile route has no cursor/pagination and caps at 30 rows, so there is
+      // no way to know if more exist; treat every response as the full set.
+      setHasMore(false);
+    } catch (err) {
+      console.error("[TechPortfolio] failed to load portfolio:", err);
     } finally {
       setLoading(false);
     }
-  }, [staffId, filterStyle, filterShape, filterMaterial, limit]);
+  }, [staffId]);
 
   // Fetch on mount or filter change
   useEffect(() => {
@@ -160,9 +158,6 @@ export default function TechPortfolio({ staffId, staffName, salonSlug, initialIm
               key={img.id}
               id={img.id}
               imageUrl={img.image_url}
-              style={img.nail_style}
-              shape={img.nail_shape}
-              material={img.nail_material}
               staffName={staffName}
               showBookCta={!!salonSlug}
               bookingUrl={salonSlug ? `/${salonSlug}?staffId=${staffId}` : undefined}
