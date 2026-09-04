@@ -935,11 +935,44 @@ export async function POST(req: NextRequest) {
           const newGross = (charge.amount - charge.amount_refunded) / 100; // Rappen → CHF
           const newComm = Math.round(newGross * (payout.commission_percent / 100) * 100) / 100;
           const newNet = Math.round((newGross - newComm) * 100) / 100;
-          await admin.from("salon_payouts").update({
-            gross_amount: newGross,
-            commission_amount: newComm,
-            net_amount: newNet,
-          }).eq("id", payout.id);
+
+          // ORDERING GUARD (cron-health SLICE stripe-refunds (a)). Stripe does
+          // not guarantee delivery order, so an OLDER charge.refunded (a
+          // smaller cumulative amount_refunded, i.e. a HIGHER remaining
+          // gross) can arrive AFTER a newer one already lowered gross_amount
+          // here. Without a guard the stale event would revert gross_amount
+          // back UP. gross_amount only ever DECREASES as more gets refunded
+          // (or stays equal on a duplicate redelivery), so it IS the stored
+          // watermark: gte("gross_amount", newGross) only lets the write
+          // through when the new figure is <= what's already stored. Same
+          // family as the promo_counted_at CAS (~line 212-223) and the
+          // upcharge dispute CAS (~line 448-454), an inequality instead of
+          // .eq() because the thing being guarded is a MONOTONIC value, not a
+          // one-shot flag/status; the WHERE clause is evaluated by Postgres
+          // against the row's current value, so this is race-safe against
+          // concurrent deliveries too, not just a read-then-write check.
+          const { data: refundUpdateRow, error: refundUpdateError } = await admin
+            .from("salon_payouts")
+            .update({
+              gross_amount: newGross,
+              commission_amount: newComm,
+              net_amount: newNet,
+            })
+            .eq("id", payout.id)
+            .gte("gross_amount", newGross)
+            .select("id")
+            .maybeSingle();
+          if (refundUpdateError) {
+            console.error(`[stripe/webhook]:${rid} salon_payouts refund update failed for payout ${payout.id}:`, refundUpdateError.message);
+          } else if (!refundUpdateRow) {
+            // Guard blocked the write: a later/larger refund already dropped
+            // gross_amount below what this (stale or out-of-order) event
+            // would compute. Expected under out-of-order delivery, never
+            // silently dropped, logged so it's visible.
+            console.warn(
+              `[stripe/webhook]:${rid} charge.refunded ordering guard skipped a stale update for payout ${payout.id} (event's computed gross ${newGross} >= the currently stored value, applying it would have reverted a newer refund)`
+            );
+          }
         }
       }
       break;

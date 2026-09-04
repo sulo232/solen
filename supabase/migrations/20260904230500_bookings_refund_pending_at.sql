@@ -1,0 +1,26 @@
+-- NOT YET APPLIED as of this commit. To be applied via the Supabase MCP
+-- `apply_migration` tool (never `supabase db push`, this project's migration
+-- history has diverged from the remote schema_migrations table, same note
+-- carried by 20260904171636_email_reminder_sent_columns.sql), by the
+-- orchestrator after this round is reviewed.
+--
+-- exists-check: `npm run exists refund_pending_at` (2026-09-04), 0 hits.
+-- bookings.fee_charge_claimed_at (20260710043952_audit_fix_fee_charge_claim_column.sql)
+-- is the existing precedent for this exact shape, a claim timestamp set
+-- before a Stripe call and released/checked after; this is that same
+-- pattern applied to refunds instead of fee charges.
+--
+-- cron-health SLICE stripe-refunds (c): lib/bookings/issue-refund.ts
+-- CAS-claims bookings.refunded_amount / payment_status BEFORE calling
+-- stripe.refunds.create (claim-first, so two concurrent refund calls for the
+-- same booking can't both reach Stripe). A process crash between that claim
+-- committing and the Stripe call resolving leaves the booking showing a
+-- refund that Stripe was never actually confirmed to have issued (a
+-- phantom-refund window), with nothing to detect it afterwards. This column
+-- lets issueRefund mark "a refund claim is in flight" and lets a sweeper
+-- (app/api/cron/reconcile) find any marker stuck past a plausible request
+-- lifetime and reconcile that booking against Stripe's own refund list for
+-- the payment intent. Additive, idempotent, nullable: NULL is the steady
+-- state for every existing row and for a booking with no refund in flight.
+ALTER TABLE public.bookings
+  ADD COLUMN IF NOT EXISTS refund_pending_at timestamptz;

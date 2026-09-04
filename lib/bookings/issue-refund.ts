@@ -147,9 +147,24 @@ export async function issueRefund(args: IssueRefundArgs): Promise<IssueRefundRes
   //    before either wrote the DB, a real double-Stripe-refund, not just a DB
   //    no-op. Whoever wins this CAS is the only caller allowed to call Stripe; the
   //    loser is rejected here, before any money moves.
+  // 8b. cron-health SLICE stripe-refunds (c): refund_pending_at (migration
+  //     20260904230500_bookings_refund_pending_at.sql, NOT YET APPLIED, the
+  //     orchestrator applies it live after review) is set in the SAME claim
+  //     write as the CAS above, BEFORE the Stripe call in step 9 below. The
+  //     claim above already writes the booking's TERMINAL refunded_amount /
+  //     payment_status optimistically, ahead of Stripe confirming anything
+  //     (claim-first, so two concurrent refunds can't both reach Stripe); a
+  //     process crash between this write committing and step 9 resolving
+  //     leaves the booking showing a refund Stripe was never confirmed to
+  //     have issued (a phantom-refund window) with nothing to detect it. The
+  //     marker flags "a refund claim is in flight" so the reconcile cron's
+  //     sweep (app/api/cron/reconcile) can find a stuck one and check it
+  //     against Stripe's own refund list for the payment intent. Cleared
+  //     after Stripe confirms (right after the `refunds.create` call below)
+  //     or after the rollback on a Stripe failure (same guarded update).
   const { data: claimRow, error: casError } = await db
     .from("bookings")
-    .update({ refunded_amount: newTotal, payment_status: paymentStatus })
+    .update({ refunded_amount: newTotal, payment_status: paymentStatus, refund_pending_at: new Date().toISOString() })
     .eq("id", id)
     .eq("refunded_amount", staleRefunded) // CAS guard.
     .select("id")
@@ -195,7 +210,7 @@ export async function issueRefund(args: IssueRefundArgs): Promise<IssueRefundRes
     // let the alert below surface the drift for manual reconciliation.
     const { data: rollbackRow, error: rollbackError } = await db
       .from("bookings")
-      .update({ refunded_amount: staleRefunded, payment_status: priorPaymentStatus })
+      .update({ refunded_amount: staleRefunded, payment_status: priorPaymentStatus, refund_pending_at: null })
       .eq("id", id)
       .eq("refunded_amount", newTotal)
       .select("id")
@@ -224,6 +239,23 @@ export async function issueRefund(args: IssueRefundArgs): Promise<IssueRefundRes
       error: stripeErr?.message ?? String(stripeErr),
     });
     throw new RefundError("STRIPE_FAILED", stripeErr?.message ?? "Stripe refund failed");
+  }
+
+  // 9b. Stripe confirmed the refund, clear the in-flight marker set in step
+  //     8b. Guarded on refunded_amount still matching OUR claimed newTotal,
+  //     same discipline as the rollback above: if this somehow races with
+  //     another writer, leave the marker for the sweeper rather than clobber
+  //     a state we no longer understand.
+  const { error: clearPendingError } = await db
+    .from("bookings")
+    .update({ refund_pending_at: null })
+    .eq("id", id)
+    .eq("refunded_amount", newTotal);
+  if (clearPendingError) {
+    console.error("[issueRefund] failed to clear refund_pending_at after a confirmed Stripe refund:", clearPendingError.message, { booking_id: id, payment_intent: pi });
+    // Non-fatal: the refund already succeeded on both Stripe and the booking
+    // row; the reconcile-cron sweeper will find and clear a marker stuck
+    // like this (Stripe already shows the refund, so it just clears it).
   }
 
   // 10. salon_payouts reconciliation is intentionally NOT done here. The

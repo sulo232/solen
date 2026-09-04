@@ -388,7 +388,135 @@ export async function GET(req: NextRequest) {
     errors.push(`refunds.list/compare failed: ${err instanceof Error ? err.message : String(err)}`);
   }
 
-  // ---- 3. Report -----------------------------------------------------------
+  // ---- 3. Stale refund_pending_at sweep (cron-health SLICE stripe-refunds (c)) ----
+  // phantom-ok: bookings.refund_pending_at is added by
+  // supabase/migrations/20260904230500_bookings_refund_pending_at.sql, written
+  // this same round and NOT YET APPLIED (the orchestrator applies it live via
+  // the Supabase MCP after review), so it is genuinely absent from
+  // _inventory/_db-columns.json right now, not a phantom typo. Until it is
+  // applied, the select below matches 0 rows (a missing-column PostgREST
+  // error would be caught by the try/catch and logged into `errors`, never a
+  // silent pass).
+  //
+  // lib/bookings/issue-refund.ts sets bookings.refund_pending_at right before
+  // calling Stripe and clears it right after Stripe confirms (or on a clean
+  // rollback on a Stripe failure). A marker still set 15+ minutes later means
+  // the process died somewhere in that window. This reconciles that ONE
+  // booking against Stripe's own refund list for its payment intent, and
+  // either completes the booking's refunded_amount/payment_status to match
+  // what Stripe actually did, or clears the marker when Stripe already
+  // confirms the claimed amount. This is the ONE write this otherwise
+  // read-only cron makes, scoped narrowly to undoing a specific crash
+  // artifact on a column no other code touches once claimed, never a general
+  // auto-fix of the amount/refund drift the two sections above only detect
+  // and report.
+  // phantom-ok: bookings.refund_pending_at, migration
+  // 20260904230500_bookings_refund_pending_at.sql (this same round, NOT YET
+  // APPLIED). `admin` is typed against the generated Database schema, which
+  // does not yet know this column. Cast to `any` at this one boundary, the
+  // same workaround this file's neighbors use ahead of a regenerated schema
+  // (e.g. app/api/stripe/webhook/route.ts's `const b = booking as any;` for
+  // its not-yet-typed VAT columns).
+  const refundPendingSweepDb = admin as any;
+  interface StalePendingRefundRow {
+    id: string;
+    payment_intent_id: string | null;
+    paid_amount: number | null;
+    refunded_amount: number | null;
+    payment_status: string | null;
+    refund_pending_at: string | null;
+  }
+  const staleRefundSweep = { checked: 0, completed: 0, cleared: 0, skipped: 0 };
+  try {
+    const staleCutoffIso = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+    const { data: stalePending } = await refundPendingSweepDb
+      .from("bookings")
+      .select("id, payment_intent_id, paid_amount, refunded_amount, payment_status, refund_pending_at")
+      .not("refund_pending_at", "is", null)
+      .lt("refund_pending_at", staleCutoffIso)
+      .limit(PAGE_SIZE);
+
+    for (const row of (stalePending ?? []) as StalePendingRefundRow[]) {
+      staleRefundSweep.checked++;
+      const pi = row.payment_intent_id;
+      if (!pi) {
+        // No payment intent to check against Stripe at all, nothing this
+        // sweep can verify. Leave the marker; log so it's visible.
+        console.error(`[cron/reconcile] refund_pending_at sweep: booking ${row.id} has a stale marker but no payment_intent_id, skipping`);
+        staleRefundSweep.skipped++;
+        continue;
+      }
+
+      let stripeRefundedTotal = 0;
+      try {
+        const refunds = await stripe.refunds.list({ payment_intent: pi, limit: 100 });
+        for (const r of refunds.data) {
+          if (r.status === "succeeded" || r.status === "pending") stripeRefundedTotal += r.amount;
+        }
+      } catch (stripeListErr) {
+        console.error(`[cron/reconcile] refund_pending_at sweep: stripe.refunds.list failed for PI ${pi} (booking ${row.id}):`, stripeListErr);
+        staleRefundSweep.skipped++;
+        continue;
+      }
+
+      const dbRefunded = row.refunded_amount ?? 0;
+      const paidAmount = row.paid_amount ?? 0;
+
+      // Both branches below CAS-guard on .eq("refund_pending_at", row.refund_pending_at)
+      // + .select("id").maybeSingle(): a null result means the marker changed
+      // since we read it (a fresh issueRefund call already reset it), which
+      // this sweep must not clobber, so it counts as skipped, not applied.
+      if (stripeRefundedTotal >= dbRefunded) {
+        // Stripe confirms at least what the claim recorded, the claim was
+        // real and the crash happened after Stripe succeeded. Nothing to
+        // fix, just clear the marker.
+        const { data: clearRow, error: clearErr } = await refundPendingSweepDb
+          .from("bookings")
+          .update({ refund_pending_at: null })
+          .eq("id", row.id)
+          .eq("refund_pending_at", row.refund_pending_at)
+          .select("id")
+          .maybeSingle();
+        if (clearErr) {
+          console.error(`[cron/reconcile] refund_pending_at sweep: failed to clear confirmed marker for booking ${row.id}:`, clearErr.message);
+        } else if (!clearRow) {
+          console.log(`[cron/reconcile] refund_pending_at sweep: booking ${row.id} marker changed underneath the sweep, skipped`);
+          staleRefundSweep.skipped++;
+        } else {
+          console.log(`[cron/reconcile] refund_pending_at sweep: booking ${row.id} confirmed by Stripe (refunded=${stripeRefundedTotal} Rappen), cleared marker`);
+          staleRefundSweep.cleared++;
+        }
+      } else {
+        // Stripe shows LESS refunded than the claim recorded, the claim
+        // never actually landed on Stripe (a genuine phantom refund).
+        // Reconcile the booking DOWN to what Stripe actually did.
+        const correctedStatus = stripeRefundedTotal <= 0 ? "paid" : stripeRefundedTotal >= paidAmount ? "refunded" : "partially_refunded";
+        const { data: completeRow, error: completeErr } = await refundPendingSweepDb
+          .from("bookings")
+          .update({ refunded_amount: stripeRefundedTotal, payment_status: correctedStatus, refund_pending_at: null })
+          .eq("id", row.id)
+          .eq("refund_pending_at", row.refund_pending_at)
+          .select("id")
+          .maybeSingle();
+        if (completeErr) {
+          console.error(`[cron/reconcile] refund_pending_at sweep: failed to complete booking update for ${row.id}:`, completeErr.message);
+        } else if (!completeRow) {
+          console.log(`[cron/reconcile] refund_pending_at sweep: booking ${row.id} marker changed underneath the sweep, skipped`);
+          staleRefundSweep.skipped++;
+        } else {
+          console.error(
+            `[cron/reconcile] refund_pending_at sweep: booking ${row.id} had a phantom refund claim (DB said refunded_amount=${dbRefunded}, Stripe only shows ${stripeRefundedTotal}), corrected to Stripe's figure and cleared marker`
+          );
+          staleRefundSweep.completed++;
+        }
+      }
+    }
+  } catch (err) {
+    console.error("[cron/reconcile] refund_pending_at sweep failed:", err);
+    errors.push(`refund_pending_at sweep failed: ${err instanceof Error ? err.message : String(err)}`);
+  }
+
+  // ---- 4. Report -----------------------------------------------------------
   for (const m of mismatches) {
     console.error(`[cron/reconcile] MISMATCH ${m.kind}:`, m.detail, {
       payment_intent: m.payment_intent,
@@ -436,6 +564,7 @@ export async function GET(req: NextRequest) {
     checkedPurchases,
     skipped,
     mismatches,
+    staleRefundSweep,
     processed: checked + checkedPurchases,
     errors,
   };

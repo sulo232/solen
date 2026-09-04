@@ -101,7 +101,8 @@ describe("issueRefund remaining/netting math", () => {
     const db = makeDbStub(
       [
         { data: bookingRow({ paid_amount: 10000, refunded_amount: 6000, payment_status: "partially_refunded" }), error: null }, // fetch
-        { data: { id: BOOKING_ID }, error: null }, // CAS claim
+        { data: { id: BOOKING_ID }, error: null }, // CAS claim (sets refund_pending_at)
+        { data: { id: BOOKING_ID }, error: null }, // clear refund_pending_at after Stripe confirms
       ],
       () => Promise.resolve({ data: null, error: null }), // restore_user_credits / restore_voucher rpc spy
     );
@@ -120,7 +121,8 @@ describe("issueRefund remaining/netting math", () => {
     const db = makeDbStub(
       [
         { data: bookingRow({ paid_amount: 10000, refunded_amount: 0 }), error: null },
-        { data: { id: BOOKING_ID }, error: null },
+        { data: { id: BOOKING_ID }, error: null }, // CAS claim (sets refund_pending_at)
+        { data: { id: BOOKING_ID }, error: null }, // clear refund_pending_at after Stripe confirms
       ],
       () => Promise.resolve({ data: null, error: null }), // restore_user_credits / restore_voucher rpc spy
     );
@@ -139,7 +141,8 @@ describe("issueRefund remaining/netting math", () => {
   it("passes reverse_transfer + refund_application_fee only for a Connect account", async () => {
     const db = makeDbStub([
       { data: bookingRow({ salons: { stripe_account_id: "acct_connect" } }), error: null },
-      { data: { id: BOOKING_ID }, error: null },
+      { data: { id: BOOKING_ID }, error: null }, // CAS claim (sets refund_pending_at)
+      { data: { id: BOOKING_ID }, error: null }, // clear refund_pending_at after Stripe confirms
     ]);
     refundsCreateMock.mockResolvedValue({ id: "re_3" });
 
@@ -153,7 +156,8 @@ describe("issueRefund remaining/netting math", () => {
   it("omits reverse_transfer/refund_application_fee when there is no connected account", async () => {
     const db = makeDbStub([
       { data: bookingRow({ salons: { stripe_account_id: null } }), error: null },
-      { data: { id: BOOKING_ID }, error: null },
+      { data: { id: BOOKING_ID }, error: null }, // CAS claim (sets refund_pending_at)
+      { data: { id: BOOKING_ID }, error: null }, // clear refund_pending_at after Stripe confirms
     ]);
     refundsCreateMock.mockResolvedValue({ id: "re_4" });
 
@@ -175,7 +179,8 @@ describe("issueRefund credits/voucher spend-path restore (step 10b, gated on isF
     const db = makeDbStub(
       [
         { data: bookingRow({ paid_amount: 10000, refunded_amount: 0 }), error: null }, // fetch
-        { data: { id: BOOKING_ID }, error: null }, // CAS claim
+        { data: { id: BOOKING_ID }, error: null }, // CAS claim (sets refund_pending_at)
+        { data: { id: BOOKING_ID }, error: null }, // clear refund_pending_at after Stripe confirms
       ],
       () => Promise.resolve({ data: null, error: null }), // restore_user_credits / restore_voucher rpc spy
     );
@@ -191,7 +196,8 @@ describe("issueRefund credits/voucher spend-path restore (step 10b, gated on isF
     const db = makeDbStub(
       [
         { data: bookingRow({ paid_amount: 10000, refunded_amount: 0 }), error: null }, // fetch
-        { data: { id: BOOKING_ID }, error: null }, // CAS claim
+        { data: { id: BOOKING_ID }, error: null }, // CAS claim (sets refund_pending_at)
+        { data: { id: BOOKING_ID }, error: null }, // clear refund_pending_at after Stripe confirms
       ],
       () => Promise.resolve({ data: null, error: null }), // restore_user_credits / restore_voucher rpc spy
     );
