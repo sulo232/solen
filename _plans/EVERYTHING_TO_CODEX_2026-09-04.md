@@ -209,7 +209,7 @@ Rewritten 2026-09-04 late evening after his second round of answers. Gone from t
 2. **Delete the six switched-off cloud functions.** Their source is gone from the repo and they now answer nothing (neutered today, so no customer can reach them). Deleting them is tidy-up only; your money and your data are not touched either way. Say yes and I delete them.
 3. **Delete two portfolio components nothing loads** (staff portfolio, nail-tech portfolio; only a /dev preview page imports them). The real salon portfolio is live and stays. Delete both, or keep for the switched-off nail feature?
 4. **The six empty old branches.** The triage (BRANCH_TRIAGE_2026-09-04.md) found nothing left on them that is not already on main. Delete them with their recovery numbers written down (my pick), or keep?
-5. **The sheet flick.** One old branch carries a better close-by-flick for bottom sheets (the branch's sheet reads the flick speed, main's only reads the distance). That is a feel change customers would notice, so it wants a before/after on a real sheet before it goes in. Say "show me" and I build the comparison.
+5. **The sheet flick.** One old branch carries a better close-by-flick for bottom sheets (the branch's sheet reads the flick speed, main's only reads the distance). That is a feel change customers would notice, so it is built as a comparison you can feel on your phone: /en/dev/sheet-flick (commit 3d891ccd1), today's sheet on top, the proposed one below, same content. Say which one, or say keep.
 6. **Saved boards.** Three boards exist in the database, zero pins, and nothing on the site links to them. My pick: bury the feature (hide the routes, keep the tables). Say "delete" if you want the tables gone too, or "keep" to leave it.
 
 ## Log
