@@ -19,10 +19,9 @@ Three things are missing, and none of them is another floor.
    only refuses new ones. And the lock carries two ramps that disagree with each other: the
    "Core ramp" (22/18/16/14/13/12) and the CLAUDE.md contract row (name 14, meta 12, CTA 15,
    eyebrow 11). Meta is 13 in one and 12 in the other; eyebrow is 12 in one and 11 in the other.
-   Formula that is missing: ONE ramp of at most 6 roles with a ratio between steps (the lock's
-   own 28px anchor over a 14px body is 2.0; the ramp under it should step 28 / 22 / 18 / 14 / 12,
-   nothing in between), every other pixel value illegal everywhere, old uses swept, not
-   grandfathered.
+   Formula that is missing: ONE ramp, integers only, used the same way on every screen (see the
+   Airbnb table below before assuming fewer sizes is the fix: Airbnb home uses six), every other
+   pixel value illegal everywhere, the 463 old uses swept, not grandfathered.
 
 2. **A relationship rule with teeth.** FLOORS LAW 8 ("the same thing looks the same
    everywhere") was written on 2026-07-29 and it is the most-broken rule in the system: the
@@ -56,10 +55,32 @@ duration floor (3 above), and the display-anchor floor asking list screens (sear
 a 28px heading they structurally do not have. The last one is a scope fix, not a principle:
 exempt list-type screens by name, the way the imagery floor already exempts forms and receipts.
 
-## Airbnb, the source of truth, measured the same way
+## Airbnb, the source of truth, measured the same way (popup dismissed, 390x844, de.airbnb.com)
 
-(filled in from `scratchpad/airbnb/COMPARISON.md` when the capture finishes; the first home
-measurement was contaminated by a price-notice popup and is not used.)
+| screen | photo area | biggest text | text at weight >= 600 | anchor / body | distinct sizes | weights |
+|---|---|---|---|---|---|---|
+| Airbnb home | 32.6% | 18px ("Beliebte Unterkünfte in Baguio") | 26.8% | 1.5x | 10 11 12 13 14 18 | 400 500 600 700 |
+| Solen home | 41.3% | 18px ("Für dich empfohlen") | 3.3% | 1.5x | 3 sizes | (under 2) |
+| Airbnb search | 28.5% | 15px | 20.4% | 1.07x | 10 12 14 15 | 400 500 700 |
+| Solen search | 63.5% | 16px (a card name) | 5.9% | 1.19x | 5 sizes in 8px | (under 2) |
+| Airbnb listing | 44.4% | 26px (the title) | 4.8% | 1.86x | 12 14 16 18 26 | 400 500 700 |
+| Solen salon page | 34.7% | 30px | 7.1% | 2.14x | 6 sizes, 5 in 8px | (under 2) |
+
+**What this says, plainly.** Graded by our own six floors, Airbnb fails on its own home page
+exactly where we fail (18px anchor, 1.5x, five sizes inside 4px) and fails the imagery floor on
+home and search, where we pass by a wide margin. It uses three or four weights per screen where
+our lock allows two. On every number our rulebook measures, we are equal to or "better" than the
+source of truth, and the screens still look worse. **So the missing thing is not a floor, and the
+type-scale point in item 1 has to be narrowed:** Airbnb's sizes are integers used the same way on
+every screen (nine distinct integers across three screens); ours are 17 permitted integers plus
+463 uses of 32 half-pixel and odd sizes, and two ramps that disagree. The lever is sameness and
+integers, not fewer sizes.
+
+What the numbers cannot see, and where the difference actually sits: Airbnb's first paint already
+carries 41 text elements on home (server-rendered); our search and inspo carry 0 at 1.5 s. One
+card component on every Airbnb screen; three of ours. And the nine existing rules that are broken
+on our screens (item "not missing" below) have no Airbnb counterpart because Airbnb does not ship
+a fallback typeface on its map or a card with both a hairline and a shadow.
 
 ## Fix order
 
