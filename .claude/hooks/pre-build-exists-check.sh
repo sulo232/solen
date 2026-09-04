@@ -103,6 +103,20 @@ if [[ "${1:-}" == "--selftest" ]]; then
   run_case "GOOD4 (new mockup, WITH Exists-check line + exists ran)" "allow" \
     "$(jq -nc --arg fp "$BASE/public/_mockups/probe-mockup2.html" --arg tp "$WITH_EXISTS_TR" \
       '{tool_name:"Write", tool_input:{file_path:$fp, content:"<!-- Exists-check: /probe already has X; REMOVED: none. NEW: only Y. -->\n<html></html>"}, transcript_path:$tp}')"
+  # GOOD5 (2026-09-05): the run lives in a HELPER transcript under <session>/subagents, the
+  # parent transcript handed to the hook has none. Must ALLOW.
+  PARENT_TR="$SELFTEST_DIR/parent.jsonl"
+  cp "$NO_EXISTS_TR" "$PARENT_TR"
+  mkdir -p "$SELFTEST_DIR/parent/subagents/workflows/wf_x"
+  cp "$WITH_EXISTS_TR" "$SELFTEST_DIR/parent/subagents/workflows/wf_x/agent-abc.jsonl"
+  run_case "GOOD5 (new page.tsx, exists ran in a helper transcript)" "allow" \
+    "$(jq -nc --arg fp "$BASE/app/probe-newthing4/page.tsx" --arg tp "$PARENT_TR" \
+      '{tool_name:"Write", tool_input:{file_path:$fp, content:"export default function P(){return null}"}, transcript_path:$tp}')"
+  # BAD3: same layout, but the helper transcript carries no run either. Must still DENY.
+  cp "$NO_EXISTS_TR" "$SELFTEST_DIR/parent/subagents/workflows/wf_x/agent-abc.jsonl"
+  run_case "BAD3 (new page.tsx, no run anywhere in the session)" "deny" \
+    "$(jq -nc --arg fp "$BASE/app/probe-newthing5/page.tsx" --arg tp "$PARENT_TR" \
+      '{tool_name:"Write", tool_input:{file_path:$fp, content:"export default function P(){return null}"}, transcript_path:$tp}')"
   echo ""
   if [[ $FAIL -gt 0 ]]; then
     echo "$FAIL/$((PASS+FAIL)) cases FAILED."
@@ -178,6 +192,20 @@ if [[ -n "$TRANSCRIPT" && -f "$TRANSCRIPT" ]]; then
     | jq -rc 'select(.type=="assistant") | .message.content[]? | select(.type=="tool_use" and .name=="Bash") | .input.command // empty' 2>/dev/null \
     | grep -cE '(^|[;&|])[[:space:]]*npm[[:space:]]+run[[:space:]]+exists|[[:space:]/]exists\.mjs' || true)
   [[ "${RAN:-0}" -gt 0 ]] && exit 0
+
+  # 3b. A HELPER's Write arrives with the PARENT session's transcript_path (measured 2026-09-05,
+  # workflow wf_6522ecad: the helper's own transcript held the `npm run exists` call, a hand
+  # replay of this hook with that path ALLOWED, and every real Write was still DENIED). The
+  # parent's last 150 lines never carry a helper's Bash calls, so also scan the session's helper
+  # transcripts, <session>/subagents/**/agent-*.jsonl, touched in the last 30 minutes.
+  SESSION_DIR="${TRANSCRIPT%.jsonl}"
+  if [[ -d "$SESSION_DIR/subagents" ]]; then
+    RAN=$(find "$SESSION_DIR/subagents" -name 'agent-*.jsonl' -mmin -30 -print0 2>/dev/null \
+      | xargs -0 tail -q -n 150 2>/dev/null \
+      | jq -rc 'select(.type=="assistant") | .message.content[]? | select(.type=="tool_use" and .name=="Bash") | .input.command // empty' 2>/dev/null \
+      | grep -cE '(^|[;&|])[[:space:]]*npm[[:space:]]+run[[:space:]]+exists|[[:space:]/]exists\.mjs' || true)
+    [[ "${RAN:-0}" -gt 0 ]] && exit 0
+  fi
 fi
 
 # ── BLOCK ──
