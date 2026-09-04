@@ -209,13 +209,10 @@ export async function GET(req: NextRequest) {
       { headers: feedCacheHeaders({ isSearchBranch: false, userId }) },
     );
   } catch (e: any) {
-    // Graceful fallback when Supabase admin client can't be created
-    return NextResponse.json({
-      items: [],
-      total: 0,
-      page: 1,
-      limit: 30,
-      has_more: false,
-    });
+    console.error("[discovery/feed] unhandled exception:", e);
+    return NextResponse.json(
+      { error: e?.message ?? "internal error", items: [], total: 0, page: 1, limit: 30, has_more: false },
+      { status: 500 },
+    );
   }
 }

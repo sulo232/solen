@@ -51,6 +51,18 @@ export async function GET(req: NextRequest) {
   // Prioritize same category
   query = query.eq("category", source.category);
 
+  // Deterministic slice before scoring: the scoring below (lines 76-93) has no single
+  // dominant column to push into the DB order, its heaviest weight, tag overlap x3, is
+  // computed against the SOURCE item's tags at request time, not a static sortable column.
+  // like_count was the obvious fallback (it's the scoring's own tiebreaker at line 96) but
+  // measured live it is 0 for every row in discovery_items, a dead/never-populated metric,
+  // so ordering by it would not actually change which rows land in the pre-scoring slice.
+  // created_at is the freshness key the general browse feed's own RPC orders by (see the
+  // FeedCursor comment in app/api/discovery/feed/route.ts: "gender rank, sort_order,
+  // created_at, id"), is live and varies per row, so ordering by it here makes the arbitrary
+  // limit*3 cut stable and meaningful (most recent first) instead of an unspecified DB order.
+  query = query.order("created_at", { ascending: false });
+
   // Limit the result set
   query = query.limit(limit * 3); // fetch extra for scoring
 
