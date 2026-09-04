@@ -502,10 +502,13 @@ export default function CalendarPage() {
     fetch("/api/profile")
       .then((r) => r.json())
       .then((p) => {
-        setSalonId(p?.salon_id ?? null);
+        // A staff member has no salon_id (owners only); fall back to staff_salon_id, the
+        // same pattern DashboardLayout.tsx uses to resolve the working salon for staff.
+        const sid = p?.salon_id ?? p?.staff_salon_id ?? null;
+        setSalonId(sid);
         return Promise.all([
-          fetch(`/api/services?salon_id=${p?.salon_id}`).then((r) => r.json()),
-          fetch(`/api/staff?salon_id=${p?.salon_id}`).then((r) => r.json()),
+          fetch(`/api/services?salon_id=${sid}`).then((r) => r.json()),
+          fetch(`/api/staff?salon_id=${sid}`).then((r) => r.json()),
         ]);
       })
       .then(([svcData, staffData]: [{ services?: RawServiceRow[] }, { staff?: { id: string; name: string }[] }]) => {
@@ -699,7 +702,7 @@ export default function CalendarPage() {
     setSalonReady(false);
     fetch("/api/profile")
       .then((r) => r.json())
-      .then((p) => setSalonId(p?.salon_id ?? null))
+      .then((p) => setSalonId(p?.salon_id ?? p?.staff_salon_id ?? null))
       .catch((e) => console.error("[Calendar] retry profile failed:", e))
       .finally(() => setSalonReady(true));
   };

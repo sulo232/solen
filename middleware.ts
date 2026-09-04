@@ -246,7 +246,7 @@ export async function middleware(request: NextRequest) {
         "/all-salons", "/all-users", "/platform-analytics",
         "/badge-manager", "/content-editor", "/segments",
         "/revenue", "/review-moderation", "/approvals",
-        "/editor", "/discovery-admin", "/nail-admin",
+        "/editor", "/discovery-admin",
         "/cases", "/commission-admin", "/homepage-admin",
         "/cities-admin", "/admin-sandbox", "/help-editor",
         "/salon-of-month-admin", "/reports",

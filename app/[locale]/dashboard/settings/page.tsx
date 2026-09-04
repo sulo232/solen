@@ -1447,7 +1447,10 @@ export default function SettingsPage() {
     fetch("/api/profile")
       .then((r) => r.json())
       .then((p) => {
-        if (p?.salon_id) return fetch(`/api/salons/${p.salon_id}`).then((r) => r.json());
+        // A staff member has no salon_id (owners only); fall back to staff_salon_id, the
+        // same pattern DashboardLayout.tsx uses to resolve the working salon for staff.
+        const sid = p?.salon_id ?? p?.staff_salon_id ?? null;
+        if (sid) return fetch(`/api/salons/${sid}`).then((r) => r.json());
         return null;
       })
       .then((d) => { if (d) setSalon(d); })

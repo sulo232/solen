@@ -105,8 +105,6 @@ const OWNER_NAV_GROUPS = [
 
 const STAFF_NAV = [
   { key: "myCalendar", href: "/dashboard/calendar",  icon: Clock },
-  { key: "myBreaks",  href: "/dashboard/my-breaks", icon: Calendar },
-  { key: "myPortfolio", href: "/dashboard/my-portfolio", icon: ImageIcon },
   { key: "myProfile",   href: "/dashboard/settings",  icon: Settings },
 ] as const;
 
