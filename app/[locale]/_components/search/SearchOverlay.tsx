@@ -2168,7 +2168,7 @@ export function SearchOverlay({
               the open/close morph. R6: `xOpacity` (the focus-collapse fade) is multiplied by
               the open/close fade so the X leaves WITH the sheet, not on its own clock. */}
           <motion.button key="closeX" onClick={close} aria-label={closeTxt}
-            className="fixed right-3 z-[102] grid h-11 w-11 place-items-center rounded-full border border-s-border bg-white text-s-ink"
+            className="fixed right-3 z-overlay grid h-11 w-11 place-items-center rounded-full border border-s-border bg-white text-s-ink"
             style={{ opacity: closeXOpacity, top: closeXTop, pointerEvents: closeXHit }} /* motion-ok: close-X fade, now openT-driven; S3: hit-testing tied to its own opacity */>
             <X size={18} strokeWidth={1.9} />
           </motion.button>
@@ -2217,7 +2217,7 @@ export function SearchOverlay({
               height: sheetHeight,
               pointerEvents: open ? "auto" : "none",
             }}
-            className="fixed bottom-0 z-[101] flex flex-col overflow-hidden bg-transparent">
+            className="fixed bottom-0 z-overlay flex flex-col overflow-hidden bg-transparent">
 
           {/* R7 slot 1 of 3: SUCHE. The white card belongs to the SLOT and never fades, so a
               step change can never make it translucent; only the collapsed face and the

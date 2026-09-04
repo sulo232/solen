@@ -23,12 +23,24 @@ export default async function RefundStatusPage({
   // Guest detection: a logged-in session means customer; otherwise the only way the case
   // GET will authorize is the booking-bound guest cookie → treat as guest.
   let isGuest = true;
+  // Ownership: a session existing is not the same as OWNING this booking , a logged-in
+  // customer viewing someone else's guest booking link is not its owner, so the receipt
+  // link (which resolves via RLS for the owner only) must not be offered to them either.
+  let isOwner = false;
   try {
     const supabase = await createServerSupabaseClient();
     const {
       data: { user },
     } = await supabase.auth.getUser();
     isGuest = !user;
+    if (user) {
+      const { data: booking } = await supabase
+        .from("bookings")
+        .select("user_id")
+        .eq("id", id)
+        .maybeSingle();
+      isOwner = booking?.user_id === user.id;
+    }
   } catch (err) {
     // Cookie read can throw in some runtimes; default to guest (safer chrome, no PII).
     console.error("[refund-status] session probe failed:", err);
@@ -45,7 +57,7 @@ export default async function RefundStatusPage({
   // audit made the same call on app/[locale]/booking/lookup/page.tsx: when there's no
   // real page behind a label, drop the link instead of pointing it somewhere wrong.
   // RefundCaseView renders no "View receipt" link at all when this is undefined.
-  const receiptHref = isGuest ? undefined : `/${locale}/confirmation?booking_id=${id}`;
+  const receiptHref = isGuest || !isOwner ? undefined : `/${locale}/confirmation?booking_id=${id}`;
 
   return (
     <RefundCaseView

@@ -189,7 +189,9 @@ export function SalonLocation({
 
   if (!salon.address && !hasCoords) return null;
 
-  const directionsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(salon.address)}`;
+  const directionsHref = hasCoords
+    ? `https://www.google.com/maps/search/?api=1&query=${salon.latitude},${salon.longitude}`
+    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(salon.address)}`;
   const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
   // Use the SAME style the search map uses (components-legacy/MapView.tsx:139): the real
   // Solen Studio style on the solen32 account, env override winning exactly as it does there.

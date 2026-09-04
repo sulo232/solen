@@ -345,6 +345,15 @@ module.exports = {
         // above ordinary chrome and below every sheet/modal/toast, but a page-level control like
         // the Map pill now numerically outranks it instead of relying on DOM order.
         banner: '180',
+        // "overlay-bg"/"overlay": the full-page SearchOverlay (SearchTemplate.tsx), a
+        // createPortal(..., document.body) panel that used to carry raw z-[100]/[101]/[102].
+        // Placed strictly below the sheet-bg/sheet tier (not tied to it) on purpose: FilterSheet
+        // shares that same document.body root via its own portal, and a tie at the identical
+        // named token would leave the two resolved by DOM insertion order alone, which is not
+        // provably stable across remounts. A strictly lower number means the filter sheet always
+        // wins whenever both are ever open at once, with no dependency on mount order.
+        "overlay-bg": "300",
+        "overlay": "310",
         // ── V3 z-index lock (V2-D18, 2026-05-09) — LIVE_TRUTH §8 ──
         // Use as `z-modal-bg`, `z-modal`, `z-toast` etc in className.
         // Backdrop / surface pairs follow §8 naming: `*-bg` for the dim layer,

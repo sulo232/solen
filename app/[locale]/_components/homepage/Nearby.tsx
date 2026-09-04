@@ -68,6 +68,16 @@ export default function Nearby({
   // Real coordinates only; a salon with no lat/lng gets no marker, never a fake one. The
   // name/slug/category check is the same completeness gate the removed card rail applied, kept
   // so the marker set does not change with the cards.
+  //
+  // COUNT NOTE (2026-09-04): this tile's own label now matches its own pins (M1, 2026-08-11), but
+  // it does NOT match the count on the page its tap-through opens (`/search?view=map`, no filters,
+  // which lists every active Basel salon). Measured live the same day: this curated list draws 15
+  // (all 15 NEARBY_SALON_IDS pass the completeness check), the map page lists 20 (every is_active
+  // Basel row, all 20 of which already carry coordinates). This is NOT a viewport/bounds filter,
+  // NEARBY_SALON_IDS is a hand-picked subset that was never kept in sync with the live roster as
+  // salons were added. Reconciling it means either widening this curated list to the full active
+  // set (dropping the "curated teaser" concept) or relabeling the tile as a subset ("15 of 20"),
+  // both product decisions, not a bug fix, so left for an explicit call rather than changed here.
   const mapSalons: NearbyMapSalon[] = NEARBY_SALON_IDS.map((id) => {
     const real = salonData[id];
     if (!real || !real.name || !real.slug || !real.category) return null;

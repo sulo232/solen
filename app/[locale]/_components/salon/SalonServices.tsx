@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import type { Service, SalonDetail } from "./_shared";
 import { capitalize } from "./_shared";
 import { TabPill } from "../primitives/TabPill";
@@ -48,6 +49,7 @@ export function SalonServices({
    *  can render the sticky cart sidebar with salon info + thumbnail. */
   salon: SalonDetail;
 }) {
+  const t = useTranslations("salonDetail");
   // V2-D53.3: group by subcategory (Schnitt/Farbe/Styling/...) when available,
   // falling back to top-level category for older seed data.
   const grouped = React.useMemo(() => {
@@ -171,7 +173,7 @@ export function SalonServices({
       {visible.length > 0 && (
         <div className="mt-5 flex justify-center">
           {/* mockup-ok: SeeAllButton port, byte-identical pill class string */}
-          <SeeAllButton label="Alle ansehen" href={`/${locale}/salon/${slug}/booking`} />
+          <SeeAllButton label={t("viewAllServices")} href={`/${locale}/salon/${slug}/booking`} />
         </div>
       )}
 
@@ -188,6 +190,7 @@ function ServiceRow({
   locale: string;
   slug: string;
 }) {
+  const t = useTranslations("salonDetail");
   // V3-D227 (2026-05-27, user-paste Fresha service-row spec):
   //   - 3-row stack: name (16/700) / duration grey (14/400 "30 Min.") / price (15/700 "ab N CHF")
   //   - NO description line in the list view (Fresha doesn't show it, keeps density). SUPERSEDED
@@ -243,7 +246,7 @@ function ServiceRow({
         href={`/${locale}/salon/${slug}/booking?service=${service.id}`}
         className="font-body shrink-0 rounded-full border border-s-border bg-white px-5 py-2 text-[13px] font-medium text-s-ink transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.97] active:duration-[80ms] active:ease-glide md:px-6 md:py-2.5 md:text-[14px]"
       >
-        Buchen
+        {t("book")}
       </Link>
     </div>
   );

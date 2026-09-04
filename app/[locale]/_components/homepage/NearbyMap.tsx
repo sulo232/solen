@@ -69,7 +69,7 @@ function markerEl(s: NearbyMapSalon): HTMLDivElement {
     '<path d="M11.5 2.3a.5.5 0 0 1 .95 0l2.3 4.68 5.17.75a.53.53 0 0 1 .3.9l-3.74 3.64.88 5.14a.53.53 0 0 1-.77.56L12 15.9l-4.62 2.43a.53.53 0 0 1-.77-.56l.88-5.14L3.75 8.99a.53.53 0 0 1 .3-.9l5.16-.76z"/></svg>';
 
   const rating = document.createElement("b");
-  rating.className = "font-semibold";
+  rating.className = "font-body font-semibold";
   rating.textContent = Number(s.rating).toFixed(1);
 
   const count = document.createElement("span");
