@@ -94,6 +94,55 @@ is missing? Like, what formula, what principle, what is actually missing? becaus
 - [x] 9i. Decision 9 (small text 12 vs 13, eyebrow 11 vs 12): elaborate and show. DONE: the frozen contract (12/11) is the LOCKFILE ramp's own phone column, the ramp's desktop column is 13/12, and the LOCKFILE's "everyday" table lists 13/12 as flat numbers with no phone column, which is the one real inconsistency. Pair E renders the real homepage salon card at both, measured 12/11 and 13/12, nothing else differing. verified: commit ba9a997f9, scratchpad/mockup-shots/pair-E.png looked at, LOCKFILE.md lines 293, 371-383, 396-397 quoted by the builder. Builder deviation stated: the card has no eyebrow, so the live "For Salons" eyebrow's exact classes were copied above each card (the rail eyebrow primitive has zero live callers).
 - [x] 9j. The harness: what to transfer to Codex, what not, how, and how to prove it worked. DONE, answered in the reply from a counted audit: 295 hook files on disk, 208 armed, 179 pass their own test, 2 fail, 83 built and never armed (do not carry), 197 of the 208 armed reference something Claude-only (rewrite, not copy); rules 103KB always loaded against Codex's 32KB default cap (raise it); 19 skills carry as-is (7 need a tool-name edit); 128 memory files do not carry as a corpus (fold the durable facts into the rules file); reply style carries but replaces Codex's defaults; 8 helpers and 3 workflow scripts need hand rewrites; connected services re-added by hand. Proof: replay the 204-case corpus (93 should-block, 111 should-pass) through the Codex hooks, plus a five-item day-one check. Found on the side: the chat em-dash gate was built 2026-08-24 and never armed, parked. verified: every count from a command the audit helper ran; no firing log exists, so "which gates fire most" is not known.
 
+### 10. His second round of answers, 2026-09-04 evening (dictated: branches "look into it, if important merge, if design direction changes tell me"; harness branch "don't worry, still working on it"; Codex "I wanna import everything"; walk-in "weird font I didn't approve, keep repeating"; pair A "stop, keep the current"; pair C "make the proposed"; pair D "not now"; pair E "approved, but isn't 'from' not allowed anymore, research, I had a session that improved everything and it's not here"; functions "yeah, but reminders need email too, customer chooses email or SMS"; "have it perfect in the back end before we hand off"; portfolio "don't we have something similar, look into it"; sizes "if one pixel, you decide"; gates "analyze and evaluate every gate, do we need it or not"; handoff doc later, but "tell me what's different and how helpers and workflows get rewritten")
+- [ ] 10a. CORRECTION: the font. He keeps seeing a typeface he never approved (4 sessions in 14 days).
+  - [x] 10a-1 measure the rendered font on the mockup page and on the home page through the tunnel (computed family, loaded faces, font file requests)
+  - [x] 10a-2 find why it is wrong this time and fix it, prove with the same measurement after
+  - [x] 10a-3 harden: a font check that runs on every mockup verification, so a fallback font is caught before a link is sent (category 2, look, do not scold)
+- [x] 10b. Pair A walk-in card: REJECTED, keep the current band. Graveyard line so it is never proposed again.
+- [ ] 10c. Pair C saved-salon card: APPROVED. The saved-salons list renders the real homepage SalonCard.
+  - [ ] 10c-1 build (coder), review (loop-reviewer), commit
+  - [ ] 10c-2 prove on /en/profile/favorites as the seeded account, tunnel link
+- [ ] 10d. Pair D services sizes: NOT NOW, parked.
+- [x] 10e. Pair E small text: APPROVED, and one-pixel calls are mine ("you decide"): 12 and 11 on the phone. Fix the LOCKFILE everyday table (phone column back).
+- [ ] 10f. "Isn't 'from' not allowed anymore?" Research the stranded card decisions (the 2026-07-13 converged card on its branch) against main's SalonCard; report what is missing on main and why; lift what he approved if it never landed.
+- [ ] 10g. The 11 old branches: archive tag on every one (done in this turn, nothing deleted); per branch, is anything IMPORTANT missing on main (lift it) and which carry DESIGN DIRECTION changes (report, do not merge). Deletion still needs one word.
+- [ ] 10h. Harness branch: leave it, they are still working on it. Nothing to do.
+- [ ] 10i. Codex: import everything. Direction confirmed; the handoff document is for later (his word). Tell him now, from the live docs: what is different from Claude Code, what Codex does, how the 8 helpers and 3 workflow scripts have to be rewritten.
+- [ ] 10j. Cloud functions: delete the six (his "yeah"), or the exact command if it cannot be done from here. Explain "post-booking preferences" in plain words.
+- [ ] 10k. Booking reminders by email too: the customer chooses email or SMS (the two switches already exist in settings); build the email reminder next to the SMS one, honouring both switches; coder + reviewer, prove, commit.
+- [ ] 10l. Backend perfect before handoff: a fresh audit over every backend system with adversarial verification, then fix every confirmed item with coder + reviewer, commit each.
+- [ ] 10m. Portfolio: show him the live one that already exists (where it is on the salon page and in the dashboard) and confirm the two dead components have no other twin. Deletion still needs one word.
+- [ ] 10n. Every gate evaluated: keep, fix or retire, one line each with evidence, in a document he can open, plus the counts.
+
+**10a CLOSED, measured both ways (2026-09-04 evening).** The typeface he kept seeing was never a font this
+product ships. Every link handed to him today pointed at a DEVELOPMENT server, and a development server that
+loses its build folder renders a black error screen set in `__nextjs-Geist`. Cold phone-width load of `/de`
+through the tunnel, before: the page carried only `__nextjs-Geist 400 600` and `__nextjs-Geist Mono`, zero
+Inter, zero Inter Tight, over a black overlay. The cause was mine: a production build was run against the same
+build folder the dev server was serving. After, on a real production build served from the main checkout, the
+same cold load at 390px carries `Inter Tight` and `Inter` and no Geist, on `/de`, on the mockup page and on the
+saved-salons page. Harden shipped as a LOOKING tool plus a real block, not advice:
+`~/.claude/hooks/_lib/page-health.py` loads a URL headless at phone width and reports the fonts that actually
+arrived (self-test 4/4), and `link-load-succeeded-gate.py` gained a FATAL class, checked BEFORE the 200
+short-circuit, so a development error screen can no longer be handed over just because it answers 200
+(self-test 12/12, and it is armed through `link-family-aggregator.py`).
+
+**10j CORRECTION, measured 2026-09-04.** The six cloud functions were called ACTIVE, and they are, but all six
+were already NEUTERED on 2026-07-10: every one of them now contains four lines that answer `410 Gone` and
+nothing else. Read live from the deployed source, all six. And nothing in the whole codebase invokes an edge
+function at all (`functions.invoke`, `functions/v1` and `supabase.co/functions` return zero hits across app,
+lib, components, scripts, supabase and .github). So deleting them is tidying, not safety, and the earlier
+framing of this as a security decision was wrong. `post-booking-preferences` in plain words: it was the job
+that ran after an appointment finished, to remember what that customer likes for next time. Its work moved to
+the scheduled jobs on GitHub on 2026-07-10.
+
+**10m PORTFOLIO, measured 2026-09-04.** The live one exists and is on the real salon page: `SalonPortfolio` is
+rendered by `SalonDetailV3` and `SalonHero`, fed by `salon_portfolio_images` (174 real photos) with
+`staff_portfolio_images` (24) behind the staff shots. The two dead ones, `StaffPortfolio` and `TechPortfolio`,
+are imported by exactly one file each and that file is a `/dev` overhaul page, so no customer route reaches
+them. Deleting them still needs his word.
+
 ## Parked decisions (for him, in his words)
 
 1. **Publish the site.** solen.ch still runs the May version. Nothing has left this Mac since 2026-05-21, and every fix since (German Salon sweep, security work, today's batch) is only here. Your three steps: publish main; set the cron secret on Netlify; switch the GitHub scheduled jobs back on (`gh workflow enable cron-jobs.yml`).
