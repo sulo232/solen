@@ -317,7 +317,7 @@
       "runtimeExecutable": "bash",
       "runtimeArgs": [
         "-lc",
-        "cd /Users/sulo/Documents/solen && npx next start -p 3480 -H 127.0.0.1"
+        "cd /Users/sulo/Documents/solen && SOLEN_DEV_PAGES=1 npx next start -p 3480 -H 127.0.0.1"
       ],
       "port": 3480,
       "autoPort": false

@@ -158,15 +158,25 @@ export async function GET(request: NextRequest) {
       rankIndex = new Map(ids.map((id: string, i: number): [string, number] => [id, i]));
     }
     const semanticMode = rankIndex !== null;
+    // sort=price / sort=distance need the real value (min active service price, or the
+    // RPC's distance) computed over the FULL filtered set before paging: the DB has no
+    // price column to order by, and distance only exists via the nearby-salon RPC below,
+    // so both skip the DB .order()+.range() further down and resolve+order+page in JS
+    // instead (see the fetch branch near the bottom of this function).
+    const sortNeedsPostFetch = !semanticMode && (sort === "price" || sort === "distance");
 
     // Assembled as a plain `string` (not a literal-typed template) so the dynamic
     // staff_members embed doesn't trip the PostgREST select type-parser. The embed is
     // runtime-proven (curl 2026-07-03) and rows are already read as Record<string,unknown>
     // downstream, so the opaque select type is consistent with the existing handling.
     const selectStr: string = `${salonCols}, services(${servicesCols})${staffEmbed}`;
+    // sortNeedsPostFetch fetches ids only on this first pass (full rows are fetched once
+    // more, per page, after the real order is known, see below), so the DB never has to
+    // return every column for every filtered salon just to compute an order.
+    const initialSelectStr: string = sortNeedsPostFetch ? "id" : selectStr;
     let query = supabase
       .from("salons")
-      .select(selectStr, { count: "exact" })
+      .select(initialSelectStr, { count: "exact" })
       .eq("is_active", true)
       .eq("listed_on_marketplace", true)
       .eq("is_test", false);
@@ -444,32 +454,128 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // semanticMode: no DB sort/range — the matched set (<=60 ids) is fetched whole and
+    // semanticMode: no DB sort/range, the matched set (<=60 ids) is fetched whole and
     // ordered by relevance + paginated in JS at the end. Structured mode sorts+pages in DB.
-    if (!semanticMode) {
+    // sortNeedsPostFetch (price/distance) also skips the DB order+range here, see the
+    // fetch branch below, which resolves the full filtered id set first, orders THAT by
+    // the real value, pages the id list, then fetches only the page's full rows.
+    if (!semanticMode && !sortNeedsPostFetch) {
       if (sort === "rating") query = query.order("solen_score", { ascending: false }).order("average_rating", { ascending: false });
-      else if (sort === "price") query = query.order("created_at", { ascending: true }); // V1: mocked by created_at since price is in services
       else if (sort === "last_minute") query = query.order("last_minute_discount_percent", { ascending: false }).gt("last_minute_discount_percent", 0);
       else if (sort === "newest") query = query.order("created_at", { ascending: false });
-      else if (sort === "distance") {
-        // Distance sorting is handled post-fetch if `lat` and `lng` are provided.
-        // We still fall back to solen_score to ensure deterministic fallback if distances are equal/unavailable.
-        query = query.order("solen_score", { ascending: false });
-      }
       else query = query.order("solen_score", { ascending: false }).order("average_rating", { ascending: false });
 
       query = query.range(offset, offset + limit - 1);
+    } else if (sortNeedsPostFetch && sort === "distance" && !orderedIds) {
+      // No usable lat/lng (or the nearby-RPC returned nothing): nothing to order the
+      // page by distance with, so keep the same deterministic solen_score fallback the
+      // DB order used before, just without a premature .range() cut.
+      query = query.order("solen_score", { ascending: false });
     }
 
-    const { data: rawData, error, count } = await query;
-    if (error) {
-      console.error("[api/salons GET] query error:", error.message);
-      return NextResponse.json({ items: [], total: 0, page, limit });
+    let data: Record<string, unknown>[] | null;
+    let count: number | null;
+
+    if (sortNeedsPostFetch) {
+      // Resolve the full filtered id set first (id-only, unpaged), order THAT by the
+      // real value, page the ordered id list, THEN fetch only the page's full rows.
+      // Same pattern CLAUDE.md's "Silent no-ops" section documents for every other
+      // computed filter: .in("id", ids) before .range(), never sort client-side over
+      // one already-truncated page.
+      // This project caps every PostgREST response at 1000 rows server-side (measured
+      // live: a bare select on a 355,720-row table returns exactly 1000, and a 2500-row
+      // .range() request still returns 1000), so the id-only resolve query above must be
+      // paged in BATCH-sized chunks or the filtered set silently truncates past 1000
+      // while `count` keeps reporting the true total.
+      const BATCH = 1000;
+      const idRows: Array<{ id: string }> = [];
+      let idCount: number | null = null;
+      for (let start = 0; ; start += BATCH) {
+        const { data: batchRows, error: idErr, count: batchCount } = await query.range(start, start + BATCH - 1);
+        if (idErr) {
+          console.error("[api/salons GET] sort id-resolve query error:", idErr.message);
+          return NextResponse.json({ items: [], total: 0, page, limit });
+        }
+        if (idCount === null) idCount = batchCount;
+        const batch = (batchRows ?? []) as unknown as Array<{ id: string }>;
+        idRows.push(...batch);
+        if (batch.length < BATCH) break;
+      }
+      const filteredIds = idRows.map((r) => r.id);
+      count = idCount ?? filteredIds.length;
+
+      let orderedFilteredIds: string[];
+      if (sort === "distance" && orderedIds) {
+        // orderedIds is already ascending-distance from get_nearby_salon_ids; keep only
+        // the ids that also survive every other filter, in that same distance order.
+        const filteredSet = new Set(filteredIds);
+        orderedFilteredIds = orderedIds.filter((id) => filteredSet.has(id));
+      } else if (sort === "price") {
+        // Cheapest active service price per salon, computed over exactly the filtered
+        // id set (chunked at 200 ids per .in() call). Salons with no active priced
+        // service sort last, never dropped.
+        const priceBySalon: Record<string, number> = {};
+        for (let i = 0; i < filteredIds.length; i += 200) {
+          const chunk = filteredIds.slice(i, i + 200);
+          const { data: svcRows, error: svcErr } = await supabase
+            .from("services")
+            .select("salon_id, price")
+            .in("salon_id", chunk)
+            .eq("is_active", true);
+          if (svcErr) {
+            console.error("[api/salons GET] sort=price services query error:", svcErr.message);
+            continue;
+          }
+          for (const row of (svcRows ?? []) as Array<{ salon_id: string; price: number | null }>) {
+            const p = row.price;
+            if (typeof p !== "number" || p <= 0) continue;
+            if (priceBySalon[row.salon_id] === undefined || p < priceBySalon[row.salon_id]) {
+              priceBySalon[row.salon_id] = p;
+            }
+          }
+        }
+        orderedFilteredIds = [...filteredIds].sort((a, b) => {
+          const pa = priceBySalon[a] ?? Infinity;
+          const pb = priceBySalon[b] ?? Infinity;
+          return pa - pb;
+        });
+      } else {
+        // sort=distance with no coordinates: nothing to order by beyond the solen_score
+        // fallback already applied to `query` above.
+        orderedFilteredIds = filteredIds;
+      }
+
+      const pageIds = orderedFilteredIds.slice(offset, offset + limit);
+      if (pageIds.length === 0) {
+        data = [];
+      } else {
+        const { data: pageRows, error: pageErr } = await supabase
+          .from("salons")
+          .select(selectStr)
+          .in("id", pageIds);
+        if (pageErr) {
+          console.error("[api/salons GET] sort page fetch error:", pageErr.message);
+          return NextResponse.json({ items: [], total: 0, page, limit });
+        }
+        const orderMap = new Map(pageIds.map((id, i) => [id, i]));
+        // The opaque-string select (staff_members embed) types `data` as an error union;
+        // rows are read as Record<string,unknown> throughout, same cast as the branch below.
+        data = ((pageRows ?? []) as unknown as Record<string, unknown>[])
+          .slice()
+          .sort((a, b) => (orderMap.get(a.id as string) ?? 0) - (orderMap.get(b.id as string) ?? 0));
+      }
+    } else {
+      const { data: rawData, error, count: fetchedCount } = await query;
+      if (error) {
+        console.error("[api/salons GET] query error:", error.message);
+        return NextResponse.json({ items: [], total: 0, page, limit });
+      }
+      // The opaque-string select (staff_members embed) types `data` as an error union;
+      // rows are read as Record<string,unknown> throughout, so cast once here (runtime
+      // shape is the normal salon rows, curl-proven 2026-07-03).
+      data = rawData as unknown as Record<string, unknown>[] | null;
+      count = fetchedCount;
     }
-    // The opaque-string select (staff_members embed) types `data` as an error union;
-    // rows are read as Record<string,unknown> throughout, so cast once here (runtime
-    // shape is the normal salon rows, curl-proven 2026-07-03).
-    const data = rawData as unknown as Record<string, unknown>[] | null;
 
     // Date-based availability filtering
     let availableIds: Set<string> | null = null;
@@ -646,13 +752,9 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ items: paged, total: items.length, page, limit }, { headers: ANON_CACHE_HEADERS });
     }
 
-    if (sort === "distance" && distanceMap) {
-      items.sort((a, b) => (a.distance_meters ?? Infinity) - (b.distance_meters ?? Infinity));
-    } else if (sort === "price") {
-      // V3-D384: real cheapest-first sort (line 157's DB order is only the fetch
-      // order; min_price is computed post-fetch from services, so sort here).
-      items.sort((a, b) => (a.min_price ?? Infinity) - (b.min_price ?? Infinity));
-    }
+    // sort=distance / sort=price are already correctly ordered and paged above
+    // (sortNeedsPostFetch resolved the full filtered id set, ordered it by the real
+    // value, and paged THAT before this fetch ever ran), no re-sort needed here.
 
     return NextResponse.json({ items, total: count ?? 0, page, limit }, { headers: ANON_CACHE_HEADERS });
   } catch (err) {
