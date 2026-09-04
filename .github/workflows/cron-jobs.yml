@@ -20,6 +20,8 @@ on:
     - cron: '0 4 1 * *'
     - cron: '0 5 * * 1'
     - cron: '15 5 * * *'
+    - cron: '1 0 * * *'
+    - cron: '0 0 1 * *'
   # A manual run must pick exactly ONE job. Every job below is gated on
   # github.event.schedule, which is empty on a manual run, so without this picker the
   # Run-workflow button silently did nothing. One-at-a-time on purpose: a blanket manual
@@ -47,6 +49,8 @@ on:
           - loyalty-recompute
           - discovery-deadcheck
           - daily-digest
+          - recurring-bookings
+          - salon-freeze-escalation
 
 jobs:
 
@@ -304,4 +308,32 @@ jobs:
       - uses: ./.github/actions/ping-cron
         with:
           paths: /api/cron/daily-digest
+          secret: ${{ secrets.CRON_SECRET }}
+
+  daily-00-01-utc:
+    if: github.event.schedule == '1 0 * * *' || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'recurring-bookings')
+    name: Daily 00:01 UTC · recurring-bookings (auto-create the next occurrence of each active recurring rule)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # The ping step below uses a LOCAL composite action, which only exists
+      # on the runner after checkout. Without this the job fails in ~6s.
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/ping-cron
+        with:
+          paths: /api/cron/recurring-bookings
+          secret: ${{ secrets.CRON_SECRET }}
+
+  monthly-1st-00-utc:
+    if: github.event.schedule == '0 0 1 * *' || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'salon-freeze-escalation')
+    name: Monthly (1st) 00:00 UTC · salon-freeze-escalation (verification warnings + auto-freeze)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # The ping step below uses a LOCAL composite action, which only exists
+      # on the runner after checkout. Without this the job fails in ~6s.
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/ping-cron
+        with:
+          paths: /api/cron/salon-freeze-escalation
           secret: ${{ secrets.CRON_SECRET }}
