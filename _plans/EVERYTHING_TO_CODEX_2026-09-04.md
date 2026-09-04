@@ -143,6 +143,24 @@ rendered by `SalonDetailV3` and `SalonHero`, fed by `salon_portfolio_images` (17
 are imported by exactly one file each and that file is a `/dev` overhaul page, so no customer route reaches
 them. Deleting them still needs his word.
 
+### What the harness actually IS, counted 2026-09-04 (the "what moves to Codex" inventory)
+
+Everything below is a real file on this Mac, counted, not estimated.
+
+| piece | how many | where |
+|---|---|---|
+| checks that can block a tool call or a reply | 257 files on disk, 207 armed | `~/.claude/hooks/` |
+| the same, project-side | 38 | `.claude/hooks/` |
+| skills (procedures loaded on demand) | 21 | `~/.claude/skills/` |
+| helper definitions (coder, reviewer, critics) | 8 | `~/.claude/agents/` |
+| orchestration scripts (many helpers, deterministic order) | 3: council, prove, refine | `~/.claude/workflows/` |
+| slash commands | 4 | `~/.claude/commands/` |
+| the way I write to him | 1 output style | `~/.claude/output-styles/plain.md` |
+| doctrine documents | 21 global, 25 project rules | `~/.claude/*.md`, `_rules/` |
+| design law | 343 documents | `_design-system/` |
+| remembered facts | 128 | the project memory folder |
+| the rulebook itself | 70,467 bytes project + 21,757 global | `CLAUDE.md` x2 |
+
 ## Parked decisions (for him, in his words)
 
 1. **Publish the site.** solen.ch still runs the May version. Nothing has left this Mac since 2026-05-21, and every fix since (German Salon sweep, security work, today's batch) is only here. Your three steps: publish main; set the cron secret on Netlify; switch the GitHub scheduled jobs back on (`gh workflow enable cron-jobs.yml`).
