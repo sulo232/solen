@@ -110,3 +110,5 @@ design, #14 promo fields arrive pre-filled, #15 no-fabricate staff slot (correct
 Layered loop per fix (coder + loop-reviewer), one commit per gap, live-verify. Backend-touching
 fixes (SMS, reviews seed, voucher spend, receipt route) also run the council. SEED via real
 routes/tables, never hardcode.
+
+- [ ] #58 nail-admin is in the middleware admin-only list although it is a salon-owner category dashboard, not a platform-admin page (lib/dashboard/category-nav.ts lists it beside spa-admin in getCategoryNavGroups; components-legacy/dashboard/DashboardLayout.tsx ADMIN_NAV does not). Effect: when nail features are switched on, a nail-salon owner is redirected away from their own dashboard. Harmless today because nail_features is off. Fix when nail features return: remove "/nail-admin" from adminOnlyPaths in middleware.ts. Found 2026-09-04 by the admin-wall audit (commit a094272ed).
