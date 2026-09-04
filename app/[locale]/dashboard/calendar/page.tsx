@@ -58,11 +58,18 @@ function getMonthCalendarDays(date: Date): Date[] {
   return days;
 }
 
-// Local YYYY-MM-DD. `toISOString()` converts to UTC, so in CH (UTC+1/+2) a Date at
-// local midnight serializes to the *previous* calendar day — wrong for the day a
-// salon owner clicked. Build the string from local getFullYear/Month/Date instead.
+// Europe/Zurich YYYY-MM-DD, not the browser's ambient timezone. Salon owners operate
+// in Switzerland; a browser/device set to another zone (a laptop left on UTC, a trip
+// abroad) would otherwise shift "today" and every day bucket by a day near midnight.
+// en-CA formats as YYYY-MM-DD.
+const ZURICH_YMD_FMT = new Intl.DateTimeFormat("en-CA", {
+  timeZone: "Europe/Zurich",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
 function ymdLocal(d: Date): string {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  return ZURICH_YMD_FMT.format(d);
 }
 
 // ─────────────────────────────────────────
@@ -515,6 +522,7 @@ export default function CalendarPage() {
   const deleteSlot = async (id: string) => {
     await fetch(`/api/slots/${id}`, { method: "DELETE" });
     setSlots((prev) => prev.filter((s) => s.id !== id));
+    loadSlots();
   };
 
   const rescheduleSlot = async (slotId: string, newDate: string, newTime: string) => {
