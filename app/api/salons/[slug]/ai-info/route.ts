@@ -102,6 +102,7 @@ export async function POST(
 
     return NextResponse.json({ suggestion: text.trim(), field });
   } catch (err) {
+    console.error("[salons/ai-info] Gemini generation failed:", err);
     return NextResponse.json({ error: "AI generation failed" }, { status: 500 });
   }
 }

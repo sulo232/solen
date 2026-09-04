@@ -5,6 +5,7 @@ import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
 import { verifyCronSecret } from "@/lib/cron-auth";
 import { withCronRun } from "@/lib/cron-run";
+import { checkFeatureEnabled } from "@/lib/feature-flags";
 
 // GET /api/cron/nail-infill-reminders. Daily cron: semi-auto infill reminders
 export async function GET(req: NextRequest) {
@@ -17,6 +18,12 @@ export async function GET(req: NextRequest) {
   }
 
   return withCronRun("nail-infill-reminders", async () => {
+  const flagDisabled = await checkFeatureEnabled("nail_features");
+  if (flagDisabled) {
+    console.log("[nail-infill-cron] Skipped: nail_features feature flag is off");
+    return { ok: true, skipped: true, processed: 0 };
+  }
+
   const admin = createAdminSupabaseClient();
   const now = new Date();
   const twoDaysFromNow = new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000);

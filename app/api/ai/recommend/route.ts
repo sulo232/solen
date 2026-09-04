@@ -62,6 +62,7 @@ Empfehlung:`;
 
     return NextResponse.json({ recommendation: text.trim() });
   } catch (e) {
+    console.error("[ai/recommend] Gemini generation failed:", e);
     return NextResponse.json({ error: "AI generation failed" }, { status: 500 });
   }
 }

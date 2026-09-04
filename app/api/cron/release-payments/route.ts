@@ -34,6 +34,7 @@ export async function GET(req: NextRequest) {
 
   let released = 0;
   let failed = 0;
+  const errors: string[] = [];
 
   for (const booking of bookings ?? []) {
     // The query above already filters .not("payment_intent_id", "is", null), so this is
@@ -42,26 +43,33 @@ export async function GET(req: NextRequest) {
     try {
       await getStripe().paymentIntents.capture(booking.payment_intent_id);
 
-      await admin
+      const { data: claimRow, error: updateErr } = await admin
         .from("bookings")
         .update({ payment_status: "paid" })
-        .eq("id", booking.id);
+        .eq("id", booking.id)
+        .eq("payment_status", "deposit_held") // CAS guard: only release a booking still awaiting capture.
+        .select("id")
+        .maybeSingle();
+      if (updateErr) throw new Error(updateErr.message);
+      if (!claimRow) throw new Error("payment_status changed before release (concurrent update)");
 
       // Audit log
-      await admin.from("audit_log").insert({
+      const { error: auditErr } = await admin.from("audit_log").insert({
         action: "payment_released",
         target_type: "booking",
         target_id: booking.id,
         metadata: { amount: booking.paid_amount, payment_intent_id: booking.payment_intent_id },
       });
+      if (auditErr) throw new Error(auditErr.message);
 
       released++;
     } catch (err: any) {
       console.error(`[release-payments] Failed for booking ${booking.id}:`, err.message);
       failed++;
+      errors.push(`booking ${booking.id}: ${err.message}`);
     }
   }
 
-  return { released, failed, processed: released + failed };
+  return { released, failed, processed: released + failed, errors };
   });
 }

@@ -31,17 +31,31 @@ export async function GET() {
       admin.from("salons").select("average_rating").gt("average_rating", 0)
     ]);
 
+    if (salonsResult.error) {
+      console.error("[metrics/global] salons count query failed, using fallback:", salonsResult.error.message);
+    }
+    if (bookingsThisWeekResult.error) {
+      console.error("[metrics/global] bookings_this_week count query failed, using fallback:", bookingsThisWeekResult.error.message);
+    }
+    if (bookingsAllResult.error) {
+      console.error("[metrics/global] bookings_all_time count query failed, using fallback:", bookingsAllResult.error.message);
+    }
+
     const salons = salonsResult.count ?? defaultStats.salons;
     const bookings_this_week = bookingsThisWeekResult.count ?? defaultStats.bookings_this_week;
     const bookings_all_time = bookingsAllResult.count ?? defaultStats.bookings_all_time;
 
     let reviews = defaultStats.reviews;
-    if (reviewsResult.data && reviewsResult.data.length > 0) {
+    if (reviewsResult.error) {
+      console.error("[metrics/global] reviews query failed, using fallback:", reviewsResult.error.message);
+    } else if (reviewsResult.data && reviewsResult.data.length > 0) {
       reviews = reviewsResult.data.reduce((acc, s) => acc + (s.review_count || 0), 0);
     }
 
     let avg_rating = defaultStats.avg_rating;
-    if (ratingResult.data && ratingResult.data.length > 0) {
+    if (ratingResult.error) {
+      console.error("[metrics/global] avg_rating query failed, using fallback:", ratingResult.error.message);
+    } else if (ratingResult.data && ratingResult.data.length > 0) {
       const sum = ratingResult.data.reduce((acc, s) => acc + (s.average_rating || 0), 0);
       avg_rating = Math.round((sum / ratingResult.data.length) * 10) / 10;
     }
@@ -55,6 +69,7 @@ export async function GET() {
     });
   } catch (error) {
     // Always provide a fallback if Supabase fails
+    console.error("[metrics/global] Unexpected error, serving hardcoded fallback stats:", error);
     return NextResponse.json({
       salons: 500,
       bookings_this_week: 10000,

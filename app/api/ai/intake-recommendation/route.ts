@@ -93,13 +93,19 @@ Gib eine konkrete, hilfreiche Empfehlung für den Stylisten, inklusive empfohlen
     }
 
     // Save recommendation to the intake record
-    await supabase
+    const { error: updateError } = await supabase
       .from("intake_form_responses")
       .update({ ai_recommendation: recommendation })
       .eq("id", intake_id);
 
+    if (updateError) {
+      console.error("[ai/intake-recommendation] Failed to save recommendation:", updateError.message, { intake_id });
+      return NextResponse.json({ error: "Failed to save recommendation" }, { status: 500 });
+    }
+
     return NextResponse.json({ recommendation });
   } catch (err: any) {
+    console.error("[ai/intake-recommendation] AI request failed:", err);
     return NextResponse.json({ error: `AI request failed: ${err.message}` }, { status: 500 });
   }
 }

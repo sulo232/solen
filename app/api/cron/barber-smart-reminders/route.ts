@@ -7,6 +7,7 @@ import { sendSMS } from "@/lib/sms";
 import { getServerEnv } from "@/lib/env";
 import { verifyCronSecret } from "@/lib/cron-auth";
 import { withCronRun } from "@/lib/cron-run";
+import { checkFeatureEnabled } from "@/lib/feature-flags";
 
 // Cron: Daily smart visit-cycle reminders for barbershop clients
 export async function GET(req: NextRequest) {
@@ -18,6 +19,12 @@ export async function GET(req: NextRequest) {
   }
 
   return withCronRun("barber-smart-reminders", async () => {
+  const flagDisabled = await checkFeatureEnabled("barber_features");
+  if (flagDisabled) {
+    console.log("[barber-smart-reminders] Skipped: barber_features feature flag is off");
+    return { ok: true, skipped: true, processed: 0 };
+  }
+
   const admin = createAdminSupabaseClient();
   let remindersCreated = 0;
   let smsSent = 0;
