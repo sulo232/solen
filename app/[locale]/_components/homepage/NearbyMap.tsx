@@ -52,11 +52,11 @@ function markerEl(s: NearbyMapSalon): HTMLDivElement {
   const hasRating = s.rating != null && s.reviewCount != null && s.reviewCount > 0;
   if (!hasRating) {
     el.className =
-      "h-[11px] w-[11px] rounded-full border-2 border-white bg-s-accent shadow-[0_1px_4px_rgba(0,0,0,0.35)]";
+      "font-body h-[11px] w-[11px] rounded-full border-2 border-white bg-s-accent shadow-[0_1px_4px_rgba(0,0,0,0.35)]";
     return el;
   }
   el.className =
-    "inline-flex items-center gap-[3px] whitespace-nowrap rounded-pill bg-white px-2 py-[3px] " +
+    "font-body inline-flex items-center gap-[3px] whitespace-nowrap rounded-pill bg-white px-2 py-[3px] " +
     "text-[12px] leading-none text-s-ink shadow-[0_1px_5px_rgba(0,0,0,0.3)]";
 
   // The star is a STATIC Lucide path (no interpolation, so innerHTML is safe here);
@@ -69,7 +69,7 @@ function markerEl(s: NearbyMapSalon): HTMLDivElement {
     '<path d="M11.5 2.3a.5.5 0 0 1 .95 0l2.3 4.68 5.17.75a.53.53 0 0 1 .3.9l-3.74 3.64.88 5.14a.53.53 0 0 1-.77.56L12 15.9l-4.62 2.43a.53.53 0 0 1-.77-.56l.88-5.14L3.75 8.99a.53.53 0 0 1 .3-.9l5.16-.76z"/></svg>';
 
   const rating = document.createElement("b");
-  rating.className = "font-body font-semibold";
+  rating.className = "font-semibold";
   rating.textContent = Number(s.rating).toFixed(1);
 
   const count = document.createElement("span");

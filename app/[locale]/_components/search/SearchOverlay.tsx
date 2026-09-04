@@ -2155,7 +2155,7 @@ export function SearchOverlay({
               immediately after closing did nothing. */}
           {/* mockup-ok: H1 REVERTED, the static blur + tint classes are back and this layer animates
               its own alpha only. Measured both ways, see the H4/H1 block where scrimOpacity lives. */}
-          <motion.div key="scrim" onClick={close} className="fixed inset-0 z-[100] bg-s-ink/10 backdrop-blur-xl" /* mockup-ok: SEARCH_MORPH.md H1 reverted */
+          <motion.div key="scrim" onClick={close} className="fixed inset-0 z-overlay-bg bg-s-ink/10 backdrop-blur-xl" /* mockup-ok: SEARCH_MORPH.md H1 reverted */
             style={{ opacity: scrimOpacity, pointerEvents: open ? "auto" : "none" }} /* mockup-ok: SEARCH_MORPH.md H1 reverted */ />
 
           {/* C3 (round 2, "X too small and mis-placed"): port of an owner-dictated
