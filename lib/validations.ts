@@ -1261,6 +1261,12 @@ export const serviceUpdateSchema = z.object({
   reminder_cycle_days: z.number().int().min(1).max(365).nullable().optional(),
 });
 
+// DELETE /api/services/[id]/photos: the photo identifier the client already holds is the
+// public url POST returned (see the POST handler's `{ data: { url } }` response shape).
+export const serviceDeletePhotoSchema = z.object({
+  url: z.string().url().max(2000),
+});
+
 export const availabilityManageSchema = z.object({
   salon_id: z.string().uuid(),
   staff_member_id: z.string().uuid().optional(),

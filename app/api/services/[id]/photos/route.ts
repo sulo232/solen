@@ -1,10 +1,12 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { requireUploadHeader, verifyAndStripImage } from "@/lib/upload-security";
+import { removeObjectForUrl } from "@/lib/storage";
+import { validateBody, serviceDeletePhotoSchema } from "@/lib/validations";
 
 // POST /api/services/[id]/photos — Upload service photos to service-photos bucket
 export async function POST(
@@ -86,4 +88,66 @@ export async function POST(
   if (updateError) return NextResponse.json({ error: updateError.message }, { status: 500 });
 
   return NextResponse.json({ data: { url: urlData.publicUrl } }, { status: 201 });
+}
+
+// DELETE /api/services/[id]/photos: remove one service photo. Added because the X button on
+// a service photo (ServiceModal, dashboard/services/page.tsx) only removed it from local
+// component state; the next refetch brought it back since no DELETE handler existed here.
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id: serviceId } = await params;
+  const supabase = await createServerSupabaseClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
+
+  // Same ownership check as POST above: reused, not re-implemented.
+  const { data: service } = await supabase
+    .from("services")
+    .select("id, salon_id, photo_urls, salons(owner_id)")
+    .eq("id", serviceId)
+    .single();
+
+  if (!service) return NextResponse.json({ error: "Service not found" }, { status: 404 });
+
+  const owner = (service.salons as unknown as { owner_id: string })?.owner_id;
+  if (owner !== user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const banned = await checkUserBanned(user.id);
+  if (banned) return banned;
+
+  const body = await req.json().catch(() => null);
+  const { data: parsed, error: validationError } = validateBody(serviceDeletePhotoSchema, body);
+  if (validationError) return NextResponse.json({ error: validationError.message }, { status: 400 });
+  const { url } = parsed;
+
+  const currentUrls = (service.photo_urls as string[]) ?? [];
+  if (!currentUrls.includes(url)) {
+    return NextResponse.json({ error: "Photo not found" }, { status: 404 });
+  }
+
+  const updatedUrls = currentUrls.filter((u) => u !== url);
+  const { error: updateError } = await supabase
+    .from("services")
+    .update({ photo_urls: updatedUrls })
+    .eq("id", serviceId);
+
+  if (updateError) return NextResponse.json({ error: updateError.message }, { status: 500 });
+
+  // Same bucket + path shape as the upload above (${salon_id}/${serviceId}/${filename}),
+  // ownership pinned to this service's own salon_id so removeObjectForUrl refuses a url
+  // outside that prefix instead of trusting it. Best-effort: the DB row above is already
+  // updated, so a storage failure here is logged, not fatal to the request.
+  // Service-role client on purpose, same as the sibling DELETE in app/api/services/[id]/route.ts:
+  // the live storage.objects policies for service-photos grant salon owners INSERT only (no
+  // DELETE), so a session-client remove silently deletes nothing and the file stays forever.
+  // Ownership was already proven above (owner_id === user.id) before this line can run.
+  const removal = await removeObjectForUrl(createAdminSupabaseClient(), url, "service-photos", service.salon_id, "[services photos DELETE]");
+  if (removal.error) console.error("[services photos DELETE] storage remove failed:", removal.error, { serviceId, url });
+
+  return NextResponse.json({ data: { photo_urls: updatedUrls } });
 }

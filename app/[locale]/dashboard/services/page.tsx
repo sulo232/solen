@@ -155,7 +155,25 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved, onD
               {photos.map((url, i) => (
                 <div key={i} className="relative w-16 h-16 rounded-btn overflow-hidden border border-s-border">
                   <Image src={url} alt="" fill className="object-cover" />
-                  <button type="button" onClick={() => setPhotos(photos.filter((_, j) => j !== i))}
+                  <button type="button" onClick={async () => {
+                    if (!initial?.id) { setPhotos(photos.filter((_, j) => j !== i)); return; }
+                    try {
+                      const res = await fetch(`/api/services/${initial.id}/photos`, {
+                        method: "DELETE",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ url }),
+                      });
+                      if (res.ok) {
+                        const data = (await res.json()).data;
+                        setPhotos(data.photo_urls);
+                      } else {
+                        const err = await res.json().catch(() => ({}));
+                        console.error("[ServiceForm] photo delete failed:", res.status, err);
+                      }
+                    } catch (err) {
+                      console.error("[ServiceForm] photo delete failed:", err);
+                    }
+                  }}
                     className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-s-ink/60 text-white flex items-center justify-center">
                     <X size={8} />
                   </button>
