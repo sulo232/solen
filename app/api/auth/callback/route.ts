@@ -1,5 +1,10 @@
 export const dynamic = "force-dynamic";
-export const runtime = "edge";
+// runtime = "edge" removed 2026-09-05: this route rate-limits on getClientIp, which trusts
+// the Netlify-added x-nf-client-connection-ip header, and Netlify's docs say edge functions
+// do not receive Netlify-added headers (docs.netlify.com/build/edge-functions/api/). On edge
+// that header is absent and the limiter fell back to the spoofable x-forwarded-for. Nothing
+// in this route calls an edge-only API (no request.geo, no EdgeRuntime global), so it runs
+// fine on the Node runtime, which does get the trusted header.
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { applyRateLimit, authLimiter, getClientIp } from "@/lib/ratelimit";
