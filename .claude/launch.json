@@ -311,6 +311,26 @@
       ],
       "port": 20244,
       "autoPort": false
+    },
+    {
+      "name": "Prod build (MAIN on 3480)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "cd /Users/sulo/Documents/solen && npx next start -p 3480 -H 127.0.0.1"
+      ],
+      "port": 3480,
+      "autoPort": false
+    },
+    {
+      "name": "Tunnel (prod MAIN 3480)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://127.0.0.1:3480 --metrics localhost:20268 --no-autoupdate"
+      ],
+      "port": 20268,
+      "autoPort": false
     }
   ]
 }

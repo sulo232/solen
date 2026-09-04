@@ -387,16 +387,18 @@ same turn, so the two never drift apart again.
 
 The 11 roles above are the full set; **day-to-day, ~90% of text is just these 6.** A salon-page audit found the rest was drift (body scattered across 12/13/14px, micro-text at 11px). Always pick a role, never an ad-hoc `text-[Npx]`:
 
-| Use | Role | Px / weight |
-|---|---|---|
-| Page title | Page H2 | 22 / 600 Inter Tight |
-| Section heading | Section H2 | 18 / 600 Inter Tight |
-| Card title / anchor | Subsection H3 | 16 / 600 |
-| Body | Body | 14 / 400 |
-| Secondary / meta | Meta | 13 / 400 |
-| Label / eyebrow | Eyebrow | 12 / 600 UPPERCASE |
+| Use | Role | Phone (<=767px) | Desktop |
+|---|---|---|---|
+| Page title | Page H2 | 22 / 600 Inter Tight | 22 / 600 Inter Tight |
+| Section heading | Section H2 | 18 / 600 Inter Tight | 18-20 / 600 Inter Tight |
+| Card title / anchor | Subsection H3 | 14 / 600 (card name) · 16 / 600 (page) | 16 / 600 |
+| Body | Body | 14 / 400 | 14 / 400 |
+| Secondary / meta | Meta | **12 / 400** | 13 / 400 |
+| Label / eyebrow | Eyebrow | **11 / 600** | 12 / 600 UPPERCASE |
 
-**Hard rules:** nothing below **12px** (legibility); titles anchor at **16** (not a stray 15); body is **14** flat (drop the desktop-15 bump). 15px stays reserved for the CTA roles only. Drift-checker flags off-ramp sizes so the sprawl can't return.
+**THE PHONE COLUMN WAS MISSING UNTIL 2026-09-04, and that omission was a live contradiction inside this system.** This table carried one column, so it read as "meta is 13 and the eyebrow is 12 everywhere". The design contract in `CLAUDE.md` has said `name 14 · meta 12 · eyebrow 11` since V3-D443, and the shipped homepage `SalonCard` renders 12 on every meta line (measured 2026-09-04: five `text-[12px]` sites, zero at 13). So the frozen literal and the shipping code agreed with each other and disagreed with this table, which is the worst arrangement, because a reader who consults the ramp alone gets a wrong answer with a frozen file's authority behind it. The owner was shown both on the real card side by side and delegated the call ("if it's just a one pixel change, you can [decide]"), so the resolution is: **the phone keeps 12 and 11, which is what already ships; the desktop column keeps 13 and 12.** No code moved.
+
+**Hard rules:** nothing below **11px**, and 11 is reserved for the eyebrow role on phone only (everything else floors at 12 for legibility); titles anchor at **16** on a page and **14** on a card (not a stray 15); body is **14** flat (drop the desktop-15 bump). 15px stays reserved for the CTA roles only. Drift-checker flags off-ramp sizes so the sprawl can't return.
 
 **Per-screen budget (HARD, the Tim Gabe "4 levels" senior bar; was a soft "aim for" in SOLEN_UI §199):** the 11 roles are the *app-wide* vocabulary; on any **single screen**, draw from **≤4 distinct sizes and ≤2 weights**. Count them before shipping. This is dimension 4 of `SENIOR_SCORECARD.md`, verified by **DOM measurement** of the rendered screen (count distinct computed font-size/weight on the screen's own container; a static per-file count is too noisy to gate on, so it is NOT a drift rule). Sub-12px specifically IS a static drift rule (A19, INFO until the sub-12px sweep clears the ~102 legacy instances). The confirmation page shipped with ~11 sizes — exactly the failure this closes; the rebuild measures 4 sizes / 2 weights. More: a screen ships only at 5/5 on the scorecard.
 
