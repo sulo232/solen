@@ -1,17 +1,24 @@
 /**
- * /profile/favorites — Q58 grouped-list "Favoriten" target.
+ * /profile/favorites (Q58 grouped-list "Favoriten" target).
  *
  * Server component. Schema (verified 2026-05-02):
  *   - favorites table: { user_id, salon_id, created_at }
  *   - salons table: full Salon row (cover_photo_url, average_rating, etc.)
- *   - SalonCard expects the canonical SalonCard type — we mirror the
- *     /api/profile/favorites pattern (select * + compute avg_price).
+ *
+ * FLOORS LAW 8 (2026-09-04, owner-approved from /en/dev/design-fixes pair C):
+ * the saved-salons list now renders the SAME homepage SalonCard the home feed
+ * uses (real cheapest service and price, standard heart), fed by the same
+ * getSalonCardDataMap batch fetch the homepage and design-fixes mockup already
+ * use, instead of the older components-legacy/SalonCard.tsx bare-avg-price card.
  */
 export const dynamic = "force-dynamic";
 
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { getSalonCardDataMap } from "@/app/[locale]/_components/homepage/salonCardData";
+import { nameForLocale } from "@/lib/min-price-service";
+import type { SalonCardProps } from "@/app/[locale]/_components/homepage/SalonCard";
 import FavoritesList from "@/app/[locale]/_components/profile/FavoritesList";
 import EmptyStateDiscovery from "@/app/[locale]/_components/profile/EmptyStateDiscovery";
 
@@ -38,31 +45,48 @@ export default async function ProfileFavoritesPage({
 
   const ids = (favs ?? []).map((f) => f.salon_id);
 
-  // Step 2 — fetch full salon records (matches /api/profile/favorites pattern)
-  let salons: any[] = [];
+  // Step 2, same real card fields the homepage SalonCard uses everywhere
+  // else (rating, cheapest active service and price, photo, address), via the
+  // shared batch fetch (getSalonCardDataMap) rather than a second, page-local
+  // converter. That helper does not filter is_active itself (some of its other
+  // callers pre-filter their own id lists), so a small guard query here keeps
+  // this page's long-standing "no inactive salons" behaviour.
+  let cards: Array<SalonCardProps & { salonId: string }> = [];
   if (ids.length > 0) {
-    const { data } = await supabase
+    const { data: activeRows } = await supabase
       .from("salons")
-      .select("*, services(price)")
-      .in("id", ids)
-      .eq("is_active", true);
+      .select("id")
+      .eq("is_active", true)
+      .in("id", ids);
+    const activeIds = new Set((activeRows ?? []).map((r) => r.id as string));
 
-    salons = (data ?? []).map((s: any) => {
-      const prices = ((s.services ?? []) as { price: number }[])
-        .map((x) => x.price)
-        .filter((p) => typeof p === "number" && p > 0);
-      const avg_price = prices.length > 0
-        ? Math.round(prices.reduce((a, b) => a + b, 0) / prices.length)
-        : null;
-      const { services: _s, ...rest } = s;
-      return { ...rest, avg_price };
-    });
+    const cardDataMap = await getSalonCardDataMap(ids.filter((id) => activeIds.has(id)));
 
-    // `.in("id", ids)` does NOT preserve the ids order, so the list came back in
-    // arbitrary order , losing the "most-recently-favorited first" intent (favs is
-    // ordered created_at desc). Re-sort to the favorites order.
-    const orderIndex = new Map(ids.map((id, i) => [id, i]));
-    salons.sort((a, b) => (orderIndex.get(a.id) ?? 0) - (orderIndex.get(b.id) ?? 0));
+    // getSalonCardDataMap does not preserve id order, so walk `ids` (already
+    // created_at desc from Step 1, most-recently-favorited first) and look each
+    // one up, skipping any id it could not resolve a slug for.
+    cards = ids
+      .filter((id) => cardDataMap[id]?.slug)
+      .map((id) => {
+        const d = cardDataMap[id];
+        return {
+          salonId: id,
+          slug: d.slug as string,
+          name: d.name ?? "",
+          rating: d.rating,
+          reviewCount: d.reviewCount,
+          photoUrl: d.photoUrl ?? undefined,
+          category: d.category ?? "coiffeur",
+          variant: "service" as const,
+          priceFromCHF: d.priceFromCHF,
+          priceFromService: nameForLocale(d.priceFromServiceNames, locale),
+          address: d.address ?? undefined,
+          postalCode: d.postalCode ?? undefined,
+          city: d.city ?? undefined,
+          citySelected: Boolean(d.address),
+          isSaved: true, // live-data-ok: every id here is a row from the signed-in user's favorites table (Step 1), so this is true by construction, not a fabricated value.
+        };
+      });
   }
 
   // Mockup-19 Option B (owner-picked 2026-06-11): real top-rated salons for the
@@ -79,7 +103,7 @@ export default async function ProfileFavoritesPage({
       {/* Title lives in the global header beside the back tile (owner, 2026-06-11).
           Count + grid + remove-favorite (tap heart → optimistic drop + Undo toast)
           are owned by the FavoritesList client wrapper. */}
-      {salons.length === 0 ? (
+      {cards.length === 0 ? (
         <div className="mt-2">
           <EmptyStateDiscovery
             locale={locale}
@@ -97,7 +121,7 @@ export default async function ProfileFavoritesPage({
           />
         </div>
       ) : (
-        <FavoritesList salons={salons} locale={locale} />
+        <FavoritesList cards={cards} locale={locale} />
       )}
     </main>
   );

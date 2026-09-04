@@ -328,6 +328,11 @@ export interface SalonCardProps extends VariantProps<typeof curationVariants> {
    *  every card competes for preload bandwidth and the point is lost. Defaults to
    *  false/absent so every existing caller keeps today's lazy-load behavior. */
   priority?: boolean;
+  /** Forwarded straight to the card's own HeartButton. Added 2026-09-04 alongside the same prop on
+   *  HeartButton itself: a parent list (e.g. /profile/favorites) needs to know when this card's
+   *  heart settles to unsaved so it can drop the card, without a second write path. Optional and
+   *  additive, every existing caller omits it and behaves exactly as before. */
+  onToggled?: (isSaved: boolean) => void;
 }
 
 export function SalonCard({
@@ -354,6 +359,7 @@ export function SalonCard({
   className,
   widthClassName,
   priority,
+  onToggled,
 }: SalonCardProps) {
   // Locale-prefixed href (2026-06-11): the bare `/salon/x` href relied on the
   // next-intl middleware to guess a locale — which (a) could land on the wrong
@@ -495,6 +501,7 @@ export function SalonCard({
           isSaved={isSaved}
           salonId={salonId}
           salonName={name}
+          onToggled={onToggled}
           className={isDarkPhoto ? "text-white/85" : undefined}
         />
       </div>

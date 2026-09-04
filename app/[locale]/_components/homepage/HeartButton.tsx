@@ -31,6 +31,7 @@ export function HeartButton({
   className,
   salonId,
   lookId,
+  onToggled,
   tone: _tone,
   size = 28,
   iconSize = 16,
@@ -48,6 +49,15 @@ export function HeartButton({
    *  and it is worse than a missing control because the user believes the save happened.
    *  Optional and additive: every existing caller keeps its current behaviour untouched. */
   lookId?: string;
+  /** Fires once the toggle has actually settled (after the optimistic flip and, when an id is
+   *  passed, after the network write resolves), carrying the resulting saved state. Added
+   *  2026-09-04: a parent list (e.g. /profile/favorites) needs to know the moment a card was
+   *  un-saved so it can drop it from view, and the previous way to learn that without a callback
+   *  was a MutationObserver scraping this component's own aria-pressed attribute back to a salon
+   *  via a DOM data attribute on the card, fragile because it silently breaks the moment either
+   *  attribute name changes. Optional and additive: every existing caller passes nothing and
+   *  behaves exactly as before. */
+  onToggled?: (isSaved: boolean) => void;
   /** Optional visual variant hint (e.g. "spa" / "warm") — currently unused; surfaced for caller compatibility. */
   tone?: string;
   /** Visible glass-circle size in px (default 28; salon hero uses 38, V3-D421). 44px hit area preserved. */
@@ -124,6 +134,7 @@ export function HeartButton({
         if (typeof json.saved === "boolean" && json.saved !== next) {
           setIsSaved(json.saved);
         }
+        onToggled?.(finalSaved);
         // Mobile-first confirmation: only on SAVE (not un-save). Whole toast is
         // tappable -> opens favorites. Pink-heart badge — mirrors the heart the
         // user just tapped (#FF3366 save color) instead of a generic green check.
@@ -156,7 +167,7 @@ export function HeartButton({
         inFlight.current = false;
       }
     },
-    [salonId, lookId, pathname, salonName, t],
+    [salonId, lookId, pathname, salonName, t, onToggled],
   );
 
   const toggle = (e: React.MouseEvent | React.KeyboardEvent) => {
