@@ -7,32 +7,106 @@ import { zurichWallClockToUtc } from "@/lib/time/zurich";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 
 // GET /api/slots?salon_id=&date=&service_id=&staff_member_id=
+// (or ?week= for a 7-day window, or ?from=&to= for an explicit range - see below)
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const salon_id = searchParams.get("salon_id");
   const date = searchParams.get("date"); // YYYY-MM-DD (single day)
   const week = searchParams.get("week"); // YYYY-MM-DD anchor -> 7-day window (dashboard calendar, G3/V3-D421)
+  // B2 fix (dashboard calendar month grid): the month view renders up to 42 visible days,
+  // which `week=` can never cover (always exactly 7). from/to let a caller ask for the
+  // whole visible grid in one request instead of one `week=` call per row. Both required
+  // together; `to` is inclusive. Capped at 45 days so a malformed/huge span can't pull the
+  // whole table.
+  const from = searchParams.get("from"); // YYYY-MM-DD, range start (inclusive)
+  const to = searchParams.get("to"); // YYYY-MM-DD, range end (inclusive)
+  // Round 3 fix: from/to alone still returns raw rows, and PostgREST caps an unspecified
+  // query at 1000 rows, so a busy salon's 42-day window (4k-47k rows measured live) came back
+  // truncated to whatever 7 days happened to fit in the first 1000, with no signal that it was
+  // cut. summary=1 skips rows entirely and asks slot_day_status_summary for a per-day
+  // total/available/booked/blocked count instead, which is also all the month grid ever needed.
+  const summary = searchParams.get("summary") === "1";
   const service_id = searchParams.get("service_id");
   const staff_member_id = searchParams.get("staff_member_id");
 
-  if (!salon_id || (!date && !week)) {
+  const YMD_RE = /^\d{4}-\d{2}-\d{2}$/;
+  const hasRange = Boolean(from && to);
+
+  if (!salon_id || (!date && !week && !hasRange)) {
     return NextResponse.json(
-      { message: "salon_id and (date or week) are required", code: "VALIDATION_ERROR" },
+      { message: "salon_id and (date or week or from+to) are required", code: "VALIDATION_ERROR" },
+      { status: 400 }
+    );
+  }
+
+  if (hasRange && (!YMD_RE.test(from as string) || !YMD_RE.test(to as string))) {
+    return NextResponse.json(
+      { message: "from/to must be YYYY-MM-DD", code: "VALIDATION_ERROR" },
       { status: 400 }
     );
   }
 
   const supabase = await createServerSupabaseClient();
 
-  // Build time range: single day (`date`) or a 7-day window (`week` anchor).
-  // Date.UTC handles month/year rollover TZ-stably; comparison strings stay
+  // 1..45 day span cap applies to BOTH the summary and the row-returning from/to path (a
+  // malformed/huge span shouldn't be able to pull the whole table either way).
+  if (hasRange) {
+    const [fy, fm, fd] = (from as string).split("-").map(Number);
+    const [ty, tm, td] = (to as string).split("-").map(Number);
+    const fromDate = new Date(Date.UTC(fy, fm - 1, fd));
+    const toDateExclusive = new Date(Date.UTC(ty, tm - 1, td + 1)); // `to` is inclusive
+    const spanDays = (toDateExclusive.getTime() - fromDate.getTime()) / 86400000;
+    if (!(spanDays > 0) || spanDays > 45) {
+      return NextResponse.json(
+        { message: "from/to span must be between 1 and 45 days", code: "VALIDATION_ERROR" },
+        { status: 400 }
+      );
+    }
+  }
+
+  // Summary path: per-day counts only, never rows. Round 4: the desktop month grid needs the
+  // booked/available/blocked breakdown back (it renders three status dots, an owner-approved
+  // look that must not change), so this calls slot_day_status_summary (day, total, available,
+  // booked, blocked), not the plainer slot_day_summary from round 3. See
+  // supabase/migrations/20260904220000_slot_day_summary.sql for both functions (SECURITY
+  // DEFINER, counts only, no row-level fields).
+  if (hasRange && summary) {
+    // "as any": slot_day_status_summary is applied live (confirmed via a direct REST rpc call
+    // before wiring this) but the generated Database types have not been regenerated yet, so
+    // tsc does not know this RPC name. Same escape hatch the codebase already uses for a
+    // function ahead of its generated types (discovery_feed_v2 in
+    // app/api/discovery/feed/route.ts). Drop the cast once types are regenerated.
+    const { data: days, error: rpcError } = await supabase.rpc("slot_day_status_summary" as any, {
+      p_salon_id: salon_id,
+      p_from: from,
+      p_to: to,
+    });
+    if (rpcError) {
+      console.error("[slots] slot_day_status_summary RPC failed:", rpcError.message);
+      return NextResponse.json({ message: rpcError.message, code: "DB_ERROR" }, { status: 500 });
+    }
+    return NextResponse.json({ days: days ?? [] });
+  }
+
+  // Build time range: single day (`date`), a 7-day window (`week` anchor), or an explicit
+  // from/to range. Date.UTC handles month/year rollover TZ-stably; comparison strings stay
   // naive (matches the stored starts_at format / prior single-day behavior).
-  const anchor = (week ?? date) as string;
-  const span = week ? 7 : 1;
-  const [ay, am, ad] = anchor.split("-").map(Number);
-  const endDate = new Date(Date.UTC(ay, am - 1, ad + span));
-  const startOfRange = `${anchor}T00:00:00`;
-  const endOfRange = `${endDate.toISOString().slice(0, 10)}T00:00:00`;
+  let startOfRange: string;
+  let endOfRange: string;
+  if (hasRange) {
+    const [fy, fm, fd] = (from as string).split("-").map(Number);
+    const [ty, tm, td] = (to as string).split("-").map(Number);
+    const toDateExclusive = new Date(Date.UTC(ty, tm - 1, td + 1)); // `to` is inclusive
+    startOfRange = `${from}T00:00:00`;
+    endOfRange = `${toDateExclusive.toISOString().slice(0, 10)}T00:00:00`;
+  } else {
+    const anchor = (week ?? date) as string;
+    const span = week ? 7 : 1;
+    const [ay, am, ad] = anchor.split("-").map(Number);
+    const endDate = new Date(Date.UTC(ay, am - 1, ad + span));
+    startOfRange = `${anchor}T00:00:00`;
+    endOfRange = `${endDate.toISOString().slice(0, 10)}T00:00:00`;
+  }
 
   // Column allowlist: this GET has no auth check, so a client-supplied salon_id can be
   // queried by anyone. select("*") used to also return booked_by/booking_id/client_id
@@ -48,6 +122,10 @@ export async function GET(request: NextRequest) {
 
   if (service_id) query = query.eq("service_id", service_id);
   if (staff_member_id) query = query.eq("staff_member_id", staff_member_id);
+  // Round 3 fix: an explicit cap on the row-returning from/to path so a large-window request
+  // can never silently return an incomplete page with no signal (see `truncated` below). The
+  // week/date path is untouched: a single day or a 7-day window never approaches 1000 rows.
+  if (hasRange) query = query.limit(1000);
 
   const { data, error } = await query;
   if (error) return NextResponse.json({ message: error.message, code: "DB_ERROR" }, { status: 500 });
@@ -92,7 +170,11 @@ export async function GET(request: NextRequest) {
   }
 
   // `slots` alias: the dashboard calendar reads `data.slots`; `items` kept for back-compat.
-  return NextResponse.json({ items: slots, slots, total: slots.length });
+  // `truncated: true` fires only on the from/to path when the explicit 1000-row cap above was
+  // actually hit, so a caller building a full list (never the month grid, which uses summary=1)
+  // knows the result is not the whole range instead of silently getting a partial answer.
+  const truncated = hasRange && slots.length >= 1000;
+  return NextResponse.json({ items: slots, slots, total: slots.length, ...(truncated ? { truncated: true } : {}) });
 }
 
 // POST /api/slots — create ONE availability slot (dashboard SlotCreateModal).

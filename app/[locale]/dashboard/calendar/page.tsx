@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight, Plus, X, Lock, ArrowRight, Clock, UserPlus, CalendarX } from "lucide-react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
@@ -11,6 +11,7 @@ import WalkInModal from "@/components-legacy/dashboard/WalkInModal";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import type { AvailabilitySlot } from "@/lib/types";
 import { resolveSwissLocale } from "@/lib/format";
+import { zurichYmd } from "@/lib/time/zurich";
 
 // ─────────────────────────────────────────
 // Helpers
@@ -61,15 +62,10 @@ function getMonthCalendarDays(date: Date): Date[] {
 // Europe/Zurich YYYY-MM-DD, not the browser's ambient timezone. Salon owners operate
 // in Switzerland; a browser/device set to another zone (a laptop left on UTC, a trip
 // abroad) would otherwise shift "today" and every day bucket by a day near midnight.
-// en-CA formats as YYYY-MM-DD.
-const ZURICH_YMD_FMT = new Intl.DateTimeFormat("en-CA", {
-  timeZone: "Europe/Zurich",
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-});
+// Delegates to the shared lib/time/zurich helper (one Intl.DateTimeFormat instance) instead
+// of a page-local copy.
 function ymdLocal(d: Date): string {
-  return ZURICH_YMD_FMT.format(d);
+  return zurichYmd(d);
 }
 
 // ─────────────────────────────────────────
@@ -429,6 +425,20 @@ export default function CalendarPage() {
   const serviceCategoryMap = new Map<string, string>();
   services.forEach((s) => { if (s.category) serviceCategoryMap.set(s.id, s.category); });
 
+  // B1 perf fix: derive each slot's Zurich calendar day ONCE per `slots` change instead of
+  // re-deriving it inside every cell's filter/some (was month grid = 42 days x slots.length
+  // Intl.format calls per render; week grid = 13 hours x staff.length x slots.length). Every
+  // per-day lookup below reads this map instead of re-scanning `slots`.
+  const slotsByDay = useMemo(() => {
+    const m = new Map<string, AvailabilitySlot[]>();
+    for (const s of slots) {
+      const day = zurichYmd(new Date(s.starts_at));
+      const list = m.get(day);
+      if (list) list.push(s); else m.set(day, [s]);
+    }
+    return m;
+  }, [slots]);
+
   const loadSlots = useCallback(async () => {
     // H2 fix: when there is no salon to load, STOP loading (don't early-return while
     // loading stays true, which was the day/week/month "spins forever" hang). The view
@@ -437,6 +447,8 @@ export default function CalendarPage() {
     setLoading(true);
     setError(false);
     try {
+      // Round 3: the month grid no longer reads from `slots` at all (see `monthSummary`
+      // below), so this stays the plain week=weekStr fetch for the day/week views only.
       const res = await fetch(`/api/slots?salon_id=${salonId}&week=${weekStr}`);
       if (!res.ok) throw new Error(`slots ${res.status}`);
       const data = await res.json();
@@ -489,35 +501,43 @@ export default function CalendarPage() {
     return () => { supabase.removeChannel(channel); };
   }, [salonId, loadSlots]);
 
-  // Mobile Monat view: slot count per day (key = YYYY-MM-DD) for the dot grid.
-  // The /api/slots endpoint only serves a single day or a 7-day `week` window,
-  // so we fetch the ~6 Mondays that span the visible month grid and merge counts.
-  // Reuses the endpoint as-is (no API change); degrades to no-dots on fetch error.
-  const [monthCounts, setMonthCounts] = useState<Record<string, number>>({});
+  // Month-grid per-day counts, round 3 fix: BOTH the desktop month grid (viewMode==="month")
+  // and the mobile Monat grid (mobileView==="monat") used to fetch ROWS for the visible 42-day
+  // range, which PostgREST silently caps at 1000, so a busy salon's grid only ever covered ~7
+  // of the 42 days (the mobile path made it worse, firing 6 separate week= requests, one per
+  // Monday, each itself row-capped). Neither view ever needed rows, only a per-day count, so both
+  // now share ONE request against slot_day_status_summary (summary=1, counts only, never
+  // truncates the grid) instead. Named `monthSummary` (not `monthDays`, which is already a local
+  // array of Date objects inside the desktop month-view render block below).
+  //
+  // Round 4: carries booked/blocked too (not just total/available) so the desktop month cell can
+  // render its ORIGINAL three-status-dot look unchanged (a rendering change there needs the
+  // owner's approval, which round 3's plain total/available swap did not have).
+  const [monthSummary, setMonthSummary] = useState<Map<string, { total: number; available: number; booked: number; blocked: number }>>(new Map());
 
   useEffect(() => {
-    if (mobileView !== "monat" || !salonId) return;
+    const monthActive = viewMode === "month" || mobileView === "monat";
+    if (!monthActive || !salonId) return;
     let cancelled = false;
     const gridDays = getMonthCalendarDays(currentDate); // 42 days (6 weeks)
-    const mondays = Array.from(new Set(gridDays.map((d) => ymdLocal(startOfWeek(d)))));
-    Promise.all(
-      mondays.map((m) =>
-        fetch(`/api/slots?salon_id=${salonId}&week=${m}`)
-          .then((r) => r.json())
-          .then((d) => (d.slots ?? []) as AvailabilitySlot[])
-          .catch((err) => { console.error("[Calendar] month-range slot load failed:", err); return [] as AvailabilitySlot[]; })
-      )
-    ).then((weeks) => {
-      if (cancelled) return;
-      const counts: Record<string, number> = {};
-      weeks.flat().forEach((s) => {
-        const key = s.starts_at.split("T")[0];
-        counts[key] = (counts[key] ?? 0) + 1;
+    const from = ymdLocal(gridDays[0]);
+    const to = ymdLocal(gridDays[gridDays.length - 1]);
+    fetch(`/api/slots?salon_id=${salonId}&from=${from}&to=${to}&summary=1`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (cancelled) return;
+        const m = new Map<string, { total: number; available: number; booked: number; blocked: number }>();
+        for (const row of (data.days ?? []) as { day: string; total: number; available: number; booked: number; blocked: number }[]) {
+          m.set(row.day, { total: row.total, available: row.available, booked: row.booked, blocked: row.blocked });
+        }
+        setMonthSummary(m);
+      })
+      .catch((err) => {
+        console.error("[Calendar] month summary load failed:", err);
+        if (!cancelled) setMonthSummary(new Map());
       });
-      setMonthCounts(counts);
-    });
     return () => { cancelled = true; };
-  }, [mobileView, salonId, currentDate]);
+  }, [viewMode, mobileView, salonId, currentDate]);
 
   const deleteSlot = async (id: string) => {
     await fetch(`/api/slots/${id}`, { method: "DELETE" });
@@ -548,7 +568,7 @@ export default function CalendarPage() {
   };
 
   const slotForCell = (dayIso: string, hour: number) =>
-    slots.filter((s) => s.starts_at.startsWith(dayIso) && new Date(s.starts_at).getHours() === hour);
+    (slotsByDay.get(dayIso) ?? []).filter((s) => new Date(s.starts_at).getHours() === hour);
 
   const prevWeek = () => setWeekStart((w) => addDays(w, -7));
   const nextWeek = () => setWeekStart((w) => addDays(w, 7));
@@ -706,7 +726,7 @@ export default function CalendarPage() {
           // ── Agenda render (reused by Tag + Woche-selected-day). ──
           const renderAgenda = (forDate: Date) => {
             const dayIso = ymdLocal(forDate);
-            const daySlots = slots.filter((s) => s.starts_at.startsWith(dayIso)).sort((a, b) => a.starts_at.localeCompare(b.starts_at));
+            const daySlots = [...(slotsByDay.get(dayIso) ?? [])].sort((a, b) => a.starts_at.localeCompare(b.starts_at));
             if (daySlots.length === 0) return <div className="text-center py-12 text-s-ink-2 text-sm">{t("noSlotsThisDay")}</div>;
             return (
               <div className="rounded-[16px] border border-s-border bg-white p-3 space-y-2">
@@ -772,7 +792,7 @@ export default function CalendarPage() {
                   {stripDays.map((d, i) => {
                     const dIso = ymdLocal(d);
                     const on = d.toDateString() === currentDate.toDateString();
-                    const has = slots.some((s) => s.starts_at.startsWith(dIso));
+                    const has = slotsByDay.has(dIso);
                     return (
                       <button key={i} onClick={() => { setCurrentDate(d); setWeekStart(startOfWeek(d)); }}
                         className={["w-[46px] shrink-0 rounded-[13px] py-2 text-center border transition-colors",
@@ -803,7 +823,7 @@ export default function CalendarPage() {
                       const dIso = ymdLocal(d);
                       const out = d.getMonth() !== currentDate.getMonth();
                       const today = isTodayDate(d);
-                      const count = monthCounts[dIso] ?? 0;
+                      const count = monthSummary.get(dIso)?.total ?? 0;
                       const dots = Math.min(count, 3);
                       return (
                         <button key={i}
@@ -1011,8 +1031,7 @@ export default function CalendarPage() {
                     {`${String(hour).padStart(2, "0")}:00`}
                   </div>
                   {staff.length > 0 ? staff.map((staffMember) => {
-                    const cellSlots = slots.filter((s) =>
-                      s.starts_at.startsWith(dateStr) &&
+                    const cellSlots = (slotsByDay.get(dateStr) ?? []).filter((s) =>
                       new Date(s.starts_at).getHours() === hour &&
                       s.staff_member_id === staffMember.id
                     );
@@ -1104,10 +1123,13 @@ export default function CalendarPage() {
                 const dateStr = ymdLocal(d);
                 const isToday = d.toDateString() === new Date().toDateString();
                 const isCurrentMonth = d.getMonth() === thisMonth;
-                const daySlots = slots.filter((s) => s.starts_at.startsWith(dateStr));
-                const bookedCount = daySlots.filter((s) => s.status === "booked").length;
-                const availableCount = daySlots.filter((s) => s.status === "available").length;
-                const blockedCount = daySlots.filter((s) => s.status === "blocked").length;
+                // Round 4 correction: round 3 replaced the three-status-dot look below with an
+                // available/total count, which is a dashboard look change that needed the owner's
+                // approval it never got. Restored VERBATIM (same classes, same t() keys, same
+                // structure, HEAD lines 1118-1125) reading counts from `monthSummary` (backed by
+                // slot_day_status_summary, which carries the full booked/available/blocked/total
+                // breakdown) in place of the old per-row counts from `slotsByDay`.
+                const daySummary = monthSummary.get(dateStr);
                 return (
                   <div key={i}
                     onClick={() => { setCurrentDate(d); setViewMode("day"); }}
@@ -1115,12 +1137,12 @@ export default function CalendarPage() {
                     <p className={`text-xs font-medium mb-1 ${isToday ? "w-5 h-5 rounded-full bg-s-accent-bright text-white flex items-center justify-center" : "text-s-ink"}`}>
                       {d.getDate()}
                     </p>
-                    {daySlots.length > 0 && (
+                    {daySummary && daySummary.total > 0 && (
                       <div className="flex flex-wrap gap-0.5">
-                        {bookedCount > 0 && <span className="w-2 h-2 rounded-full bg-s-ink" title={t("bookedCount", { count: bookedCount })} />}
-                        {availableCount > 0 && <span className="w-2 h-2 rounded-full bg-s-accent-bright/40" title={t("availableCount", { count: availableCount })} />}
-                        {blockedCount > 0 && <span className="w-2 h-2 rounded-full bg-s-ink/20" title={t("blockedCount", { count: blockedCount })} />}
-                        {daySlots.length > 3 && <span className="text-[12px] text-s-ink/40">{daySlots.length}</span>}
+                        {daySummary.booked > 0 && <span className="w-2 h-2 rounded-full bg-s-ink" title={t("bookedCount", { count: daySummary.booked })} />}
+                        {daySummary.available > 0 && <span className="w-2 h-2 rounded-full bg-s-accent-bright/40" title={t("availableCount", { count: daySummary.available })} />}
+                        {daySummary.blocked > 0 && <span className="w-2 h-2 rounded-full bg-s-ink/20" title={t("blockedCount", { count: daySummary.blocked })} />}
+                        {daySummary.total > 3 && <span className="text-[12px] text-s-ink/40">{daySummary.total}</span>}
                       </div>
                     )}
                   </div>
