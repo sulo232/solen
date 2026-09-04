@@ -177,6 +177,9 @@ export const updateProfileSchema = z.object({
   // on profiles, but arrives in the same PATCH body as the other switches (app/api/profile
   // PATCH splits it out before the profiles .update()).
   deals_enabled: z.boolean().optional(),
+  // Rebooking-nudge consent (notification_preferences.rebooking_enabled, DEFAULT true; only an
+  // explicit false is ever written here, matching deals_enabled's split-out convention below).
+  rebooking_enabled: z.boolean().optional(),
   phone_number: z.string().max(20).optional().nullable(),
   disc_gender: z.enum(["male", "female", "unisex"]).nullable().optional(),
   disc_hair_texture: z.string().max(30).nullable().optional(),

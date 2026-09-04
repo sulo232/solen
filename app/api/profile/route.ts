@@ -64,28 +64,49 @@ export async function PATCH(request: NextRequest) {
   const { data: validated, error: valError } = validateBody(updateProfileSchema, body);
   if (valError) return NextResponse.json({ message: valError.message, code: "VALIDATION_ERROR" }, { status: 400 });
 
-  // deals_enabled (marketing consent) lives on notification_preferences, not profiles
-  // (defect-2 fix); split it out before the profiles update so it never lands there.
-  const { deals_enabled, ...profileFields } = validated;
+  // deals_enabled (marketing consent) and rebooking_enabled (rebooking-nudge consent) live on
+  // notification_preferences, not profiles (defect-2 fix); split them out before the profiles
+  // update so neither ever lands there.
+  const { deals_enabled, rebooking_enabled, ...profileFields } = validated;
 
-  // customer_preferences is a strongly-typed zod object (JSON body field, always JSON-serializable at
-  // runtime); cast to the generated Json column type.
-  const { data, error } = await supabase
-    .from("profiles")
-    .update({ ...profileFields, customer_preferences: profileFields.customer_preferences as Json | undefined })
-    .eq("id", user.id)
-    .select()
-    .single();
-  if (error) return NextResponse.json({ message: error.message, code: "DB_ERROR" }, { status: 500 });
+  // A caller sending ONLY a notification-preference key (e.g. just rebooking_enabled) leaves
+  // profileFields empty; an empty .update({}) has no columns to set and .single() then fails to
+  // coerce, so skip the profiles write entirely in that case. No caller today reads `data` back
+  // when it sends no profile columns (SettingsForm always sends its profile fields alongside
+  // deals_enabled; see app/[locale]/profile/settings/SettingsForm.tsx).
+  const hasProfileFields = Object.keys(profileFields).length > 0;
+  let data: Record<string, unknown> | null = null;
+  if (hasProfileFields) {
+    // customer_preferences is a strongly-typed zod object (JSON body field, always JSON-serializable at
+    // runtime); cast to the generated Json column type. Project only the columns just written (never
+    // "*" on the sensitive profiles table, backend-audit-2026-07-06) so the response can never leak a
+    // column the caller didn't just set themselves.
+    const returnCols = Object.keys(profileFields).join(",");
+    const { data: updated, error } = await supabase
+      .from("profiles")
+      .update({ ...profileFields, customer_preferences: profileFields.customer_preferences as Json | undefined })
+      .eq("id", user.id)
+      .select(returnCols)
+      .single();
+    if (error) return NextResponse.json({ message: error.message, code: "DB_ERROR" }, { status: 500 });
+    // A dynamic (non-literal) column list can't be statically typed by the generated client;
+    // the runtime shape matches returnCols exactly (the keys we just wrote).
+    data = updated as unknown as Record<string, unknown> | null;
+  }
 
   // Only upsert when the caller actually sent this key. Every settings sub-page loads and
   // resends the real fetched value regardless of which slice it renders (same convention as
   // notification_email/notification_sms), so this fires on every save, always with the
   // customer's real current choice, never a silent reset.
-  if (deals_enabled !== undefined) {
+  if (deals_enabled !== undefined || rebooking_enabled !== undefined) {
+    const prefsPatch: { user_id: string; deals_enabled?: boolean; rebooking_enabled?: boolean } = {
+      user_id: user.id,
+    };
+    if (deals_enabled !== undefined) prefsPatch.deals_enabled = deals_enabled;
+    if (rebooking_enabled !== undefined) prefsPatch.rebooking_enabled = rebooking_enabled;
     const { error: prefsError } = await supabase
       .from("notification_preferences")
-      .upsert({ user_id: user.id, deals_enabled }, { onConflict: "user_id" });
+      .upsert(prefsPatch, { onConflict: "user_id" });
     if (prefsError) console.error("[api/profile] notification_preferences upsert failed:", prefsError.message);
   }
 

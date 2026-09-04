@@ -181,8 +181,22 @@ export async function resolveMemberDiscount(args: {
   commissionRappen: number;
   waiverRate: number;
   windowMonths: number;
+  /**
+   * The booking this discount would be charged against. When supplied, the per-window use cap
+   * is gated by the ATOMIC `reserve_member_discount` RPC (supabase/migrations/
+   * 20260710103441_audit_fix_member_discount_reserve.sql, amended by
+   * 20260711233100_audit_fix_member_discount_caller_guard.sql , both already live) instead of
+   * the plain countDiscountUsesInWindow check below. That RPC advisory-locks the user
+   * (pg_advisory_xact_lock, keyed by user id, the correct primitive here since the cap is a
+   * per-user aggregate over `bookings` and not a single shared counter row like promo_codes)
+   * and recounts in-flight reservations under the lock, so two concurrent callers for the same
+   * user can never both pass it, the same guarantee reserve_promo_use gives promo codes via a
+   * FOR UPDATE row lock. Omit only for a preview/estimate call that will never itself become a
+   * charged booking; every real charge path should pass its booking id.
+   */
+  bookingId?: string;
 }): Promise<MemberDiscount> {
-  const { db, userId, amountRappen, commissionRappen, waiverRate, windowMonths } = args;
+  const { db, userId, amountRappen, commissionRappen, waiverRate, windowMonths, bookingId } = args;
   const none: MemberDiscount = {
     discountRappen: 0,
     customerChargeRappen: amountRappen,
@@ -200,8 +214,25 @@ export async function resolveMemberDiscount(args: {
 
     // Per-tier use cap (null = unlimited). At/over the cap → no discount this booking.
     if (perks.max_discount_uses_per_window != null) {
-      const used = await countDiscountUsesInWindow(db, userId, windowMonths);
-      if (used >= perks.max_discount_uses_per_window) return none;
+      if (bookingId) {
+        // Atomic reserve-at-check: the authoritative gate (see the bookingId doc comment above).
+        const { data: reserved, error: reserveErr } = await db.rpc("reserve_member_discount", {
+          p_user: userId,
+          p_booking: bookingId,
+          p_tier: tier,
+          p_window_months: windowMonths,
+        });
+        if (reserveErr) {
+          console.error("[loyalty] reserve_member_discount rpc failed:", reserveErr.message);
+          return none; // never throws; degrade to no-discount, matching this function's own discipline
+        }
+        if (!reserved) return none;
+      } else {
+        // Non-atomic fallback (check-then-act) for a caller that hasn't been wired with a
+        // bookingId yet. Kept so existing callers keep working unchanged; not the race-free path.
+        const used = await countDiscountUsesInWindow(db, userId, windowMonths);
+        if (used >= perks.max_discount_uses_per_window) return none;
+      }
     }
 
     return computeMemberDiscount({

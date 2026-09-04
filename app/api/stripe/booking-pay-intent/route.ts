@@ -388,36 +388,19 @@ export async function POST(req: NextRequest) {
       commissionRappen: platformFeeRappen,
       waiverRate,
       windowMonths: LOYALTY.windowMonths,
+      // bookingId routes resolveMemberDiscount's own cap check through the atomic
+      // reserve_member_discount RPC (advisory-locked, idempotent per booking) instead of the
+      // non-atomic count-then-insert fallback, so this caller no longer needs its own separate
+      // reserve call: the reservation already happened inside resolveMemberDiscount when it
+      // returns a positive discount.
+      bookingId: booking.id,
     });
     if (md.discountRappen > 0 && md.appliedTier) {
-      // resolveMemberDiscount's cap check above counts only PAID bookings, so two concurrent
-      // in-flight checkouts by the same user can both pass it (race). reserve_member_discount is
-      // a SECURITY DEFINER RPC that advisory-locks the user and counts IN-FLIGHT reservations in
-      // the window under that lock, so it is the authoritative atomic gate; it is idempotent per
-      // booking (safe on a retry/replay) and itself sets bookings.member_discount_reserved. Only
-      // when it confirms a reservation do we keep the discount; if the cap is hit atomically, drop
-      // it rather than charge the reduced amount for an unreserved use. Never throws (an rpc error
-      // is treated as NOT reserved, so no discount, matching resolveMemberDiscount's own discipline).
-      let mReserved = false;
-      try {
-        const { data: reservedResult } = await admin.rpc("reserve_member_discount", {
-          p_user: booking.user_id,
-          p_booking: booking.id,
-          p_tier: md.appliedTier,
-          p_window_months: LOYALTY.windowMonths,
-        });
-        mReserved = reservedResult === true;
-      } catch (err) {
-        console.error("[booking-pay-intent] reserve_member_discount rpc failed; charging without member discount:", err);
-        mReserved = false;
-      }
-      if (mReserved) {
-        memberReserved = true;
-        chargeRappen = md.customerChargeRappen;
-        appFeeRappen = md.applicationFeeRappen;
-        appliedTier = md.appliedTier;
-        tierDiscountRappen = md.discountRappen;
-      }
+      memberReserved = true;
+      chargeRappen = md.customerChargeRappen;
+      appFeeRappen = md.applicationFeeRappen;
+      appliedTier = md.appliedTier;
+      tierDiscountRappen = md.discountRappen;
     }
   }
 
@@ -466,6 +449,22 @@ export async function POST(req: NextRequest) {
   if (salon.stripe_account_id) {
     intentParams.application_fee_amount = appFeeRappen; // commission minus the member-discount waiver
     intentParams.transfer_data = { destination: salon.stripe_account_id };
+  } else {
+    // DEV-ONLY, NO LIVE-MONEY PATH: this is the else of the Connect guard at
+    // step 2 above (`!salon.stripe_account_id`). Without a connected account
+    // this PaymentIntent carries no application_fee_amount / transfer_data,
+    // so the charge lands entirely on the platform account with ZERO
+    // commission split, the shape cron-health SLICE stripe-refunds (d)
+    // names. In production step 2 already returns 409 NOT_CONNECTED before
+    // this line is ever reached; this is a SECOND, redundant guard so that
+    // if that earlier check is ever loosened, reordered, or bypassed by a
+    // future edit, creating a real commission-less PaymentIntent throws
+    // instead of silently shipping.
+    if (process.env.NODE_ENV === "production") {
+      throw new Error(
+        "[booking-pay-intent] dev-only no-Connect fallback reached in production, refusing to create a commission-less PaymentIntent",
+      );
+    }
   }
 
   // 8. Idempotency: a deterministic key per (booking, base amount) so a double-submit
