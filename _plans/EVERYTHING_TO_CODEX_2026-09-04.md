@@ -80,6 +80,20 @@ is missing? Like, what formula, what principle, what is actually missing? becaus
   - [x] 8e-3 saved-salon card: legacy card vs the real SalonCard verified: pair-C.png, legacy card shows a bare "CHF 107" average, the real SalonCard shows "Scalp Massage from 35 CHF" with the heart in the photo corner. commit e9d5b648c.
   - [x] 8e-4 salon-page services type scale: current sizes vs snapped to the lock verified: pair-D.png, measured live with getComputedStyle: current 13/14/15/16/18 (5 sizes), proposed 12/14/15/18 (4 sizes). Builder flagged: SalonServices.tsx renders German service names and the literal "Alle ansehen"/"Buchen" on every language, a separate fix. commit e9d5b648c.
 
+### 9. His answers, 2026-09-04 23:30 ("one not yet, two yeah the other languages be able to select and save, eleven what's the difference we need them ups and downs, four check into it, five elaborate, six give me links, seven elaborate, eight elaborate, nine elaborate, and the harness: how do we transfer everything to Codex, what should we transfer, what not")
+- [x] 9a. Decision 1 (publish the site): NOT YET, his word. Stays parked, nothing to do. verified: parked decision 1 below unchanged, no publish command run.
+- [x] 9b. Decision 2 (languages): YES. Every one of the four languages can be picked and saved. DONE, both halves below. verified: scratchpad/locale-proof.sh output, it/fr/en/de each status 200 and the server holds the saved value.
+  - [x] 9b-1 apply the Italian migration live (profiles.locale allows de, en, fr, it) DONE through the guard's owner-approved five-minute override (his word given), override removed right after. verified: live pg_get_constraintdef = CHECK (locale = ANY (ARRAY['de','en','fr','it'])); file supabase/migrations/20260904200000_profiles_locale_allow_it.sql header updated.
+  - [x] 9b-2 prove it through the real settings route for all four languages, then refresh the inventory DONE: PATCH /api/profile as the seeded test account with it, fr, en, de in turn, each answered 200 and echoed the saved language; German put back last. No inventory refresh needed (no table or column changed). verified: scratchpad/locale-proof.sh, run at the dev server on 3461.
+- [ ] 9c. Decision 3 (the 11 old branches, he said "eleven"): elaborate. What is on each, what merge vs delete means, ups and downs. He says "we need them".
+- [ ] 9d. Decision 4 (harness branch): check into it. Is the session still live, what is on it, what merging brings, recommendation.
+- [ ] 9e. Decision 5 (Codex /import vs install the staging folder): elaborate, ups and downs, recommendation.
+- [ ] 9f. Decision 6 (four mockup pairs): give him one link per pair, each verified 200 through the tunnel.
+- [ ] 9g. Decision 7 (six cloud functions still on): elaborate what each does, who calls it, ups and downs of switching off.
+- [ ] 9h. Decision 8 (two portfolio screens nothing loads): elaborate what they are, why nothing loads them, ups and downs of deleting.
+- [ ] 9i. Decision 9 (small text 12 vs 13, eyebrow 11 vs 12): elaborate which rule says what, and SHOW both on the real card as pair E on the mockup page.
+- [ ] 9j. The harness: what to transfer to Codex, what not, how, and how to prove it worked. Counts from the real files, not from memory.
+
 ## Parked decisions (for him, in his words)
 
 1. **Publish the site.** solen.ch still runs the May version. Nothing has left this Mac since 2026-05-21, and every fix since (German Salon sweep, security work, today's batch) is only here. Your three steps: publish main; set the cron secret on Netlify; switch the GitHub scheduled jobs back on (`gh workflow enable cron-jobs.yml`).
