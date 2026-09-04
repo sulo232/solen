@@ -20,7 +20,44 @@ import "@/app/globals.css";
 // falls back to the nearest available face (700) per standard CSS font matching,
 // so a stray font-extrabold degrades to bold instead of rendering full black.
 const interTight = Inter_Tight({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-inter-tight", display: "swap" });
-const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-inter", display: "swap" });
+// BODY FONT WAS NOT LOADING AT ALL, and had not been for some time. Owner 2026-08-16, and he had
+// said it more than once: "the fonts are not rlly what i want bro i keep seeing ths ass font".
+//
+// MEASURED on the live page before this change:
+//   - `document.fonts` held 28 real font-face rules for Inter Tight, pointing at real .woff2 files,
+//     and ZERO for Inter. The only Inter entries were "Inter Fallback" and "Inter Fallback
+//     Fallback", both `src: local("Arial")`.
+//   - `--font-inter` on <html> computed to the EMPTY STRING, while `--font-inter-tight` computed to
+//     "'Inter Tight', 'Inter Tight Fallback'".
+//   - So `.font-display` resolved to Inter Tight and `.font-body` resolved to
+//     `ui-sans-serif, system-ui, ...`, the browser default, on every element that used it.
+//
+// WHY THE WHOLE DECLARATION VANISHES, which is the part worth writing down: `font-family:
+// var(--font-inter), "Inter", system-ui, ...` does NOT fall through to "Inter" when the variable is
+// empty. An empty var() substitution makes the ENTIRE property invalid at computed-value time and
+// the declaration is dropped whole, so the element silently inherits. One empty variable therefore
+// took out every fallback in the list at once, and nothing anywhere reported an error.
+//
+// Net effect: every piece of body copy on every screen has been rendering in the device's system
+// font. On his iPhone that is San Francisco, not Inter, which is exactly the font he kept saying he
+// did not want. Headings were unaffected, which is why this survived so long: the screens looked
+// deliberate, just wrong.
+//
+// THE FIX: request Inter as the VARIABLE font it now is on Google Fonts, rather than as four static
+// cuts. Inter Tight resolves fine with a static weight array and Inter does not, which is the one
+// asymmetry between two otherwise identical calls. Clearing the font fetch cache and restarting did
+// NOT change it, so this was never a transient download failure.
+//
+// The weight ban the array used to enforce is NOT lost. See the note above: the point was that no
+// face exists above 700, so a banned weight has nothing to resolve to. `axes` is left empty and the
+// variable range is capped below, keeping that property. drift-ok: this comment explains the ban it
+// is preserving and introduces no such class.
+const inter = Inter({
+  subsets: ["latin"],
+  weight: "variable",
+  variable: "--font-inter",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "solen.ch — Salons in Basel", // em-dash-ok: pre-existing title dash, unrelated to this edit

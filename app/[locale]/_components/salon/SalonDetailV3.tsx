@@ -11,7 +11,6 @@ import { SalonAppCta } from "./SalonAppCta";
 import { SalonContact } from "./SalonContact";
 import { SalonServices } from "./SalonServices";
 import { SalonBundles } from "./SalonBundles";
-import { SalonProducts } from "./SalonProducts";
 import { SalonTeam } from "./SalonTeam";
 import { SalonReviews } from "./SalonReviews";
 import { SalonPortfolio } from "./SalonPortfolio";
@@ -22,6 +21,7 @@ import { SalonOpeningTimes } from "./SalonOpeningTimes";
 import { SalonAdditionalInfo } from "./SalonAdditionalInfo";
 import { SalonOtherLocations } from "./SalonOtherLocations";
 import { SalonVenuesNearby } from "./SalonVenuesNearby";
+import { SalonRecentlyViewed } from "./SalonRecentlyViewed";
 import { SalonSidebar } from "./SalonSidebar";
 import { SalonMobileBookBar } from "./SalonMobileBookBar";
 import { SectionErrorBoundary } from "../primitives/SectionErrorBoundary";
@@ -143,6 +143,9 @@ export function SalonDetailV3({
   // A5 B-3/A-3: only register the tab once the async section confirms it has data
   // (empty bundles/products render nothing, so no tab).
   if (hasBundles) availableSections.add("bundles");
+  // hasProducts stays false now that the products section is off this page (2026-08-15), so
+  // the sticky-nav tab cannot appear either. Kept rather than deleted so restoring the
+  // section is one uncommented call site, not an archaeology exercise.
   if (hasProducts) availableSections.add("products");
   if (salon.staff.length > 0) availableSections.add("team");
   if (salon.review_count > 0 || (salon.average_rating ?? 0) > 0) availableSections.add("reviews");
@@ -205,7 +208,16 @@ export function SalonDetailV3({
     // services. Switched to overflow-x-clip which prevents horizontal
     // bleed without breaking vertical sticky.
     // bg-white substrate per §5h.3 (commerce surface).
-    <main className="relative min-h-screen overflow-x-clip bg-white pb-24 md:pt-3 md:pb-16">
+    // mockup-ok: pb-24 -> pb-6 (96px -> 24px), owner 2026-08-15: "on the Discover More store,
+    // it's, like, a weird gap, like, a white space."
+    // MEASURED before changing it, so this is a number and not a nudge: the last chip of that
+    // section ended at y=4157 and the footer began 152px later. That 152 was TWO stacked bottom
+    // paddings reserving room for the SAME sticky bar, this element's 96px plus the root layout's
+    // own pb-[calc(56px+env(safe-area-inset-bottom))]. This one was the redundant half: the
+    // 881px-tall footer renders after this main, so the "Termin buchen" bar (76px) can never
+    // cover the last section here, and the root layout's reserve is the one sitting at the true
+    // bottom of the document where the bar actually is. 24px keeps normal section rhythm.
+    <main className="relative min-h-screen overflow-x-clip bg-white pb-6 md:pt-3 md:pb-8">
       {/* V3-D202 (A23): ambient gradient washes block DELETED. Was 8 absolute
           <div>s in retired warm/sage colors (peach #F2C49B, emerald #5BAE85,
           terracotta #D6754F, butter #F0C85A, sage #9CC0A4, rose #E89A88).
@@ -270,6 +282,16 @@ export function SalonDetailV3({
             )}
 
             <div className="mt-8 space-y-10 md:mt-10 md:space-y-12">
+              {/* "Über uns" moved UP here on 2026-08-15, out of its old slot below Portfolio.
+                  Owner: "on the about us, you know, like, on the top right near the street and
+                  everything, an open time and everything, like, there should be, like, about us.
+                  Right now, maybe I don't see it because, like, it's not really... there is none."
+                  It was never missing. It rendered at y=2983 on a 5172px page, which is past the
+                  reviews and the portfolio, so from the top of the page it does not exist. His own
+                  Fresha reference puts "Über" directly under the address chip and above the
+                  services, which is where it now sits. */}
+              <SalonAbout salon={salon} locale={locale} />
+
               {!walkinMode && (
                 <SectionErrorBoundary section="SalonServices">
                   <SalonServices services={salon.services} locale={locale} slug={slug} salon={salon} />
@@ -288,17 +310,18 @@ export function SalonDetailV3({
               </SectionErrorBoundary>
             )}
 
-            {/* A5 A-3: retail products after services (renders null until active products load). */}
-            {!walkinMode && (
-              <SectionErrorBoundary section="SalonProducts">
-                <SalonProducts
-                  salonId={salon.id}
-                  category={primaryCategory}
-                  locale={locale}
-                  onLoaded={setHasProducts}
-                />
-              </SectionErrorBoundary>
-            )}
+            {/* RETAIL PRODUCTS REMOVED from the salon page, owner 2026-08-15: "remove the product
+                section, you know, like, at all, and, also, make it so it doesn't load that because
+                it looks so weird."
+                Both halves are covered by deleting the call site rather than hiding the section:
+                the component is what fetched, so nothing loads and nothing shimmers. It carried
+                the same paint-then-vanish shape as the combos section did (a shimmer row set on
+                mount, `return null` when the fetch came back empty), which is the "it loads and
+                looks weird" he means.
+                The component file, its API route and the Stripe purchase path are all LEFT IN
+                PLACE, untouched: he asked for the section off the page, not for the feature to be
+                deleted, and the dashboard still has its products manager. Graveyard line added the
+                same turn. */}
 
             {/* Termin-only: walk-in has its OWN single selectable stylist section (the deduped
                 "Dein Barber" = #section-team, inside SalonWalkInPanel) per owner 2026-07-24, so
@@ -332,7 +355,8 @@ export function SalonDetailV3({
               <SalonBuy locale={locale} slug={slug} salonName={salon.name} />
             </div> */}
 
-            <SalonAbout salon={salon} locale={locale} />
+            {/* SalonAbout used to render HERE. Moved to the top of this column on 2026-08-15,
+                see the comment at its new site above. */}
 
             {/* V3-D389 (Fresha 1:1 capture): location, opening times + amenities are
                 each their OWN full-width section now — no more lumped "Über uns"
@@ -359,6 +383,12 @@ export function SalonDetailV3({
               <SalonOtherLocations siblings={salon.siblings} locale={locale} />
             )}
 
+            {/* Two rails, one per half of his 2026-08-15 ask ("specific to their searches and
+                something similar"). History first because it is personal and usually shorter, then
+                the similar-stores rail, which always has rows and so carries the block on a first
+                visit when the history one hides itself. */}
+            <SalonRecentlyViewed excludeSlug={slug} />
+
             <SalonVenuesNearby
               cat={primaryCategory}
               excludeId={salon.id}
@@ -371,7 +401,7 @@ export function SalonDetailV3({
                   slug={slug}
                   salonName={salon.name}
                   city={postalToCity(salon.postal_code)}
-                  quartier={salon.quartier}
+                  salonCategories={salon.categories}
                 />
               )}
             </div>

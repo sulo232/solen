@@ -268,3 +268,51 @@ Second (money-lib + webhook) sweep fixed 9 more across batches 6-8 (commits 7c51
 - **What:** the 200KB-gzipped-First-Load-JS trigger for mandatory `next/dynamic` has already fired, by a wide margin, on the two highest-traffic customer routes: `/[locale]` (home) at 862 kB and `/[locale]/salon/[slug]` (PDP) at 901 kB, both over 4x the 200KB threshold. `/[locale]/[city]/[category]`, `/coiffeur`, `/barbershop`, `/search`, and `/inspo` sit at 359-376 kB, also over.
 - **Blocker:** identifying the actual contributors needs `ANALYZE=true npm run build`'s treemap (`@next/bundle-analyzer`, already wired per performance-08) and a real decomposition pass (finding which heavy, non-first-paint components on these two routes should move behind `next/dynamic`), not a doc change. That's a substantial, separate engineering task this pass did not attempt.
 - **Next steps:** run `ANALYZE=true npm run build`, open the treemap for `/[locale]` and `/salon/[slug]`, identify the largest non-critical contributors (likely candidates: map libraries, chart/analytics libraries, rich editors, anything only needed after a click), convert to `next/dynamic({ ssr: false })` where not SEO-relevant, re-measure via `npm run build`'s First Load JS column until under 200KB or a documented reason it can't be.
+
+## Previewing a treatment on EVERY real screen is blocked: it crashes the build (found 2026-08-23)
+
+WHAT WAS BEING BUILT: `app/[locale]/dev/_shared/LookPreview.tsx` (written, on disk, currently unused).
+It reads `?v=` from the address and restyles the page it is on, reusing the existing
+`VariantSwitcher`. Mounted in `app/[locale]/layout.tsx` it would let ANY real screen be opened as
+`/de/inspo?v=anchor` and restyle itself in place. That is the decision-mockup format this project
+already settled on: the whole real page, only the treatment changed, switched by `?v=`.
+
+WHY IT IS NOT MOUNTED: with it in the root locale layout, `npm run build` dies during "Collecting
+page data" with `SIGSEGV`, twice in a row. Reverting the layout and rebuilding on the same machine
+in the same minute succeeded, so it is that mount and not the machine. Guess not yet tested: a
+client component reading the URL inside the ROOT layout forces every route through a different
+data-collection path, and something in that path crashes rather than erroring. NOT investigated
+further, because two failures on one theory is where the method should change, and the goal
+(showing him three screens) does not need the root layout at all.
+
+WHAT TO DO INSTEAD, and it is cheaper: give each screen its own `/dev` route that renders that real
+page component with the treatment applied, the way `/dev/unify` already does for search results.
+No product file is touched and there is no crash.
+
+BLOCKER: none. This is a choice not to spend more on a route that was never required.
+IMPACT: none on the product. `LookPreview.tsx` is imported by nothing, so it ships nowhere.
+
+## A clickable preview for the Inspo screen: two approaches failed, the numbers are in hand (2026-08-23)
+
+WHAT IS DONE: the treatment for Inspo is measured and proven on the real page. Injected into the
+live screen at 390x844, the biggest text goes from 14px to 17px and the gap between biggest and
+smallest goes from 1.17x to 1.42x. For reference the store page he likes sits at 30px and 2.31x, so
+this is a step toward it and not the whole distance.
+
+THE ONE VISIBLE COST, seen in the picture and not hidden: at 17px the style label on a picture can
+run out of room, so "Brow Lamination" truncates to "Brow Lamina...". Either the label wraps to two
+lines or it stays smaller. That is a real decision, not a rendering bug.
+
+WHAT IS NOT DONE: a link he can tap to compare the looks himself. Two approaches failed:
+  1. Mounting a URL-driven switch in the shared page frame crashed the build twice (SIGSEGV while
+     collecting page data). Written up separately above.
+  2. Rendering the real Inspo page component inside a preview route redirects straight to the home
+     page, because that page navigates on mount to set its own default filters. Route deleted; a
+     copy is in the session scratch directory.
+This is the second failed theory for one goal, which is the point at which the method should change
+rather than a third variant of the same idea being tried.
+
+BLOCKER: none technical. It needs a different method, not more attempts at this one. The obvious
+untried one: apply the treatment as a real, committed change behind a switch on the preview server
+only, so no embedding or URL reading is involved.
+IMPACT: none on the product. Nothing was applied to any real screen.

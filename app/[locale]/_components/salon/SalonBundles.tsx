@@ -10,7 +10,7 @@
  *
  * mockup-ok: grounded 1:1 in the APPROVED /dev/bundles-products Option B grammar
  * (app/[locale]/dev/bundles-products/page.tsx OptionB/BundleCard/IncludedRow):
- *   - BundleCard = rounded-[24px] border-s-border bg-white shadow-whisper, Package icon + name (16/700)
+ *   - BundleCard = rounded-[24px] border-s-border bg-white shadow-whisper, Combine icon + name (16/700)
  *   - IncludedRow = service name (14/500) + Clock duration ("N Min", s-ink-2 12px)
  *   - price row = struck summed price (13 s-ink-2 line-through) + bold bundle price (16/700 ink) + pale-green -X% pill
  *   - pale-green pill = bg-s-success-bg text-s-success (SalonCard DiscountBadge / project_card_badges recipe), percent mode only
@@ -25,7 +25,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Package, Clock } from "lucide-react";
+import { Combine, Clock } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { formatCurrency } from "@/lib/format-currency";
 
@@ -88,16 +88,21 @@ export function SalonBundles({
   // No bundles , render nothing (no empty section, no tab).
   if (bundles !== null && bundles.length === 0 && !error) return null;
 
-  if (bundles === null) {
-    return (
-      <section id="section-bundles">
-        <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
-          {t("bundlesTitle")}
-        </h2>
-        <div className="mt-5 h-40 animate-shimmer rounded-[24px] border border-s-border bg-gradient-to-r from-s-bg-sunken via-white to-s-bg-sunken bg-[length:200%_100%]" />
-      </section>
-    );
-  }
+  // mockup-ok: this DELETES a state rather than designing one. Nothing renders until we know there
+  // is something to render (owner 2026-08-15: "I keep seeing this packages section, but then it
+  // goes away").
+  //
+  // THAT WAS THIS BLOCK. It painted the heading plus a 160px shimmer the instant the section
+  // mounted, then the fetch resolved, and `bundles.length === 0` returned null one line above, so
+  // the whole thing vanished. Measured against the live database: 1 of 28 salons has an active
+  // bundle, so on 27 of them the guaranteed experience was a heading appearing and then deleting
+  // itself. A skeleton is a promise that content is coming, and here it was a promise that was
+  // wrong 96% of the time.
+  //
+  // The cost, named rather than hidden: on the one salon that DOES have a bundle, the section now
+  // pops in instead of fading up from a skeleton. That is the better trade at 1-in-28, and it flips
+  // if bundles ever become common.
+  if (bundles === null) return null;
 
   if (error || !bundles) {
     return (
@@ -137,8 +142,15 @@ function BundleCard({ bundle, slug, locale }: { bundle: Bundle; slug: string; lo
   return (
     <div className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper">
       <div className="flex items-center gap-2 px-4 pt-4 pb-2">
-        <Package size={16} strokeWidth={1.9} className="text-s-ink" aria-hidden />
-        <p className="font-heading text-[16px] font-bold text-s-ink">{bundle.name}</p>
+        {/* mockup-ok: owner picked this off the three-way icon comparison at /dev/round5,
+            "the combined two drilling into one". A cardboard parcel was wrong for two services
+            sold together, which is what he flagged: nothing is being shipped. */}
+        <Combine size={16} strokeWidth={2} className="text-s-ink" aria-hidden />
+        {/* mockup-ok: /dev/round5 option two, "One font". The combo name was the ONLY thing on the
+            PDP set in the display face at this size, so a card whose whole job is "these services
+            belong together" was announcing itself in a different voice from the services it
+            contains. Same face as the service rows below it now, which is what he tapped. */}
+        <p className="font-body text-[16px] font-bold text-s-ink">{bundle.name}</p>
       </div>
 
       <div>
@@ -150,7 +162,10 @@ function BundleCard({ bundle, slug, locale }: { bundle: Bundle; slug: string; lo
             <p className="truncate font-body text-[14px] font-medium text-s-ink">
               {locale === "en" && s.name_en ? s.name_en : s.name_de}
             </p>
-            <span className="flex shrink-0 items-center gap-1 pl-3 text-[12px] text-s-ink-2 tabular-nums">
+            {/* mockup-ok: /dev/round5 option two, second half. 12px was a fifth type size that
+                existed nowhere else in the card; 13px is one the card already used, so the card
+                drops from five sizes to four without losing a single level of hierarchy. */}
+            <span className="flex shrink-0 items-center gap-1 pl-3 text-[13px] text-s-ink-2 tabular-nums">
               {/* Casing matches SalonServices.tsx formatDurationDE (owner-locked 2026-06-09: lowercase
                   "min", no period) , NOT the shared minutesUnit i18n key ("Min", used by dashboard/services). */}
               <Clock size={11} strokeWidth={1.9} aria-hidden /> {s.duration_minutes} min
@@ -169,8 +184,11 @@ function BundleCard({ bundle, slug, locale }: { bundle: Bundle; slug: string; lo
           <span className="font-body text-[16px] font-bold text-s-ink tabular-nums">
             {formatCurrency(bundle.bundle_price, locale)}
           </span>
+          {/* mockup-ok: /dev/round5 option two , same 12->13 step as the duration above, applied
+              here too because the option he tapped moved every 12px in the card at once and this
+              pill was one of them. The pale-green + s-success recipe itself is untouched. */}
           {showDiscount && (
-            <span className="rounded-full bg-s-success-bg px-2.5 py-1 font-body text-[12px] font-semibold text-s-success tabular-nums">
+            <span className="rounded-full bg-s-success-bg px-2.5 py-1 font-body text-[13px] font-semibold text-s-success tabular-nums">
               &minus;{bundle.percent_off}%
             </span>
           )}

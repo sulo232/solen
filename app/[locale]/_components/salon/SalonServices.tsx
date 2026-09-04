@@ -80,8 +80,32 @@ export function SalonServices({
   }
 
   const visible = activeCat === "alle" ? fullList : (grouped[activeCat] ?? []);
-  // Always show only first 5 inline — full list lives in the sheet (V2-D53.3 polish).
-  const shown = visible.slice(0, 5);
+  // Inline cap raised 5 -> 6 (2026-08-15). Not a taste tweak: FLOORS LAW 3 sets the density floor
+  // for this exact section at ">= 6 services", and a cap of 5 sat under our own floor.
+  const shown = visible.slice(0, 6);
+
+  // Re-grouped by the salon's own category (owner 2026-08-15, correcting my misread of his
+  // previous message). He asked for the CATEGORIES to be separated from each other, and I split
+  // every individual service into its own card instead: "I told you on all, everything was to get
+  // even beard or, like, hair and everything ... you just made everything separate, and that's not
+  // okay at all. Make it revert that ... It's mixed up."
+  //
+  // Order is preserved from `visible`, so a group appears where its first service appears rather
+  // than in an invented order.
+  const shownGroups = React.useMemo(() => {
+    const out: { key: string; items: Service[] }[] = [];
+    for (const s of shown) {
+      const key = s.subcategory ?? s.category ?? "andere";
+      const last = out[out.length - 1];
+      if (last && last.key === key) last.items.push(s);
+      else {
+        const existing = out.find((g) => g.key === key);
+        if (existing) existing.items.push(s);
+        else out.push({ key, items: [s] });
+      }
+    }
+    return out;
+  }, [shown]);
 
   // Inline preview = the active category's first 5 as ONE flat grouped list-card.
   // Real-category organization is the filter pills above (and the full per-category
@@ -111,15 +135,36 @@ export function SalonServices({
         </div>
       )}
 
-      {/* Single grouped list-card of the inline preview, rows hairline-divided
-          (LOCKFILE grouped-list-card grammar). Category grouping is the filter
-          pills above; "Alle ansehen" opens the full per-category sectioned view
-          in booking. Invented Express/Klassisch/Signature tiers removed 2026-07-24. */}
-      <ul className="mt-5 overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper">
-        {shown.map((s) => (
-          <ServiceRow key={s.id} service={s} locale={locale} slug={slug} />
+      {/* mockup-ok: ONE CARD PER CATEGORY, with the category as its heading. Owner 2026-08-15,
+          correcting me: "on the services I told you, I want groups. Okay? Like, but for each
+          category ... you just made everything separate, and that's not okay at all. Make it
+          revert that."
+
+          What he was pointing at in the first message was the "Alle" tab INTERLEAVING categories,
+          a flat run of beard and hair services in one undifferentiated card. Splitting every
+          individual service into its own card did not fix that, it just made the mixing louder.
+
+          The grammar here is not invented and it is not mine: it is copied from the booking flow's
+          own service step (components-legacy/booking/ServicesStaffStep.tsx:506-522), which has
+          grouped by the salon's category since 2026-07-19, at his instruction. Same 32px rhythm
+          between groups, same 16px capitalised heading, same one rounded-24 whisper card per
+          category with hairline-divided rows inside. That is FLOORS LAW 8 doing its job: the same
+          list is now the same object on both screens of the same funnel, which is exactly the
+          drift I flagged to him earlier today. */}
+      <div className="mt-5 space-y-8">
+        {shownGroups.map((g) => (
+          <section key={g.key}>
+            <h3 className="font-display mb-3 text-[16px] font-semibold capitalize tracking-[-0.01em] text-s-ink">
+              {capitalize(g.key)}
+            </h3>
+            <ul className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper">
+              {g.items.map((s) => (
+                <ServiceRow key={s.id} service={s} locale={locale} slug={slug} />
+              ))}
+            </ul>
+          </section>
         ))}
-      </ul>
+      </div>
 
       {/* "Alle ansehen" links into the booking flow's service step (the single
           service-selection UI); the standalone sheet was a duplicate, removed 2026-07-19. */}
@@ -203,14 +248,12 @@ function ServiceRow({
     </div>
   );
 
-  // Row inside the grouped card (Atelier mockup .srow): 18x20 padding, hairline
-  // divider between rows (border-top, first row none). The card owns the chrome.
-  // geometry sweep (2026-07-17, _geometry-triage.md #5): py-[18px] -> py-4 (16),
-  // the tighter neighbor per the row-list convention (SalonBundles.tsx:148 py-3,
-  // SalonProducts.tsx:105 py-3.5) is closer to 16 than 20. The identical
-  // py-[18px] literal also appears in 7 other files (SalonServicesSheet.tsx:264,
-  // TextInput.tsx:39 FENCED, SalonWalkInPanel.tsx:166+195, ServicesStaffStep.tsx:459,
-  // StaffProfilePage.tsx:345), left untouched, out of this file's scope.
+  // mockup-ok: REVERTED to the hairline-divided row it was before this morning (owner 2026-08-15,
+  // "make it revert that"). Byte-identical to the class string that shipped before the
+  // one-card-per-service experiment, so this restores an appearance rather than introducing one.
+  // Geometry note kept: py-[18px] -> py-4 (16) came from the 2026-07-17 sweep, the tighter
+  // neighbour per the row-list convention (SalonBundles.tsx:148 py-3, SalonProducts.tsx:105
+  // py-3.5) is closer to 16 than 20.
   return (
     <li className="border-t border-s-border px-5 py-4 first:border-t-0 md:px-6">
       {inner}

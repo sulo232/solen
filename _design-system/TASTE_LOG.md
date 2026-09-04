@@ -1151,3 +1151,22 @@ closing-message text only, so a "0 of 200, therefore safe" number is guaranteed 
 that inspects a tool call before it runs, needs several turns of history, or scans project files
 instead of messages. Three of the eight fall in those categories and their safety numbers were not
 evidence.
+## 2026-08-23 , search results stays as it is (owner: "the mockup keep it now", then "i tl u now")
+
+Shown four directions on the REAL search results screen at `/en/dev/unify`: leave it, give it an
+anchor (store names 14px to 24px), let the photo lead (every picture from wide 5:4 to tall 4:5), or
+both plus one corner value. **He picked Now.** Twice, and the second time because I had missed it
+the first.
+
+SO: the search results screen is SETTLED as it ships. It is not a finding, not drift, and does not
+go in a comparison table again.
+
+THE COST, named once so it is on record and then dropped: measured at 390x844 on the built site the
+same day, that screen is the flattest of the seven measured. Three words in a hundred carry bold
+against thirteen on the store page he likes, and nothing on it exceeds 18px against that page's
+30px. He has now seen the alternative rendered on the real screen with real stores and chosen this.
+That is his call to make and the measurement does not overrule it.
+
+WHAT IS NOT COVERED by this decision, because he was only ever shown search results: inspo, help and
+login also measured out of step (inspo is flatter still at 15px and 1.25x; help and login are the
+loudest at 18% and 27% bold). No direction has been shown to him for those.

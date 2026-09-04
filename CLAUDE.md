@@ -103,7 +103,7 @@ Frozen single-values. Do NOT re-open any row without the owner saying so by name
 | density floor | (owner-approved 2026-07-21) populated state = the design target, from SEED data: PDP gallery >= 5, reviews >= 3, services >= 6, home >= 4 sections; list/grid first viewport >= 4 units mobile / 6 desktop + a cropped next item; full card info stack whenever data exists. **Richness ceiling (hierarchy-density-03):** above ~3x floor (80+ services, 100+ reviews, 40+ photos), group/cap, never render uncapped inline. **Sparse-but-real (hierarchy-density-04, SOURCE.md §10.0a):** a real thin salon (below floor, non-fabricated) waives the count floors but keeps no-fabrication + the missing-photo fallback + a one-line honest sub-state per below-floor section. |
 | hierarchy | name leads by SIZE; price bold-ink but smaller than name; rating = yellow star; filler (category·city·distance) greys out |
 | availability | **plain ink text — NO green pill** (owner call, do not re-add) |
-| radius | form/summary card **16** (`rounded-card`, `shadow-elevation-1`, and the `-1` is load-bearing: `shadow-elevation` is not a real class and Tailwind resolves it to nothing silently) · **grouped LIST-card 24** (`rounded-[24px]`+`shadow-whisper`, CATEGORY members in one card: salon services/products/bundles/staff/dashboard) · **individual entity-card 16** (`rounded-card`+border, flat, gap-separated, ONE card per DISTINCT entity , a stylist/person, a salon; `SalonResultCard` grammar; NOT a group card , owner 2026-07-19 "stylists are individual not groups") · button/chip pill · input **12** (corrected 2026-07-17, see below) · sheet **28** · image flush(0) |
+| radius | form/summary card **16** (`rounded-card`, `shadow-elevation-1`, and the `-1` is load-bearing: `shadow-elevation` is not a real class and Tailwind resolves it to nothing silently) · **grouped LIST-card 24** (`rounded-[24px]`+`shadow-whisper`, CATEGORY members in one card: salon services/products/bundles/staff/dashboard) · **individual entity-card 16** (`rounded-card`+border, flat, gap-separated, ONE card per DISTINCT entity , a stylist/person, a salon; `SalonResultCard` grammar; NOT a group card , owner 2026-07-19 "stylists are individual not groups") · **button/chip 16** (`rounded-[16px]`, NOT a capsule , owner 2026-08-16, "you can go implement this", after tapping it at /dev/round5: *"you're really elongating this pill, so it looks like it has a sharp corner"*. He was describing geometry, not a rendering bug. A capsule's radius is half its height, fixed at 22px on an `h-11` control however wide it grows, so the widest measured pill was 135.6 x 44 with only 44px curved and **91px, two thirds of the outline, dead straight**. That reads as a rectangle with a visible join. 16px is a chosen corner at every width, and it is what Airbnb's own reviews chips measure, 48px tall at radius 16, per `_design-system/references/airbnb--reviews.md`. Applied in `TabPill.tsx`, which 29 files import. SUPERSEDES the `pill` value this row carried since V3-D443) · input **12** (corrected 2026-07-17, see below) · sheet **28** · image flush(0) |
 | spacing | 4-pt scale only; card pad `p-4`/`p-3`; page `max-w-[1280px]` (PDP 1180) |
 | wrap | name truncate · meta truncate · title wrap · body line-clamp · price/rating nowrap |
 | icon-button | `h-11 w-11` |
@@ -324,6 +324,35 @@ already present are grandfathered, because a check that refused 29 percent of ex
 switched off within a day. `scripts/check-i18n-parity.mjs` does NOT cover this and never did: it
 compares the four locale key sets against each other, so a key present in all four and rendered in
 zero files passes clean.
+
+---
+
+## 🔬 A check that cannot fail is not a check (owner 2026-08-16, "make principle based on everything we had to go")
+
+**The law is `~/.claude/MEASUREMENT_LAW.md` Part 4. Read it before claiming anything is verified.**
+It was written from one session where he had to repeat himself eleven times, and every one of those
+clashes was the same mistake: **I verified under conditions that could not produce a failure, then
+reported that verification as a fact about his product.** The pointer lives HERE because that same
+session proved a law with no route from the always-in-context file does not get read , the cause of
+four rounds of dead buttons was already written down, with his exact symptom in it, and I never
+opened it.
+
+The five that cost him the most, in short:
+
+1. **Verify in HIS conditions.** He reported dead buttons four times; every test of mine passed
+   because my browser had already loaded the page once. The failure lived in the FIRST load, which a
+   warmed-up session has already destroyed. Fresh load, through the link you are about to send, at
+   his width. **Never `next dev` for anything he will open** , it does not reliably hydrate this app
+   (memory `reference_test_server_pattern`); build it and `next start`.
+2. **Search for the SYMPTOM before investigating it.** Memory, `_plans/`, `DRIFT_LEDGER.md`,
+   `REMOVED.md`, `TASTE_LOG.md`. A recurring mistake with a written answer is a READING failure.
+3. **The control and the thing it changes share one viewport**, measured, at his width. Evidence and
+   tables go BELOW the thing being judged. Preview routes carry no product chrome.
+4. **Exercise anything whose failure mode is silence.** A style override matching nothing is
+   pixel-identical to one switched off. Click it and measure the box.
+5. **A taste complaint is the cheapest broken-plumbing detector you have.** "I keep seeing this ass
+   font" turned out to be the body font not loading anywhere on the site, and the app unable to
+   produce a production build at all.
 
 ---
 

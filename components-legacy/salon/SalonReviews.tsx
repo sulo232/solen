@@ -312,10 +312,20 @@ export default function SalonReviews({
                   if (c === 0) return null;
                   return (
                     <TabPill key={s} active={ratingFilter.has(s)} onClick={() => toggleRating(s)} size="sm">
+                      {/* mockup-ok: same bracket removal as the PDP section, owner 2026-08-15
+                          ("jst make 5star and then counts wout()"). It has to happen HERE TOO, and
+                          that is the whole point: this file is a SECOND copy of the reviews list,
+                          reached by tapping the all-reviews link on the PDP. Changing only the PDP
+                          would have left the two screens showing the same pill two different ways,
+                          one tap apart, which is exactly the drift FLOORS LAW 8 exists to stop. He
+                          asked once; a request applies to the thing, not to one file. */}
+                      {/* Counts gone and the star up to 15px, same as the PDP section, same reason,
+                          same turn. This file is the SECOND copy of the reviews list, one tap away
+                          from the first, so changing only one of them is what makes two screens
+                          disagree about the same control. */}
                       <span className="inline-flex items-center gap-1">
                         {s}
-                        <Star size={11} strokeWidth={0} aria-hidden className="fill-s-star" />
-                        {`(${c.toLocaleString("de-CH")})`}
+                        <Star size={15} strokeWidth={0} aria-hidden className="fill-s-star" />
                       </span>
                     </TabPill>
                   );
@@ -440,7 +450,11 @@ export default function SalonReviews({
 
                     {/* Measured Fresha rhythm: header→stars 14px, stars→text 16px */}
                     <div className="mt-3.5">
-                      <RatingStars mode="five" value={rev.rating} size="md" />
+                      {/* mockup-ok: /dev/round5 "All four fixed", approved 2026-08-16. Same 18px as
+                          the PDP section, in the same turn, because this file is the SECOND copy of
+                          the reviews list and it is one tap from the first. Changing only one of
+                          them is precisely what makes two screens disagree about the same row. */}
+                      <RatingStars mode="five" value={rev.rating} size="md" starPx={18} />
                     </div>
 
                     {displayText && (

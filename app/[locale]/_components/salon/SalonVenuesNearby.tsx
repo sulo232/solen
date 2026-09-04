@@ -116,18 +116,28 @@ export function SalonVenuesNearby({
     el.scrollBy({ left: delta, behavior: "smooth" });
   };
 
-  // Before the section enters the viewport, render only the anchor element
-  // so the IntersectionObserver has a target without triggering the API fetch.
-  if (!visible) {
-    return <section ref={sectionRef} aria-hidden />;
-  }
-
-  if (loading) {
+  // Before the section enters the viewport, render the SKELETON as the observer's target, instead
+  // of the `<section ref={sectionRef} aria-hidden />` (a ZERO-HEIGHT box) that used to sit here.
+  //
+  // AND A CORRECTION, kept because the wrong version of this note was briefly committed on
+  // 2026-08-15: I first wrote that the zero-height anchor made this rail permanently invisible, on
+  // the evidence that `visible` never flipped while the anchor sat at viewport top 422. That
+  // conclusion was WRONG, and the discriminating test is what showed it: `document.hidden` is
+  // `true` in the preview pane I was measuring in, and a fresh IntersectionObserver placed on a
+  // fully on-screen 358x22 heading never fired there either. IntersectionObserver simply does not
+  // deliver in a hidden pane, so nothing about the rail was proved. Same trap as the known rAF
+  // throttling in that pane. The rail is NOT known to be broken in a real browser.
+  //
+  // The change is kept anyway, on its own smaller merits rather than a bug that was never
+  // demonstrated: a zero-area target is a fragile thing to hand an IntersectionObserver, and using
+  // the skeleton gives it a real box, removes the layout jump when the cards land, and deletes a
+  // render state instead of adding one.
+  if (!visible || loading) {
     return (
       <section ref={sectionRef}>
         {/* V3-D202 (A18): font-body → font-display + Scale B. */}
         <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
-          In der Nähe
+          Ähnliche Stores
         </h2>
         {/* mockup-ok: skeleton matches the ported card's own w-[calc((100vw-44px)/1.25)]
             + gap-3, so the loading state doesn't jump size once real cards land. */}
@@ -150,7 +160,7 @@ export function SalonVenuesNearby({
       <div className="flex items-center justify-between">
         {/* V3-D202 (A18): font-body → font-display + Scale B. */}
         <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
-          In der Nähe
+          Ähnliche Stores
         </h2>
         {/* Desktop arrow buttons */}
         <div className="hidden items-center gap-2 md:flex">

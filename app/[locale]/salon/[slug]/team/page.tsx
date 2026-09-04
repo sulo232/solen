@@ -1,3 +1,4 @@
+
 // NOT a client component, and the stray "use client" that used to sit here took the whole app
 // down. Next.js forbids a browser-only file from exporting generateMetadata, and the failure is
 // not local: it stops everything compiling, so every page in every language answered 500.

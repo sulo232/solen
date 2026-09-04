@@ -36,8 +36,14 @@ export interface RatingStarsProps {
    */
   onChange?: (v: number) => void;
   /**
-   * interactive mode only. Override the star pixel size (default 32px when
-   * size="md"; the review form uses 42px).
+   * Override the star pixel size.
+   *   interactive: default 32px at size="md"; the review form uses 42px.
+   *   five: opt-in override of STAR_PX, for the one site that needs a display-scale star row
+   *     rather than a meta-scale one (the PDP reviews summary, owner 2026-08-15 "the stars to
+   *     be more big"). Additive: every existing `five` caller passes no starPx and keeps
+   *     STAR_PX exactly.
+   *   compact: ignored. That mode sizes its star against the numeral beside it (A7), so a
+   *     free-floating override would break the measured ink-to-cap-height ratio.
    */
   starPx?: number;
 }
@@ -186,6 +192,9 @@ export function RatingStars({
 
   if (mode === "five") {
     const filled = Math.round(value);
+    // mockup-ok: starPx honoured here as of 2026-08-15 so one caller can render a display-scale
+    // star row. No appearance change for anyone who does not pass it.
+    const fivePx = starPx ?? px;
     return (
       <span
         className={cn("inline-flex items-center gap-[2px]", className)}
@@ -194,7 +203,7 @@ export function RatingStars({
         {Array.from({ length: max }).map((_, i) => (
           <Star
             key={i}
-            size={px}
+            size={fivePx}
             stroke="none"
             aria-hidden
             className={i < filled ? "fill-s-star" : "fill-s-border"}

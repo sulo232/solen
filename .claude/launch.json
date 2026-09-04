@@ -52,6 +52,26 @@
       "autoPort": false
     },
     {
+      "name": "Prod preview (3007)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "SOLEN_DEV_PAGES=1 npx next start -p 3007 -H 127.0.0.1"
+      ],
+      "port": 3007,
+      "autoPort": false
+    },
+    {
+      "name": "Tunnel (prod 3007)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://127.0.0.1:3007 --metrics localhost:20261 --no-autoupdate"
+      ],
+      "port": 20261,
+      "autoPort": false
+    },
+    {
       "name": "Tunnel (app 50723)",
       "runtimeExecutable": "bash",
       "runtimeArgs": [
@@ -205,6 +225,16 @@
         "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:3055 --metrics localhost:20246 --no-autoupdate"
       ],
       "port": 20246,
+      "autoPort": false
+    },
+    {
+      "name": "Tunnel (pdp round2 51815)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:51815 --metrics localhost:20255 --no-autoupdate"
+      ],
+      "port": 20255,
       "autoPort": false
     },
     {

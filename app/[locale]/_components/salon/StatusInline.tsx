@@ -16,6 +16,14 @@
  * entirely. Exact hours still live in the opening-hours section, so no information
  * is lost. Colour treatment is UNCHANGED.
  *
+ * REVERSED 2026-08-15 (owner, dictated): "write it to when it's open or something",
+ * matching his Fresha reference (one meta line reading "Geöffnet bis 18:00" beside
+ * the rating). The trailing clause is back: the status word keeps its semantic
+ * colour, and the rest of the label (the time / "opens at" clause) renders after
+ * it in the calm secondary-ink token, no separator glyph between the two, the
+ * colour step already separates them (taste rule 2). The 07-24 history above
+ * stays on record rather than being deleted.
+ *
  * label from computeOpenStatus is one of:
  *   "Geöffnet bis HH:MM"
  *   "Geschlossen[EM SPACE]Öffnet HH:MM"
@@ -48,11 +56,22 @@ export function StatusInline({
   /** "sm" = 13px, "md" = 15px (default), "lg" = 16px (matches Fresha) */
   size?: "sm" | "md" | "lg";
 }) {
-  const [head] = label.split(/\s+/);
+  const [head, ...rest] = label.split(/\s+/);
+  const tail = rest.join(" ");
   const sizeCls = size === "sm" ? "text-[13px]" : size === "lg" ? "text-[16px]" : "text-[15px]";
+  // mockup-ok: restores the pre-07-24 s-ink-2 trailing-clause pattern this file's own docblock
+  // already documented (Fresha ref); owner ask 2026-08-15, "write it to when it's open".
   return (
-    <span className={cn("font-body inline-block font-medium", sizeCls, isOpen ? "text-s-open" : "text-s-closed")}>
-      {head}
+    <span className={cn("font-body inline-block", sizeCls)}>
+      {/* mockup-ok: /dev/round5 , he picked green A there and that page named the two legal ways to
+          use it, because A measures 2.68:1 on white and TEXT needs 4.5:1. Way one: the word goes
+          darker than the dot. Way two: the word goes black and the dot alone carries the colour.
+          This is way ONE, and only after measuring the page rather than assuming: way two reads
+          fine in the abstract and collapses here, because the six green dots live in the
+          Öffnungszeiten section 3270px down and THIS line has no dot at all. Way two would have
+          left the header with no green whatsoever, on the exact line he asked to have it. */}
+      <span className={cn("font-medium", isOpen ? "text-s-open-text" : "text-s-closed")}>{head}</span>
+      {tail && <span className="font-normal text-s-ink-2"> {tail}</span>}
     </span>
   );
 }

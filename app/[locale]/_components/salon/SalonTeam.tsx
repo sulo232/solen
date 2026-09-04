@@ -69,17 +69,23 @@ export function SalonTeam({
       // border-s-border bg-white shadow-whisper), no new appearance introduced.
       className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper p-5 md:p-7"
     >
-      {/* Title row + "Alle ansehen" → opens the booking flow's stylist picker */}
-      <div className="flex items-baseline justify-between">
+      {/* Title row + the see-all control → the real stylist picker.
+          items-center, not items-baseline: a circle has no baseline to sit on, so with
+          items-baseline the 44px cell aligns its own text baseline to the heading's and hangs
+          below the row. Same note the home page's SectionTitle carries for the same reason. */}
+      <div className="flex items-center justify-between">
         <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
           {t("team")}
         </h2>
-        {/* mockup-ok: link variant, ink text + chevron per owner 2026-07-19 (Team sits next
-            to the busy avatar-scroll row and read too big/unbalanced as a pill); Services and
-            Reviews keep the default pill (booking-flow entry, owner-approved 2026-07-15).
-            href , 2026-07-24 PORT (T5, owner: this was a dead click to the plain booking
-            URL): now opens the real "Select professional" picker. */}
-        <SeeAllButton label="Alle ansehen" href={`/${locale}/salon/${slug}/team`} variant="link" />
+        {/* mockup-ok: owner 2026-08-15, verbatim, pointing at the home page: "I want, like, the
+            [see-all] to be just, like ... a circle and then gray sink and then ink ... an arrow
+            inside. Look at ... how in the home page it is, you know, on the arrow." So the text
+            link plus chevron this row used to carry (the 2026-07-19 "link" variant, kept because
+            a pill out-weighed the heading next to the busy avatar row) becomes the SAME circle
+            the home page already ships, composed from the SeeAllButton primitive rather than
+            redrawn here (FLOORS LAW 9). The label survives as the accessible name.
+            href , 2026-07-24 PORT (T5): the real "Select professional" picker, unchanged. */}
+        <SeeAllButton label="Alle ansehen" href={`/${locale}/salon/${slug}/team`} variant="circle" />
       </div>
 
       {/* Horizontal carousel — tapping a stylist opens their individual profile

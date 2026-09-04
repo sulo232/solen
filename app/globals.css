@@ -200,6 +200,79 @@
 }
 
 @layer utilities {
+  /* ═══ INK FILL vs INK TEXT (owner 2026-08-15, and this is the design-system home of it) ═══
+
+     Owner, verbatim: "I want the black used everywhere to be this. You know? ... not everywhere,
+     like, text. Don't change it. Like, you know, like, for example, button... buttons and stuff,
+     like all of it. It's already black ... what's already, like, fulfilled black, for example? I
+     want that to be this color. I want you to actually put in design system."
+
+     So the system now has TWO inks and they do different jobs:
+       ink TEXT  #0A0A0A  unchanged, and it is the one with 5475 call sites. Text needs the
+                          deepest black it can get for contrast, and he explicitly excluded it.
+       ink FILL  #1C1C1F  `s-ink-soft`, the value he picked off the four-way mockup at
+                          /dev/pill-ceramic on the same day. A large filled black surface reads as
+                          a hole punched in the page; one step off pure makes it read as an object.
+
+     WHY IT LIVES HERE, IN ONE RULE, instead of a sweep. Measured before choosing: `bg-s-ink` has
+     416 opaque call sites and `text-s-ink` has 5475. Renaming 416 classes by hand is 416 chances
+     to touch the wrong one, and the next new button would still be written `bg-s-ink` and would
+     silently be the old black again. One rule here cannot drift, and it is greppable from either
+     direction because the token and this block name each other.
+
+     WHAT IS DELIBERATELY NOT COVERED, so the omissions are decisions and not oversights:
+       - `text-s-ink`, `border-s-ink`, `fill-s-ink`, `stroke-s-ink`: he said do not touch text, and
+         a 1px edge or a glyph is not a filled surface either.
+       - the ALPHA variants, `bg-s-ink/40` and friends (208 sites). Those are photo scrims and
+         gradient fades, where the point is darkness, not a surface. A scrim should stay true
+         black; lifting it would just make photos look washed.
+       - `bg-black` (81 sites), same reason: those are almost all gradient stops over imagery. */
+  .bg-s-ink {
+    background-color: theme("colors.s-ink-soft.DEFAULT");
+  }
+
+  /* ═══ TWO TEXT WEIGHTS ON CUSTOMER SURFACES (owner picked C, 2026-08-15) ═══
+
+     He was shown three real salon pages side by side at /dev/type-weights, each with one rule
+     swapped and each COUNTING its own result, and picked C.
+
+       option                     weights (ceiling 2)   bold share (ceiling 30%)
+       A, what shipped                    3                    36.8%
+       B, anchors stay bold               2                    36.8%
+       C, nothing bold  <- picked         2                     0%
+
+     So the heavy tier drops one step: anything the product marks `font-semibold` or `font-bold`
+     renders at 500. Body text is NOT touched, which is the whole difference between demoting a
+     tier and flattening a page. The result is exactly two weights, 400 and 500.
+
+     WHAT THIS COSTS, and he chose it knowing: the salon name stops being the heaviest thing on its
+     screen. FLOORS LAW 6 wants one clearly biggest, heaviest element per customer screen, and
+     after this the "biggest" half is carried entirely by SIZE (the name is 30px against a 14px
+     body, a 2.1x step) with no weight step behind it. That is the trade C names on the mockup.
+
+     WHY A RULE AND NOT A SWEEP. Measured first: `font-semibold` and `font-bold` appear 1,968 times
+     across the app. Rewriting them by hand is 1,968 chances to catch the wrong one, and the next
+     component anyone writes would still say `font-semibold` and would quietly be a third weight
+     again. This is the same single-point reasoning as the ink-fill rule directly above.
+
+     THE DASHBOARD IS EXCLUDED BY NAME. 239 of those 1,968 live in the operator dashboard, which is
+     a density tool rather than a customer screen, and the emphasis budget already exempts that
+     family by name. `DashboardLayout` carries `data-surface="dashboard"` for exactly this. It is
+     the only exclusion, and it is an exclusion rather than an oversight.
+
+     The dashboard sits INSIDE the same `<main>` as everything else, so it cannot be excluded by a
+     `:not()` on the ancestor. The second rule restores it instead, and being later in the sheet at
+     equal weight it wins on the dashboard and nowhere else.
+
+     TO REVERT, or to narrow this to the salon page only: delete this block, or put the salon
+     page's own selector in front of it. Nothing else in the codebase changed. */
+  main :is(.font-semibold, .font-bold) {
+    font-weight: 500;
+  }
+  [data-surface="dashboard"] :is(.font-semibold, .font-bold) {
+    font-weight: 600;
+  }
+
   /* DS-6 (2026-06-11, video-audit, owner-approved): interactive blue darkens one
      ramp step on hover/pressed — s-accent #276EF1 -> s-accent-deep #1E54B7, 150ms.
      Single-point rule so every existing text-s-accent link/button gets the step

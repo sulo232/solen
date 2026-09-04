@@ -103,3 +103,5 @@ scratchpad/
 # in this worktree for nine days and silently blocked 186 automatic merges, because the
 # checkpoint merge refuses to run while main has ANY uncommitted change, untracked included.
 .tmp-verify-*
+hooks-lint.json
+.claude/state/tunnel.log

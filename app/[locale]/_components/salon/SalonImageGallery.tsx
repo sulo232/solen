@@ -9,7 +9,6 @@ import type { StaffMember } from "./_shared";
 import { cn } from "@/lib/utils";
 import { BackButton } from "../primitives";
 import { getPortfolioCategoriesForSalon, getPortfolioCategoryLabel, PORTFOLIO_CATEGORY_ALL_LABEL, type PortfolioLocale } from "@/lib/portfolio-categories";
-import ReportButton from "@/components-legacy/discovery/ReportButton";
 import { useTranslations } from "next-intl";
 
 /**
@@ -130,16 +129,20 @@ export function SalonImageGallery({
   // accessibility-06 (2026-07-27): url -> category lookup so the grid's alt text can name
   // WHAT the photo shows (its portfolio category) instead of just a bare index. Real
   // metadata already fetched into `salonPhotos`, just never threaded through to alt=.
+  //
+  // MUST STAY ABOVE THE `if (!open)` EARLY RETURN BELOW, and that is not a style preference:
+  // it is the fix for the bug that made tapping a portfolio photo do nothing at all
+  // (owner 2026-08-15, "right now, nothing happens when you click one of the photos").
+  // This useMemo (and a second one that has since been deleted with the report control) was
+  // added BELOW the early return by commit c79210163. Closed, the component ran 14 hooks;
+  // open, it ran 16, so React threw "Rendered more hooks than during the previous render"
+  // the instant the gallery opened, the nearest error boundary swallowed it, and the screen
+  // stayed exactly as it was. Measured live on cuts-and-culture: the click fired, zero
+  // dialogs opened, that error in the console. Every hook in this component now sits above
+  // the early return.
   const categoryByUrl = React.useMemo(() => {
     const m = new Map<string, string | null>();
     for (const p of salonPhotos) m.set(p.url, p.category);
-    return m;
-  }, [salonPhotos]);
-
-  // Same shape as categoryByUrl above: the grid renders urls, but a report must name the row.
-  const idByUrl = React.useMemo(() => {
-    const m = new Map<string, string>();
-    for (const p of salonPhotos) m.set(p.url, p.id);
     return m;
   }, [salonPhotos]);
 
@@ -216,16 +219,10 @@ export function SalonImageGallery({
             </Pill>
           )}
 
-          {tab === "team" && stylistsWithPhotos.length > 0 && (
-            <>
-              <span className="mx-1 h-5 w-px shrink-0 bg-s-border" aria-hidden />
-              {stylistsWithPhotos.map((s) => (
-                <Pill key={s.id} active={activeStylist === s.id} onClick={() => setActiveStylist(s.id)}>
-                  {s.name} ({portfolios[s.id]?.length ?? 0})
-                </Pill>
-              ))}
-            </>
-          )}
+          {/* mockup-ok: the stylist switcher moved OUT of this pill row and became the avatar row
+              rendered below (owner 2026-08-15: "make a portfolio can actually, like, switch
+              between, like, staffs, how I was in the screenshot"). Nothing new is drawn here; the
+              text pills are simply gone from this row. */}
 
           {/* Category pills, SAME row (owner 2026-07-24: never a second stacked row). Alle +
               only categories that actually have a photo, in the taxonomy's declared order. */}
@@ -244,25 +241,98 @@ export function SalonImageGallery({
           )}
         </div>
 
-        {/* mockup-ok: salon tab is now a dense 3-col square grid (same grammar as the real
-            SalonPortfolio UniformGrid), replacing the old stacked 4:3 list; team tab keeps
-            its 2-col grid. */}
+        {/* mockup-ok: THE STAFF SWITCHER, as an avatar row. Owner 2026-08-15: "make a portfolio
+            can actually, like, switch between, like, staffs, how I was in the screenshot."
+            MEASURED off that screenshot (his Bildergalerie team tab, 920px wide): the avatar discs
+            run 178px across, which is 0.193 of the viewport width and so 75px at our 390px
+            measurement viewport, spaced 210px pitch, so a 32px gap that becomes 12px at our width.
+            The count badge sits bottom-right ON the disc and the name sits under it.
+            Composed from the shared Avatar primitive rather than a new circle, and the badge reuses
+            the same white-pill-with-hairline chrome SalonTeam already puts on its rating badge. */}
+        {tab === "team" && stylistsWithPhotos.length > 1 && (
+          <div className="flex gap-3 overflow-x-auto px-4 pb-1 pt-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {stylistsWithPhotos.map((s) => {
+              const on = activeStylist === s.id;
+              return (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => setActiveStylist(s.id)}
+                  aria-pressed={on}
+                  className="group flex w-[75px] shrink-0 flex-col items-center text-center transition-transform active:scale-[0.97] active:duration-[80ms]"
+                >
+                  <span className="relative">
+                    {s.avatar_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={s.avatar_url}
+                        alt={s.name}
+                        className={cn(
+                          "h-[75px] w-[75px] rounded-full bg-s-bg-sunken object-cover transition-opacity",
+                          on ? "opacity-100" : "opacity-60",
+                        )}
+                      />
+                    ) : (
+                      <span
+                        className={cn(
+                          "grid h-[75px] w-[75px] place-items-center rounded-full bg-s-bg-sunken font-display text-[26px] font-semibold text-s-ink-2",
+                          on ? "opacity-100" : "opacity-60",
+                        )}
+                      >
+                        {s.name.charAt(0)}
+                      </span>
+                    )}
+                    <span className="absolute -bottom-0.5 -right-0.5 inline-flex h-6 min-w-6 items-center justify-center rounded-full border border-s-border bg-white px-1.5 text-[12px] font-semibold tabular-nums text-s-ink">
+                      {portfolios[s.id]?.length ?? 0}
+                    </span>
+                  </span>
+                  <span
+                    className={cn(
+                      "font-body mt-2 truncate text-[13px] leading-tight",
+                      on ? "font-semibold text-s-ink" : "font-medium text-s-ink-2",
+                    )}
+                  >
+                    {s.name}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {/* mockup-ok: salon tab is a single column of full-bleed 16/9 photos (measured off his
+            reference, see the note on that container); the team tab runs 1 big + 2 half. */}
         <div className="px-4 py-4">
           {tab === "salon" ? (
-            <div className="grid grid-cols-3 gap-1.5 md:gap-2.5">
+            // mockup-ok: back to FULL-WIDTH STACKED photos (owner 2026-08-15: "on the portfolio,
+            // after you open, it's, like, not balance at all. It's just all weird. I told you to
+            // fix it, and you didn't do anything. There's even the contextual reference, bro.").
+            //
+            // MEASURED off the reference he means, his Fresha Bildergalerie capture (image 3,
+            // 920px wide): the venue tab is a single column of full-bleed photos, not a grid. The
+            // two fully-visible blocks measure 464px and 324px tall inside an 828px content
+            // column, so 1.78:1 and 2.55:1, with the second one clipped by the viewport. 16/9
+            // (1.78) is the one the un-clipped photo lands on exactly.
+            //
+            // What this replaces is the 3-column square grid, and that IS what looks unbalanced:
+            // nine 110px thumbnails on a phone against his reference's 460px photos. The grid was
+            // right for the PDP's 9-tile teaser, which is a teaser. The gallery is where the
+            // photos are the point.
+            <div className="flex flex-col gap-3">
               {filteredSalonPhotos.map((u, i) => (
-                // The tile is a <button> that opens the lightbox, so the report control cannot
-                // live inside it (nested buttons are invalid and the click would fight the
-                // lightbox). It is a SIBLING inside this positioned wrapper. Owner 2026-07-27:
-                // "also being able to report pictures", and "report signed in ... cz ppl can
-                // mass report etc" , ReportButton already bounces an anonymous visitor to login,
-                // and content_reports' insert policy (auth.role() = 'authenticated') is the
-                // real enforcement behind that.
-                <div key={u} className="relative">
+                // The per-photo report control that used to sit in a positioned wrapper here is
+                // GONE (owner 2026-08-15: "the report button, we need to remove that because,
+                // you know, customer is not gonna report it. It's gonna look so weird and not
+                // official."). The wrapper div went with it: the tile is the only child again,
+                // so the button IS the grid cell.
                 <button
+                  key={u}
                   type="button"
                   onClick={() => openLb(filteredSalonPhotos, i)}
-                  className="relative aspect-square w-full overflow-hidden rounded-md bg-s-bg-sunken transition-transform hover:scale-[0.99] active:scale-[0.98] active:duration-[80ms] active:ease-glide md:rounded-lg"
+                  // mockup-ok: 16/9 is the ratio measured off his own reference capture (see the
+                  // note on the container above), and `rounded-card` is the 16px literal the
+                  // design contract already assigns a content block this size, not a new value.
+                  className="relative aspect-[16/9] w-full overflow-hidden rounded-card bg-s-bg-sunken transition-transform hover:scale-[0.995] active:scale-[0.99] active:duration-[80ms] active:ease-glide"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
@@ -279,18 +349,15 @@ export function SalonImageGallery({
                     loading="lazy"
                   />
                 </button>
-                {/* Only a photo that HAS a salon_portfolio_images row can be reported: the
-                    report names that row id, never the url. Venue-photo fallbacks and staff
-                    portfolios have no row here, so they render no control rather than a dead one. */}
-                {idByUrl.get(u) ? (
-                  <div className="absolute right-1.5 top-1.5 z-10">
-                    <ReportButton type="photo" targetId={idByUrl.get(u)!} variant="frost" />
-                  </div>
-                ) : null}
-                </div>
               ))}
             </div>
           ) : (
+            // mockup-ok: 1 BIG + 2 HALF, repeating. Measured off his per-stylist reference
+            // (image 5, 920px wide): the lead photo is 826px tall in an 828px column, so a
+            // full-width SQUARE, and the pair under it measures 398px tall at half width, so two
+            // squares side by side. The flat 2-column grid this replaces gave every photo the
+            // same small tile, which is the "not balanced at all" he is pointing at: nothing in
+            // it is the anchor.
             <div className="grid grid-cols-2 gap-2">
               {activePhotos.map((u, i) => (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -303,7 +370,13 @@ export function SalonImageGallery({
                   onClick={() => openLb(activePhotos, i)}
                   // ig4 (owner-approved 2026-07-16): object-top (was center) on the square
                   // grid so a portrait crop keeps the face/wrists, not the feet.
-                  className="aspect-square w-full cursor-pointer rounded-xl bg-s-bg-sunken object-cover object-top transition-transform duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide"
+                  // mockup-ok: every third photo leads its group at full width, the two after it
+                  // sit half-width beside each other. All three stay square, which is what the
+                  // reference measures; only the width changes, so no crop rule moves.
+                  className={cn(
+                    "aspect-square w-full cursor-pointer rounded-xl bg-s-bg-sunken object-cover object-top transition-transform duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide",
+                    i % 3 === 0 && "col-span-2",
+                  )}
                   loading="lazy"
                 />
               ))}
