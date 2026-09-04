@@ -22,6 +22,26 @@
       "autoPort": false
     },
     {
+      "name": "Next dev (codex-migration worktree on 3461)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "npx next dev -p 3461"
+      ],
+      "port": 3461,
+      "autoPort": true
+    },
+    {
+      "name": "Tunnel (codex-migration 3461)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:3461 --metrics localhost:20263 --no-autoupdate"
+      ],
+      "port": 20263,
+      "autoPort": false
+    },
+    {
       "name": "Next dev (MAIN on 3000)",
       "runtimeExecutable": "bash",
       "runtimeArgs": [

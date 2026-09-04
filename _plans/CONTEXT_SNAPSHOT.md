@@ -2,89 +2,97 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-09-01T16:42:57 (trigger: auto)
-- branch: claude/agent-flow-design-overhaul-2af2c2
+- taken: 2026-09-04T16:02:09 (trigger: auto)
+- branch: claude/cloud-code-codex-migration-86a820
 
 ## git
 ```
-f8b2b2330 The two things I saw in the booking flow were my own instrument
-f0758ce2a checkpoint(auto): 1 uncommitted file(s) at turn end
-99e2903d4 All 20 salons are bookable again, up from 8
-fbdf88b7b Booking is not slow, it is empty on 12 of 20 salons
-3f1242f19 Twenty calls that could hang forever now give up instead
+cc20232f2 Two stray dump files from March leave the repo root
+1b1d1eab2 Merge branch 'merge-staging-2026-09-02'
+99d4f388e WIP: gray-settings plan notes found unsaved in the main folder (2026-08-27), kept before the branch merges
+8b6b426cd Merge branch 'claude/airbnb-animated-icons-ee4329' into merge-staging-2026-09-02
+f2b3bf1cb Merge branch 'claude/stress-test-gates-hooks-6dc8e8' into merge-staging-2026-09-02
 ```
 ```
-M _plans/BACKEND_LOOP_2026-08-23.md
- M components-legacy/booking/CountUpNumber.tsx
+M .claude/launch.json
+ M _design-system/_geometry-report.md
+ M _plans/ACTIVE.md
+ M app/api/cron/affinity-recompute/route.ts
+ M app/api/cron/db-backup/route.ts
+ M app/api/cron/discovery-ai-backfill/route.ts
+ M app/api/cron/discovery-deadcheck/route.ts
+ M app/api/cron/process-deletions/route.ts
+ M app/api/cron/salon-engagement-recompute/route.ts
+?? _plans/EVERYTHING_TO_CODEX_2026-09-04.md
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
+113 | EVERYTHING as a loop, then move it all to Codex (owner 2026-09-04: "research every single corner ... keep fixing it except for design make mockup ... merge everything ... transfer everything on Cloud Code to Codex", plus "mainly design, what principle is actually missing") | **ACTIVE** (2026-09-04)
+81 | DESIGN CONSISTENCY, the one that closes design work instead of opening more (owner 2026-08-27: "a lot of inconsistencies... the search bar moves... weird back button... typography too", then "acc plan what happened to the planning harness") | **PAUSED** (paused 2026-08-31 on his word: "can you park whatever we're doing right now?")
 74 | OVERNIGHT LOOP: how I work + efficiency (speed/money) + harness + skills (owner 2026-08-24, going to sleep: "finish evrth as a. loop") | **ACTIVE** (2026-08-24)
 75 | HIS OPEN ASKS, the ones I measured instead of doing (owner 2026-08-24: "are you sure you finished everything? What about the one... like, the number three and also about the context and about the price and also the skills") | **ACTIVE** (2026-08-24)
 76 | FIX ALL OF THEM, not report them (owner 2026-08-24: "instead of just telling me? You should fix all of them... stop telling me I fixed it") | **ACTIVE** (2026-08-24)
 77 | EVERYTHING HE ASKED TODAY, and what happened for each (owner 2026-08-24: "you have to tell me everything that I told you what you did for that") | **ACTIVE** (2026-08-24)
 71 | BACKEND LOOP: bugs, security, storage, scale, waste (owner 2026-08-23: "analyze, like, every single inch of back end ... as a loop, and also fix up those stuff, like, how everything is stored ... so it can scale ... And also that if it's, like, inefficient") | **ACTIVE** (2026-08-23) , 4 holes closed + 3 database fixes applied live; 3 decisions waiting on him
-68 | HOME: continue-search card + recently-viewed (owner 2026-08-15: "big size difference between the screenshot Airbnb reference and ours" + "mock ups in direction based on other websites and apps" + "recently viewed, we didn't do anything for that") | **ACTIVE** (2026-08-15)
-69 | HOME SECTIONS one by one (owner 2026-08-15: search icon without the box, card font/spacing "not balanced ... looks empty", Popular looks "doesn't make any sense" with "tons" of options, then Walk-in, then Reviews) | **ACTIVE** (2026-08-15)
 70 | HOME SECTIONS round 2 (owner 2026-08-16, rejected all 26 stacked versions and specified ONE design per section: Popular looks takes the Inspo card minus the TikTok badge and the black gradient plus a real shadow and replaces Find-your-inspiration; walk-in keeps the N-ahead count and the mark indicators, colour-coded, real icon back, hierarchy fixed; reviews cards smaller with read-more repositioned) | **ACTIVE** (2026-08-16)
 66 | CATEGORY ROW: circles that morph into pills, flat icons with a glare (owner 2026-08-12: "instead of pills like circle n once u click then it bcms pill all morphism and also the icon i want it like abit glare yk like 3d liquid style icons") | **ACTIVE** (2026-08-12)
-64 | SEARCH PANEL FLATNESS , no colour on the idle list, and the for-you feed (owner 2026-08-12: "i wanna improve design sh looks flat n no color n the fur sie ui too") | **ACTIVE** (2026-08-12) , mockup delivered, awaiting his pick
 63 | SEARCH SHEET SIZE , the Wo? sheet starts 56pt lower than the Suche sheet (owner 2026-08-12: "u see the diffrence between em the sheet size between wo and search i like search better and also the wann" + "not like refference") | **ACTIVE** (2026-08-12)
 62 | SEARCH PANEL: keyboard height, calendar, tapped date, home bar (owner 2026-08-12: "when on keyboard wo why when expanded no full oage on the bottom yk like sheet is not long enough and wann calender is not fully all visable yk and tapped is blue it should be black and scrolled down why is the search bat collapsed in homepage yk") | **ACTIVE** (2026-08-12)
-61 | SEARCH FULL-TYPE VIEW , one sheet, a back control, and the overlap on the map (owner 2026-08-11: "want full type ciew bro like in airbnb refference i gave u") | **ACTIVE** (2026-08-11)
 60 | BUG SWEEP , his three phone screenshots plus a full hunt (owner 2026-08-11: "bugs alot go find on yr own n tell me all") | **ACTIVE** (2026-08-11)
-59 | SEARCH PANEL , his three picks off `/dev/search-states` plus the empty-submit question (owner 2026-08-11: "1b 2b 3 b but whatvif nth selected and tapped enter...") | **ACTIVE** (2026-08-11)
-60 | BOTTOM NAV + the animated icons (owner 2026-08-10: "I think I want to have a bottom navigation bar for the web area... and the Airbnb animated icons are on branch claude/airbnb-animated-icons-ee4329") | **DONE** (2026-08-10)
-62 | CORRECTION: search bar researched not guessed + his own new icons + why he never saw the bottom-bar mockups (owner 2026-08-10: "just guessing, I told you to stop") | **ACTIVE** (2026-08-10)
+83 | BOTTOM NAV + the animated icons (owner 2026-08-10: "I think I want to have a bottom navigation bar for the web area... and the Airbnb animated icons are on branch claude/airbnb-animated-icons-ee4329") | **DONE** (2026-08-10)
 56 | HOME + CLOSE FIXES (owner 2026-08-05, annotated shots) | **ACTIVE** (2026-08-05)
-55 | HOME + INSPO CHROME , sticky search, Airbnb-smooth category switch, chrome sits too low, dead search tap, hamburger (no X / too low / circled), Inspo bar+heart+filters, "make a new homepage" | **ACTIVE** (2026-08-01)
-55 | DESIGN SYSTEM RENEWAL , rows out of boxes, lines not cards, bare icons, bigger type, from 5 Airbnb screenshots | **ACTIVE** (2026-08-02)
-53 | HOME V3 mockup rebuilt from the REAL home page sections (owner 10-ask dictation + 4 annotated shots) | **ACTIVE** (2026-07-31)
-52 | SCREEN RESEARCH , wide corpus sweep of real booking apps, every screen archetype, then the change list | **ACTIVE** (2026-07-29)
 46 | ALL-LANGUAGE SWEEP (de/en/fr/it), running unattended | **ACTIVE** (2026-07-27)
-45 | THE 9, RUN AS A LOOP (owner: "fix each 9 autonomously continuously jst park ones u cant do") | **ACTIVE** (2026-07-27)
 44 | OWNER ANSWERS to the 9 open items (moderation + translation + price law + stock photos + ToS photo rights + dashboard layout + restore drill + incident principle) | **ACTIVE** (2026-07-27)
-43 | THE LOOP: implement every remaining finding (owner correction) | **ACTIVE** (2026-07-27)
-42 | IMPLEMENT the missing principles (owner approved, full control except big design changes) | **ACTIVE** (2026-07-26)
-41 | MISSING PRINCIPLES research (whole estate: design + backend + security + my output + meta) | **ACTIVE** (2026-07-26)
 51 | AUTH + CHROME OVERHAUL , the sign-up/sign-in flow rebuilt on the Qonto reference, plus the back/close/hamburger controls he called "a weird thing inside of a box" (owner dictation 2026-08-10) | **ACTIVE** (2026-08-10)
 50 | RESUME 2026-08-09 , the state to pick up from when this context ends (his ten decisions, what shipped, what needs him, my 22 checked items) | **ACTIVE** (2026-08-09)
 49 | SYSTEM OVERHAUL , seven overhauls + a two-phase working protocol (owner dictation 2026-08-07: agent/mockup flow depth, "make sets", research flow as a new system, the design system + all its documents, the repetition problem, other-overhaul suggestions, and a system for OUTPUT + QUESTIONS + the two-phase flow) | **ACTIVE** (2026-08-07)
 48 | ANIMATED ICONS ROUND 2 , owner feedback on build 1 (2026-07-31: brighter lighting, the red is not vibrant, the chair does not face straight, and a coiffeur version that is NOT the same chair) | **ACTIVE** (2026-07-31)
-47 | AIRBNB ANIMATED ICONS , capture the real reference, then build a Solen animated icon (owner 2026-07-31 "go actually research", scoped by the owner mid-turn to research FIRST) | **ACTIVE** (2026-07-31)
-46 | FIX UP ME , audit everything about how I work and repair what a sentence can beat (owner 2026-08-05 "i dont want u ti edit sites i want u to refine n fixbup you") | **ACTIVE** (2026-08-05)
-45 | ASSISTANT BIAS , analyse the behavioural biases that distort my work with the owner, then CONTAIN them (owner 2026-08-05 "lets analyze ai bias and hiw we can eliminate that with you") | **ACTIVE** (2026-08-05)
+87 | FIX UP ME , audit everything about how I work and repair what a sentence can beat (owner 2026-08-05 "i dont want u ti edit sites i want u to refine n fixbup you") | **ACTIVE** (2026-08-05)
+88 | ASSISTANT BIAS , analyse the behavioural biases that distort my work with the owner, then CONTAIN them (owner 2026-08-05 "lets analyze ai bias and hiw we can eliminate that with you") | **ACTIVE** (2026-08-05)
+90 | COPY + VOICE LAW , how we write, in four languages (owner 2026-07-29 "research everything and make a whole principle about when you're writing something, how to do it") | **ACTIVE** (2026-07-29)
+91 | PRINCIPLE RESEARCH , deep-research every non-design principle we already have (backend, security, silent-no-op, psychology, i18n, motion, the rest of `_rules/*`) | **ACTIVE** (2026-07-29)
+45 | ANIMATED ICONS ROUND 2 , owner feedback on build 1 (2026-07-31: brighter lighting, the red is not vibrant, the chair does not face straight, and a coiffeur version that is NOT the same chair) | **ACTIVE** (2026-07-31)
+46 | SOLEN iOS APP FULL REBUILD , autonomous phase loop (owner 2026-08-11: "i want an app all made by the time the loop finishes all backend and frontend", "w need to overhaul evrth okay on the app sh cz rn it has dumb rule etc evrth") | **ACTIVE** (2026-08-11)
+44 | AIRBNB ANIMATED ICONS , capture the real reference, then build a Solen animated icon (owner 2026-07-31 "go actually research", scoped by the owner mid-turn to research FIRST) | **ACTIVE** (2026-07-31)
 43 | COPY + VOICE LAW , how we write, in four languages (owner 2026-07-29 "research everything and make a whole principle about when you're writing something, how to do it") | **ACTIVE** (2026-07-29)
 42 | PRINCIPLE RESEARCH , deep-research every non-design principle we already have (backend, security, silent-no-op, psychology, i18n, motion, the rest of `_rules/*`) | **ACTIVE** (2026-07-29)
-40 | MOTION + SHADOW LAW (research-first, then build as a loop) | **ACTIVE** (2026-07-25)
+40 | MOTION + SHADOW LAW (research-first, then build as a loop) | **ACTIVE** (2026-07-25) , research half CLOSED 2026-08-27
 33 | PDP consistency + motion (dates, reviews system, buttons, portfolio +N, frosted scroll) | **ACTIVE** (2026-07-25)
-31 | Home page overhaul (owner 10-ask dictation) , PIVOTED to whiteness/emptiness fix | **ACTIVE** (2026-07-24)
 30 | PDP overhaul (salon vision page) — owner 7-ask batch | **ACTIVE** (2026-07-24, round 3 delivered)
 29 | Folder cleanup (two "solen" folders) | **ACTIVE** (2026-07-24)
-4 | Search redesign (Airbnb-style) | **ACTIVE** (owner bug report round 3, 2026-08-02 23:33)
-19 | Taste/gate audit + underline-tab proposal + Solen-law profile mockup | **ACTIVE** (2026-07-21)
 7 | Admin Cities toggle | **ACTIVE**
-13 | Full-estate frontend audit (psychology + design-system + consistency) + mockups | **ACTIVE** (2026-07-17: customer-overhaul mockup pass)
-16 | getSession -> getUser identity-verification migration (JWT-forgery CRITICAL) | **ACTIVE** (2026-07-10)
-18 | Estate audit (hooks/skills/rules/systems/memory , improvement proposal) | **ACTIVE** (2026-07-11)
-22 | Taste audit sweep (measured floors across dashboard + customer side) | **ACTIVE** (2026-07-15)
-25 | Taste Lab program (hundreds of A/B comparisons; owner ask 2026-07-15) | **ACTIVE** (2026-07-15)
-26 | Make it all real (homepage rows lose fabricated values) | **ACTIVE** (2026-07-16)
+94 | getSession -> getUser identity-verification migration (JWT-forgery CRITICAL) | **ACTIVE** (2026-07-10)
+96 | Estate audit (hooks/skills/rules/systems/memory , improvement proposal) | **ACTIVE** (2026-07-11)
 27 | Backend law layer (the backend "taste bible": 15 topics researched + audited + recommendations) | **ACTIVE** (2026-07-16)
-26 | IG design-principles harvest (designparser + designmotionhq) | **ACTIVE** (2026-07-16, SESSION MOVED , read [IG_HANDOFF.md](IG_HANDOFF.md) FIRST)
-30 | Frontend gap fixes (the REAL fix, no hiding) | **ACTIVE** (2026-07-18)
-30 | IG principles evaluation (add/skip verdicts + before/after mockups) | **ACTIVE** (2026-07-16)
-31 | Geometry + symmetry + the math of composition (owner reference, 2026-07-17) | **ACTIVE** (2026-07-17)
-33 | Booking services , salon-page tier-card display + motion | **ACTIVE** (mockup approved, build HELD) 2026-07-18
+98 | IG design-principles harvest (designparser + designmotionhq) | **ACTIVE** (2026-07-16, SESSION MOVED , read [IG_HANDOFF.md](IG_HANDOFF.md) FIRST)
+100 | Frontend gap fixes (the REAL fix, no hiding) | **ACTIVE** (2026-07-18)
 39 | Settings-like-Insta + delete-confirm kill + dashboard redesign + GRAY-BACKGROUND reopen (owner 2026-07-20) | **ACTIVE** (2026-07-20)
-38 | Design-system HARDENING from the failed rounds (owner 2026-07-20 "fix gates + principles + systems, analyze our chats") | **ACTIVE** (2026-07-20)
-37 | Mockup ROOT-CAUSE + principles (owner 2026-07-19, 5th-round fury: "step back, use subagents") | **ACTIVE** (2026-07-19)
-36 | Mockup QUALITY system , stop shipping unchecked/unbalanced mockups (owner 2026-07-19, FURIOUS recurrence) | **ACTIVE** (2026-07-19)
-35 | Full frontend sweep , audit every surface vs the design system + mockup improvements (owner 2026-07-19, LOOP) | **ACTIVE** (2026-07-19)
-47 | POLISH DIAGNOSIS , why Airbnb reads finished and ours reads unfinished | **ACTIVE** (2026-07-28)
-48 | PRINCIPLE DEEP-RESEARCH , re-test every principle we already have against external evidence | **ACTIVE** (design) + handoff (rest) 2026-07-28
-50 | DESIGN principle deep-research (the rules we ALREADY have) | **ACTIVE** (2026-07-28)
-51 | DESIGN RE-ENGINEER , improve the system we have, measured against live Airbnb | **ACTIVE** (2026-07-28)
+110 | DESIGN RE-ENGINEER , improve the system we have, measured against live Airbnb | **ACTIVE** (2026-07-28)
 72 | REFUND PROCESS: does it exist, who decides, is it legal (owner 2026-08-19: "Is there even a refund process, and how does it even proceed? Who is gonna decide it? ... with the tax and fix if it's legal or not") | **ACTIVE** (2026-08-19)
-71 | GATE + HOOK STRESS TEST , all 305 hooks driven with real payloads, not read (owner 2026-08-17: "actually evaluate and stress test each one") | **ACTIVE** (2026-08-18)
-78 | SKILLS AND WORKFLOWS ARE OWNED BUT NOT USED (owner 2026-08-24: "multiple skills right, skills and they often don't use ours... look into Anthropic official and also out there... for example dictation") | **ACTIVE** (2026-08-24)
+111 | GATE + HOOK STRESS TEST , all 305 hooks driven with real payloads, not read (owner 2026-08-17: "actually evaluate and stress test each one") | **ACTIVE** (2026-08-18)
+
+## EVERYTHING_TO_CODEX_2026-09-04.md
+Open boxes:
+- [ ] 1b. Consolidated list of STILL-OPEN items from the 12 prior audit/plan files, each verified against current code
+- [ ] 1c. Backend silent no-op hunt: phantom columns, dead filters, consent flags nobody reads
+- [ ] 1d. Frontend gaps: dead links, orphaned routes, decorative (rendered-but-unwired) features, i18n parity
+- [ ] 1e. DB drift: migration files vs live snapshot; the four security migrations from 2026-08-14
+- [ ] 1f. Design: measured taste walk on the real phone screens (home, search, PDP, booking, profile, dashboard)
+- [ ] 2a. Fix every STILL-OPEN non-design item, coder + reviewer loop, one commit per verified chunk
+- [ ] 2b. Design findings become mockups (one section each, real page copy, English), never direct edits
+- [ ] 3a. Register this batch here and in ACTIVE.md
+- [ ] 3b. After each wave, one short question to him only if the next wave depends on it; otherwise park and continue
+- [ ] 4a. Waves of 4 readers/coders/reviewers, never one lone helper on a splittable job
+- [ ] 5a. Council pass over every fix batch before commit
+- [ ] 6a. Classify the 15 unmerged branches (type, conflicts, migrations, live-session check)
+- [ ] 6b. Merge the 4 newer zero-conflict branches (email, offline-booking, pdp-styling, harness-everth) after his word on the live one
+- [ ] 6c. The 11 old branches: his 2026-08-14 call was "lift features, never merge wholesale". Ask whether "merge everything" overrides it; if not, lift the named features and delete the rest with recovery shas recorded
+- [ ] 7a. Live research: what Codex supports today (hooks, skills, plugins, agents, memory, MCP, AGENTS.md)
+- [ ] 7b. Mapping table: every Claude Code piece we use -> Codex equivalent or "lost"
+- [ ] 7c. Migration plan, ordered, with what each step drops
+- [ ] 7d. Build the Codex-side files (AGENTS.md, config.toml, skills, prompts) once he picks the shape
+- [ ] 8a. Screenshots of the real screens at phone size
+- [ ] 8b. Measured diagnosis per screen (sizes, weights, spacing, contrast, balance, colour provenance)
+- [ ] 8c. Airbnb live mobile capture of the matching screens, measured the same way
+- [ ] 8d. The missing principle(s), named, with the number that proves each
+- [ ] 8e. Mockup of the fix on one section, stacked variants, English
