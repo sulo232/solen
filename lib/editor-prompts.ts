@@ -97,7 +97,7 @@ Every API route MUST include ALL 6 layers in order:
 - Icons: lucide-react ONLY. No emoji in UI.
 
 ## Banned Tokens (NEVER use in any .tsx file)
-text-dark, bg-dark, bg-black, bg-gray-*, text-gray-*, border-gray-*, rounded-lg/md/xl/2xl/3xl, dark:text-white (use dark:text-s-dm-text)
+text-dark, bg-dark, bg-black, bg-gray-*, text-gray-*, border-gray-*, rounded-lg/md/xl/2xl/3xl, dark: text-white (use dark: text-s-dm-text)
 
 Generate a complete, actionable roadmap that Claude Code can execute without guesswork. Include exact file paths and code diffs.`;
 }
