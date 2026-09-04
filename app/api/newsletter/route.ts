@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { validateBody } from "@/lib/validations";
 import { z } from "zod";
@@ -22,11 +22,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: error.message, code: "VALIDATION_ERROR" }, { status: 400 });
   }
 
-  // newsletter_subscribers is a phantom table: it does not exist in lib/database.types.ts, in any
-  // migration, or in the live DB (npm run exists newsletter_subscribers: 0 matches). This upsert has
-  // therefore always been a silent no-op (dbError caught below, generic 500 returned); no equivalent
-  // table exists to redirect to, so behavior is kept byte-identical (flagged in the coder report).
-  const supabase: SupabaseClient = await createServerSupabaseClient();
+  // newsletter_subscribers: supabase/migrations/20260904120000_coming_soon_and_newsletter_signups.sql
+  // Service-role client on purpose: the table has RLS on and no policies, so the anon client
+  // (createServerSupabaseClient) is refused on every insert. Same pattern as coming-soon-notify,
+  // csp-report and cron_runs. Precedent for the admin client in an edge route: app/api/reviews/route.ts.
+  const supabase: SupabaseClient = createAdminSupabaseClient();
 
   // Upsert to avoid duplicate errors
   const { error: dbError } = await supabase
@@ -34,6 +34,7 @@ export async function POST(req: NextRequest) {
     .upsert({ email: data.email }, { onConflict: "email" });
 
   if (dbError) {
+    console.error("[newsletter] Supabase error:", dbError.message);
     return NextResponse.json({ message: "Subscription failed", code: "DB_ERROR" }, { status: 500 });
   }
 

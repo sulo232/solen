@@ -27,24 +27,19 @@ export async function POST(request: NextRequest) {
   const feature = (validated.feature ?? "default").slice(0, 64);
 
   try {
-    // coming_soon_signups is a phantom table: it does not exist in lib/database.types.ts, in any
-    // migration, or in the live DB (npm run exists coming_soon_signups: 0 matches). This upsert has
-    // therefore always been a silent no-op that just falls into the catch-and-swallow below (no
-    // equivalent table exists to redirect to, so behavior is kept byte-identical here; flagged in the
-    // coder report as a genuine pre-existing bug for a product/DB decision).
+    // coming_soon_signups: supabase/migrations/20260904120000_coming_soon_and_newsletter_signups.sql
     const admin: SupabaseClient = createAdminSupabaseClient();
     const { error } = await admin
       .from("coming_soon_signups")
       .upsert({ email, feature }, { onConflict: "email,feature" });
 
     if (error) {
-      // Table may not exist yet — fail silently so the UX still works
       console.error("[coming-soon-notify] Supabase error:", error.message);
-      return NextResponse.json({ ok: true });
+      return NextResponse.json({ error: "Signup failed" }, { status: 500 });
     }
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("[coming-soon-notify] Unexpected error:", err);
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ error: "Signup failed" }, { status: 500 });
   }
 }
