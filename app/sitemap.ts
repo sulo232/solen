@@ -42,10 +42,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Dynamic salon pages
   try {
     const supabase = createAdminSupabaseClient();
+    // Same three-column visibility gate the public salon page (lib/salon-detail.ts) and
+    // the ~15 listing/search routes apply: is_active AND listed_on_marketplace IS NOT
+    // FALSE (null counts as listed) AND NOT is_test (null counts as not test). Null-safe
+    // chained .or() calls AND together (separate query params), the form already used in
+    // lib/bookings/charge-fee.ts:201-202. Without this the sitemap handed search engines addresses for salons
+    // the listing/PDP routes now hide, which resolve to 404.
     const { data: salons } = await supabase
       .from("salons")
       .select("slug, updated_at")
-      .eq("is_active", true);
+      .eq("is_active", true)
+      .or("listed_on_marketplace.is.null,listed_on_marketplace.eq.true")
+      .or("is_test.is.null,is_test.eq.false");
 
     for (const salon of salons ?? []) {
       for (const locale of LOCALES) {
