@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { getServerEnv } from "@/lib/env";
-import { applyCustomerCancelMoney } from "@/lib/bookings/customer-cancel-money";
+import { applyCustomerCancelMoney, resolveCustomerCancelPolicy } from "@/lib/bookings/customer-cancel-money";
 import crypto from "crypto";
 
 function verifyActionToken(token: string): { bookingId: string; action: string; valid: boolean } {
@@ -62,7 +62,7 @@ export async function GET(
   const { data: booking } = await admin
     .from("bookings")
     .select(
-      "id, status, starts_at, paid_amount, price_paid, payment_intent_id, payment_status, refunded_amount, stripe_customer_id, stripe_payment_method_id, salons(cancellation_fee_type, cancellation_fee_value, free_cancel_hours)"
+      "id, status, starts_at, paid_amount, price_paid, payment_intent_id, payment_status, refunded_amount, stripe_customer_id, stripe_payment_method_id, policy_snapshot, salons(cancellation_fee_type, cancellation_fee_value, free_cancel_hours)"
     )
     .eq("id", bookingId)
     .single();
@@ -136,6 +136,9 @@ export async function GET(
     // branch uses (lib/bookings/customer-cancel-money.ts) so a prepaid booking is refunded
     // base minus fee, matching /api/bookings/[id]/cancel's customer branch exactly. The
     // HMAC token IS the authorization here (same discipline as the read/update above).
+    // Same source as the canonical /cancel route: the frozen policy_snapshot, never the
+    // salon's current live policy (see lib/bookings/customer-cancel-money.ts).
+    const cancelPolicy = resolveCustomerCancelPolicy(bookingId, booking.policy_snapshot as any, booking.salons as any);
     const money = await applyCustomerCancelMoney(
       admin,
       {
@@ -149,7 +152,7 @@ export async function GET(
         stripe_customer_id: booking.stripe_customer_id,
         stripe_payment_method_id: booking.stripe_payment_method_id,
       },
-      booking.salons as any,
+      cancelPolicy,
       "customer cancelled via one-click email link",
     );
 

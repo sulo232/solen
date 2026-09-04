@@ -40,6 +40,49 @@ export interface CustomerCancelSalonPolicy {
   free_cancel_hours?: number | null;
 }
 
+/** Shape of `bookings.policy_snapshot`, frozen once at booking time
+ * (app/api/bookings/route.ts ~488, `policySnapshot`). Only the cancellation
+ * fields are read here; the no-show fields live on the same JSON object. */
+export interface CustomerCancelPolicySnapshot {
+  cancellation_fee_type?: string | null;
+  cancellation_fee_value?: number | null;
+  free_cancel_hours?: number | null;
+}
+
+/**
+ * Resolve the policy to BILL a customer cancel against: the terms frozen on the
+ * booking at booking time (bookings.policy_snapshot), never the salon's CURRENT
+ * live policy. A salon that tightens its cancellation terms after the booking was
+ * made must not retroactively charge a customer on terms they never agreed to.
+ * Mirrors the no-show cron's own snapshot-first pattern
+ * (app/api/cron/no-show/route.ts ~76-86): snapshot field wins when present,
+ * per-field fallback to the live salon otherwise, one warn log when the snapshot
+ * itself is missing/malformed (legacy pre-snapshot bookings).
+ *
+ * Every customer-cancel read site (the canonical /cancel route's GET preview +
+ * POST, and the public HMAC quick-action cancel link) must resolve through this
+ * before calling calculateCancellationFee / applyCustomerCancelMoney, so the
+ * preview a customer sees and the fee they're actually charged can never disagree.
+ */
+export function resolveCustomerCancelPolicy(
+  bookingId: string,
+  snapshot: CustomerCancelPolicySnapshot | null | undefined,
+  liveSalon: CustomerCancelSalonPolicy | null,
+): CustomerCancelSalonPolicy {
+  const wellFormed = snapshot != null && typeof snapshot === "object";
+  if (!wellFormed) {
+    console.warn(`[cancel] no policy_snapshot on booking ${bookingId}, billing on live salon policy`);
+  }
+  return {
+    cancellation_fee_type:
+      (wellFormed ? snapshot!.cancellation_fee_type : undefined) ?? liveSalon?.cancellation_fee_type ?? null,
+    cancellation_fee_value:
+      (wellFormed ? snapshot!.cancellation_fee_value : undefined) ?? liveSalon?.cancellation_fee_value ?? null,
+    free_cancel_hours:
+      (wellFormed ? snapshot!.free_cancel_hours : undefined) ?? liveSalon?.free_cancel_hours ?? 24,
+  };
+}
+
 export interface CustomerCancelMoneyResult {
   /** Integer Rappen (policy fee for cancelling inside the free-cancel window). */
   feeCents: number;

@@ -7,7 +7,7 @@ import { calculateCancellationFee } from "@/lib/cancellation-policy";
 import { validateBody, bookingCancelSchema } from "@/lib/validations";
 import { toRappen } from "@/lib/stripe";
 import { issueRefund, RefundError } from "@/lib/bookings/issue-refund";
-import { applyCustomerCancelMoney } from "@/lib/bookings/customer-cancel-money";
+import { applyCustomerCancelMoney, resolveCustomerCancelPolicy } from "@/lib/bookings/customer-cancel-money";
 import { logAuditEvent } from "@/lib/audit";
 import { applyRateLimit, bookingLimiter, getClientIp } from "@/lib/ratelimit";
 import { resolveSwissLocale } from "@/lib/format";
@@ -48,14 +48,19 @@ export async function GET(
 
   const isCustomer = actor === "customer" || actor === "guest";
   const baseCents = (booking.paid_amount as number | null) ?? toRappen(Number(booking.price_paid ?? 0));
-  const freeCancelHours = salon?.free_cancel_hours ?? 24;
+  // Bill the preview off the SAME source as the real charge (POST below): the terms frozen
+  // on the booking at booking time, not the salon's current live policy. Otherwise the
+  // preview and the actual charge can disagree whenever the salon tightened its policy
+  // after this booking was made.
+  const policy = resolveCustomerCancelPolicy(id, booking.policy_snapshot as any, salon ?? null);
+  const freeCancelHours = policy.free_cancel_hours ?? 24;
 
   let feeCents = 0;
   let isWithinWindow = false;
   if (isCustomer) {
     const calc = calculateCancellationFee(
-      salon?.cancellation_fee_type,
-      salon?.cancellation_fee_value,
+      policy.cancellation_fee_type,
+      policy.cancellation_fee_value,
       freeCancelHours,
       baseCents,
       new Date(booking.starts_at),
@@ -232,6 +237,10 @@ export async function POST(
   let feeChargedCents = 0;
   if (isCustomer) {
     const adminForCustomerCancel = createAdminSupabaseClient();
+    // Same source as the GET preview above: the frozen policy_snapshot, never the salon's
+    // current live policy, so a salon tightening its terms after this booking was made
+    // cannot retroactively charge on terms the customer never saw.
+    const cancelPolicy = resolveCustomerCancelPolicy(id, booking.policy_snapshot as any, salon);
     const money = await applyCustomerCancelMoney(
       adminForCustomerCancel,
       {
@@ -245,7 +254,7 @@ export async function POST(
         stripe_customer_id: booking.stripe_customer_id,
         stripe_payment_method_id: booking.stripe_payment_method_id,
       },
-      salon,
+      cancelPolicy,
       reason ?? (actor === "guest" ? "guest cancelled the booking" : "customer cancelled the booking"),
     );
     feeCents = money.feeCents;
