@@ -630,7 +630,9 @@ export const salonPortfolioCategorySchema = z.object({
 
 export const walkinJoinSchema = z.object({
   salon_id: z.string().uuid(),
-  customer_name: z.string().min(1).max(100),
+  // Optional: the one-tap express flow (ExpressMenu.tsx) has no name input, so it omits this
+  // field rather than sending a placeholder. lib/walkin/join.ts falls back to the ticket code.
+  customer_name: z.string().min(1).max(100).optional(),
   customer_phone: z.string().max(20).optional(),
   service_id: z.string().uuid().optional(),
   preferred_barber_id: z.string().uuid().optional(),

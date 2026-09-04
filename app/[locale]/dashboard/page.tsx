@@ -99,7 +99,6 @@ export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [staff, setStaff] = useState<StaffStat[]>([]);
   const [salonId, setSalonId] = useState<string | undefined>();
-  const [unread, setUnread] = useState(0);
   const [loading, setLoading] = useState(true);
   const [salonName, setSalonName] = useState<string | undefined>();
   const [salonCategories, setSalonCategories] = useState<string[] | undefined>();
@@ -133,10 +132,6 @@ export default function DashboardPage() {
         setBookings(bData?.bookings ?? []);
         if (analyticsData) setStats(analyticsData);
         if (staffData?.staff) setStaff(staffData.staff);
-        if (convoData) {
-          const convos: { unread_count_salon?: number }[] = convoData.conversations ?? convoData.data ?? [];
-          setUnread(convos.reduce((sum, c) => sum + (c.unread_count_salon ?? 0), 0));
-        }
       })
       .catch((err) => console.error("[Dashboard] Failed to fetch dashboard data:", err))
       .finally(() => setLoading(false));
@@ -147,7 +142,7 @@ export default function DashboardPage() {
   const daily = stats?.daily ?? [];
 
   return (
-    <DashboardLayout salonName={salonName} salonCategories={salonCategories} unreadCount={unread}>
+    <DashboardLayout salonName={salonName} salonCategories={salonCategories}>
       <AnimatePresence>
         {showCelebration && (
           <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.28 }} /* mockup-ok: retime only, motion-ok: pre-existing entrance retimed to THE SPEED LAW reveal tier, not net-new */

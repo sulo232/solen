@@ -50,7 +50,9 @@ export default function ExpressMenu({ salonId }: ExpressMenuProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           salon_id: salonId,
-          customer_name: t("walk_in_customer"),
+          // No name captured here (this is the one-tap express flow): the queue route's
+          // schema treats customer_name as optional and lib/walkin/join.ts falls back to the
+          // ticket code, never a placeholder string like "Walk-in Customer".
           service_id: serviceId,
           join_method: "in_person",
         }),

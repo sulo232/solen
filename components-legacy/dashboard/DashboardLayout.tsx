@@ -144,7 +144,6 @@ interface DashboardLayoutProps {
   children: React.ReactNode;
   salonName?: string;
   salonAvatar?: string | null;
-  unreadCount?: number;
   salonCategories?: string[];
 }
 
@@ -152,7 +151,6 @@ export default function DashboardLayout({
   children,
   salonName,
   salonAvatar,
-  unreadCount = 0,
   salonCategories,
 }: DashboardLayoutProps) {
   const locale = useLocale();

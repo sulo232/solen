@@ -19,7 +19,7 @@ import { strokeForSize } from "@/lib/icon-stroke";
 interface QueueStatus {
   id: string;
   customerName: string; // the ticket code, e.g. "A01"
-  firstName?: string | null; // real customer first name NOT captured yet (backend gap); always null today
+  firstName?: string | null; // first word of a REAL captured customer_name (never the ticket-code fallback), computed server-side in /api/walkin/queue/status
   position: number;
   status: "waiting" | "in_chair" | "completed" | "no_show" | "cancelled";
   estimatedWaitMinutes: number;
@@ -341,8 +341,10 @@ export default function QueueTrackingPage() {
     : data.salonAddress
       ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(data.salonAddress)}`
       : null;
-  // Name-led header only once the backend captures a real first name (today firstName is always null
-  // because the queue stores the ticket code AS the name). Falls back to no name never fabricated.
+  // Name-led header when a real customer name was captured (staff-added cash walk-ins). Most
+  // visits are the pay-first flow, which never captures a name (row falls back to the ticket
+  // code, "staff call the number"); the status API already tells those apart, so this never
+  // fabricates a name out of a ticket code. Falls back to no name, never fabricated.
   const waitHeader = data.firstName ? `${l.whileYouWait}, ${data.firstName}` : l.whileYouWait;
 
   return (

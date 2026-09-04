@@ -18,7 +18,9 @@ import { hashTrackingToken } from "@/lib/walkin/authz";
 export interface JoinQueueParams {
   salonId: string;
   customerId?: string | null;
-  customerName: string;
+  // No name captured (e.g. the ExpressMenu one-tap flow) falls back to the ticket code at
+  // insert time below, mirroring lib/barber/walkin-ticket.ts's `fields.customer_name ?? ticketCode`.
+  customerName?: string | null;
   customerPhone?: string | null;
   serviceId?: string | null;
   preferredBarberId?: string | null;
@@ -73,7 +75,10 @@ export async function joinWalkinQueue(
       .insert({
         salon_id: params.salonId,
         customer_id: params.customerId ?? null,
-        customer_name: params.customerName,
+        // ticketCode is already issued above (line 56), before this insert, so a missing name
+        // falls back to it directly, never a placeholder string, and never null (the status
+        // route's hasCapturedName check treats "name === ticket_code" as no captured name).
+        customer_name: params.customerName?.trim() || ticketCode,
         customer_phone: params.customerPhone ?? null,
         service_id: params.serviceId ?? null,
         preferred_barber_id: params.preferredBarberId ?? null,
