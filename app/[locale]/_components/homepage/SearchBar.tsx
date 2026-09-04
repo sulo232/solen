@@ -6,44 +6,36 @@ import { useRouter, useParams } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion, type Transition } from "motion/react";
 import {
   Calendar,
-  Footprints,
-  Hand,
-  Leaf,
   MapPin,
   Moon,
-  Navigation,
-  Palette,
-  Scissors,
   Search,
   Sun,
   Sunrise,
   Sunset,
-  X,
   type LucideIcon,
 } from "lucide-react";
 import { type CalendarDate, getLocalTimeZone } from "@internationalized/date";
-import { DateTimePicker } from "@/app/[locale]/_components/primitives";
 import { cn } from "@/lib/utils";
-import { SEARCH_CITIES as CITIES } from "@/lib/cities";
 import { formatDateLabel } from "@/lib/format";
 import { SearchOverlay } from "@/app/[locale]/_components/search/SearchOverlay";
-import { useTranslations } from "next-intl";
 
 /**
- * Hero search bar — Dynamic-Island-style morphing pill.
+ * Hero search bar (Dynamic-Island-style morphing pill).
  *
  * Animation architecture (matches user-supplied DynamicIslandTOC reference):
  *   - ONE container morphs between explicit width/height/borderRadius values
- *     (NOT `layout` animation — explicit values are smoother & predictable)
- *   - TWO content layers stacked absolutely inside the morphing container
- *   - Cross-fade between layers with STAGGER DELAY (0.1s):
- *       collapsed → expanded: collapsed fades out 0s, expanded fades in 0.1s
- *       expanded → collapsed: expanded fades out 0s, collapsed fades in 0.1s
- *     The 0.1s stagger creates the "hand-off" feel — neither layer fights
- *     the other for visibility during the morph.
+ *     (NOT `layout` animation, explicit values are smoother and predictable)
  *   - `overflow-hidden` on the morphing container clips content during morph
  *
- * Tween: cubic-bezier(0.22, 1, 0.36, 1) duration 0.5s — same as reference.
+ * Tween: cubic-bezier(0.22, 1, 0.36, 1) duration 0.5s, same as reference.
+ *
+ * 2026-09-04: the dormant "expanded island" content layer (in-place segment
+ * tabs, service/city/time chips, its own handleSubmit) was removed. It was
+ * never reachable: every resting row calls openOverlay() below and hands
+ * off to SearchOverlay instead. `active`/`isExpanded`, the backdrop and
+ * `islandTransition` stay: the live collapsed pill's own height/radius
+ * morph (mobile to desktop) and the collapsed layer's own animate still
+ * read them, even though `isExpanded` is now always false in practice.
  */
 
 type Segment = "service" | "stadt" | "zeit";
@@ -101,23 +93,6 @@ const HEIGHT = {
   desktop: { collapsed: 60,  expanded: 600 },
 };
 
-// V2-D49b: each service chip gets an icon in front (Fresha treatment-list pattern,
-// adapted to our flat chip style). Icons are lucide-react — same set used elsewhere
-// in the homepage. Coiffeur + Barbershop both use Scissors (haircut iconography);
-// the labels disambiguate.
-const SERVICES: { label: string; icon: LucideIcon }[] = [
-  { label: "Coiffeur",       icon: Scissors },
-  { label: "Barbershop",     icon: Scissors },
-  { label: "Nails",          icon: Hand },
-  { label: "Spa & Wellness", icon: Leaf },
-  { label: "Massage",        icon: Hand },
-  { label: "Maniküre",       icon: Hand },
-  { label: "Pediküre",       icon: Footprints },
-  { label: "Färben",         icon: Palette },
-];
-
-// CITIES: single canonical source is SEARCH_CITIES (lib/cities.ts), imported above.
-
 // V2-D49: period-of-day chips replace the loose "Jetzt / Heute / Morgen" list.
 // Locked decision (user pick B): day + period chips, NOT hour-by-hour. Exact-slot
 // picking happens on the salon detail page after a salon is chosen.
@@ -131,12 +106,6 @@ const PERIODS: { label: string; value: string; icon: LucideIcon }[] = [
 ];
 
 export function SearchBar() {
-  // 2026-08-15 i18n sweep: three hardcoded German literals below. Each reuses a key that already
-  // existed rather than minting a new one.
-  const t = useTranslations("home.guidedSearch");
-  const tCat = useTranslations("home.categories");
-  const tSearch = useTranslations("ui.searchOverlay");
-  const tCommon = useTranslations("common");
   const router = useRouter();
   const params = useParams<{ locale: string }>()!;
   const locale = params?.locale ?? "de";
@@ -144,9 +113,10 @@ export function SearchBar() {
   const [active, setActive] = React.useState<Segment | null>(null);
   // V2-D51 Path C (completed): the resting hero pill now opens the full-page
   // SearchOverlay (search is full-page everywhere, like Fresha) instead of
-  // morphing into the in-place island. The island JSX below is kept dormant
-  // (never re-triggered from the resting rows) so nothing that referenced it
-  // breaks; `overlayOpen` drives the real search surface.
+  // morphing into an in-place island. The island's own expanded-state JSX
+  // was removed 2026-09-04 (it was never reachable); `overlayOpen` drives
+  // the real search surface. `active`/`isExpanded` stay: the live collapsed
+  // pill still reads them for its own morph animate (see file header).
   const [overlayOpen, setOverlayOpen] = React.useState(false);
   // Which field the user tapped on the resting hero. Passed to SearchOverlay as
   // `initialFocus` so each row opens its OWN picker — tapping "Stadt" lands on
@@ -221,22 +191,6 @@ export function SearchBar() {
 
   const isExpanded = active !== null;
   const sizes = isDesktop ? HEIGHT.desktop : HEIGHT.mobile;
-
-  // V2-D49: submit builds URL params and navigates to the existing /[locale]/search
-  // route. Empty fields are omitted from the query string, so a fully-empty submit
-  // lands on /search showing all venues with no filters applied.
-  // Decision lock (user pick B): single-select service, single date, day + period
-  // chips, "Alle Services" === empty (placeholder stays "Service" until tap).
-  const handleSubmit = () => {
-    const sp = new URLSearchParams();
-    if (service) sp.set("service", service);
-    if (stadt) sp.set("city", stadt);
-    if (zeitDate) sp.set("date", zeitDate.toString());
-    if (zeitPeriod) sp.set("period", zeitPeriod);
-    const query = sp.toString();
-    router.push(`/${locale}/search${query ? `?${query}` : ""}`);
-    setActive(null);
-  };
 
   return (
     <>
@@ -384,254 +338,6 @@ export function SearchBar() {
             Termine finden
           </button>
         </motion.div>
-
-        {/* EXPANDED LAYER — active segment's picker */}
-        <motion.div
-          initial={false}
-          animate={{
-            opacity: isExpanded ? 1 : 0,
-            scale: isExpanded ? 1 : 1.05,
-          }}
-          transition={prefersReducedMotion ? instantTransition : { ...islandTransition, delay: isExpanded ? 0.1 : 0 }}
-          className={cn(
-            "absolute inset-0 flex flex-col",
-            !isExpanded && "pointer-events-none",
-          )}
-        >
-          {/* Header w segment tabs + close */}
-          <div className="flex items-center justify-between gap-2 border-b border-s-border px-5 py-4">
-            <div className="flex gap-1">
-              <SegmentTab
-                active={active === "service"}
-                onClick={() => setActive("service")}
-                label={service || "Service"}
-                isPlaceholder={!service}
-              />
-              <SegmentTab
-                active={active === "stadt"}
-                onClick={() => setActive("stadt")}
-                label={stadt || "Stadt"}
-                isPlaceholder={!stadt}
-              />
-              <SegmentTab
-                active={active === "zeit"}
-                onClick={() => setActive("zeit")}
-                label={zeit || "Zeit"}
-                isPlaceholder={!zeit}
-              />
-            </div>
-            <button
-              type="button"
-              onClick={() => setActive(null)}
-              aria-label={tCommon("close")}
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink-2 transition-[colors,transform] hover:bg-s-bg-sunken hover:text-s-ink active:scale-[0.94] active:duration-[80ms] active:ease-glide"
-            >
-              <X size={18} strokeWidth={1.9} />
-            </button>
-          </div>
-
-          {/* Picker content — cross-fades when active segment changes */}
-          <div className="flex-1 overflow-y-auto px-5 py-5">
-            <AnimatePresence mode="wait" initial={false}>
-              {active === "service" && (
-                <motion.div
-                  key="service"
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  <input
-                    type="text"
-                    autoFocus
-                    placeholder={tCat("title")}
-                    value={service}
-                    onChange={(e) => setService(e.target.value)}
-                    className="w-full border-b pb-3 font-display text-[22px] font-bold text-s-ink placeholder:text-s-ink-2 focus:outline-none" // mockup-ok: dead-class removal only, type=text already caught before this change (V3-D-input-fill-2026-07-17)
-                  />
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    {SERVICES.map((s) => {
-                      const Icon = s.icon;
-                      const isPicked = service === s.label;
-                      return (
-                        <button
-                          key={s.label}
-                          type="button"
-                          onClick={() => {
-                            setService(s.label);
-                            setActive("stadt");
-                          }}
-                          className={cn(
-                            "inline-flex items-center gap-2 rounded-full border px-3.5 py-2 font-body text-[14px] font-medium transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide",
-                            isPicked
-                              ? "border-s-ink bg-s-ink text-white"
-                              : "border-s-border bg-white text-s-ink-2 hover:border-s-ink hover:text-s-ink",
-                          )}
-                        >
-                          <Icon
-                            size={14}
-                            strokeWidth={1.6}
-                            className={cn("shrink-0", !isPicked && "text-s-ink")}
-                          />
-                          {s.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </motion.div>
-              )}
-
-              {active === "stadt" && (
-                <motion.div
-                  key="stadt"
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  <input
-                    type="text"
-                    autoFocus
-                    placeholder="Wo?"
-                    value={stadt}
-                    onChange={(e) => setStadt(e.target.value)}
-                    className="w-full border-b pb-3 font-display text-[22px] font-bold text-s-ink placeholder:text-s-ink-2 focus:outline-none" // mockup-ok: dead-class removal only, type=text already caught before this change (V3-D-input-fill-2026-07-17)
-                  />
-
-                  {/* V2-D49: primary "current location" row at the top of the
-                      city picker. Stores the literal label as the value for now;
-                      the actual lat/lng resolution is deferred until the search
-                      results page reads it from the query string. */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setStadt("Aktueller Standort");
-                      setActive("zeit");
-                    }}
-                    className="mt-5 flex w-full items-center gap-3 rounded-2xl border border-s-border bg-white px-4 py-3 transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.98] active:duration-[80ms] active:ease-glide"
-                  >
-                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-s-ink text-white">
-                      <Navigation size={16} strokeWidth={1.9} />
-                    </span>
-                    <span className="font-body font-semibold text-s-ink">
-                      {tSearch("currentLocation")}
-                    </span>
-                  </button>
-
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {CITIES.map((c) => (
-                      <button
-                        key={c}
-                        type="button"
-                        onClick={() => {
-                          setStadt(c);
-                          setActive("zeit");
-                        }}
-                        className="rounded-full border border-s-border bg-white px-4 py-2 font-body text-[14px] font-medium text-s-ink-2 transition-[colors,transform] hover:border-s-ink hover:text-s-ink active:scale-[0.98] active:duration-[80ms] active:ease-glide"
-                      >
-                        {c}
-                      </button>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-
-              {active === "zeit" && (
-                <motion.div
-                  key="zeit"
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  <div className="font-display text-[22px] font-bold text-s-ink mb-5">
-                    Wann?
-                  </div>
-
-                  {/* V2-D49: real Calendar primitive (single-date variant) replaces
-                      the loose Jetzt/Heute/Morgen chips. Reuses §F.5 DateTimePicker
-                      so the homepage search and the booking flow share one Calendar
-                      visual. `time: null` because the search bar only goes to period
-                      granularity — exact slot picking happens on salon detail. */}
-                  <DateTimePicker
-                    variant="single-date"
-                    value={{ date: zeitDate, time: null }}
-                    onChange={({ date }) => setZeitDate(date)}
-                  />
-
-                  {/* Period-of-day chips — independent filter from the date.
-                      Tapping the same chip twice clears it (toggle behavior). */}
-                  <div className="mt-5">
-                    <div className="font-body text-[13px] font-medium text-s-ink-2 mb-2">
-                      Tageszeit
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {PERIODS.map((p) => {
-                        const Icon = p.icon;
-                        const isPicked = zeitPeriod === p.value;
-                        return (
-                          <button
-                            key={p.value}
-                            type="button"
-                            onClick={() => {
-                              setZeitPeriod(isPicked ? "" : p.value);
-                            }}
-                            className={cn(
-                              "inline-flex items-center gap-2 rounded-full border px-3.5 py-2 font-body text-[14px] font-medium transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide",
-                              isPicked
-                                ? "border-s-ink bg-s-ink text-white"
-                                : "border-s-border bg-white text-s-ink-2 hover:border-s-ink hover:text-s-ink",
-                            )}
-                          >
-                            <Icon
-                              size={14}
-                              strokeWidth={1.6}
-                              className={cn("shrink-0", !isPicked && "text-s-ink")}
-                            />
-                            {p.label}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          {/* Footer w submit */}
-          <div className="border-t border-s-border p-3 flex items-center justify-between">
-            <button
-              type="button"
-              onClick={() => {
-                setService("");
-                setStadt("");
-                setZeitDate(null);
-                setZeitPeriod("");
-              }}
-              // RANGE_LAW A5 (2026-07-25): font-semibold -> font-medium. A reset link
-              // is a label, not a commit action, keep weight on "Termine finden" only.
-              className="font-body text-[14px] font-medium text-s-ink-2 underline-offset-2 px-3 py-2 hover:text-s-ink transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide"
-            >
-              {t("reset")}
-            </button>
-            <button
-              type="button"
-              onClick={handleSubmit}
-              // V3-D192-fix: expanded picker CTA also reverted to ink (same logic
-              // as primary CTA — accent ≠ primary action surface).
-              // RANGE_LAW A5/A6 (2026-07-25): font-semibold -> font-medium ("Termine
-              // finden" is the one commit CTA that keeps weight, this is a secondary
-              // redundant submit); default 16px -> text-[15px] to merge into the same
-              // CTA-size bucket as "Termine finden" instead of adding a 6th size.
-              // mockup-ok: task-directed weight/size demotion (RANGE_LAW A5/A6, owner
-              // "go apply evrth" on /dev/flatness Demo 1's emphasis-inflation fix).
-              className="font-body shrink-0 rounded-full border-0 bg-s-ink px-6 py-3 text-[15px] font-medium text-white transition-[colors,transform] hover:bg-black active:scale-[0.97] active:duration-[80ms] active:ease-glide"
-            >
-              {tSearch("submit")}
-            </button>
-          </div>
-        </motion.div>
       </motion.div>
 
       {/* V2-D51 Path C: the full-page search surface. Opened by tapping any
@@ -712,41 +418,6 @@ function CollapsedRow({
       >
         {value}
       </span>
-    </button>
-  );
-}
-
-/**
- * Header tab inside the expanded state. Switches active segment.
- */
-function SegmentTab({
-  active,
-  onClick,
-  label,
-  isPlaceholder,
-}: {
-  active: boolean;
-  onClick: () => void;
-  label: string;
-  isPlaceholder: boolean;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      // RANGE_LAW A5/A6 (2026-07-25): mirrors the TabPill primitive's locked
-      // active/inactive weight split (active font-semibold, inactive font-medium)
-      // instead of a flat font-semibold; 13px -> 14px merges into the body-size
-      // bucket rather than adding a distinct size next to it.
-      // mockup-ok: task-directed weight/size demotion (RANGE_LAW A5/A6).
-      className={cn(
-        "rounded-full px-3 py-1.5 font-body text-[14px] font-medium transition-colors",
-        active && "bg-s-bg-sunken text-s-ink font-semibold",
-        !active && isPlaceholder && "text-s-ink-2 hover:text-s-ink",
-        !active && !isPlaceholder && "text-s-ink hover:bg-s-bg-sunken",
-      )}
-    >
-      {label}
     </button>
   );
 }
