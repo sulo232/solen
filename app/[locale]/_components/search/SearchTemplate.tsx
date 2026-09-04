@@ -2184,12 +2184,13 @@ export default function SearchTemplate({
         </div>
       )}
 
-      {/* Floating "Karte" pill — bottom-center, ink fill, scroll-revealed once
-          the big search clears the viewport (mapFabVisible). It is the SOLE map
-          affordance (the sticky map button was removed), so it never co-exists
-          with the big search's map icon. Fires the shared handleMapToggle;
-          label flips to "Liste" while the map is open. V3-D350: now always
-          rendered (default UI, no flag).
+      {/* Floating "Karte" pill (bottom-center, ink fill), scroll-revealed once
+          the big search clears the viewport (mapFabVisible). This is the MOBILE map
+          affordance only (`md:hidden` on the button below); at md+ the desktop header's
+          "Open map" icon button (~line 1408, `hidden md:grid`, same handleMapToggle) is the
+          map affordance instead, so the two never co-exist at any one breakpoint.
+          Fires the shared handleMapToggle; label flips to "Liste" while the map is open.
+          V3-D350: now always rendered (default UI, no flag).
           NOT MOUNTED (2026-09-04 round 2), not just hidden, while cookieBannerVisible
           (both portal to document.body at a higher z than the banner and painted over its
           text) or searchOverlayOpen (SearchOverlay portals at raw z 100-102, below z-float,
@@ -2218,6 +2219,9 @@ export default function SearchTemplate({
               // bottom-[86px] = 58 (expanded nav height) + 12 (nav's own bottom margin) + 16
               // (design system gap), clears the expanded nav's top edge by the full 16px in
               // both nav states, since the condensed nav (50px) only needs less clearance.
+              // md:hidden (this round): mobile-only affordance now that the desktop header's
+              // "Open map" icon button (~line 1408) covers md+; without this the two co-existed.
+              "md:hidden",
               "fixed bottom-[86px] left-1/2 z-float -translate-x-1/2",
               "inline-flex items-center gap-2 rounded-pill bg-s-ink px-[18px] py-[11px]",
               "font-body text-[13.5px] font-medium text-white",
