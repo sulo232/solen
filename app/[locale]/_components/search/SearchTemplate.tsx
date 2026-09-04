@@ -40,6 +40,7 @@ import dynamic from "next/dynamic";
 import { motion, AnimatePresence, useReducedMotion, useMotionValue, useTransform } from "motion/react"; // mockup-ok: owner-approved /dev/map-motion (2026-07-02); B6 continuous scroll-morph fix (2026-07-03)
 import { useTranslations } from "next-intl";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
+import { useCookieConsent } from "@/app/[locale]/_components/primitives/CookieConsent";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
 import {
@@ -761,6 +762,12 @@ export default function SearchTemplate({
   // `window` (not a nested container) — same scroll axis the Header watches.
   const [mapFabVisible, setMapFabVisible] = React.useState(false);
   const bigSearchRef = React.useRef<HTMLDivElement | null>(null);
+  // Map pill visibility gate (2026-09-04 punch-list round 2): the pill portals to
+  // document.body at z-float (200), which sits above the cookie banner (z-banner, 180) and
+  // above SearchOverlay's raw z 100-102, so it painted over the banner's text and over the
+  // overlay's own action row. Reusing bannerVisible from CookieConsentProvider (the single
+  // owner of the banner's actual on-screen state) instead of re-deriving it here.
+  const { bannerVisible: cookieBannerVisible } = useCookieConsent();
   // V2-D51 Path C: the sticky search bar opens the full-page SearchOverlay
   // (search is full-page everywhere, like Fresha) instead of routing to the
   // homepage. Seeds the active city so the composer continues the context.
@@ -2182,38 +2189,70 @@ export default function SearchTemplate({
           affordance (the sticky map button was removed), so it never co-exists
           with the big search's map icon. Fires the shared handleMapToggle;
           label flips to "Liste" while the map is open. V3-D350: now always
-          rendered (default UI — no flag). */}
-      <button
-        type="button"
-        onClick={handleMapToggle}
-        aria-pressed={mapOpen || mobileView === "map"}
-        aria-label={
-          mapOpen || mobileView === "map"
-            ? LIST_FAB_LABEL[locale] ?? LIST_FAB_LABEL.de
-            : MAP_FAB_LABEL[locale] ?? MAP_FAB_LABEL.de
-        }
-        className={cn(
-          "fixed bottom-5 left-1/2 z-30 -translate-x-1/2",
-          "inline-flex items-center gap-2 rounded-pill bg-s-ink px-[18px] py-[11px]",
-          "font-body text-[13.5px] font-medium text-white",
-          "shadow-[0_6px_20px_rgba(50,47,44,0.18),0_2px_6px_rgba(50,47,44,0.10)]",
-          "transition-[opacity,transform] duration-200 ease-glide",
-          "hover:bg-black active:scale-[0.97] active:duration-[80ms]",
-          "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
-          mapFabVisible
-            ? "opacity-100 translate-y-0 pointer-events-auto"
-            : "pointer-events-none translate-y-3.5 opacity-0",
-        )}
-      >
-        {mapOpen || mobileView === "map" ? (
-          <ListIcon size={16} strokeWidth={1.9} aria-hidden />
-        ) : (
-          <MapIcon size={16} strokeWidth={1.9} aria-hidden />
-        )}
-        {mapOpen || mobileView === "map"
-          ? LIST_FAB_LABEL[locale] ?? LIST_FAB_LABEL.de
-          : MAP_FAB_LABEL[locale] ?? MAP_FAB_LABEL.de}
-      </button>
+          rendered (default UI, no flag).
+          NOT MOUNTED (2026-09-04 round 2), not just hidden, while cookieBannerVisible
+          (both portal to document.body at a higher z than the banner and painted over its
+          text) or searchOverlayOpen (SearchOverlay portals at raw z 100-102, below z-float,
+          but the pill still sat on top of the overlay's own action row). */}
+      {!cookieBannerVisible && !searchOverlayOpen && (() => {
+        const mapPill = (
+          <button
+            type="button"
+            onClick={handleMapToggle}
+            aria-pressed={mapOpen || mobileView === "map"}
+            aria-label={
+              mapOpen || mobileView === "map"
+                ? LIST_FAB_LABEL[locale] ?? LIST_FAB_LABEL.de
+                : MAP_FAB_LABEL[locale] ?? MAP_FAB_LABEL.de
+            }
+            className={cn(
+              // Z-INDEX + POSITION FIX (2026-09-04): was `bottom-5 z-30`, which put this pill under
+              // the BottomNav's hit area (z-nav, 150) on mobile, measured to intercept a tap and
+              // route it to the nav's Saved link instead of opening the map. `z-float` (200,
+              // tailwind config zIndex block) sits above the nav and below every locked overlay
+              // (sheet-bg 400+), so a filter sheet still covers this pill.
+              // OFFSET CORRECTED (2026-09-04 round 2): the `bottom-[73px]` above assumed a flat
+              // 57px nav + 16px gap; measured live at 390x844 the nav (`nav[aria-label]`, z-nav
+              // 150) is 50px tall condensed / 58px tall expanded, plus a 12px bottom margin, so
+              // against the expanded state the pill's bottom edge landed only 3px clear, not 16.
+              // bottom-[86px] = 58 (expanded nav height) + 12 (nav's own bottom margin) + 16
+              // (design system gap), clears the expanded nav's top edge by the full 16px in
+              // both nav states, since the condensed nav (50px) only needs less clearance.
+              "fixed bottom-[86px] left-1/2 z-float -translate-x-1/2",
+              "inline-flex items-center gap-2 rounded-pill bg-s-ink px-[18px] py-[11px]",
+              "font-body text-[13.5px] font-medium text-white",
+              "shadow-[0_6px_20px_rgba(50,47,44,0.18),0_2px_6px_rgba(50,47,44,0.10)]",
+              "transition-[opacity,transform] duration-200 ease-glide",
+              "hover:bg-black active:scale-[0.97] active:duration-[80ms]",
+              "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+              mapFabVisible
+                ? "opacity-100 translate-y-0 pointer-events-auto"
+                : "pointer-events-none translate-y-3.5 opacity-0",
+            )}
+          >
+            {mapOpen || mobileView === "map" ? (
+              <ListIcon size={16} strokeWidth={1.9} aria-hidden />
+            ) : (
+              <MapIcon size={16} strokeWidth={1.9} aria-hidden />
+            )}
+            {mapOpen || mobileView === "map"
+              ? LIST_FAB_LABEL[locale] ?? LIST_FAB_LABEL.de
+              : MAP_FAB_LABEL[locale] ?? MAP_FAB_LABEL.de}
+          </button>
+        );
+        // PORTAL FIX (2026-09-04), same pattern as the map overlay portal above (V3-D382) and
+        // Toast.tsx's own createPortal(..., document.body): app/[locale]/layout.tsx wraps the
+        // page in main className="isolate ...", which creates a NEW stacking context. A
+        // position:fixed element's z-index is only ever compared against siblings WITHIN its
+        // own stacking context, so as long as this button stayed inside main, no z-index value
+        // could make it beat a fixed element mounted as a later sibling of main at the true
+        // document root, e.g. the cookie consent banner, regardless of the two elements' actual
+        // z-index numbers. Measured live with elementsFromPoint: with z-float (200) vs the
+        // banner's z-banner (180), the banner's own paragraph text still won the hit test at the
+        // pill's centre. Portalling to document.body moves the pill to the SAME root stacking
+        // level the banner and Toast already use, so the z-index comparison is finally real.
+        return typeof document !== "undefined" ? createPortal(mapPill, document.body) : mapPill;
+      })()}
 
       {/* V3-D351: FilterSheet - opened by the round filter button. Every control
           writes the SAME URL params as the chip row (single source of truth);

@@ -67,6 +67,14 @@ export interface CookieConsentContextValue {
   consent: CookieConsentState | null;
   /** True if user has made a consent choice (banner should be hidden). */
   hasConsented: boolean;
+  /**
+   * True only while the banner is actually painted on screen: mounted (not
+   * yet consented) AND not suppressed by route (walk-in-pay/dashboard/dev)
+   * AND not suppressed by an open sheet/modal/overlay. Consumers that stack
+   * their own fixed UI over the banner (e.g. SearchTemplate's map pill) read
+   * this instead of duplicating the suppression rules.
+   */
+  bannerVisible: boolean;
   /** Show the settings modal (used by footer link). */
   openSettings: () => void;
   /** Accept all categories (banner primary CTA). */
@@ -97,6 +105,10 @@ export function CookieConsentProvider({ children }: { children: React.ReactNode 
   const [consent, setConsent] = React.useState<CookieConsentState | null>(null);
   const [hydrated, setHydrated] = React.useState(false);
   const [settingsOpen, setSettingsOpen] = React.useState(false);
+  // Mirrors whether <CookieBanner> is actually painted right now (it can mount and still
+  // return null for a suppressed route or an open overlay). CookieBanner reports its own
+  // visibility back up via onVisibilityChange so this stays the single source of truth.
+  const [bannerVisible, setBannerVisible] = React.useState(false);
 
   // Hydrate from localStorage on mount
   React.useEffect(() => {
@@ -188,20 +200,21 @@ export function CookieConsentProvider({ children }: { children: React.ReactNode 
     () => ({
       consent,
       hasConsented: consent !== null,
+      bannerVisible,
       openSettings,
       acceptAll,
       acceptNecessary,
       savePreferences,
       withdrawConsent,
     }),
-    [consent, openSettings, acceptAll, acceptNecessary, savePreferences, withdrawConsent],
+    [consent, bannerVisible, openSettings, acceptAll, acceptNecessary, savePreferences, withdrawConsent],
   );
 
   return (
     <CookieContext.Provider value={value}>
       {children}
       {/* Don't render banner until hydrated — prevents SSR/CSR flash */}
-      {hydrated && !consent && <CookieBanner />}
+      {hydrated && !consent && <CookieBanner onVisibilityChange={setBannerVisible} />}
       <CookieSettingsModal isOpen={settingsOpen} onOpenChange={setSettingsOpen} />
     </CookieContext.Provider>
   );
@@ -239,10 +252,23 @@ function useOverlayOwnsScreen(): boolean {
   return owned;
 }
 
-function CookieBanner() {
+function CookieBanner({ onVisibilityChange }: { onVisibilityChange: (visible: boolean) => void }) {
   const { acceptAll, acceptNecessary, openSettings } = useCookieConsent();
   const pathname = usePathname() ?? "/";
   const overlayOwnsScreen = useOverlayOwnsScreen();
+  const suppressedByRoute = !!pathname && (
+    /\/walk-in-pay\/?$/.test(pathname) || /\/dashboard(\/|$)/.test(pathname) || /\/dev(\/|$)/.test(pathname)
+  );
+  const visible = !suppressedByRoute && !overlayOwnsScreen;
+
+  // Reports the banner's actual on-screen state up to CookieConsentProvider (bannerVisible),
+  // covering both suppression branches below AND unmount (consent given): CookieConsentContextValue
+  // consumers that stack fixed UI over this banner (SearchTemplate's map pill) read that flag
+  // instead of re-deriving these same route/overlay rules a second time.
+  React.useEffect(() => {
+    onVisibilityChange(visible);
+    return () => onVisibilityChange(false);
+  }, [visible, onVisibilityChange]);
 
   // Display-only suppression on focused flows: the fixed bottom strip covered the
   // pay CTA on /walk-in-pay, and on the owner /dashboard it overlapped page content
@@ -258,8 +284,7 @@ function CookieBanner() {
   // Consent STATE is untouched, exactly as in the two cases above: nothing is auto-accepted and
   // analytics stays off until the visitor answers the banner on a real page, so this stays
   // DSG/GDPR-safe. /dev is dev-only anyway; those routes `notFound()` in production.
-  if (pathname && (/\/walk-in-pay\/?$/.test(pathname) || /\/dashboard(\/|$)/.test(pathname)
-                   || /\/dev(\/|$)/.test(pathname))) return null;
+  if (suppressedByRoute) return null;
 
   // S1 (owner decision 2026-08-03): same display-only suppression while a sheet or modal owns the
   // screen, and the banner returns the moment that closes. This z-tooltip (700) strip sat over the
@@ -278,7 +303,17 @@ function CookieBanner() {
       role="region"
       aria-label="Cookie-Einwilligung"
       className={cn(
-        "fixed z-tooltip",
+        // Z-INDEX FIX (2026-09-04): was `z-tooltip` (700), which sat above the toast layer (600)
+        // and covered the favorites Undo toast on a fresh session with no consent yet. Moved to
+        // `z-banner` (180, tailwind config zIndex block): above the nav (150) so it still floats
+        // over ordinary page chrome, below every locked overlay (sheet-bg 400, modal-bg 500,
+        // toast 600) so a toast, sheet or modal always covers the banner instead of the reverse.
+        // NOT `z-float` (200, used by the search Map pill): measured live, an equal z-index ties
+        // the two and CSS then falls back to DOM paint order, which always favours this banner
+        // (CookieConsentProvider mounts it after `{children}`), making the pill untappable
+        // whenever the banner is showing. `z-banner` sits below `z-float` on purpose so a
+        // page-level control always outranks this passive interruption banner.
+        "fixed z-banner",
         // V2-D49o-fu (2026-05-10): mobile gets a rounded floating card with
         // viewport-edge margins; desktop keeps the full-bleed bottom strip
         // (cards-everywhere on desktop would feel out-of-context against

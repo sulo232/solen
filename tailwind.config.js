@@ -327,6 +327,24 @@ module.exports = {
         // it. Added 2026-09-04, replacing a raw z-[700] that sat inside the tooltip
         // layer and blocked the toast Undo button underneath it.
         nav: '150',
+        // "float": persistent PAGE-LEVEL controls that must clear the nav but stay under every
+        // locked overlay layer below (sheet, modal, toast). Added 2026-09-04: the search results
+        // "Map" toggle pill (`fixed bottom-5 z-30`) sat under the nav's hit area, so a real tap on
+        // it landed on the nav's Saved link instead. Used by the Map pill only, see `banner`
+        // immediately below for why the cookie banner does NOT share this same value.
+        float: '200',
+        // "banner": persistent interruption banners (currently just the cookie consent strip).
+        // MEASURED, not the same token as `float` on purpose: giving the banner and the Map pill
+        // the identical z-float(200) ties their stacking order, and a CSS tie always resolves by
+        // DOM paint order, never by which one "matters more". CookieConsentProvider mounts
+        // <CookieBanner> AFTER `{children}`, so at a tie it always painted on top of the pill.
+        // Checked live with `document.elementsFromPoint` at the pill's own centre on a fresh
+        // session (banner showing): the top hit was the banner's paragraph text, not the button,
+        // so the pill was untappable exactly like the two bugs this token block exists to fix.
+        // 180 sits strictly below `float` (200) and above `nav` (150), so the banner still floats
+        // above ordinary chrome and below every sheet/modal/toast, but a page-level control like
+        // the Map pill now numerically outranks it instead of relying on DOM order.
+        banner: '180',
         // ── V3 z-index lock (V2-D18, 2026-05-09) — LIVE_TRUTH §8 ──
         // Use as `z-modal-bg`, `z-modal`, `z-toast` etc in className.
         // Backdrop / surface pairs follow §8 naming: `*-bg` for the dim layer,
