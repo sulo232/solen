@@ -13,6 +13,7 @@ import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
 import { withCronRun } from "@/lib/cron-run";
 import { resolveSwissLocale } from "@/lib/format";
 import { resolvePromoDiscount } from "@/lib/promo/resolve-promo-discount";
+import { localizedField } from "@/lib/i18n/localized-field";
 
 // Cron: Pre-charge saved cards 5 days before appointment. Daily.
 export async function GET(req: NextRequest) {
@@ -34,7 +35,7 @@ export async function GET(req: NextRequest) {
     // promo_code is fetched for the overcharge fix below. Without it here the fix would read
     // undefined on every row and silently never discount anything, which is the exact
     // looks-wired-does-nothing shape this project keeps getting caught by.
-    .select("id, user_id, salon_id, price_paid, promo_code, stripe_customer_id, stripe_payment_method_id, starts_at, salons(name, stripe_account_id), services(name_de)")
+    .select("id, user_id, salon_id, price_paid, promo_code, stripe_customer_id, stripe_payment_method_id, starts_at, salons(name, stripe_account_id), services(name_de, name_en, name_fr, name_it)")
     .eq("payment_status", "card_saved")
     .eq("status", "confirmed")
     .gt("starts_at", now)
@@ -48,6 +49,7 @@ export async function GET(req: NextRequest) {
 
   let charged = 0;
   let declined = 0;
+  const errors: string[] = [];
 
   for (const booking of bookings ?? []) {
     // The query above already filters .not("stripe_customer_id"/"stripe_payment_method_id",
@@ -156,6 +158,7 @@ export async function GET(req: NextRequest) {
           amount_rappen: amountRappen,
           error: updateError.message,
         });
+        errors.push(`booking ${booking.id}: charged in Stripe but paid-marking update failed: ${updateError.message}`);
         continue;
       }
 
@@ -165,6 +168,7 @@ export async function GET(req: NextRequest) {
         // repeat-charge risk, tomorrow's SELECT filters on status='confirmed' and will not
         // select this row again.
         console.error(`[pre-charge] booking ${booking.id} no longer confirmed after charge (changed between select and update); charged in Stripe but not marked paid, needs reconciliation`);
+        errors.push(`booking ${booking.id}: charged in Stripe but no longer confirmed after charge, needs reconciliation`);
         continue;
       }
 
@@ -172,6 +176,7 @@ export async function GET(req: NextRequest) {
     } catch (err: any) {
       console.error(`[pre-charge] Card declined for booking ${booking.id}:`, err.message);
       declined++;
+      errors.push(`booking ${booking.id}: pre-charge failed: ${err.message}`);
 
       // Notify customer about card decline
       const { data: userAuth } = booking.user_id
@@ -189,7 +194,7 @@ export async function GET(req: NextRequest) {
           await sendEmail(paymentFailedNotification(
             userAuth.user.email,
             {
-              service: (booking.services as any)?.name_de ?? "Service",
+              service: localizedField(booking.services, "name", declinedLocale) || "Service",
               salon: (booking.salons as any)?.name ?? "Salon",
               date: new Date(booking.starts_at).toLocaleDateString(resolveSwissLocale(declinedLocale)),
             },
@@ -200,6 +205,6 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return { charged, declined, processed: charged + declined };
+  return { charged, declined, processed: charged + declined, errors };
   });
 }

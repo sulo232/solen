@@ -8,6 +8,7 @@ import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { resolveSwissLocale } from "@/lib/format";
 import type { Database } from "@/lib/database.types";
 import { validateBody, slotPatchSchema } from "@/lib/validations";
+import { localizedField } from "@/lib/i18n/localized-field";
 
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -18,7 +19,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
   const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
 
-  const { data: slot } = await supabase.from("availability_slots").select("*, salons(owner_id, name), bookings(id, user_id, starts_at), services(name_de)").eq("id", id).single();
+  const { data: slot } = await supabase.from("availability_slots").select("*, salons(owner_id, name), bookings(id, user_id, starts_at), services(name_de, name_en, name_fr, name_it)").eq("id", id).single();
   if (!slot) return NextResponse.json({ message: "Not found", code: "NOT_FOUND" }, { status: 404 });
   if (slot.salons?.owner_id !== user.id) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 403 });
 
@@ -35,7 +36,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
       // email language and the embedded date, regardless of the customer's own locale.
       const { data: bookedProfile } = await admin.from("profiles").select("locale").eq("id", slot.booked_by ?? "").maybeSingle();
       const custLocale = (bookedProfile?.locale ?? "de") as EmailLocale;
-      try { await sendEmail(bookingCancellation(authUser.user.email, { service: slot.services?.name_de ?? "Service", salon: slot.salons?.name ?? "Salon", date: new Date(slot.starts_at).toLocaleDateString(resolveSwissLocale(custLocale)) }, custLocale)); } catch (err) { console.error("[slots/[id]] DELETE cancellation email failed:", err); }
+      try { await sendEmail(bookingCancellation(authUser.user.email, { service: localizedField(slot.services, "name", custLocale) || "Service", salon: slot.salons?.name ?? "Salon", date: new Date(slot.starts_at).toLocaleDateString(resolveSwissLocale(custLocale)) }, custLocale)); } catch (err) { console.error("[slots/[id]] DELETE cancellation email failed:", err); }
     }
     const { error: freeError } = await supabase.from("availability_slots").update({ status: "available", booking_id: null, booked_by: null }).eq("id", id);
     if (freeError) return NextResponse.json({ message: freeError.message, code: "DB_ERROR" }, { status: 500 });
@@ -59,7 +60,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
 
-  const { data: slot } = await supabase.from("availability_slots").select("*, salons(owner_id, name), services(duration_minutes, name_de)").eq("id", id).single();
+  const { data: slot } = await supabase.from("availability_slots").select("*, salons(owner_id, name), services(duration_minutes, name_de, name_en, name_fr, name_it)").eq("id", id).single();
   if (!slot) return NextResponse.json({ message: "Not found", code: "NOT_FOUND" }, { status: 404 });
   if (slot.salons?.owner_id !== user.id) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 403 });
 
@@ -120,7 +121,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       // already formats oldDate/newDate per its locale param internally, so this alone fixes it.
       const { data: bookedProfile } = await admin.from("profiles").select("locale").eq("id", slot.booked_by ?? "").maybeSingle();
       const custLocale = (bookedProfile?.locale ?? "de") as EmailLocale;
-      try { await sendEmail(bookingReschedule(authUser.user.email, { service: slot.services?.name_de ?? "Service", salon: slot.salons?.name ?? "Salon", oldDate: slot.starts_at, newDate: startsAt }, custLocale)); } catch (err) { console.error("[slots/[id]] PATCH reschedule email failed:", err); }
+      try { await sendEmail(bookingReschedule(authUser.user.email, { service: localizedField(slot.services, "name", custLocale) || "Service", salon: slot.salons?.name ?? "Salon", oldDate: slot.starts_at, newDate: startsAt }, custLocale)); } catch (err) { console.error("[slots/[id]] PATCH reschedule email failed:", err); }
     }
   }
 

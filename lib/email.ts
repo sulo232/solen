@@ -326,6 +326,38 @@ export function bookingReschedule(
 }
 
 /**
+ * Salon-initiated upcharge REQUEST notification (SP-3 Endpoint 6). Sent to the customer
+ * so they can approve or decline the extra charge; distinct from `upchargeChargedEmail`
+ * in lib/email-templates/audit-notifications.ts, which fires only after the customer's
+ * approved charge actually succeeds.
+ *
+ * All four locales (email-locales slice, 2026-09-04): app/api/bookings/[id]/dispute/route.ts
+ * used to send this as one hardcoded "German | English" subject/body regardless of the
+ * customer's own locale, so fr/it customers got German. The DE/EN wording below is the
+ * pre-existing copy from that hardcoded call, split into separate locale entries; fr/it
+ * are new translations in the same register and structure.
+ */
+export function upchargeRequestEmail(
+  to: string,
+  vars: { bookingId: string; upchargeUrl: string },
+  locale: EmailLocale = "de"
+): EmailPayload {
+  const subjects: Record<EmailLocale, string> = {
+    de: "Ein Salon hat einen Aufpreis angefragt",
+    en: "A salon requested an additional charge",
+    fr: "Un salon a demandé un supplément",
+    it: "Un salone ha richiesto un supplemento",
+  };
+  const bodies: Record<EmailLocale, string> = {
+    de: `<p>Der Salon hat für Buchung #${vars.bookingId} einen Aufpreis angefragt.</p><p>Sie müssen ausdrücklich zustimmen, bevor etwas berechnet wird. Wenn Sie nicht reagieren, passiert nichts.</p><p><a href="${vars.upchargeUrl}">Aufpreis prüfen und zustimmen oder ablehnen</a></p>`,
+    en: `<p>The salon has requested an additional charge for booking #${vars.bookingId}.</p><p>You must explicitly agree before anything is charged. If you don't respond, nothing happens.</p><p><a href="${vars.upchargeUrl}">Review the additional charge and approve or decline</a></p>`,
+    fr: `<p>Le salon a demandé un supplément pour la réservation #${vars.bookingId}.</p><p>Vous devez donner votre accord explicite avant que quoi que ce soit ne soit débité. Si vous ne répondez pas, rien ne se passe.</p><p><a href="${vars.upchargeUrl}">Vérifier le supplément et approuver ou refuser</a></p>`,
+    it: `<p>Il salone ha richiesto un supplemento per la prenotazione #${vars.bookingId}.</p><p>Devi acconsentire esplicitamente prima che venga addebitato qualcosa. Se non rispondi, non succede nulla.</p><p><a href="${vars.upchargeUrl}">Verifica il supplemento e approva o rifiuta</a></p>`,
+  };
+  return { to, subject: subjects[locale], html: bodies[locale] };
+}
+
+/**
  * 24h / 1h booking reminder email.
  *
  * Was dead code (zero callers) until seo-comms-10 (2026-09-04): the owner asked for an

@@ -8,6 +8,7 @@ import { getServerEnv } from "@/lib/env";
 import { verifyCronSecret } from "@/lib/cron-auth";
 import { withCronRun } from "@/lib/cron-run";
 import { runWithConcurrency } from "@/lib/concurrency";
+import { localizedField } from "@/lib/i18n/localized-field";
 
 // RING 3a: caps a per-item errors[] array so a bad batch never floods cron_runs.
 function capErrors(errs: string[], max = 20): string[] {
@@ -40,7 +41,7 @@ export async function GET(request: NextRequest) {
   // behavior this route already had on every invocation, just without the dead RPC hop.
   const { data } = await admin
     .from("bookings")
-    .select("user_id, salon_id, starts_at, services(name_de), salons(name)")
+    .select("user_id, salon_id, starts_at, services(name_de, name_en, name_fr, name_it), salons(name)")
     .eq("status", "completed")
     .lt("starts_at", cutoffStr)
     .order("starts_at", { ascending: false });
@@ -101,7 +102,7 @@ export async function GET(request: NextRequest) {
       payload: rebookingNudge(
         email,
         {
-          service: (booking as any).services?.name_de ?? "Service",
+          service: localizedField((booking as any).services, "name", locale) || "Service",
           salon: (booking as any).salons?.name ?? "Salon",
           daysSince,
         },

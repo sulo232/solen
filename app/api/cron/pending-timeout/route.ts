@@ -8,6 +8,7 @@ import { verifyCronSecret } from "@/lib/cron-auth";
 import { withCronRun } from "@/lib/cron-run";
 import { resolveSwissLocale } from "@/lib/format";
 import { issueRefund } from "@/lib/bookings/issue-refund";
+import { localizedField } from "@/lib/i18n/localized-field";
 
 export async function GET(req: NextRequest) {
   const cronSecret = getServerEnv().CRON_SECRET;
@@ -68,7 +69,7 @@ export async function GET(req: NextRequest) {
           bookingCancellation(
             userEmail,
             {
-              service: booking.services?.name_de ?? "Service",
+              service: localizedField(booking.services, "name", locale) || "Service",
               salon: booking.salons?.name ?? "Salon",
               date: new Date(booking.starts_at).toLocaleDateString(resolveSwissLocale(locale)),
             },

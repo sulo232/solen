@@ -10,6 +10,7 @@ import { chargeFee, FeeError } from "@/lib/bookings/charge-fee";
 import { notifyNoShowFee } from "@/lib/bookings/notify-no-show-fee";
 import { logAuditEvent } from "@/lib/audit";
 import { withCronRun, ALL_DECLINED_SYMPTOM_FLOOR } from "@/lib/cron-run";
+import { localizedField } from "@/lib/i18n/localized-field";
 
 export async function GET(req: NextRequest) {
   const cronSecret = getServerEnv().CRON_SECRET;
@@ -31,7 +32,7 @@ export async function GET(req: NextRequest) {
   // was a drift bug — that column does not exist — so the fee step never fired).
   const { data: overdues } = await admin
     .from("bookings")
-    .select("id, user_id, salon_id, payment_intent_id, paid_amount, price_paid, stripe_customer_id, stripe_payment_method_id, fee_charge_status, policy_snapshot, status, starts_at, guest_email, salons(name, no_show_fee_type, no_show_fee_value), services(name_de, name_en)")
+    .select("id, user_id, salon_id, payment_intent_id, paid_amount, price_paid, stripe_customer_id, stripe_payment_method_id, fee_charge_status, policy_snapshot, status, starts_at, guest_email, salons(name, no_show_fee_type, no_show_fee_value), services(name_de, name_en, name_fr, name_it), profiles(locale)")
     .eq("status", "confirmed")
     .lt("ends_at", twentyFourHoursAgo)
     .gt("ends_at", sevenDaysAgo)
@@ -129,11 +130,12 @@ export async function GET(req: NextRequest) {
         if (result.status === "charged") {
           const salon = (booking as any).salons as { name?: string } | null;
           const services = (booking as any).services as Record<string, string | null> | null;
+          const custLocale = (booking as any).profiles?.locale ?? "de";
           await notifyNoShowFee({
             admin,
             userId: (booking.user_id as string | null) ?? null,
             guestEmail: (booking as any).guest_email ?? null,
-            serviceName: services?.name_de ?? services?.name_en ?? "Service",
+            serviceName: localizedField(services, "name", custLocale) || "Service",
             salonName: salon?.name ?? "Salon",
             feeCents: result.chargedCents ?? feeCents,
             date: (booking.starts_at as string | null) ?? new Date().toISOString(),
