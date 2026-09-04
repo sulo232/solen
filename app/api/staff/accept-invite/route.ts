@@ -19,7 +19,10 @@ export async function POST(req: NextRequest) {
   if (!user) {
     return NextResponse.json({
       error: "not_authenticated",
-      redirect: `/de/auth/login?invite_token=${token}&redirect=/de/staff/accept?token=${token}`,
+      // Locale kept "de" here: unlike the invite route, this handler has no user profile
+      // to read a locale from yet (the visitor is not logged in), no request-carried locale
+      // param exists on this endpoint's schema, and the invite row itself does not store one.
+      redirect: `/de/auth/login?invite_token=${token}&redirect=/de/staff-invite?token=${token}`,
     }, { status: 401 });
   }
 

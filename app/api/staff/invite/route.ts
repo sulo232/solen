@@ -93,7 +93,7 @@ export async function POST(req: NextRequest) {
   // token-in-query-string transport itself is pre-existing and unchanged (out of scope here).
   const { data: ownerProfile } = await supabase.from("profiles").select("locale").eq("id", user.id).maybeSingle();
   const inviteLocale = (ownerProfile?.locale as EmailLocale) ?? "de";
-  const inviteUrl = `https://www.solen.ch/${inviteLocale}/staff/accept?token=${token}`;
+  const inviteUrl = `https://www.solen.ch/${inviteLocale}/staff-invite?token=${token}`;
   try {
     await sendEmail(staffInviteEmail(
       validated.email,

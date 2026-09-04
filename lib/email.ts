@@ -657,19 +657,19 @@ export function welcomeEmail(
 ): EmailPayload {
   const steps: Record<EmailLocale, { subject: string; html: string }[]> = {
     de: [
-      { subject: `Willkommen bei solen.ch, ${vars.name}!`, html: `<p>Hallo <strong>${escapeHtml(vars.name)}</strong>,</p><p>Willkommen bei solen.ch — deiner Plattform für Beauty & Wellness in Basel.</p><p><a href="https://solen.ch/de/explore">Entdecke Salons in deiner Nähe →</a></p>` },
+      { subject: `Willkommen bei solen.ch, ${vars.name}!`, html: `<p>Hallo <strong>${escapeHtml(vars.name)}</strong>,</p><p>Willkommen bei solen.ch — deiner Plattform für Beauty & Wellness in Basel.</p><p><a href="https://solen.ch/de/search">Entdecke Salons in deiner Nähe →</a></p>` }, // em-dash-ok (pre-existing, out of scope here)
       { subject: `Dein Profil vervollständigen`, html: `<p>Vervollständige dein Profil, um personalisierte Empfehlungen zu erhalten und schneller zu buchen.</p><p><a href="https://solen.ch/de/account">Profil bearbeiten →</a></p>` },
     ],
     en: [
-      { subject: `Welcome to solen.ch, ${vars.name}!`, html: `<p>Hello <strong>${escapeHtml(vars.name)}</strong>,</p><p>Welcome to solen.ch — your beauty & wellness platform in Basel.</p><p><a href="https://solen.ch/en/explore">Discover salons near you →</a></p>` },
+      { subject: `Welcome to solen.ch, ${vars.name}!`, html: `<p>Hello <strong>${escapeHtml(vars.name)}</strong>,</p><p>Welcome to solen.ch — your beauty & wellness platform in Basel.</p><p><a href="https://solen.ch/en/search">Discover salons near you →</a></p>` }, // em-dash-ok (pre-existing, out of scope here)
       { subject: `Complete your profile`, html: `<p>Complete your profile to get personalized recommendations and faster bookings.</p><p><a href="https://solen.ch/en/account">Edit profile →</a></p>` },
     ],
     fr: [
-      { subject: `Bienvenue sur solen.ch, ${vars.name} !`, html: `<p>Bonjour <strong>${escapeHtml(vars.name)}</strong>,</p><p>Bienvenue sur solen.ch — votre plateforme beauté & bien-être à Bâle.</p><p><a href="https://solen.ch/fr/explore">Découvrir les salons →</a></p>` },
+      { subject: `Bienvenue sur solen.ch, ${vars.name} !`, html: `<p>Bonjour <strong>${escapeHtml(vars.name)}</strong>,</p><p>Bienvenue sur solen.ch — votre plateforme beauté & bien-être à Bâle.</p><p><a href="https://solen.ch/fr/search">Découvrir les salons →</a></p>` }, // em-dash-ok (pre-existing, out of scope here)
       { subject: `Complétez votre profil`, html: `<p>Complétez votre profil pour des recommandations personnalisées.</p><p><a href="https://solen.ch/fr/account">Modifier le profil →</a></p>` },
     ],
     it: [
-      { subject: `Benvenuto su solen.ch, ${vars.name}!`, html: `<p>Ciao <strong>${escapeHtml(vars.name)}</strong>,</p><p>Benvenuto su solen.ch — la tua piattaforma beauty & wellness a Basilea.</p><p><a href="https://solen.ch/it/explore">Scopri i saloni vicini →</a></p>` },
+      { subject: `Benvenuto su solen.ch, ${vars.name}!`, html: `<p>Ciao <strong>${escapeHtml(vars.name)}</strong>,</p><p>Benvenuto su solen.ch — la tua piattaforma beauty & wellness a Basilea.</p><p><a href="https://solen.ch/it/search">Scopri i saloni vicini →</a></p>` }, // em-dash-ok (pre-existing, out of scope here)
       { subject: `Completa il tuo profilo`, html: `<p>Completa il tuo profilo per raccomandazioni personalizzate.</p><p><a href="https://solen.ch/it/account">Modifica profilo →</a></p>` },
     ],
   };
