@@ -11,13 +11,13 @@ import { validateBody, createBookingSchema } from "@/lib/validations";
 import { issueAccessToken } from "@/lib/bookings/guest-access";
 import { assignReferenceCode } from "@/lib/bookings/reference";
 import { pickSlotForAnyStaff, countStaffBookingsOnDay } from "@/lib/bookings/auto-assign";
+import { claimSlot } from "@/lib/bookings/claim-slot";
 import { loadPricedBundle } from "@/lib/pricing/bundle";
 import { completeReferralForFirstBooking } from "@/lib/referral/complete-referral";
 import { reportError } from "@/lib/error-report";
 import { resolveSwissLocale } from "@/lib/format";
 import { resolveRequestUser } from "@/lib/auth/request-user";
 import { isSalonHidden, isViewerAdmin } from "@/lib/salon-detail";
-import type { Database } from "@/lib/database.types";
 // Ties a completed booking back to the search that led to it, which is what feeds the personal row.
 import { attributeBookingToSearch } from "@/lib/points/attribution";
 
@@ -283,6 +283,10 @@ export async function POST(request: NextRequest) {
   // cap would silently see only the customer's own bookings instead of the salon's real load
   // (mirrors the service-role mandate documented in lib/bookings/claim-slot.ts). Both helpers
   // are read-only counters/pickers (no INSERT/UPDATE), so the admin client here is safe.
+  // 2026-09-04: this same client is now also reused below for the slot-claim UPDATE and its
+  // rollback DELETEs (step 6). That write is privileged for the identical reason: the only
+  // UPDATE policy on availability_slots is owner-only, and bookings has no DELETE policy at
+  // all, so `db` (the customer's own session client) silently matches 0 rows on both.
   const adminForAssign = createAdminSupabaseClient();
   if (!slot_id && !staff_member_id && (autoMethod !== "manual" || dailyLimitOn)) {
     const picked = await pickSlotForAnyStaff(adminForAssign, candidateSlots as never, {
@@ -589,42 +593,51 @@ export async function POST(request: NextRequest) {
   }
 
   // 6. Mark slot as booked. `booked_by` is the user id or NULL for a guest (column is
-  //    ON DELETE SET NULL / nullable). Use `db` so the guest path writes via service-role.
+  //    ON DELETE SET NULL / nullable).
+  //    SECURITY FIX (2026-09-04): this write is privileged and MUST go through the service-role
+  //    client, never `db`. For a logged-in customer `db` is the RLS session client, and the only
+  //    UPDATE policy on availability_slots is owner-only (`salons.owner_id = auth.uid()`), so a
+  //    customer's own UPDATE matches 0 rows and returns no Postgres error: the slot silently
+  //    never flips to 'booked' and a second customer can book the identical time. `bookings` has
+  //    no DELETE policy at all either, so every rollback below has the same silent-no-op failure
+  //    mode and must run through the same privileged client. `claimSlot()`
+  //    (lib/bookings/claim-slot.ts) is THE single place this CAS pattern lives (already used by
+  //    the reschedule route) and its own doc comment already named this exact requirement, so it
+  //    is reused here rather than a second hand-rolled update. `adminForAssign` (declared above)
+  //    is the service-role client guest bookings already write through via `db`.
   //    A5 B-4a: for a bundle, WIDEN the slot's ends_at to the summed bundle window as it flips
   //    to 'booked'. This makes the prevent_double_booking GIST exclusion constraint the HARD
   //    backstop over the wider [starts_at, bundleEndsAt) range (the pre-check above is fail-fast;
   //    the constraint closes any race). A 23P01 here means the window was taken between the
   //    pre-check and this write: undo the just-inserted booking and return the route's 409.
-  const slotUpdate: Database["public"]["Tables"]["availability_slots"]["Update"] = { status: "booked", booked_by: user?.id ?? null, booking_id: booking.id };
-  if (bundleEndsAt) slotUpdate.ends_at = bundleEndsAt;
-  // TOCTOU guard (audit fix B): the update only claims the slot if it is STILL 'available'.
-  // Two concurrent requests both passing the read-time check above would otherwise both
-  // succeed here (last write wins). .select("id") tells us whether this request's write
-  // actually matched a row.
-  const { data: slotUpdateRows, error: slotUpdateError } = await db
-    .from("availability_slots")
-    .update(slotUpdate)
-    .eq("id", resolvedSlotId)
-    .eq("status", "available")
-    .select("id");
+  const slotClaimFields: Record<string, unknown> = { booked_by: user?.id ?? null, booking_id: booking.id };
+  if (bundleEndsAt) slotClaimFields.ends_at = bundleEndsAt;
+  // claimSlot() is the TOCTOU guard (audit fix B): its UPDATE only matches the slot if it is
+  // STILL 'available', so two concurrent requests that both passed the read-time check above
+  // cannot both win here.
+  const { claimed: slotClaimed, error: slotUpdateError } = await claimSlot(adminForAssign, resolvedSlotId, slotClaimFields);
   if (slotUpdateError) {
     if (slotUpdateError.code === "23P01") {
       // Widened window collided with another booked/blocked slot for this staff. Roll back the
       // booking row we just wrote (no slot was flipped) so no orphan/unheld booking remains.
-      await db.from("bookings").delete().eq("id", booking.id);
+      console.error("[bookings] slot claim GIST conflict on widened bundle window, rolling back booking:", booking.id, slotUpdateError);
+      await adminForAssign.from("bookings").delete().eq("id", booking.id);
       return NextResponse.json({ message: "Slot not available", code: "SLOT_TAKEN" }, { status: 409 });
     }
     // Audit finding #14: any OTHER slot-flip error was previously logged and swallowed, letting
     // the route fall through to a 201 with the booking created but the slot never marked booked
     // (re-bookable by anyone). Fail safe: roll back the just-inserted booking on ANY slot-flip
     // error, mirroring the 23P01 branch above.
-    console.error("[bookings] slot booking update failed:", slotUpdateError);
-    await db.from("bookings").delete().eq("id", booking.id);
+    console.error("[bookings] slot booking update failed:", booking.id, slotUpdateError);
+    await adminForAssign.from("bookings").delete().eq("id", booking.id);
     return NextResponse.json({ message: "Slot not available", code: "SLOT_TAKEN" }, { status: 409 });
-  } else if (!slotUpdateRows?.length) {
-    // 0 rows matched: the slot was claimed by another request between the read and this write.
+  } else if (!slotClaimed) {
+    // 0 rows matched: the slot was claimed by another request between the read and this write
+    // (or is otherwise no longer 'available'). This is a FAILURE, not a quiet miss, log it
+    // loudly, this exact case used to be invisible when it ran through the RLS session client.
     // Roll back the booking row we just inserted so no orphan/unheld booking remains.
-    await db.from("bookings").delete().eq("id", booking.id);
+    console.error("[bookings] slot claim matched 0 rows (lost race or already booked), rolling back booking:", booking.id, "slot:", resolvedSlotId);
+    await adminForAssign.from("bookings").delete().eq("id", booking.id);
     return NextResponse.json({ message: "Slot not available", code: "SLOT_TAKEN" }, { status: 409 });
   }
 
