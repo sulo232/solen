@@ -276,10 +276,18 @@ a check), three steps in this order, every time, no exceptions:
 
 **WHY THIS EXISTS, the case that produced it, 2026-08-14.** 40 branches with about 1,800 commits
 were sitting unmerged, and an audit against the live database found four migrations whose objects
-do not exist. One of them adds `bookings.consumed_at`, and without it the one-click confirm/cancel
-link in an email has **no replay protection at all**: verified on the shipped route, which contains
-no single-use check of any kind. The feature was not cancelled and it was not superseded. It was
-written, reviewed, and stranded on a branch nobody merged. Nothing in this system said so.
+do not exist. One of them adds `bookings.consumed_at`, and at the time the one-click confirm/cancel
+link in an email had **no replay protection at all**: verified then on the shipped route, which
+contained no single-use check of any kind. The feature was not cancelled and it was not superseded.
+It was written, reviewed, and stranded on a branch nobody merged. Nothing in this system said so.
+
+**FIXED SINCE, and this paragraph was still describing the hole as open on 2026-09-04, three weeks
+after it closed.** Checked twice that day, independently: `bookings.consumed_at` exists live
+(`information_schema`, timestamptz), and `app/api/bookings/[id]/quick-action/route.ts` does a
+check-and-set on it inside the same update, so a second click on the same emailed link does nothing.
+The example stands as the reason this rule exists. The present-tense claim does not, and leaving a
+closed hole described as open is the same defect in the other direction: it sends the next reader to
+re-fix something that is already done.
 
 **ACTIVE, not a silent default. POINTER CORRECTED AGAIN 2026-08-28, and the rule itself never
 moved.** It is live in the output style at `~/.claude/output-styles/plain.md:155`, verbatim:
