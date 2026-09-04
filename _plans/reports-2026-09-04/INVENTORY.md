@@ -329,3 +329,13 @@ None open at CRITICAL (all four CRITICAL-1..4 backend races are fixed and closed
 19. **[log-map-button-desktop]** The map-toggle button on search results also renders on desktop, not just mobile; explicitly noted as pre-existing and left unevaluated as bug-vs-intended.
 
 20. **[ORPHAN-21]** `dashboard/queue-display` deliberately bypasses the nav shell as a kiosk display; the generator/bookmark code that would create a real queue-display URL was never found, open question on whether one needs to exist.
+
+---
+
+## UNCLEAR, resolved tonight (20 of 20 checked against the code or the live pages)
+
+Now BUGS (in fix loops or mockups): 1 walk-in-tip dead entry point (nothing links to it; tip control on the queue done state -> mockup queue-done-tip); 3 notFound answers 200 in production on a missing salon, city/category or booking (fix loop notfound-404); 6 amber clock icon 1.8:1 on the approval banner (mockup warning-icon-contrast); 7 dashboard resolved state 8 sizes / 3 weights (mockup dashboard-type-collapse); 8 home first viewport largest text 18px, no 28px anchor and no photo focal (mockup home-anchor, floor vs Airbnb collision, his call); 9 desktop home/search/salon 10/6/11 sizes and 4 weights, no horizontal overflow (mockups desktop-type-*); 11 the For-you rail card lacks the price and city lines its sibling cards carry, data path not the component (fix loop foryou-card-props); 13 profile API returns the whole profiles row including stylist_notes and stripe_customer_id (fix: explicit column list, queued behind the loyalty-prefs slice which holds that file); 15 four edge-runtime auth routes rate-limit on a spoofable forwarded IP (fix loop auth-ip); 19 desktop shows two map controls (fix loop desktop-map-pill); 20 nothing emits the kiosk queue-display URL (mockup kiosk-link); plus the Where step gap re-measured: 522px white under "Basel" when focused at 390x844, 186px at keyboard height (mockup where-step-height).
+
+NOT A BUG, with proof: 2 (the decisions.json was a prior session's scratch file), 4 (Popular looks: 8 of 8 tiles carry a loaded photo), 5 (profile is not on the imagery-floor exemption list: a rule gap, noted), 10 (home page: 28 of 28 card photos loaded, 0 fallbacks), 14 (all six upload routes have auth, a size cap and magic-byte type checks, cited per route), 16, 17, 18 (documentation, closed).
+
+STILL UNCLEAR: 12 (live RLS policy count needs Docker for `supabase db dump`; the CLI is linked and connects).
