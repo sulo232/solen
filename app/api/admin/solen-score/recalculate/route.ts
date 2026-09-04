@@ -5,6 +5,7 @@ import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
 import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
 import { constantTimeStringEqual } from "@/lib/cron-auth";
+import { withCronRun } from "@/lib/cron-run";
 
 /**
  * POST /api/admin/solen-score/recalculate
@@ -36,6 +37,7 @@ export async function POST(req: NextRequest) {
     if (rateLimited) return rateLimited;
   }
 
+  return withCronRun("solen-score-recalculate", async () => {
   const admin = createAdminSupabaseClient();
 
   // Fetch all active salons
@@ -45,7 +47,7 @@ export async function POST(req: NextRequest) {
     .eq("is_active", true);
 
   if (salonsErr || !salons) {
-    return NextResponse.json({ error: "Failed to fetch salons", details: salonsErr?.message }, { status: 500 });
+    return { error: "Failed to fetch salons", details: salonsErr?.message, errors: [salonsErr?.message ?? "Failed to fetch salons"] };
   }
 
   const CHUNK_SIZE = 20;
@@ -150,5 +152,6 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  return NextResponse.json({ success: true, updated });
+  return { success: true, updated, processed: updated };
+  });
 }
