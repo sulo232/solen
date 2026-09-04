@@ -44,7 +44,15 @@ import {
 // "Popular looks" photo tile grid (real seeded discovery items with a real price). Both compose
 // existing Section/SectionFrame/SectionTitle primitives; neither touches the existing
 // RecentlyViewed.tsx rail or Entdecken.tsx (this task's own no-touch list).
-import PopularLooks from "./_components/homepage/PopularLooks";
+// perf-first-load slice (2026-09-04): loaded lazily below, not a direct import, because
+// PopularLooks measured below the 844px first viewport (top 2112px at 390x844 on the production
+// copy) and is the home's photo-gallery section.
+// FIX ROUND (2026-09-04): this page is an async Server Component, and next/dynamic's
+// `{ ssr: false }` option is illegal inside a Server Component (Next.js throws at request time,
+// verified live: every /de request 500'd on this worktree's own server). The dynamic(ssr:false)
+// call itself now lives inside PopularLooksLazy.tsx, a "use client" wrapper; this file just
+// imports and renders that wrapper like any other component.
+import PopularLooksLazy from "./_components/homepage/dynamic/PopularLooksLazy";
 // I7 (2026-08-01, home rails reconciliation with public/_mockups/home-v3/search-a.html
 // continuationCard()): the home's FIRST element, mounted ahead of MobileCategoriesRow per the
 // mockup's own render order (continuationCard() is appended to #sa-list before recentlyViewed()
@@ -297,7 +305,7 @@ export default async function Page({
         <TopCategoryRails salonData={salonCardData} idsByCategory={topByCategory} />
         {/* I5: real seeded discovery photo tiles with a real starting price, search-a.html's own
             position (after the rails, before Walk-in). */}
-        <PopularLooks />
+        <PopularLooksLazy />
         <WalkInBand />
         {/* FeaturedStylists pulled (V3-D436) — its cards linked to a
             non-existent /stylist/[slug] route and its demo data has no salon
