@@ -5,6 +5,7 @@ import { createAdminSupabaseClient, getSessionUser } from '@/lib/supabase';
 import { BookingProvider } from '@/lib/booking-context';
 import { BookingWizard, EmptyServicesState } from '@/components-legacy/booking';
 import type { StaffMember, Salon } from '@/lib/types';
+import { isSalonHidden, isViewerAdmin } from '@/lib/salon-detail';
 
 interface BookingSalonPageProps {
   params: Promise<{ locale: string; slug: string }>;
@@ -48,21 +49,36 @@ export default async function BookingSalonPage({
   const { user } = await getSessionUser();
   const isLoggedIn = Boolean(user);
 
-  // Fetch salon
+  // Fetch salon. owner_id + listed_on_marketplace + is_test added (security review,
+  // 2026-09-04): the old `.eq("is_active", true)`-only query let anyone who knew the
+  // slug still book (and pay) an unlisted/test salon, since it just fell through the
+  // "not found" branch below for is_active=false only, never for the other two hidden
+  // conditions loadSalonDetailWithAccess already gates on.
   const { data: salon, error: salonError } = await supabase
     .from('salons')
     .select(
-      `id, name, slug, description_de, description_en, address, latitude, longitude,
+      `id, owner_id, name, slug, description_de, description_en, address, latitude, longitude,
       cover_photo_url, average_rating, review_count, cancellation_window_hours,
       payment_mode, payment_mode_admin, payment_mode_enforced, deposit_percent, phone,
-      accepts_online_payment, vat_registered, vat_rate`
+      accepts_online_payment, vat_registered, vat_rate, is_active, listed_on_marketplace, is_test`
     )
     .eq('slug', slug)
-    .eq('is_active', true)
     .single();
 
   if (salonError || !salon) {
     notFound();
+  }
+
+  // Hidden-salon gate (mirrors loadSalonDetailWithAccess's owner/admin bypass, reusing
+  // its isSalonHidden + isViewerAdmin helpers rather than a fourth copy of the check).
+  // The salon's own owner (or an admin) can still open the booking flow for a
+  // pending/frozen/test listing; anyone else gets the same notFound() as a nonexistent slug.
+  if (isSalonHidden(salon)) {
+    const isOwnerOfSalon = user?.id === salon.owner_id;
+    const isAdmin = !isOwnerOfSalon && user?.id ? await isViewerAdmin(user.id) : false;
+    if (!isOwnerOfSalon && !isAdmin) {
+      notFound();
+    }
   }
 
   // Owner 2026-08-21: the gift-voucher code box was showing for every salon, including salons

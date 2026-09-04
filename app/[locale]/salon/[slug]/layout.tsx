@@ -3,6 +3,7 @@ import { cache } from "react";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { buildAlternates, generateBreadcrumbSchema, safeJsonLd } from "@/lib/seo";
 import { postalToCity } from "@/app/[locale]/_components/salon/_shared";
+import { isSalonHidden } from "@/lib/salon-detail";
 
 const CATEGORY_LABELS: Record<string, Record<string, string>> = {
   de: { coiffeur: "Coiffeur", barbershop: "Barbershop", nails: "Nagelstudio", spa: "Spa" },
@@ -35,7 +36,7 @@ const getSalonMeta = cache(async (slug: string) => {
     .select("name, address, postal_code, cover_photo_url, categories, average_rating, review_count, is_active, listed_on_marketplace, is_test")
     .eq("slug", slug)
     .single();
-  if (!data || !data.is_active || data.listed_on_marketplace === false || data.is_test === true) {
+  if (!data || isSalonHidden(data)) {
     return null;
   }
   return data;

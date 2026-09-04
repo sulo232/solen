@@ -16,6 +16,7 @@ import { completeReferralForFirstBooking } from "@/lib/referral/complete-referra
 import { reportError } from "@/lib/error-report";
 import { resolveSwissLocale } from "@/lib/format";
 import { resolveRequestUser } from "@/lib/auth/request-user";
+import { isSalonHidden, isViewerAdmin } from "@/lib/salon-detail";
 import type { Database } from "@/lib/database.types";
 // Ties a completed booking back to the search that led to it, which is what feeds the personal row.
 import { attributeBookingToSearch } from "@/lib/points/attribution";
@@ -217,7 +218,7 @@ export async function POST(request: NextRequest) {
   // Kept as ONE string literal (not concatenated) so PostgREST's TS types infer the embedded shape.
   let slotQuery = db
     .from("availability_slots")
-    .select("id, salon_id, service_id, starts_at, ends_at, staff_member_id, price_override, status, salons(id, owner_id, name, address, auto_assign_method, daily_limit_enabled, daily_limit, online_booking_enabled, vacation_start, vacation_end, payment_mode, payment_mode_admin, payment_mode_enforced, booking_confirmation_mode, cancellation_fee_type, cancellation_fee_value, free_cancel_hours, no_show_fee_type, no_show_fee_value, vat_registered, vat_rate, vat_number), services(price, name_de, name_en)")
+    .select("id, salon_id, service_id, starts_at, ends_at, staff_member_id, price_override, status, salons(id, owner_id, name, address, is_active, listed_on_marketplace, is_test, auto_assign_method, daily_limit_enabled, daily_limit, online_booking_enabled, vacation_start, vacation_end, payment_mode, payment_mode_admin, payment_mode_enforced, booking_confirmation_mode, cancellation_fee_type, cancellation_fee_value, free_cancel_hours, no_show_fee_type, no_show_fee_value, vat_registered, vat_rate, vat_number), services(price, name_de, name_en)")
     .eq("status", "available");
 
   if (slot_id) {
@@ -236,6 +237,27 @@ export async function POST(request: NextRequest) {
 
   if (slotError || !candidateSlots?.length) {
     return NextResponse.json({ message: "Slot not available", code: "SLOT_TAKEN" }, { status: 409 });
+  }
+
+  // Hidden-salon gate (security review, 2026-09-04): this route never checked
+  // salons.is_active / listed_on_marketplace / is_test at all, so a raw API call could book
+  // (and, on an online-pay salon, charge a card at) an unlisted or test salon. Same
+  // three-column gate + owner/admin bypass as loadSalonDetailWithAccess (lib/salon-detail.ts),
+  // reused via isSalonHidden/isViewerAdmin rather than a third copy of the check. Runs BEFORE
+  // any side effect: no auto-assign pick, no duplicate-booking read, no bookings insert, no
+  // slot-status update, and no Stripe call has happened yet at this point in the handler.
+  const slotSalonForGate = candidateSlots[0].salons as {
+    owner_id?: string;
+    is_active?: boolean | null;
+    listed_on_marketplace?: boolean | null;
+    is_test?: boolean | null;
+  } | null;
+  if (slotSalonForGate && isSalonHidden(slotSalonForGate)) {
+    const isSalonOwnerCaller = user?.id === slotSalonForGate.owner_id;
+    const isAdminCaller = !isSalonOwnerCaller && user?.id ? await isViewerAdmin(user.id) : false;
+    if (!isSalonOwnerCaller && !isAdminCaller) {
+      return NextResponse.json({ error: "Salon not found" }, { status: 404 });
+    }
   }
 
   // Phase E: pick the slot. Explicit slot_id or a specifically chosen staff → that one. "Any" staff

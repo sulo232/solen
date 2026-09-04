@@ -23,6 +23,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { EmailLocale } from "@/lib/email";
 import { formatCurrency } from "@/lib/format-currency";
 import { resolveSwissLocale } from "@/lib/format";
+import { locales } from "@/lib/locale-constants";
 
 /**
  * Send the `upcharge_charged` notification (in-app + email) to a booking's customer.
@@ -65,7 +66,12 @@ export async function notifyUpchargeCharged(
       .select("locale")
       .eq("id", booking.user_id)
       .single();
-    const locale: EmailLocale = (profile?.locale as EmailLocale) ?? "de";
+    // Runtime whitelist against the real locale list (security review, 2026-09-04): a bare
+    // `as EmailLocale` cast trusted profiles.locale unchecked before splicing it into an
+    // email href downstream. A value not in `locales` falls back to "de".
+    const locale: EmailLocale = (locales as readonly string[]).includes(profile?.locale ?? "")
+      ? (profile!.locale as EmailLocale)
+      : "de";
     const serviceName = services?.[`name_${locale}`] ?? services?.name_de ?? "Service";
     const amountStr = formatCurrency(amountCents / 100, resolveSwissLocale(locale));
 

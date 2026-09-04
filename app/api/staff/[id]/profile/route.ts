@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { isSalonHidden } from "@/lib/salon-detail";
 
 export async function GET(
   _request: NextRequest,
@@ -9,15 +10,27 @@ export async function GET(
   const { id } = await params;
   const supabase = await createServerSupabaseClient();
 
-  // Fetch staff member with salon info
+  // Fetch staff member with salon info. is_active/listed_on_marketplace/is_test added to
+  // the salons embed (security review, 2026-09-04): this route only ever filtered
+  // staff_members.is_active, so a staff member of a hidden (unlisted/test/inactive) salon
+  // still had their bio, portfolio, services and reviews served publicly. Explicit column
+  // list (not "*"): the fields this handler's response actually reads below.
   const { data: staff, error } = await supabase
     .from("staff_members")
-    .select("*, salons(name, slug, categories)")
+    .select(
+      "id, name, avatar_url, specialties, languages, bio, instagram_url, years_experience, average_rating, review_count, appointments_completed, clients_served, salons(name, slug, categories, is_active, listed_on_marketplace, is_test)"
+    )
     .eq("id", id)
     .eq("is_active", true)
     .single();
 
   if (error || !staff) {
+    return NextResponse.json({ error: "Staff member not found" }, { status: 404 });
+  }
+
+  // No owner/admin bypass here on purpose: this is a public read (no session is resolved
+  // above), unlike the booking-page/booking-POST gates which have a signed-in caller to check.
+  if (!staff.salons || isSalonHidden(staff.salons)) {
     return NextResponse.json({ error: "Staff member not found" }, { status: 404 });
   }
 

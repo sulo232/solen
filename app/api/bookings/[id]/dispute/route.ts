@@ -12,6 +12,7 @@ import { writeCaseEvent, chargeUpcharge, ChargeUpchargeError } from "@/lib/booki
 import { notifyUpchargeCharged } from "@/lib/bookings/notify-upcharge";
 import { reportError } from "@/lib/error-report";
 import { sendEmail, EmailLocale } from "@/lib/email";
+import { locales } from "@/lib/locale-constants";
 
 // SP-3 Endpoints 6 (POST salon upcharge request) + 7 (PATCH customer respond).
 //
@@ -180,7 +181,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     if (!customerEmail && booking.user_id) {
       const { data: cust } = await admin.from("profiles").select("email, locale").eq("id", booking.user_id).single();
       customerEmail = cust?.email ?? null;
-      customerLocale = (cust?.locale as EmailLocale) ?? "de";
+      // Runtime whitelist against the real locale list (security review, 2026-09-04): a bare
+      // `as EmailLocale` cast trusted profiles.locale unchecked, so a junk value would splice
+      // straight into the email href below. A value not in `locales` falls back to "de".
+      customerLocale = (locales as readonly string[]).includes(cust?.locale ?? "")
+        ? (cust!.locale as EmailLocale)
+        : "de";
     }
     if (customerEmail) {
       // H8: deep-link to the customer approve/decline screen so the email is actionable.

@@ -9,6 +9,35 @@ import {
 
 const DAY_ORDER: DayKey[] = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 
+/**
+ * The single three-column visibility gate (security review, 2026-09-04): a salon is HIDDEN
+ * from a public/customer caller when it's inactive, explicitly unlisted, or a test row.
+ * `listed_on_marketplace` is checked with `=== false`, not a bare falsy check, so `null`
+ * (not-yet-set on older rows) still counts as visible (the "IS NOT FALSE" contract
+ * app/api/salon/retail/route.ts documents). Owner/admin callers bypass this at the call site,
+ * not here (this helper only answers "is it hidden", not "can this viewer see it anyway").
+ */
+export function isSalonHidden(s: {
+  is_active?: boolean | null;
+  listed_on_marketplace?: boolean | null;
+  is_test?: boolean | null;
+}): boolean {
+  return !s.is_active || s.listed_on_marketplace === false || s.is_test === true;
+}
+
+/**
+ * The shared admin-role lookup behind every hidden-salon owner/admin bypass (security
+ * review, 2026-09-04): one profiles.role read, reused by loadSalonDetailWithAccess below
+ * plus the booking page and POST /api/bookings, instead of each call site running its own
+ * copy of the same query. Only ever called for a signed-in user looking at a salon that
+ * isn't theirs and isn't currently visible, so the hot public path never pays for it.
+ */
+export async function isViewerAdmin(userId: string): Promise<boolean> {
+  const { data: viewerProfile } = await createAdminSupabaseClient()
+    .from("profiles").select("role").eq("id", userId).maybeSingle();
+  return viewerProfile?.role === "admin";
+}
+
 export interface SalonDetailWithStatus {
   salon: SalonDetail;
   /** Computed ONCE server-side (salon's own timezone) to avoid the SSR/client
@@ -81,21 +110,18 @@ export async function loadSalonDetailWithAccess(
   // `=== false`, not a bare falsy check, so `null` (not-yet-set on older rows) still
   // counts as visible, the same "IS NOT FALSE" contract app/api/salon/retail/route.ts
   // documents.
-  const isHidden =
-    !salon.is_active || salon.listed_on_marketplace === false || salon.is_test === true;
+  const isHidden = isSalonHidden(salon);
   const isOwner = user?.id === salon.owner_id;
   // The comment above promised an admin branch since this function was written, but the
   // check was owner-only, so an admin could not open a pending salon's storefront , the
   // fastest way to judge a signup, and the owner's ask on 2026-07-27 ("as admin we can see
   // all details n stuff"). One extra query, and only for a signed-in user looking at a
   // salon that is not theirs and not currently visible, so the public path is untouched.
-  let isAdminViewer = false;
+  let isAdminViewerFlag = false;
   if (!isOwner && isHidden && user?.id) {
-    const { data: viewerProfile } = await createAdminSupabaseClient()
-      .from("profiles").select("role").eq("id", user.id).maybeSingle();
-    isAdminViewer = viewerProfile?.role === "admin";
+    isAdminViewerFlag = await isViewerAdmin(user.id);
   }
-  if (!isOwner && !isAdminViewer && isHidden) return null;
+  if (!isOwner && !isAdminViewerFlag && isHidden) return null;
 
   // Fetch related data in parallel
   const [servicesRes, staffRes, reviewsRes] = await Promise.all([
