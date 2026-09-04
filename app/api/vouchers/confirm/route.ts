@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
     // Get voucher details
     const { data: voucher, error: voucherError } = await supabase
       .from("vouchers")
-      .select("*, salons(name_de, name_en)")
+      .select("id, code, amount, stripe_payment_intent_id")
       .eq("id", voucher_id)
       .single();
 

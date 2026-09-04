@@ -32,7 +32,7 @@ export async function handleSalonVoucherPaid(pi: any): Promise<boolean> {
   try {
     const { data: voucher } = await admin
       .from("vouchers")
-      .select("id, amount, code, recipient_email, recipient_name, message, expires_at, remaining_amount, buyer_id, salons(name_de)")
+      .select("id, amount, code, recipient_email, recipient_name, message, expires_at, remaining_amount, buyer_id, salons(name)")
       .eq("stripe_payment_intent_id", pi.id)
       .maybeSingle();
 
@@ -59,7 +59,7 @@ export async function handleSalonVoucherPaid(pi: any): Promise<boolean> {
       .eq("id", (voucher as any).id)
       .is("remaining_amount", null);
 
-    const salonName = (voucher as any).salons?.name_de ?? "Solen";
+    const salonName = (voucher as any).salons?.name ?? "Solen";
     const recipientEmail = (voucher as any).recipient_email as string | null;
     const amountChf = Number((voucher as any).amount ?? 0); // vouchers.amount is CHF, not Rappen.
 
