@@ -1,3 +1,4 @@
+-- APPLIED LIVE 2026-09-05 01:06 via the Supabase MCP (migration name refund_keep_commission_setting); checked after applying.
 -- NOT YET APPLIED as of this commit. To be applied via the Supabase MCP
 -- `apply_migration` tool (never `supabase db push`, this project's migration
 -- history has diverged from the remote schema_migrations table, same note

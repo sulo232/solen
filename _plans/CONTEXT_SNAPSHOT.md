@@ -2,25 +2,42 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-09-04T20:16:26 (trigger: auto)
+- taken: 2026-09-05T00:21:20 (trigger: auto)
 - branch: claude/cloud-code-codex-migration-86a820
 
 ## git
 ```
-cd25a9303 Search sorts by price and by distance over the whole result set, not one arbitrary page
-c65bbfd04 Losing a booking race now answers "slot taken", not a raw database error
-11c5cae07 Plan notes: his correction on the Codex answer recorded in his words
-aa0420214 Plan notes: font, pair C and pair D boxes closed with their proof; no open box left in the file
-a9ddffe8c Home search: the last unused hook, four unused setters and a dead prop removed
+e4a806726 Inventory: the 20 unclear items resolved, 12 became bugs or mockups, 7 closed with proof, 1 needs Docker
+a0ec222d9 Open-items inventory: 47 bugs, 16 screen changes, 21 his decisions, 20 unclear, each checked against the code tonight
+d02e7a478 Today's audit reports kept in the repo: open items, phantom columns, dead links, orphan routes, branches, design walk, geometry, security
+3bdad6018 Plan notes: Map button fix landed, index row carries tonight's commits and his four decisions
+101e7f276 The Map button on search results sits above the bottom bar, and it steps aside for the cookie banner and the search panel
 ```
 ```
-M app/[locale]/_components/primitives/CookieConsent.tsx
+M .github/workflows/cron-jobs.yml
+ M _design-system/COMPONENT_REGISTRY.md
+ M _design-system/_geometry-report.md
+ M app/[locale]/[city]/[category]/page.tsx
+ M app/[locale]/_components/homepage/ForYouAffinityRow.tsx
+ M app/[locale]/_components/homepage/Nearby.tsx
+ M app/[locale]/_components/homepage/NearbyMap.tsx
+ M app/[locale]/_components/salon/SalonLocation.tsx
+ M app/[locale]/_components/salon/SalonServices.tsx
+ M app/[locale]/_components/search/SearchOverlay.tsx
  M app/[locale]/_components/search/SearchTemplate.tsx
- M tailwind.config.js
+ M app/[locale]/bookings/[id]/refund/page.tsx
+ M app/[locale]/dashboard/calendar/page.tsx
+ M app/[locale]/dashboard/settings/page.tsx
+ M app/[locale]/page.tsx
+ M app/api/ai/intake-recommendation/route.ts
+ M app/api/ai/recommend/route.ts
+ M app/api/auth/login/route.ts
+ M app/api/auth/signup/route.ts
+ M app/api/auth/verify-otp/route.ts
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
-113 | EVERYTHING as a loop, then move it all to Codex (owner 2026-09-04: "research every single corner ... keep fixing it except for design make mockup ... merge everything ... transfer everything on Cloud Code to Codex", plus "mainly design, what principle is actually missing") | **IN PROGRESS** (2026-09-04 late evening: backend-perfect-before-handoff round, his second answers applied)
+113 | EVERYTHING as a loop, then move it all to Codex (owner 2026-09-04: "research every single corner ... keep fixing it except for design make mockup ... merge everything ... transfer everything on Cloud Code to Codex", plus "mainly design, what principle is actually missing") | **IN PROGRESS** (2026-09-04 night: every fix committed and reviewed, production copy rebuilding for his links; four decisions his)
 81 | DESIGN CONSISTENCY, the one that closes design work instead of opening more (owner 2026-08-27: "a lot of inconsistencies... the search bar moves... weird back button... typography too", then "acc plan what happened to the planning harness") | **PAUSED** (paused 2026-08-31 on his word: "can you park whatever we're doing right now?")
 74 | OVERNIGHT LOOP: how I work + efficiency (speed/money) + harness + skills (owner 2026-08-24, going to sleep: "finish evrth as a. loop") | **ACTIVE** (2026-08-24)
 75 | HIS OPEN ASKS, the ones I measured instead of doing (owner 2026-08-24: "are you sure you finished everything? What about the one... like, the number three and also about the context and about the price and also the skills") | **ACTIVE** (2026-08-24)
