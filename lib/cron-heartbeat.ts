@@ -10,24 +10,20 @@
 // flags a name as overdue when its most recent cron_runs row, or the absence
 // of one, is older than 2x that interval.
 //
-// The interval map excludes two crons on purpose:
+// The interval map excludes one cron on purpose:
 //  - "daily-digest" itself (this route): checking your own not-yet-written
 //    row the moment you run would always look overdue.
-//  - "solen-score-recalculate" (app/api/admin/solen-score/recalculate, POST,
-//    part of the daily-03-utc job): it does not call withCronRun and writes
-//    no cron_runs row at all, a pre-existing gap unrelated to this fix.
-//    Tracking it here would misreport that separate, already-known gap as an
-//    A11 alert every single day instead of the real thing this file is for.
 
 /**
  * cron_runs.name -> scheduled interval in milliseconds, grounded in the
  * `cron:` schedule entries of .github/workflows/cron-jobs.yml.
  */
 export const EXPECTED_CRON_INTERVALS_MS: Record<string, number> = {
-  // */15 * * * * (every-15-min job)
+  // */15 * * * * (every-15-min job, cron-jobs.yml:9 / :55)
   "auto-complete": 15 * 60 * 1000,
   "pending-timeout": 15 * 60 * 1000,
   "abandon-sweep": 15 * 60 * 1000,
+  "walkin-no-show": 15 * 60 * 1000,
   // */30 * * * * (every-30-min job)
   "late-cancel": 30 * 60 * 1000,
   "sms-reminders": 30 * 60 * 1000,
@@ -42,10 +38,14 @@ export const EXPECTED_CRON_INTERVALS_MS: Record<string, number> = {
   "release-payments": 6 * 60 * 60 * 1000,
   // 0 2 * * * (daily-02-utc job)
   "generate-slots": 24 * 60 * 60 * 1000,
-  // 0 3 * * * (daily-03-utc job; solen-score-recalculate excluded, see above)
+  // 0 3 * * * (daily-03-utc job, cron-jobs.yml:14 / :153)
+  "solen-score-recalculate": 24 * 60 * 60 * 1000,
   "process-deletions": 24 * 60 * 60 * 1000,
   reconcile: 24 * 60 * 60 * 1000,
   "style-affinity-recompute": 24 * 60 * 60 * 1000,
+  "affinity-recompute": 24 * 60 * 60 * 1000,
+  "salon-engagement-recompute": 24 * 60 * 60 * 1000,
+  "dispute-timeout": 24 * 60 * 60 * 1000,
   // 45 3 * * * (daily-03-45-utc job)
   "db-backup": 24 * 60 * 60 * 1000,
   // 0 8 * * * (daily-08-utc job)

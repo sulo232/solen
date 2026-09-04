@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
 import { verifyCronSecret } from "@/lib/cron-auth";
+import { withCronRun } from "@/lib/cron-run";
 
 // Cron: recompute per-(user, salon) affinity for personalization. Daily.
 // Calls the security-definer SQL function that re-sums weighted, time-decayed engagement
@@ -20,11 +21,13 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const admin = createAdminSupabaseClient();
-  const { data, error } = await admin.rpc("recompute_user_salon_affinity");
-  if (error) {
-    console.error("[cron/affinity-recompute] rpc failed:", error.message);
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-  return NextResponse.json({ ok: true, rowsWritten: data ?? 0 });
+  return withCronRun("affinity-recompute", async () => {
+    const admin = createAdminSupabaseClient();
+    const { data, error } = await admin.rpc("recompute_user_salon_affinity");
+    if (error) {
+      console.error("[cron/affinity-recompute] rpc failed:", error.message);
+      return { error: error.message, errors: [error.message] };
+    }
+    return { ok: true, rowsWritten: data ?? 0, processed: data ?? 0 };
+  });
 }

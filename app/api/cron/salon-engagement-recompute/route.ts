@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
 import { verifyCronSecret } from "@/lib/cron-auth";
+import { withCronRun } from "@/lib/cron-run";
 
 // Cron: recompute per-salon engagement (the popularity ranking signal). Daily.
 // Sums weighted, time-decayed kept bookings + favorites + reviews per salon. Spec:
@@ -18,11 +19,13 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const admin = createAdminSupabaseClient();
-  const { data, error } = await admin.rpc("recompute_salon_engagement");
-  if (error) {
-    console.error("[cron/salon-engagement-recompute] rpc failed:", error.message);
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-  return NextResponse.json({ ok: true, rowsWritten: data ?? 0 });
+  return withCronRun("salon-engagement-recompute", async () => {
+    const admin = createAdminSupabaseClient();
+    const { data, error } = await admin.rpc("recompute_salon_engagement");
+    if (error) {
+      console.error("[cron/salon-engagement-recompute] rpc failed:", error.message);
+      return { error: error.message, errors: [error.message] };
+    }
+    return { ok: true, rowsWritten: data ?? 0, processed: data ?? 0 };
+  });
 }
