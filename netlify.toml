@@ -46,10 +46,12 @@
     #   *.tiktokcdn(-us|-eu).com, *.unsplash.com, *.pexels.com, *.googleusercontent.com,
     #   picsum.photos / *.picsum.photos - remotePatterns in next.config.mjs (next/image
     #     origins actually configured for this app)
-    # No report-uri/report-to: no CSP report-collection endpoint exists in this repo
-    # (checked app/api for a csp/report route) - pointing at one that 404s is worse
-    # than omitting it, so this ships as browser-console-only until one exists.
-    Content-Security-Policy-Report-Only = "default-src 'self'; script-src 'self' https://js.stripe.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.supabase.co https://*.tiktokcdn.com https://*.tiktokcdn-us.com https://*.tiktokcdn-eu.com https://*.unsplash.com https://*.pexels.com https://picsum.photos https://*.picsum.photos https://*.googleusercontent.com https://api.mapbox.com; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://api.mapbox.com https://events.mapbox.com https://eu.i.posthog.com; frame-src https://js.stripe.com https://hooks.stripe.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'"
+    # report-uri/report-to: app/api/csp-report/route.ts exists (rate-limited, dedupes by
+    # origin, writes record_csp_violation) and receives both formats. This is the "watch
+    # reports for a week, then enforce" step: still Report-Only, now with somewhere for
+    # violations to land instead of only the browser console.
+    Content-Security-Policy-Report-Only = "default-src 'self'; script-src 'self' https://js.stripe.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.supabase.co https://*.tiktokcdn.com https://*.tiktokcdn-us.com https://*.tiktokcdn-eu.com https://*.unsplash.com https://*.pexels.com https://picsum.photos https://*.picsum.photos https://*.googleusercontent.com https://api.mapbox.com; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://api.mapbox.com https://events.mapbox.com https://eu.i.posthog.com; frame-src https://js.stripe.com https://hooks.stripe.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; report-uri /api/csp-report; report-to csp-endpoint"
+    Reporting-Endpoints = "csp-endpoint=\"/api/csp-report\""
 
 [[headers]]
   for = "/api/*"

@@ -11,13 +11,14 @@ import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
 import { analyzeDiscoveryImage, analyzeDiscoveryTikTok } from "@/lib/ai-vision";
 import { withCronRun } from "@/lib/cron-run";
+import { verifyCronSecret } from "@/lib/cron-auth";
 
 const PER_RUN = 10; // bounded: 10 looks x ~10s AI ~= under the function limit
 
 export async function GET(req: NextRequest) {
   const cronSecret = getServerEnv().CRON_SECRET;
   if (!cronSecret) return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 503 });
-  if (req.headers.get("authorization") !== `Bearer ${cronSecret}`) {
+  if (!(await verifyCronSecret(req.headers.get("authorization"), cronSecret))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   if (!getServerEnv().GEMINI_API_KEY) return NextResponse.json({ error: "GEMINI_API_KEY not set" }, { status: 503 });

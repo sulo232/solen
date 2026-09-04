@@ -16,6 +16,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerEnv } from "@/lib/env";
 import { withCronRun } from "@/lib/cron-run";
 import { BACKUP_TABLES, backupPrefixForDate, pruneOldBackups, runDbBackupExport } from "@/lib/backup/export";
+import { verifyCronSecret } from "@/lib/cron-auth";
 
 export async function GET(request: NextRequest) {
   const cronSecret = getServerEnv().CRON_SECRET;
@@ -23,7 +24,7 @@ export async function GET(request: NextRequest) {
   const adminAuth = request.headers.get("Authorization");
   // Same convention as every other cron route: CRON_SECRET bearer, sent by
   // .github/workflows/cron-jobs.yml's ping-cron action.
-  if (adminAuth !== `Bearer ${cronSecret}`) {
+  if (!(await verifyCronSecret(adminAuth, cronSecret))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

@@ -11,6 +11,7 @@ import { purgeReviewPhotoStorage } from "@/lib/gdpr/purge-review-photo-storage";
 import { purgeAvatarStorage } from "@/lib/gdpr/purge-avatar-storage";
 import { purgeSalonStorage } from "@/lib/gdpr/purge-salon-storage";
 import { purgeStripeCustomers } from "@/lib/gdpr/purge-stripe-customer";
+import { verifyCronSecret } from "@/lib/cron-auth";
 
 export async function GET(request: NextRequest) {
   const cronSecret = getServerEnv().CRON_SECRET;
@@ -18,7 +19,7 @@ export async function GET(request: NextRequest) {
   const adminAuth = request.headers.get("Authorization");
   // VERY simple auth for cron jobs: `CRON_SECRET` env var must match the secret
   // sent by `.github/workflows/cron-jobs.yml` (GitHub Actions invokes this route)
-  if (adminAuth !== `Bearer ${cronSecret}`) {
+  if (!(await verifyCronSecret(adminAuth, cronSecret))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

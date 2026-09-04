@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
 import { withCronRun } from "@/lib/cron-run";
+import { verifyCronSecret } from "@/lib/cron-auth";
 
 // RING 3a: caps a per-item errors[] array so a bad batch never floods cron_runs.
 function capErrors(errs: string[], max = 20): string[] {
@@ -24,7 +25,7 @@ const OEMBED = "https://www.tiktok.com/oembed";
 export async function GET(request: NextRequest) {
   const cronSecret = getServerEnv().CRON_SECRET;
   if (!cronSecret) return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 503 });
-  if (request.headers.get("authorization") !== `Bearer ${cronSecret}`) {
+  if (!(await verifyCronSecret(request.headers.get("authorization"), cronSecret))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

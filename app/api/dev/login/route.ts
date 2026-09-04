@@ -36,8 +36,13 @@ export async function GET(req: NextRequest) {
   //    Use a RELATIVE Location so the browser resolves it against the request's real origin. Behind a
   //    tunnel/proxy (e.g. cloudflared) req.url's host is localhost, which would otherwise redirect to
   //    https://localhost:3000/... and dead-end the device. A relative path stays on the current host.
-  const toPath = req.nextUrl.searchParams.get("to") || "/de/dashboard";
-  const res = new NextResponse(null, { status: 307, headers: { Location: toPath.startsWith("/") ? toPath : `/${toPath}` } });
+  const rawToPath = req.nextUrl.searchParams.get("to") || "/de/dashboard";
+  // SECURITY: same guard as app/api/auth/callback/route.ts. Block protocol-relative
+  // URLs and backslashes (new URL() treats "\" as "/" per the WHATWG spec, so
+  // "/\evil.com" would otherwise pass a bare startsWith("/") check).
+  const isSafeToPath = rawToPath.startsWith("/") && !rawToPath.startsWith("//") && !rawToPath.includes("\\");
+  const toPath = isSafeToPath ? rawToPath : "/";
+  const res = new NextResponse(null, { status: 307, headers: { Location: toPath } });
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
