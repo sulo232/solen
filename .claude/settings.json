@@ -113,6 +113,14 @@
           {
             "type": "command",
             "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/migration-fabrication-gate.py"
+          },
+          {
+            "type": "command",
+            "command": "node $CLAUDE_PROJECT_DIR/scripts/hooks/type-scale-gate.mjs"
+          },
+          {
+            "type": "command",
+            "command": "node $CLAUDE_PROJECT_DIR/scripts/hooks/icon-blessed-context-gate.mjs"
           }
         ]
       },
