@@ -1,0 +1,19 @@
+<!--
+  Mockup-scope: section. Placeholder, replaced by build_compare.py in this same turn.
+
+  Grounded-in: app/[locale]/_components/layout/Header.tsx and lib/icon-stroke.ts (the approved
+  stroke table this sheet applies). The left column is what the running product renders.
+
+  Exists-check: ran `npm run exists icon`, which surfaced lib/icon-stroke.ts, an owner-approved
+    stroke table already in the repo. That CHANGED this sheet: it no longer asks which thickness
+    to use. Also ran `npm run exists "icon compare"`: 0 matches, so this comparison surface is new.
+    REMOVED.md hits for icon or Iconly: none.
+
+  Diagnosis: icon stroke ignores the approved strokeForSize table | measured 254 of 272 shipping icons (93%) set a hand-typed strokeWidth that disagrees with lib/icon-stroke.ts, roots app/ lib/ components-legacy/ and siblings, excluding node_modules .next .git public/_mockups, with app/[locale]/dev/ counted separately | violates FLOORS LAW 8 the same thing looks the same everywhere | target every icon reads its stroke from strokeForSize(), 14px to 1.6, 18 to 1.9, 22 to 2.2, 24 to 2.4
+
+  Depicts: our icon as it ships today -> app/[locale]/_components/layout/Header.tsx
+  Depicts: the approved stroke this sheet applies -> lib/icon-stroke.ts
+  Depicts: the salon-card icons in these rows -> app/[locale]/_components/homepage/SalonCard.tsx
+  Depicts: the Iconly replacement columns -> NET-NEW: artwork fetched live from the owner's own
+    Iconly Pro subscription, so it exists as a product but has no path in this repo yet
+-->

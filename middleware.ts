@@ -50,6 +50,29 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // DEV-ONLY, 2026-08-17 (owner: "safari dead"). /terminal is the merchant terminal preview and it
+  // deliberately lives OUTSIDE the [locale] segment, so it inherits only the root layout instead of
+  // the whole site (header, breadcrumb, footer, fixed bottom nav, cookie provider, PostHog, the
+  // page-transition wrapper). All of that renders underneath a full-screen overlay nobody can see it
+  // through, and on a phone in dev it is what kills the tab. Without this bypass the locale
+  // redirect below sends /terminal to /en/terminal, which does not exist, so the page 404s.
+  // Guarded on NODE_ENV so it cannot affect production, where the route itself calls notFound().
+  // The guard is `!== "production"` on purpose, to be the exact complement of the page's own
+  // `=== "production"` notFound(). `=== "development"` looked equivalent and is not: under a test
+  // runner or any custom NODE_ENV the bypass would not fire, /terminal would fall through to the
+  // locale redirect below, and /{locale}/terminal does not exist, so the page 404s even though its
+  // own guard would have rendered it.
+  // `{ request }` matches every other pass-through in this file: NextResponse.next() only forwards
+  // the mutated request headers when it is passed, so a bare next() silently drops the x-pathname
+  // set above. Checked rather than assumed, and it does NOT change <html lang> here: app/layout.tsx
+  // parses a locale PREFIX out of x-pathname, and "/terminal" has none, so it falls back to the
+  // default either way. The dev-only terminal therefore renders English under lang="de". Left as is
+  // because the route is blocked in production and the alternative is bending the shared root
+  // layout around one dev screen.
+  if (process.env.NODE_ENV !== "production" && pathname === "/terminal") {
+    return NextResponse.next({ request });
+  }
+
   // CORS headers for API routes
   if (pathname.startsWith("/api")) {
     const origin = request.headers.get("origin") ?? "";

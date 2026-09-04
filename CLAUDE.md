@@ -65,6 +65,34 @@ Enforcement chain: (a) the static ones (1, 5) are wired gates; (b) 2-4, 3b are r
 
 The audited root cause of "compliant but unfinished": this system had only CEILINGS (never "too much") and no FLOORS (never "too little"), so the compliance-optimal screen was the emptiest one. These floors are CO-EQUAL with the 10 taste rules. Restraint without a life source is a FAIL, not a style. Full audit + evidence: `_design-system/research/UNFINISHED_AUDIT_2026-07-21.md`.
 
+> ### ⚠️ SCOPE, AND IT WAS MISSING UNTIL 2026-08-16. NAME THE SCREEN BEFORE YOU APPLY ANY OF THIS.
+>
+> **Everything below governs CUSTOMER screens: discovery, search, the PDP, booking, checkout,
+> profile, Inspo. It does NOT govern OPERATOR screens** (anything a salon uses to run its shop:
+> `/dashboard/*`, the merchant terminal, the queue display).
+>
+> **Operator screens are governed by the dated merchant round in `_design-system/TASTE_LOG.md`
+> (2026-07-15):** ONE carded hero per screen and everything else BARE TEXT on the canvas, no card,
+> box or pill costume; binary 16 / 32 gaps only; one pill spec per context; NO coloured edge bars;
+> a person or event appears in EXACTLY ONE place. Plus the CONTAINER TEST (LOCKFILE, 2026-07-28):
+> a container is earned only when it does something whitespace cannot.
+>
+> **Why this line exists, and it is the strongest evidence in the file that a missing scope line is
+> not a cosmetic omission.** A merchant terminal was rejected six times in one session. Nobody ever
+> wrote down that it was an operator screen, so this block was applied by default, and TWO OF ITS
+> FLOORS ACTIVELY PRODUCED THE THINGS THE OWNER REJECTED:
+> - floor 4 ("grouped content on white with no photo anchor REQUIRES the sunken tray") produced the
+>   grey canvas he rejected: *"i dont like ths gray backrgrounf"*.
+> - floor 1d ("at least one semantic-color moment") on a screen that has no photography leaves only
+>   the pale semantic tokens, so `s-warning.bg` `#FDF6E7` became a full-bleed bar: *"You made up a
+>   random fucking collar that's beige."* That colour is banned by name in taste rule 3 (`no warm
+>   cream`), so the floors and the taste rules were in direct contradiction and nothing said which
+>   one wins on which screen.
+>
+> An operator screen has no imagery floor, no semantic-colour requirement and no sunken-tray rule.
+> Its life source is LIVE DATA, not photography. If you cannot say in one line which kind of screen
+> you are building, you are not ready to apply either law.
+
 1. **The finished-screen pass (all 6 = Pass before any customer screen/mockup ships):** (a) a photographic focal is present; (b) exactly ONE element is clearly the biggest; (c) at least one tabular/real number; (d) at least one semantic-color moment; (e) no dead-grey zone; (f) worst-case content holds (hierarchy-density-08, LOCKFILE §17.5 item 6): the longest real/plausible salon name, a full-length review, and a maximally long service name must not break the two-ink-anchor card rule, the >=28px display anchor, or truncate load-bearing copy. This is NOT the generic verifier-loop's optional "long content (only when in scope)" bullet, it is a hard gate item here. A mockup carries a `floors:` note answering all six.
 2. **Imagery presence floor , SATISFIED BY CONTENT, NEVER BY DECORATION (clarified 2026-07-25 after a THIRD owner rejection).** Owner verbatim: *"no other company has just image hard coded baked into a random area... what we need to do is SHOW OFF THE STORES THAT WE HAVE, not just some random image."* This floor is a CONTENT-DENSITY rule wearing a percentage. It is met by surfacing more real salon content higher up (more cards, bigger cards, the real feed earlier), and it is NEVER met by adding a hero photo, a banner, or any image whose src is baked into a component. A static image on a Solen surface is decoration, and decoration is rejected by name. Gate: `~/.claude/hooks/no-decorative-image-gate.py` blocks a hardcoded `src`; data-driven `src` passes. Original wording: every customer browse/discovery/PDP viewport at 390x844 (corrected 2026-07-25, was 375x812 , reconciled to match the LOCKFILE EMPHASIS BUDGET measurement viewport and what `check-geometry.mjs`'s FLOORS pass actually renders at) carries roughly >= 1/3 photographic area; the photo is the largest element of every SalonCard. A photo-first surface NEVER renders a bare grey box , a missing photo gets the spec'd fallback (sunken bg + category icon + initial), never slot-omission. Mockups pull real seeded photography; a zero-imagery customer mockup auto-fails. Exempt BY NAME: forms, checkout payment step, legal, receipts.
 3. **Density floor (the populated state is the design target):** spec + mock at IDEAL density from SEED data (seed = real wired data, satisfies no-fabrication): PDP gallery >= 5 photos, reviews >= 3 visible, services >= 6 rows, home feed >= 4 sections; a populated list/grid first viewport shows >= 4 content units mobile / >= 6 desktop plus a visibly cropped next item (the scroll promise); a card renders its FULL info stack whenever the data exists , omission is legal only for null data, never for minimalism. Loading/empty/error DERIVE from the populated layout, not the reverse. Boundary: dead-affordance + no-fabrication bind production and current-state mockups; a TARGET-state mockup renders full seeded content + a one-line footer naming what is not yet wired. **RICH-DATA CEILING (hierarchy-density-03, paired with the floor above):** once real content passes roughly 3x these numbers (80+ services, 100+ reviews, 40+ gallery photos, the shape a mature salon reaches post-launch, not a seed fixture), never render the full set inline uncapped , group services by duration/category tier, cap reviews to most-recent-plus-a-star-distribution beyond 12 visible, cap an inline gallery grid at 12 photos behind a lightbox for the rest. A wall of 300 undifferentiated reviews is exactly as much a wireframe-signal as an empty screen, just via the opposite mechanism.
@@ -126,6 +154,8 @@ Frozen single-values. Do NOT re-open any row without the owner saying so by name
 ## 🎨 Design system
 
 **Before design/UI work: `_design-system/SOURCE.md`** (22-section canonical: tokens, motion, spacing, components, voice, a11y). On conflict, **`_design-system/LOCKFILE.md`** wins (frozen literal values; subagents read as immutable, only orchestrator writes).
+
+**FIRST, before either of those: `_design-system/PRINCIPLES.md`** (added 2026-08-16): how to DECIDE before any markup, in five minutes: name the screen class (customer / operator) and whose law governs it, the screen's one job, what colour MEANS, when a container is earned plus the box budget, the one gap ladder, the type ladder. It states no new frozen value and quotes LOCKFILE and TASTE_LOG with pointers. It exists because the missing "which kind of screen is this" step is the measured cause of the six merchant-terminal rejections (`_design-system/TASTE_LOG.md` 2026-08-16). The Airbnb measurements behind it: `_design-system/research/AIRBNB_TEARDOWN_2026-08-16.md`.
 
 **SOURCE OF TRUTH = AIRBNB (owner 2026-08-12, verbatim: "airbnb te is source of truth", answering a question that named this exact collision and quoted the rule it replaces).** This SUPERSEDES the dual-axis rule that stood here, which read: *"STRUCTURE = Fresha source-of-truth (via `fresha-section-capture`). AESTHETIC = Uber via LOCKFILE §1.5/§2.5/§11/§6."* Fresha is no longer the structural authority; Airbnb is, on both axes, and `AESTHETIC = Uber` falls with it wherever the two disagree.
 

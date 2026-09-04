@@ -12,6 +12,10 @@ const withBundleAnalyzer = bundleAnalyzer({ enabled: process.env.ANALYZE === "tr
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // The floating dev-tools badge sits bottom-left, exactly on top of the merchant terminal's own
+  // bottom bar, so every screenshot of that screen carried a black disc nobody could explain.
+  // Dev-only chrome either way: this changes nothing about a build.
+  devIndicators: false,
   typescript: { ignoreBuildErrors: false },
   eslint: { ignoreDuringBuilds: true },
   experimental: {

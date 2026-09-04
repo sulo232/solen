@@ -639,7 +639,7 @@ export default function StaffPage() {
       {salonId && <PendingInvites salonId={salonId} />}
 
       {/* Filter pills — light-blue active (approved skin) */}
-      <div className="flex gap-2 mb-4 overflow-x-auto no-scrollbar pb-1">
+      <div className="flex gap-2 mb-4 overflow-x-auto scrollbar-hide pb-1">
         {(["all", "active", "inactive"] as const).map((f) => (
           <button
             key={f}

@@ -1170,3 +1170,72 @@ That is his call to make and the measurement does not overrule it.
 WHAT IS NOT COVERED by this decision, because he was only ever shown search results: inspo, help and
 login also measured out of step (inspo is flatter still at 15px and 1.25x; help and login are the
 loudest at 18% and 27% bold). No direction has been shown to him for those.
+## 2026-08-16 , THE SCREEN PRINCIPLE (owner: "Make a principle... Ask them the core cause of your sloppiness")
+
+Written after a merchant terminal was rejected **six times in one session**. An adversarial panel of
+three independent diagnoses plus a judge was run against my own candidate cause, with instructions to
+refute it. Mine was the front half of the answer and did not survive alone.
+
+### The cause, as the panel landed it
+**The screen was never named, and it was never judged as one thing.**
+
+No round began by saying what the screen IS (a merchant counter terminal, an operator surface) and
+no round ended by looking at the whole rendered screen again. With neither end fixed, every decision
+in between defaulted to the smallest unit available: for a value, one class string warranted by the
+file it was copied from; for a round, the one sentence the owner had just said.
+
+**And this is the part that matters, because it means the failure was not laziness alone.** Because
+the surface class was never named, the operator law in this very file (the 2026-07-15 merchant round)
+was never routed to, and the CUSTOMER-screen FLOORS LAW was applied by default. Two of its floors
+then actively DEMANDED the two things he rejected:
+- FLOORS LAW 4 mandates the sunken tray for grouped content on white with no photo -> the grey canvas
+- FLOORS LAW 1d mandates a semantic-colour moment, and on a screen with no photography the only
+  candidates left are the pale semantic tokens -> `s-warning.bg` `#FDF6E7` as a full-bleed bar,
+  a colour taste rule 3 bans by name
+
+So the law contradicted itself and nothing said which half won on which screen. FLOORS LAW now
+carries a scope block naming exactly that, added the same day.
+
+**The single strongest piece of evidence that identity was the missing step:** the design verifier
+asked in ROUND ONE whether a list of people is one card with lines or a card per person. It was
+parked. Five more rounds were built on the unanswered question. Round six is the owner answering it
+by rejection.
+
+**Honest limit, recorded rather than smoothed:** this cause prevents four of the six rejections. It
+does NOT prevent "the mockup isn't working at all" (the page server-rendered nothing) or "make an
+actual prototype" (nothing on it did anything), unless judging the whole screen means OPENING AND
+USING the running page rather than measuring it. Measuring is this estate's reflex: a bespoke script
+collecting six scalars ran every round while nobody clicked anything.
+
+### THE SCREEN PRINCIPLE, and it is five lines before any markup
+
+1. **Say what this screen is.** One line, with a person in it. "A merchant counter terminal, used
+   standing up, by staff, during opening hours." Not "a page".
+2. **Say whose law applies.** Customer screen or operator screen. This is the step that was skipped
+   six times. Operator screens: the 2026-07-15 merchant round in this file. Customer screens: FLOORS
+   LAW. Applying the wrong one is not a near miss, it produces the defect.
+3. **Say the one job, in one sentence.** "Someone at the counter with three people waiting takes the
+   next one without asking anybody anything." Every element is justified against that or it is cut.
+4. **Say the one biggest thing, before any markup**, and give it the anchor. Everything else recedes.
+5. **Write the three targets**: how many boxes (aim: one), the gap ladder (16 and 32, nothing else),
+   the type ladder (an anchor, a workhorse, one small, and nothing used once in between).
+
+### When the class string already exists in the repo
+Finding the string is not permission to use it. **The file you copied it from is never a reason. The
+rule line is the only reason.** Write one line beside the paste naming the rule and the condition it
+sets, in your own words. "DashboardLayout.tsx has it" is not that line; that bar dresses an admin
+preview banner, an internal tool, not a design decision.
+
+### What a gate can and cannot see here
+Gateable, and now measured on every round: the count of surface colours, the share of vertical pixels
+inside a box, the gap ladder, the size ladder, controls under 44px.
+NOT gateable, and it is dishonest to pretend otherwise: whether the screen is the right screen for
+its job, and whether it feels like this product. Those need the owner, which is what the mockup-first
+law is for.
+
+### The state that was approved out of this round, measured
+White surfaces only, no `#F4F4F5` anywhere on the terminal, no warm cream. ONE card (the chairs) at
+25.2% of the viewport against a 35% ceiling. Section gaps `[32, 32, 32, 32]`, exact. Four sizes
+`{13, 15, 18, 28}` with 14 deleted and the anchor at 2.15x the body. Nothing under 44px. Verified
+still live by polling it for 30 seconds untouched: the attention count went 10 -> 11 -> 12 as two
+bookings arrived on their own.

@@ -2150,6 +2150,7 @@
       "statusBooked": "Prenotato",
       "statusBlocked": "Bloccato",
       "statusFree": "Libero",
+      "freeRange": "{start} alle {end} libero, {count} {count, plural, one {slot} other {slot}}",
       "timeLabel": "Orario:",
       "dateLabel": "Data:",
       "staffDetailLabel": "Personale:",

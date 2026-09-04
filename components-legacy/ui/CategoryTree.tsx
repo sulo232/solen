@@ -19,9 +19,15 @@ interface Category {
 
 interface CategoryTreeProps {
   activeSlug?: string;
+  // Which half to render. Both halves used to render from every instance (a bare fragment of
+  // mobileChips + desktopTree), which starved the results column to zero width below md: the
+  // tree is hidden there but the chips are not, so a first CategoryTree call meant only to supply
+  // the desktop tree also dumped a live 326px chip row into the flex layout, measured leaving 20
+  // salon cards at width 0. Pick exactly one half per call site, never both.
+  variant?: "tree" | "chips";
 }
 
-export default function CategoryTree({ activeSlug }: CategoryTreeProps) {
+export default function CategoryTree({ activeSlug, variant = "tree" }: CategoryTreeProps) {
   const locale = useLocale();
   const [categories, setCategories] = useState<Category[]>([]);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
@@ -73,7 +79,7 @@ export default function CategoryTree({ activeSlug }: CategoryTreeProps) {
 
   // ─── Mobile: horizontal scrollable chips (level 1 only) ───
   const mobileChips = (
-    <div className="md:hidden flex gap-2 overflow-x-auto no-scrollbar pb-2">
+    <div className="md:hidden flex gap-2 overflow-x-auto scrollbar-hide pb-2">
       {categories.map((cat) => (
         <Link
           key={cat.id}
@@ -147,10 +153,5 @@ export default function CategoryTree({ activeSlug }: CategoryTreeProps) {
     </div>
   );
 
-  return (
-    <>
-      {mobileChips}
-      {desktopTree}
-    </>
-  );
+  return variant === "chips" ? mobileChips : desktopTree;
 }

@@ -266,12 +266,35 @@ Every self-hosted family loads exclusively through `next/font` (never a manual `
 
 **V3-D325 (2026-05-27): Uber-aligned scale** — applied to Page H2, Section H2, Subsection H3, body, eyebrow, CTA. All heading weights uniformly 600 EXCEPT Hero H1 (see next note).
 
+**STATE ANCHOR ADDED 2026-08-16, and it closes the hole that made every photo-less screen read flat.**
+Until today every large role on this ramp was named after ONE named screen: `Hero H1` is the homepage
+hero, `Salon-PDP H1` is the salon page. A new screen therefore had NO sanctioned way to make one
+thing big, while FLOORS LAW 6 simultaneously demanded a display anchor of at least 28px. The only
+way out was to invent an off-ramp size, which taste rule 9 and the drift checker both punish, so the
+builder reached for a tint or a grey tray to create interest instead. That is the positive half of
+what produced six rejections on the merchant terminal: a grey canvas and a warm-cream bar were
+substitutes for a big number the ramp would not let anyone write.
+
+`State anchor` is the general role: the ONE live fact a screen exists to show. The wait on a queue
+screen, the money on an earnings screen, the count on a decisions screen. It is 30px because that is
+what `Salon-PDP H1` already renders at on a phone, so this mints no new number.
+
+Two rules travel with it, both measured off the reference the owner named as source of truth:
+- **The anchor is a SENTENCE carrying the number, not a label with a number beside it.** Airbnb's is
+  "You've made $0.00 this month", with the figure inside the sentence
+  (https://mobbin.com/screens/31c6f0ae-6f71-4866-a25d-25a930e3550f). Ours currently says "85 min
+  wait", which is a label with a value stuck to it.
+- **The page TITLE stays a label** ("Earnings", "Calendar", "Reservations") and is SMALLER than the
+  anchor beneath it. Airbnb runs both on one screen: the label names the room you are in, the anchor
+  says what is true in it.
+
 **V3-D327 (2026-05-27): Hero H1 = Fresha-exact** — overrides Uber for hero only. Per council (Grok 2× consistent): Solen's actual category peer is Fresha (salon-booking marketplace), not Uber (transport). Hero gets editorial weight (40-64 / 700), rest of site keeps Uber-aligned discipline. This hybrid is intentional — the hero is a self-contained editorial block that benefits from larger type + heavier weight; sections below it benefit from the tighter Uber scale.
 
 | Role | Mobile | Desktop | Weight | LH | Tracking | Font |
 |---|---|---|---|---|---|---|
 | **Hero H1** (homepage hero "Termin in 30 Sekunden.") — V3-D327 Fresha-exact | **40px** | **64px** | **700** | **1.1** | **-0.02em** | display |
 | **Salon-PDP H1** (salon name in hero) | 30px | 34px | 600 | 1.1 | -0.02em | display |
+| **State anchor** (the one live fact a screen exists to show) | **30px** | **34px** | **600** | 1.1 | -0.02em | display |
 | **Salon-sidebar H2** (salon name in right rail) | 22px | 26px | 600 | 1.15 | -0.02em | display |
 | **Page H2** (section titles on /business) | 22px | 26px | 600 | 1.2 | -0.015em | display |
 | **Section H2** (homepage / PDP section heading) | 18px | 20px | 600 | 1.25 | -0.01em | display |
@@ -2004,9 +2027,26 @@ Source + evidence: `research/UNFINISHED_AUDIT_2026-07-21.md`. Co-equal with ever
   (c) on white keep the hairline OR step to elevation-2); a white card with only a 4% shadow on white
   is INVALID. The gray tray is RULE, not CONV: grouped/list/panel content on white with no photo anchor
   requires the sunken tray; alternate gray and white down a page.
+  **SCOPED 2026-08-16, and this correction had to be made HERE rather than in CLAUDE.md: CUSTOMER
+  SCREENS ONLY.** This clause is the one that MANDATED the grey canvas the owner rejected on the
+  merchant terminal ("i dont like ths gray backrgrounf"). Every other clause in §17 says "customer";
+  this one said nothing, so it applied to everything. On an OPERATOR screen (dashboard, terminal,
+  queue display) there is no tray: content sits on white and the boundary is a hairline, per the
+  dated merchant round in TASTE_LOG (2026-07-15) and THE CONTAINER TEST at §10.9 below.
+  **Why the fix belongs in this file:** the same scope note was written into CLAUDE.md on 2026-08-16,
+  and that alone does not hold, because the precedence chain ranks this LOCKFILE at tier 4 and
+  CLAUDE.md's pinned blocks at tier 5. An agent resolving the conflict BY THE DOCUMENTED CHAIN would
+  have re-applied the grey canvas and been obeying the law while doing it. Measured against the
+  reference the owner named as source of truth: four independent captures of Airbnb's operator estate
+  found ZERO grey page canvases, and their host Insights screen measures 92.4% of pixels in the
+  248-255 bucket (https://mobbin.com/screens/ec1e902b-2557-4657-913c-9d29c531a542).
 - **§17.3 Warmth carrier:** cool chrome is legal only when photography OR a semantic-color moment
   shares the viewport; a customer screen with zero warm/chromatic pixels outside pure chrome is the
   dead-grey FAIL, not restraint.
+  **SCOPED 2026-08-16, CUSTOMER SCREENS ONLY, same reason.** On a photo-less operator screen this
+  clause leaves only the pale semantic tokens as candidates, which is how `s-warning.bg` `#FDF6E7`
+  became a full-bleed bar the owner rejected ("You made up a random fucking collar that's beige"),
+  a colour taste rule 3 bans BY NAME. An operator screen's life source is LIVE DATA, not colour.
 - **§17.4 Card two-anchor rule (V3-D442 adopted as THE card-emphasis law):** TWO ink anchors per card ,
   name (larger, 600) + price (600, tabular); rating value ink-2 beside the yellow star; card titles/H3
   are s-ink, not grey. Display floor: one display anchor >= 28px per customer screen unless the

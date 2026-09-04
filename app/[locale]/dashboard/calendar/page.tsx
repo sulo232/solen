@@ -68,6 +68,24 @@ function ymdLocal(d: Date): string {
   return zurichYmd(d);
 }
 
+// /api/services returns locale-columned rows (name_de/name_en/name_fr/name_it), no
+// generic `name` (see app/api/services/route.ts .select("*")). Resolve the display
+// name for the current locale, falling back to name_de since the services editor
+// requires it (app/[locale]/dashboard/services/page.tsx handleSave: if (!form.name_de) return;).
+type RawServiceRow = {
+  id: string;
+  name_de: string;
+  name_en?: string | null;
+  name_fr?: string | null;
+  name_it?: string | null;
+  category?: string;
+};
+
+function serviceName(s: RawServiceRow, locale: string): string {
+  const localized = locale === "en" ? s.name_en : locale === "fr" ? s.name_fr : locale === "it" ? s.name_it : s.name_de;
+  return localized || s.name_de;
+}
+
 // ─────────────────────────────────────────
 // Slot Create Modal
 // ─────────────────────────────────────────
@@ -114,7 +132,7 @@ function SlotCreateModal({ date, startTime, services, staff, onClose, onCreated 
         <p className="text-sm text-s-ink-2 mb-4">{t("dateAtTime", { date, time: startTime })}</p>
         <div className="space-y-3 mb-5">
           <div>
-            <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("serviceRequired")}</label>
+            <label className="block text-xs text-s-ink-2 mb-1">{t("serviceRequired")}</label>
             <select value={serviceId} onChange={(e) => setServiceId(e.target.value)}
               className="w-full px-3 py-2 text-sm"> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
               <option value="">{t("choosePlaceholder")}</option>
@@ -122,7 +140,7 @@ function SlotCreateModal({ date, startTime, services, staff, onClose, onCreated 
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("staffLabel")}</label>
+            <label className="block text-xs text-s-ink-2 mb-1">{t("staffLabel")}</label>
             <select value={staffId} onChange={(e) => setStaffId(e.target.value)}
               className="w-full px-3 py-2 text-sm"> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
               <option value="">{t("anyStaffAvailable")}</option>
@@ -133,7 +151,7 @@ function SlotCreateModal({ date, startTime, services, staff, onClose, onCreated 
         <div className="flex gap-2">
           <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2">{t("cancel")}</button>
           <button onClick={handleCreate} disabled={!serviceId || loading}
-            className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+            className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
             {loading && <Spinner size="sm" invert />}{t("create")}
           </button>
         </div>
@@ -148,6 +166,11 @@ function SlotCreateModal({ date, startTime, services, staff, onClose, onCreated 
 
 const DAY_KEYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 const DAY_LABELS = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
+// 24h-only select options: a native <input type="time"> takes its AM/PM vs 24h display
+// format from the browser's own locale, not the page language or an element lang attribute
+// (measured, see removed lang="de-CH" below), so hour/minute are plain selects instead.
+const HOUR_OPTIONS = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, "0"));
+const MINUTE_OPTIONS = ["00", "15", "30", "45"]; // quarter-hour granularity is enough for opening hours
 
 function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
   services: { id: string; name: string }[];
@@ -157,6 +180,7 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
   onCreated: () => void;
 }) {
   const t = useTranslations("dashboard.calendarPage");
+  const locale = useLocale();
   const [template, setTemplate] = useState<Record<string, { start: string; end: string } | null>>(
     Object.fromEntries(DAY_KEYS.map((k, i) => [k, i < 5 ? { start: "09:00", end: "18:00" } : null]))
   );
@@ -195,7 +219,7 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
         </div>
         <div className="space-y-4 mb-5">
           <div>
-            <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("serviceRequired")}</label>
+            <label className="block text-xs text-s-ink-2 mb-1">{t("serviceRequired")}</label>
             <select value={serviceId} onChange={(e) => setServiceId(e.target.value)}
               className="w-full px-3 py-2 text-sm"> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
               <option value="">{t("choosePlaceholder")}</option>
@@ -203,7 +227,7 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("staffLabel")}</label>
+            <label className="block text-xs text-s-ink-2 mb-1">{t("staffLabel")}</label>
             <select value={staffId} onChange={(e) => setStaffId(e.target.value)}
               className="w-full px-3 py-2 text-sm"> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
               <option value="">{t("anyStaff")}</option>
@@ -211,25 +235,36 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-s-ink-2 mb-2">{t("scheduleLabel")}</label>
+            <label className="block text-xs text-s-ink-2 mb-2">{t("scheduleLabel")}</label>
             <div className="space-y-2">
               {DAY_KEYS.map((key, i) => {
                 const slot = template[key];
+                // Full weekday name for the select aria-labels only (visible pill keeps DAY_LABELS' short form).
+                // 2024-01-01 is a Monday, matching DAY_KEYS order (mon..sun).
+                const dayFullName = new Date(2024, 0, 1 + i).toLocaleDateString(resolveSwissLocale(locale), { weekday: "long" });
                 return (
-                  <div key={key} className="flex items-center gap-3">
+                  <div key={key} className="flex items-center gap-3 flex-wrap">
                     <button type="button" onClick={() => toggleDay(key)}
-                      className={["w-9 text-center text-xs font-medium py-1.5 rounded-btn transition-colors", // mockup-ok: C2 fix, locked TabPill treatment (approved public/_mockups/fixes-refined)
+                      className={["w-9 text-center text-xs py-1.5 rounded-btn transition-colors", // mockup-ok: C2 fix, locked TabPill treatment (approved public/_mockups/fixes-refined)
                         slot ? "bg-s-bg-sunken text-s-ink font-semibold" : "bg-s-bg-sunken text-s-ink/40"].join(" ")}>
                       {DAY_LABELS[i]}
                     </button>
                     {slot ? (
-                      <>
-                        <input type="time" value={slot.start} onChange={(e) => setTemplate((p) => ({ ...p, [key]: { ...slot, start: e.target.value } }))}
-                          className="px-2 py-1 text-xs" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
+                      <div className="flex w-full items-center gap-2">
+                        <select aria-label={`${dayFullName} Start Stunde`} value={slot.start.split(":")[0]}
+                          onChange={(e) => setTemplate((p) => ({ ...p, [key]: { ...slot, start: `${e.target.value}:${slot.start.split(":")[1]}` } }))}
+                          className="px-2 py-1 text-xs h-11 flex-1">{HOUR_OPTIONS.map((h) => <option key={h} value={h}>{h}</option>)}</select> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
+                        <select aria-label={`${dayFullName} Start Minute`} value={slot.start.split(":")[1]}
+                          onChange={(e) => setTemplate((p) => ({ ...p, [key]: { ...slot, start: `${slot.start.split(":")[0]}:${e.target.value}` } }))}
+                          className="px-2 py-1 text-xs h-11 flex-1">{MINUTE_OPTIONS.map((m) => <option key={m} value={m}>{m}</option>)}</select> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
                         <span className="text-xs text-s-ink/30">-</span>
-                        <input type="time" value={slot.end} onChange={(e) => setTemplate((p) => ({ ...p, [key]: { ...slot, end: e.target.value } }))}
-                          className="px-2 py-1 text-xs" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
-                      </>
+                        <select aria-label={`${dayFullName} Ende Stunde`} value={slot.end.split(":")[0]}
+                          onChange={(e) => setTemplate((p) => ({ ...p, [key]: { ...slot, end: `${e.target.value}:${slot.end.split(":")[1]}` } }))}
+                          className="px-2 py-1 text-xs h-11 flex-1">{HOUR_OPTIONS.map((h) => <option key={h} value={h}>{h}</option>)}</select> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
+                        <select aria-label={`${dayFullName} Ende Minute`} value={slot.end.split(":")[1]}
+                          onChange={(e) => setTemplate((p) => ({ ...p, [key]: { ...slot, end: `${slot.end.split(":")[0]}:${e.target.value}` } }))}
+                          className="px-2 py-1 text-xs h-11 flex-1">{MINUTE_OPTIONS.map((m) => <option key={m} value={m}>{m}</option>)}</select> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
+                      </div>
                     ) : <span className="text-xs text-s-ink/30">{t("notAvailable")}</span>}
                   </div>
                 );
@@ -237,11 +272,11 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
             </div>
           </div>
           <div>
-            <label className="block text-xs font-medium text-s-ink-2 mb-2">{t("weeksLabel")}</label>
+            <label className="block text-xs text-s-ink-2 mb-2">{t("weeksLabel")}</label>
             <div className="flex gap-2">
               {([1, 2, 4] as const).map((w) => (
                 <button key={w} type="button" onClick={() => setWeeks(w)}
-                  className={["flex-1 py-2 rounded-btn border text-sm font-medium transition-colors", // mockup-ok: C2 fix, locked TabPill treatment (approved public/_mockups/fixes-refined)
+                  className={["flex-1 py-2 rounded-btn border text-sm transition-colors", // mockup-ok: C2 fix, locked TabPill treatment (approved public/_mockups/fixes-refined)
                     weeks === w ? "bg-s-bg-sunken text-s-ink font-semibold border-s-border" : "border-s-border text-s-ink-2"].join(" ")}>
                   {w} {w === 1 ? t("weekSingular") : t("weekPlural")}
                 </button>
@@ -252,7 +287,7 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
         <div className="flex gap-2">
           <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2">{t("cancel")}</button>
           <button onClick={handleCreate} disabled={!serviceId || loading}
-            className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+            className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
             {loading && <Spinner size="sm" invert />}{t("create")}
           </button>
         </div>
@@ -308,12 +343,12 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
         {rescheduleMode ? (
           <div className="space-y-3 mb-5">
             <div>
-              <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("newDate")}</label>
+              <label className="block text-xs text-s-ink-2 mb-1">{t("newDate")}</label>
               <input type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)}
                 className="w-full px-3 py-2 text-sm" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
             </div>
             <div>
-              <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("newTime")}</label>
+              <label className="block text-xs text-s-ink-2 mb-1">{t("newTime")}</label>
               <input type="time" value={newTime} onChange={(e) => setNewTime(e.target.value)}
                 className="w-full px-3 py-2 text-sm" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
             </div>
@@ -321,7 +356,7 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
               <button onClick={() => setRescheduleMode(false)}
                 className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2">{t("back")}</button>
               <button onClick={handleReschedule} disabled={loading}
-                className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-1">
+                className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1">
                 {loading && <Spinner size="sm" invert />}
                 <ArrowRight size={14} strokeWidth={1.6} /> {t("reschedule")}
               </button>
@@ -330,7 +365,7 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
         ) : (
           <>
             <div className="space-y-2 mb-5 text-sm text-s-ink/70">
-              <p><span className="text-s-ink/40">{t("statusLabel")}</span> <span className="font-medium">{slot.status === "booked" ? t("statusBooked") : slot.status === "blocked" ? t("statusBlocked") : t("statusFree")}</span></p>
+              <p><span className="text-s-ink/40">{t("statusLabel")}</span> <span>{slot.status === "booked" ? t("statusBooked") : slot.status === "blocked" ? t("statusBlocked") : t("statusFree")}</span></p>
               <p><span className="text-s-ink/40">{t("timeLabel")}</span> {startTime} - {endTime}</p>
               <p><span className="text-s-ink/40">{t("dateLabel")}</span> {new Date(slot.starts_at).toLocaleDateString(resolveSwissLocale(locale))}</p>
               <p><span className="text-s-ink/40">{t("staffDetailLabel")}</span> {staffName}</p>
@@ -473,14 +508,15 @@ export default function CalendarPage() {
           fetch(`/api/staff?salon_id=${p?.salon_id}`).then((r) => r.json()),
         ]);
       })
-      .then(([svcData, staffData]) => {
-        setServices(svcData?.services ?? []);
+      .then(([svcData, staffData]: [{ services?: RawServiceRow[] }, { staff?: { id: string; name: string }[] }]) => {
+        const rawServices = svcData?.services ?? [];
+        setServices(rawServices.map((s) => ({ id: s.id, name: serviceName(s, locale), category: s.category })));
         setStaff(staffData?.staff ?? []);
       })
       .catch((err) => console.error("[DashboardCalendar] failed to fetch profile/services/staff:", err))
       // Mark resolution settled either way so the views can leave the spinner state.
       .finally(() => setSalonReady(true));
-  }, []);
+  }, [locale]);
 
   useEffect(() => { loadSlots(); }, [loadSlots]);
 
@@ -798,7 +834,7 @@ export default function CalendarPage() {
                         className={["w-[46px] shrink-0 rounded-[13px] py-2 text-center border transition-colors",
                           on ? "bg-s-ink border-s-ink" : "bg-white border-s-border"].join(" ")}>
                         <div className={`text-[12px] font-semibold ${on ? "text-white/60" : "text-s-ink-2"}`}>{DAYS_LABEL[i].toUpperCase()}</div>
-                        <div className={`font-heading font-bold text-[16px] mt-0.5 ${on ? "text-white" : "text-s-ink"}`}>{d.getDate()}</div>
+                        <div className={`font-heading font-semibold text-[16px] mt-0.5 ${on ? "text-white" : "text-s-ink"}`}>{d.getDate()}</div>
                         {has
                           ? <div className={`w-[5px] h-[5px] rounded-full mx-auto mt-1 ${on ? "bg-white" : "bg-s-accent"}`} />
                           : <div className="h-[5px] mt-1" />}

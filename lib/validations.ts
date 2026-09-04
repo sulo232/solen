@@ -441,6 +441,26 @@ export const walkInSchema = z.object({
   staff_member_id: z.string().uuid().optional(),
 });
 
+// POST /api/bookings/salon: a salon recording an appointment IT took itself, by phone or at the
+// counter (never the customer-facing createBookingSchema, that route carries guards written for
+// a customer: a per-user rate limit, the online_booking_enabled 403, the deposit/prepay 400, a
+// duplicate check keyed on user_id. A shop logging its sixth call of the hour would be throttled
+// by its own tool, backwards for the walk-in-only shop this exists for). Only the name is
+// required: a shop taking a call often has just a first name, and a fabricated placeholder phone
+// is worse than null because it LOOKS callable.
+export const salonBookingSchema = z.object({
+  guest_name: z.string().min(2).max(100),
+  guest_phone: z.string().regex(/^\+41[0-9]{9}$/).optional(),
+  guest_email: z.string().email().optional(),
+  service_id: z.string().uuid(),
+  staff_member_id: z.string().uuid().optional(),
+  // The instant the SHOP chose, not a slot id: the shop is telling us when the appointment is,
+  // there is no pre-existing available slot to pick from like the customer flow.
+  starts_at: z.string().datetime(),
+  source: z.enum(["phone", "walk_in", "in_person"]).default("phone"),
+  customer_note: z.string().max(140).optional().nullable(),
+});
+
 export const groupBookingSchema = z.object({
   organizer_name: z.string().min(2).max(100),
   organizer_phone: z.string().optional(),
@@ -673,6 +693,50 @@ export const walkinReviewSchema = z.object({
 export const walkinUpdateSchema = z.object({
   status: z.enum(['waiting', 'in_chair', 'completed', 'no_show', 'cancelled']),
   assigned_barber_id: z.string().uuid().optional(),
+});
+
+// Ring 12 (R12-1, _plans/MERCHANT_TERMINAL_2026-08-15.md): dev-only merchant-terminal
+// action endpoint (app/api/dev/terminal/route.ts). "action" is the six real
+// transitions the terminal mockup performs: start/done/no_show/cancel write
+// barber_walkin_queue.status, accept/decline write bookings.status. `staffId` is
+// only read on "start" (route enforces it there); optional here so the other five
+// actions don't need to send it.
+export const terminalActionSchema = z.object({
+  // `arrived` and `unarrive` added 2026-08-17. Every salon confirms instantly, so accept and decline
+  // describe a mode nobody uses; what a counter actually does all day is note that the person in
+  // front of them is the 14:30. `bookings.arrived_at` has existed since 2026-06-23 with no writer
+  // anywhere in the product, which is why nobody has ever been able to do it.
+  action: z.enum(['start', 'done', 'no_show', 'cancel', 'accept', 'decline', 'arrived', 'unarrive']),
+  id: z.string().uuid(),
+  staffId: z.string().uuid().optional(),
+});
+
+// A booking taken ON THE PHONE, typed by the shop rather than by the customer. Name and phone are
+// REQUIRED and that is the whole point: the outside council's first answer was a nameless "chair
+// busy until X" block, and it broke on the case that decides this feature, a stylist calling in sick
+// and the shop having to ring those people back. A block you cannot call back is a block that gets
+// kept on paper as well, which is the double entry we are trying to remove.
+// startsAt (2026-08-18 fix): was startsInMinutes, a duration the route reconstructed against
+// its OWN Date.now(), a second clock reading later by the network round trip. Whatever seconds
+// had ticked between the client's read and the server's leaked into the stored time, so a
+// 10:30 pick could land on 10:29. An absolute instant removes the second clock reading. The
+// horizon stays the same 15 days (was 21600 minutes) so the wire-format change does not widen
+// what a client may ask for; the past is now rejected outright rather than allowed 12 hours back.
+export const terminalPhoneBookingSchema = z.object({
+  action: z.literal('phone_booking'),
+  name: z.string().trim().min(1).max(120),
+  phone: z.string().trim().min(4).max(40),
+  staffId: z.string().uuid(),
+  serviceId: z.string().uuid(),
+  minutes: z.number().int().min(5).max(480),
+  startsAt: z.string().datetime().refine(
+    (v) => {
+      const t = new Date(v).getTime();
+      const now = Date.now();
+      return t >= now && t <= now + 21600 * 60_000;
+    },
+    { message: "startsAt must not be in the past or more than 15 days out" },
+  ),
 });
 
 export const cutHistorySchema = z.object({

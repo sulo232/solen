@@ -2168,6 +2168,7 @@
       "statusBooked": "Réservé",
       "statusBlocked": "Bloqué",
       "statusFree": "Libre",
+      "freeRange": "{start} à {end} libre, {count} {count, plural, one {créneau} other {créneaux}}",
       "timeLabel": "Heure :",
       "dateLabel": "Date :",
       "staffDetailLabel": "Personnel :",

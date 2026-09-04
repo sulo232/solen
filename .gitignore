@@ -105,3 +105,4 @@ scratchpad/
 .tmp-verify-*
 hooks-lint.json
 .claude/state/tunnel.log
+_tmp_*.mjs
