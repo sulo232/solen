@@ -6,7 +6,7 @@ Swiss beauty + wellness booking marketplace. Next.js App Router + Supabase + Str
 
 ## 🗺️ Before you BUILD, MOCK, or REDESIGN anything — check what already exists (V3-D440, 2026-06-02)
 
-Run **`npm run exists <keyword>`** BEFORE creating any page / endpoint / component / migration / lib util. A hit → REUSE or EXTEND. Empty → safe to build new. Read `_inventory/STATUS.md` on a hit (partial / deprecated flags). DB tables+columns come from the LIVE snapshot (`_inventory/_db-snapshot.json`), NOT migration files. Full inventory: `_inventory/SURFACE.md`. Hook-enforced: PreToolUse blocks new `page.tsx`/`route.ts`/migration until `exists` ran this turn (override: `touch .claude/exists-skip.flag`).
+Run **`npm run exists <keyword>`** BEFORE creating any page / endpoint / component / migration / lib util. A hit → REUSE or EXTEND. Empty → safe to build new. Read `_inventory/STATUS.md` on a hit (partial / deprecated flags). DB tables come from the LIVE snapshot (`_inventory/_db-snapshot.json`: table names, row counts, RLS) and COLUMNS from its sibling `_inventory/_db-columns.json` (grep it; corrected 2026-09-04, the snapshot file holds no columns and `npm run exists` never reads the columns file), NOT migration files. Full inventory: `_inventory/SURFACE.md`. Hook-enforced: PreToolUse blocks new `page.tsx`/`route.ts`/migration until `exists` ran this turn (override: `touch .claude/exists-skip.flag`).
 
 ---
 
@@ -370,7 +370,7 @@ The five that cost him the most, in short:
 
 This project's #1 silent failure mode: a control / column / filter that LOOKS wired but does nothing. PostgREST swallows a `.select()` on a non-existent column (returns null, not an error); a filter param can be set + counted in the UI yet never applied server-side; a helper can key off the wrong convention and return a constant (e.g. `isOpenNow` read long day-names while all data is short-keyed → "open now" returned empty everywhere, fixed 2026-06-05).
 
-- **Prove behavior, not existence.** A filter must DISCRIMINATE (return a correct subset), not just render or return 200. A column must appear in the LIVE snapshot (`npm run exists <column>`), not merely in a TS type.
+- **Prove behavior, not existence.** A filter must DISCRIMINATE (return a correct subset), not just render or return 200. A column must appear in the LIVE column list (`grep '"<column>"' _inventory/_db-columns.json`; corrected 2026-09-04, `npm run exists` only knows tables), not merely in a TS type.
 - **Computed filters** (open-now, distance — anything not expressible as a PostgREST predicate) resolve matching IDs first, then `.in("id", ids)` BEFORE `.range()`; never client-side over one page (breaks count/pagination). Reference: `app/api/salons/route.ts`.
 - `opening_hours` is SHORT-day-keyed (`mon`…`sun`). Full pitfalls + patterns: `_rules/LESSONS_LEARNED.md`.
 - **Consent / notification-preference flags are a silent-no-op category too, not just filters.** A toggle like `profiles.notification_sms` that saves correctly but has zero read sites in the code path that actually sends is worse than a dead filter: the user was told "you turned this off" while a separate sender keeps contacting them anyway. Caught twice independently on 2026-07-07 (`sms-reminders` and `barber-smart-reminders` crons sent SMS with no preference check at all; fixed ethics-psychology-02). Any new consent/preference toggle needs the same discriminate-the-behavior proof as a filter: find every real send path for that channel and confirm it reads the exact column.
