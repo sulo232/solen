@@ -2,31 +2,27 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-09-04T16:35:09 (trigger: auto)
+- taken: 2026-09-04T17:27:15 (trigger: auto)
 - branch: claude/cloud-code-codex-migration-86a820
 
 ## git
 ```
-70b8027b7 A test or unlisted salon's page and its search-engine tags are no longer reachable by guessing the address
-086c789f7 Plan notes corrected against today's code: four dead-feature claims were stale, one receipt-link 'fixed' claim checked the wrong link, and CLAUDE.md pointed column checks at a file that holds no columns
-1fe6a4d1e Dashboard calendar: day buckets pinned to Swiss time, and a deleted slot refreshes the list like the other edits do
-622826785 Booking screen and booking API now agree on the payment mode; a cancelled prepaid booking releases its card hold at once
-4410ad507 Merge the salon-page styling branch (claude/pdp-styling-updates-b2582b): his 2026-08-15/16 salon-page decisions reach main
+a6f3085f0 Walk-in ticket page never greets a customer by a made-up name
+ed70ad1d4 Inventory lists the four live tables it was missing
+b236c149a Newsletter and coming-soon signups are saved again
+21ee82b5c Plan log: 15 fixes landed, the phantom-column findings, the parked decisions
+034641637 Gift-voucher emails name the salon instead of "Solen"
 ```
 ```
 M _plans/CONTEXT_SNAPSHOT.md
- M _plans/EVERYTHING_TO_CODEX_2026-09-04.md
- M _plans/GAP_FIXES.md
- M app/[locale]/_components/profile/AccountHub.tsx
- M app/[locale]/bookings/[id]/refund/page.tsx
- M app/[locale]/bookings/[id]/upcharge/page.tsx
- M app/[locale]/dashboard/services/page.tsx
- M app/[locale]/profile/page.tsx
- M app/api/admin/solen-score/recalculate/route.ts
- M app/api/services/[id]/photos/route.ts
- M app/sitemap.ts
- M components-legacy/refund/RefundCaseView.tsx
- M lib/validations.ts
+ M app/[locale]/salon/[slug]/booking/page.tsx
+ M app/[locale]/salon/[slug]/layout.tsx
+ M app/api/bookings/[id]/dispute/route.ts
+ M app/api/bookings/route.ts
+ M app/api/profile/export/route.ts
+ M app/api/staff/[id]/profile/route.ts
+ M lib/bookings/notify-upcharge.ts
+ M lib/salon-detail.ts
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
@@ -76,16 +72,13 @@ M _plans/CONTEXT_SNAPSHOT.md
 
 ## EVERYTHING_TO_CODEX_2026-09-04.md
 Open boxes:
-- [ ] 1c. Backend silent no-op hunt: phantom columns, dead filters, consent flags nobody reads
-- [ ] 1d. Frontend gaps: dead links, orphaned routes, decorative (rendered-but-unwired) features, i18n parity
 - [ ] 1f. Design: measured taste walk on the real phone screens (home, search, PDP, booking, profile, dashboard)
-- [ ] 2a. Fix every STILL-OPEN non-design item, coder + reviewer loop, one commit per verified chunk
+- [ ] 2a. Fix every STILL-OPEN non-design item, coder + reviewer loop, one commit per verified chunk. IN PROGRESS 19:10: 9 fixes committed after a PASS review (payment mode agreement, card-hold release, hidden salon page, calendar timezone + refresh, sitemap, profile hub counts, nightly score monitoring, receipt link, plus the security trio). In review: service-photo delete, cron monitoring for two more nightly jobs. Building: walk-in wait-screen first name, dead dashboard fetch. Left after that: NEW-1 (dispute email link hardcodes German), the phantom-column and dead-link reports when they land.
 - [ ] 2b. Design findings become mockups (one section each, real page copy, English), never direct edits
 - [ ] 3b. After each wave, one short question to him only if the next wave depends on it; otherwise park and continue
 - [ ] 5a. Council pass over every fix batch before commit
 - [ ] 6b. Merge the 4 newer zero-conflict branches (email, offline-booking, pdp-styling, harness-everth) after his word on the live one
 - [ ] 6c. The 11 old branches: his 2026-08-14 call was "lift features, never merge wholesale". Ask whether "merge everything" overrides it; if not, lift the named features and delete the rest with recovery shas recorded
-- [ ] 7d. Build the Codex-side files (AGENTS.md, config.toml, skills, prompts) once he picks the shape
 - [ ] 8a. Screenshots of the real screens at phone size
 - [ ] 8b. Measured diagnosis per screen (sizes, weights, spacing, contrast, balance, colour provenance)
 - [ ] 8c. Airbnb live mobile capture of the matching screens, measured the same way
