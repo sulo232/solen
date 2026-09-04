@@ -18,23 +18,23 @@ export interface RefundConfig {
  * Resolve the refund fee policy.
  *
  * Source-of-truth order (council §10b#3 / D7):
- *   1. `platform_settings` row `'refund_policy'` — NOT YET LIVE (table absent),
- *      wired here as a TODO so SP-3 can flip the source without touching callers.
- *   2. env `REFUND_APP_FEE_DEFAULT` ("true" | "false").
- *   3. hardcoded default `false` (keep the commission).
+ *   1. env `REFUND_APP_FEE_DEFAULT` ("true" | "false").
+ *   2. hardcoded default `false` (keep the commission).
  *
- * Async by design so the future `platform_settings` read drops in without a
- * signature change.
+ * `platform_settings` is live (verified 2026-09-04, holds `commission`,
+ * `homepage_sections`, `referral`), but its `commission` row only carries
+ * `{ rate_percent }`, the platform's cut of a charge. This function's
+ * boolean (return the application fee on a refund, yes or no) is a
+ * different, unrelated value with no key in that table. Do not read
+ * `commission` here and do not invent a `refund_policy` key: if the
+ * table ever gains one, wire it here (there is no shared reader yet,
+ * each of the 8 charging paths duplicates its own `platform_settings`
+ * query, see lib/bookings/charge-fee.ts:169), ahead of the env
+ * fallback below.
  */
 export async function getRefundConfig(): Promise<RefundConfig> {
-  // (1) platform_settings.'refund_policy' — deferred: the table does not exist
-  //     in the live DB yet (verified 2026-06-01). When it lands, read it here
-  //     BEFORE the env fallback. Intentionally not wired now to avoid a query
-  //     against a missing table on every refund.
-
-  // (2) env override.
+  // env override, falls through to `false` (keep the commission) when unset.
   const envDefault = process.env.REFUND_APP_FEE_DEFAULT === "true";
 
-  // (3) falls through to `false` when the env var is unset.
   return { refundApplicationFeeDefault: envDefault };
 }

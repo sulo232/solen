@@ -18,7 +18,7 @@
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { calculateCancellationFee } from "@/lib/cancellation-policy";
-import { toRappen } from "@/lib/stripe";
+import { toRappen, getStripe } from "@/lib/stripe";
 import { chargeFee, FeeError, type ChargeFeeResult } from "@/lib/bookings/charge-fee";
 import { issueRefund, RefundError } from "@/lib/bookings/issue-refund";
 
@@ -116,6 +116,35 @@ export async function applyCustomerCancelMoney(
         // (same discipline as the canonical /cancel route).
         if (e instanceof RefundError) {
           console.error(`[customer-cancel-money] issueRefund failed for booking ${booking.id} (${e.code}):`, e.message);
+          // NOT_CAPTURED means the PaymentIntent is only an authorization hold
+          // (never captured), so issueRefund correctly refused to refund it. But
+          // an uncaptured hold left alone only releases on Stripe's own ~7-day
+          // clock; a cancelled booking must release it immediately. Cancel the
+          // PaymentIntent explicitly instead. Never touches the captured-payment
+          // (refund) path above.
+          if (e.code === "NOT_CAPTURED" && booking.payment_intent_id) {
+            try {
+              await getStripe().paymentIntents.cancel(booking.payment_intent_id);
+            } catch (cancelErr) {
+              const stripeErr = cancelErr as { code?: string; message?: string } | null | undefined;
+              // Stripe throws payment_intent_unexpected_state when the PI is
+              // already canceled (e.g. a retry, or a cron job got there first);
+              // that is the outcome we wanted, not a failure. Any other error
+              // (network, restricted key, a status that isn't 'canceled') is a
+              // real failure: log it, same non-blocking discipline as issueRefund
+              // above, the cancellation still proceeds.
+              const alreadyCanceled =
+                stripeErr?.code === "payment_intent_unexpected_state" &&
+                typeof stripeErr?.message === "string" &&
+                stripeErr.message.toLowerCase().includes("canceled");
+              if (!alreadyCanceled) {
+                console.error(
+                  `[customer-cancel-money] paymentIntents.cancel failed for booking ${booking.id} (${booking.payment_intent_id}):`,
+                  cancelErr,
+                );
+              }
+            }
+          }
         } else {
           console.error(`[customer-cancel-money] issueRefund threw for booking ${booking.id}:`, e);
         }

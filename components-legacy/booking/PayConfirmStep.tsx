@@ -18,6 +18,7 @@ import GuestBookingForm, {
 } from '@/components-legacy/booking/GuestBookingForm';
 import BookingPaymentForm from '@/components-legacy/booking/BookingPaymentForm';
 import type { Salon, StaffMember } from '@/lib/types';
+import { effectivePaymentMode } from '@/lib/bookings/payment-mode';
 
 // Local-parts yyyy-mm-dd (timezone-safe — avoids the UTC date shift toISOString() causes).
 const ymd = (d: Date) =>
@@ -154,14 +155,27 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn, salonHasRedee
 
   // Phase D — the salon's payment_mode drives the pay step (was a free choice that ignored it):
   //   at_salon → no online charge (pay in person);  deposit → deposit_percent% now;  prepay → full.
-  const salonExt = salon as Salon & { payment_mode?: string; deposit_percent?: number; accepts_online_payment?: boolean; vat_registered?: boolean; vat_rate?: number };
+  const salonExt = salon as Salon & {
+    payment_mode?: string | null;
+    payment_mode_admin?: string | null;
+    payment_mode_enforced?: boolean | null;
+    deposit_percent?: number;
+    accepts_online_payment?: boolean;
+    vat_registered?: boolean;
+    vat_rate?: number;
+  };
   // Online pay is offered ONLY when the salon can actually take it (owner repro
   // 2026-06-12: the chooser offered online, the server then errored "kassiert vor
   // Ort"). The pay-intent route stays the fail-closed backstop.
   const onlineAvailable = salonExt.accepts_online_payment === true;
-  // Unset / unknown → at_salon (the DB default), the safe choice: book without an online charge.
-  const paymentMode: 'at_salon' | 'deposit' | 'prepay' =
-    salonExt.payment_mode === 'deposit' || salonExt.payment_mode === 'prepay' ? salonExt.payment_mode : 'at_salon';
+  // Resolved through effectivePaymentMode (lib/bookings/payment-mode.ts), the same resolver
+  // POST /api/bookings enforces, so an admin override never shows one requirement here while
+  // the server enforces another.
+  const paymentMode = effectivePaymentMode({
+    payment_mode: salonExt.payment_mode ?? null,
+    payment_mode_admin: salonExt.payment_mode_admin ?? null,
+    payment_mode_enforced: salonExt.payment_mode_enforced ?? null,
+  });
   const depositPct = Math.min(100, Math.max(1, Number(salonExt.deposit_percent) || 20));
   const depositAmount = Math.round(totalPrice * depositPct) / 100;              // CHF charged now (deposit)
   const remainingAtSalon = Math.round((totalPrice - depositAmount) * 100) / 100;
