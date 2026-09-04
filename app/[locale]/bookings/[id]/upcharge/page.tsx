@@ -39,12 +39,24 @@ export default async function UpchargeApprovePage({
     isGuest = true;
   }
 
+  // "View receipt" needs a route that actually renders. There is no page.tsx at
+  // /[locale]/bookings/[id] (only report/refund/upcharge subfolders exist), so that
+  // href always 404'd. /confirmation?booking_id= shows the real payment lines
+  // (Netto/MWST/Gesamt) and resolves via RLS for a logged-in customer. A guest has no
+  // session, so /confirmation would 404 for them too, and there is no guest-accessible
+  // receipt route to fall back to (the report form shows the same case facts but is a
+  // report form, not a receipt, so it does not get a "receipt" label). The 2026-06-14
+  // audit made the same call on app/[locale]/booking/lookup/page.tsx: when there's no
+  // real page behind a label, drop the link instead of pointing it somewhere wrong.
+  // UpchargeApproveView renders no "View receipt" link at all when this is undefined.
+  const receiptHref = isGuest ? undefined : `/${locale}/confirmation?booking_id=${id}`;
+
   return (
     <UpchargeApproveView
       bookingId={id}
       isGuest={isGuest}
       backHref={isGuest ? `/${locale}` : `/${locale}/profile/bookings`}
-      receiptHref={`/${locale}/bookings/${id}`}
+      receiptHref={receiptHref}
       reportHref={`/${locale}/bookings/${id}/report`}
     />
   );

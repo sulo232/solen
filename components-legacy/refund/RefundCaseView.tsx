@@ -87,7 +87,10 @@ export default function RefundCaseView({
   bookingId: string;
   isGuest: boolean;
   backHref: string;
-  receiptHref: string;
+  /** Absent for a guest: no guest-accessible receipt route exists (2026-06-14 audit made the
+   * same call on the lookup page). Render sites below skip the link entirely when this is
+   * undefined, they never fall back to a wrong-promise href. */
+  receiptHref?: string;
   /** Where "Add more details" sends them (the entry form, to append a note via a new flow). */
   reportHref: string;
   bookAgainHref: string;
@@ -742,7 +745,7 @@ function ActionZone({
   submitting: boolean;
   actionError: string | null;
   onEscalate: () => void;
-  receiptHref: string;
+  receiptHref?: string;
   reportHref: string;
   bookAgainHref: string;
 }) {
@@ -861,7 +864,7 @@ function ActionInner({
   c: CaseShape;
   isGuest: boolean;
   setEscalating: (v: boolean) => void;
-  receiptHref: string;
+  receiptHref?: string;
   reportHref: string;
   bookAgainHref: string;
 }) {
@@ -943,10 +946,12 @@ function ActionInner({
           <CalendarPlus size={17} strokeWidth={1.9} aria-hidden />
           {t("bookAgain")}
         </Link>
-        <Link href={receiptHref} className={cn(ghostBtn, "mt-2")}>
-          <Receipt size={16} strokeWidth={1.9} aria-hidden />
-          {t("viewBookingReceipt")}
-        </Link>
+        {receiptHref && (
+          <Link href={receiptHref} className={cn(ghostBtn, "mt-2")}>
+            <Receipt size={16} strokeWidth={1.9} aria-hidden />
+            {t("viewBookingReceipt")}
+          </Link>
+        )}
         <p className="mt-1 text-center text-[12px] leading-[1.5] text-s-ink-2">{t("footClosedNoAction")}</p>
       </>
     );
@@ -970,10 +975,12 @@ function ActionInner({
   // ----- charged / void / closed: calm done -----
   return (
     <>
-      <Link href={receiptHref} className={secondaryBtn}>
-        <Receipt size={16} strokeWidth={1.9} aria-hidden />
-        {t("viewBookingReceipt")}
-      </Link>
+      {receiptHref && (
+        <Link href={receiptHref} className={secondaryBtn}>
+          <Receipt size={16} strokeWidth={1.9} aria-hidden />
+          {t("viewBookingReceipt")}
+        </Link>
+      )}
       <p className="mt-2 text-center text-[12px] text-s-ink-2">{t("footClosedNoAction")}</p>
     </>
   );

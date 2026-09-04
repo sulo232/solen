@@ -112,8 +112,10 @@ export default function UpchargeApproveView({
   bookingId: string;
   isGuest: boolean;
   backHref: string;
-  /** Locale-prefixed href to the booking receipt (approved view "View receipt"). */
-  receiptHref: string;
+  /** Locale-prefixed href to the booking receipt (approved view "View receipt"). Absent for a
+   * guest: no guest-accessible receipt route exists (2026-06-14 audit made the same call on
+   * the lookup page). Render sites below skip the link entirely when this is undefined. */
+  receiptHref?: string;
   /** Locale-prefixed href to the report-a-problem entry (declined view "Report a problem"). */
   reportHref: string;
 }) {
@@ -332,10 +334,12 @@ export default function UpchargeApproveView({
           <p className="mt-2.5 max-w-[280px] text-[13px] leading-[1.55] text-s-ink-2">
             {closed ? t("upNoneBody") : t("notFoundBody")}
           </p>
-          <Link href={receiptHref} className={cn(secondaryBtn, "mt-7 max-w-[260px]")}>
-            <Receipt size={16} strokeWidth={1.9} aria-hidden />
-            {t("viewBookingReceipt")}
-          </Link>
+          {receiptHref && (
+            <Link href={receiptHref} className={cn(secondaryBtn, "mt-7 max-w-[260px]")}>
+              <Receipt size={16} strokeWidth={1.9} aria-hidden />
+              {t("viewBookingReceipt")}
+            </Link>
+          )}
         </div>
       </Frame>
     );
@@ -418,12 +422,14 @@ export default function UpchargeApproveView({
               {booking?.reference_code && <Kv k={t("orderNumber")} v={booking.reference_code} mono last />}
             </KvCard>
 
-            <div className="mt-4">
-              <Link href={receiptHref} className={cn(secondaryBtn, "md:max-w-[260px]")}>
-                <Receipt size={17} strokeWidth={1.9} aria-hidden />
-                {t("upViewReceipt")}
-              </Link>
-            </div>
+            {receiptHref && (
+              <div className="mt-4">
+                <Link href={receiptHref} className={cn(secondaryBtn, "md:max-w-[260px]")}>
+                  <Receipt size={17} strokeWidth={1.9} aria-hidden />
+                  {t("upViewReceipt")}
+                </Link>
+              </div>
+            )}
             <p className="mt-4 text-[12px] leading-[1.5] text-s-ink-2">{t("upReportWithin")}</p>
           </div>
         </div>
