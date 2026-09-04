@@ -3,6 +3,27 @@ export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
+// foryou-card-props: same data path every sibling rail already uses (TopCategoryRails.tsx via
+// page.tsx) for priceFromCHF/priceFromServiceNames/city/postalCode, so the For-you card carries
+// the same info stack as its neighbours (FLOORS LAW 8) instead of a second, thinner query.
+import { getSalonCardDataMap } from "@/app/[locale]/_components/homepage/salonCardData";
+
+/** Merges getSalonCardDataMap's price/city fields onto an already-ordered salon list without
+ *  touching order or membership, so callers keep their own ranking untouched. */
+async function withCardData<T extends { id: string }>(salons: T[]) {
+  if (salons.length === 0) return [];
+  const cardData = await getSalonCardDataMap(salons.map((s) => s.id));
+  return salons.map((s) => {
+    const d = cardData[s.id];
+    return {
+      ...s,
+      priceFromCHF: d?.priceFromCHF ?? null,
+      priceFromServiceNames: d?.priceFromServiceNames ?? null,
+      postalCode: d?.postalCode ?? null,
+      city: d?.city ?? null,
+    };
+  });
+}
 
 // GET /api/salons/recommendations — personalized salon recommendations
 // Query params: ?user_id=X (optional)
@@ -71,7 +92,7 @@ export async function GET(request: NextRequest) {
       if (affSalons && affSalons.length > 0) {
         const rank = new Map(aff.map((a, i) => [a.salon_id as string, i]));
         const ordered = affSalons.slice().sort((a, b) => (rank.get(a.id) ?? 999) - (rank.get(b.id) ?? 999));
-        return NextResponse.json({ salons: ordered, source: "affinity" });
+        return NextResponse.json({ salons: await withCardData(ordered), source: "affinity" });
       }
     }
 
@@ -100,7 +121,7 @@ export async function GET(request: NextRequest) {
 
       const { data: personalized } = await query;
       if (personalized && personalized.length > 0) {
-        return NextResponse.json({ salons: personalized, source: "personalized" });
+        return NextResponse.json({ salons: await withCardData(personalized), source: "personalized" });
       }
     }
   }
@@ -123,7 +144,7 @@ export async function GET(request: NextRequest) {
     if (engSalons && engSalons.length > 0) {
       const rank = new Map(eng.map((e, i) => [e.salon_id as string, i]));
       const ordered = engSalons.slice().sort((a, b) => (rank.get(a.id) ?? 999) - (rank.get(b.id) ?? 999)).slice(0, 8);
-      return NextResponse.json({ salons: ordered, source: "engagement" });
+      return NextResponse.json({ salons: await withCardData(ordered), source: "engagement" });
     }
   }
 
@@ -137,5 +158,5 @@ export async function GET(request: NextRequest) {
     .order("explore_score", { ascending: false })
     .limit(8);
 
-  return NextResponse.json({ salons: popular ?? [], source: "popular" });
+  return NextResponse.json({ salons: await withCardData(popular ?? []), source: "popular" });
 }
