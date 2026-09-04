@@ -1,0 +1,316 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Tunnel (worktree 3457)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:3457 --metrics localhost:20262 --no-autoupdate"
+      ],
+      "port": 20262,
+      "autoPort": false
+    },
+    {
+      "name": "Next dev (this worktree on 3457)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "npx next dev -p 3457"
+      ],
+      "port": 3457,
+      "autoPort": false
+    },
+    {
+      "name": "Next dev (codex-migration worktree on 3461)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "npx next dev -p 3461"
+      ],
+      "port": 3461,
+      "autoPort": true
+    },
+    {
+      "name": "Tunnel (codex-migration 3461)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:3461 --metrics localhost:20263 --no-autoupdate"
+      ],
+      "port": 20263,
+      "autoPort": false
+    },
+    {
+      "name": "Next dev (MAIN on 3000)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "cd /Users/sulo/Documents/solen && npx next dev -p 3000"
+      ],
+      "port": 3000,
+      "autoPort": false
+    },
+    {
+      "name": "Prod preview (3007)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "SOLEN_DEV_PAGES=1 npx next start -p 3007 -H 127.0.0.1"
+      ],
+      "port": 3007,
+      "autoPort": false
+    },
+    {
+      "name": "Tunnel (prod 3007)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://127.0.0.1:3007 --metrics localhost:20261 --no-autoupdate"
+      ],
+      "port": 20261,
+      "autoPort": false
+    },
+    {
+      "name": "Tunnel (app 50723)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:50723 --metrics localhost:20249 --no-autoupdate"
+      ],
+      "port": 20249,
+      "autoPort": false
+    },
+    {
+      "name": "Tunnel (sheet 3300)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:3300 --metrics localhost:20261 --no-autoupdate"
+      ],
+      "port": 20261,
+      "autoPort": false
+    },
+    {
+      "name": "Sheet preview (scratchpad 3300)",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--yes",
+        "serve",
+        "/private/tmp/claude-501/-Users-sulo-Documents-solen--claude-worktrees-design-system-consolidation-10167f/68d78dad-21dd-4632-a5a9-f1861516a718/scratchpad",
+        "--no-clipboard",
+        "--listen",
+        "3300"
+      ],
+      "port": 3300,
+      "autoPort": false
+    },
+    {
+      "name": "Next dev (quirky-ellis on 3000)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "cd /Users/sulo/Documents/solen/.claude/worktrees/quirky-ellis-ef5559 && npx next dev -p 3000"
+      ],
+      "port": 3000,
+      "autoPort": false
+    },
+    {
+      "name": "Next.js dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
+      "autoPort": true
+    },
+    {
+      "name": "Design preview (static)",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--yes",
+        "serve",
+        "public",
+        "--no-clipboard",
+        "--listen",
+        "3000"
+      ],
+      "port": 3000,
+      "autoPort": false
+    },
+    {
+      "name": "Research preview (worktree public 3222)",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--yes",
+        "serve",
+        "public",
+        "--no-clipboard",
+        "--listen",
+        "3222"
+      ],
+      "port": 3222,
+      "autoPort": false
+    },
+    {
+      "name": "Tunnel (research 3222)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:3222 --metrics localhost:20251 --no-autoupdate"
+      ],
+      "port": 20251,
+      "autoPort": false
+    },
+    {
+      "name": "Supabase local stack",
+      "runtimeExecutable": "supabase",
+      "runtimeArgs": [
+        "start"
+      ],
+      "port": 54321
+    },
+    {
+      "name": "Supabase Edge Functions",
+      "runtimeExecutable": "supabase",
+      "runtimeArgs": [
+        "functions",
+        "serve"
+      ],
+      "port": 54321
+    },
+    {
+      "name": "Expo web (solen-mobile)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "cd /Users/sulo/Documents/solen-mobile && CI=1 npx expo start --web --port 8081 --clear"
+      ],
+      "port": 8081,
+      "autoPort": false
+    },
+    {
+      "name": "Mockup delivery (mobile captures)",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--yes",
+        "serve",
+        "/Users/sulo/Documents/solen-mobile/_design-system/captures",
+        "--no-clipboard",
+        "--listen",
+        "3210"
+      ],
+      "port": 3210,
+      "autoPort": false
+    },
+    {
+      "name": "Readout (static 3055)",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--yes",
+        "serve",
+        "/Users/sulo/Documents/solen/.claude/worktrees/quirky-ellis-ef5559/public",
+        "--no-clipboard",
+        "--listen",
+        "3055"
+      ],
+      "port": 3055,
+      "autoPort": false
+    },
+    {
+      "name": "Tunnel (readout 3055)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:3055 --metrics localhost:20246 --no-autoupdate"
+      ],
+      "port": 20246,
+      "autoPort": false
+    },
+    {
+      "name": "Tunnel (pdp round2 51815)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:51815 --metrics localhost:20255 --no-autoupdate"
+      ],
+      "port": 20255,
+      "autoPort": false
+    },
+    {
+      "name": "Tunnel (dev 3000)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:3000 --metrics localhost:20245 --no-autoupdate"
+      ],
+      "port": 20245,
+      "autoPort": false
+    },
+    {
+      "name": "Tunnel (dev 3000 b)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:3000 --metrics localhost:20255 --no-autoupdate"
+      ],
+      "port": 20255,
+      "autoPort": false
+    },
+    {
+      "name": "Tunnel (this worktree next 61809)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:61809 --metrics localhost:20256 --no-autoupdate"
+      ],
+      "port": 20256,
+      "autoPort": false
+    },
+    {
+      "name": "Tunnel (mockup delivery 3210)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:3210 --metrics localhost:20242"
+      ],
+      "port": 20242,
+      "autoPort": false
+    },
+    {
+      "name": "Tunnel (live Expo app 8081)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:8081 --metrics localhost:20243"
+      ],
+      "port": 20243,
+      "autoPort": false
+    },
+    {
+      "name": "Expo static build (dist)",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--yes",
+        "serve",
+        "/Users/sulo/Documents/solen-mobile/dist",
+        "--no-clipboard",
+        "--single",
+        "--listen",
+        "3211"
+      ],
+      "port": 3211,
+      "autoPort": false
+    },
+    {
+      "name": "Tunnel (Expo static 3211)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:3211 --metrics localhost:20244"
+      ],
+      "port": 20244,
+      "autoPort": false
+    }
+  ]
+}
