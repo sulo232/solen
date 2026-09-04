@@ -17,14 +17,27 @@ const CATEGORY_LABELS: Record<string, Record<string, string>> = {
  * is fetched ONCE on the server per PDP load instead of twice (the metadata
  * select + the breadcrumb select were two independent round-trips). The union
  * of columns both callers need is selected so neither has to re-query.
+ *
+ * Applies the same visibility gate as the public PDP loader (lib/salon-detail.ts
+ * loadSalonDetailWithAccess): is_active AND listed_on_marketplace IS NOT FALSE AND NOT
+ * is_test. Without it, a hidden salon still got real SEO title/description/OG tags and
+ * its name in the breadcrumb JSON-LD below, indexable even though the page body itself
+ * was never gated at all. No owner bypass here on purpose: this function only feeds
+ * generateMetadata (crawlers/social previews, never carry a session) and the breadcrumb
+ * script, neither of which is the owner's actual view of their listing, that comes from
+ * loadSalonDetailWithAccess in page.tsx, which already carries the owner/admin bypass.
+ * A hidden salon falls through to the same `!salon` branch every caller already has.
  */
 const getSalonMeta = cache(async (slug: string) => {
   const supabase = await createServerSupabaseClient();
   const { data } = await supabase
     .from("salons")
-    .select("name, address, postal_code, cover_photo_url, categories, average_rating, review_count")
+    .select("name, address, postal_code, cover_photo_url, categories, average_rating, review_count, is_active, listed_on_marketplace, is_test")
     .eq("slug", slug)
     .single();
+  if (!data || !data.is_active || data.listed_on_marketplace === false || data.is_test === true) {
+    return null;
+  }
   return data;
 });
 
