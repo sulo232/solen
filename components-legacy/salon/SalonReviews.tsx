@@ -319,10 +319,6 @@ export default function SalonReviews({
                           would have left the two screens showing the same pill two different ways,
                           one tap apart, which is exactly the drift FLOORS LAW 8 exists to stop. He
                           asked once; a request applies to the thing, not to one file. */}
-                      {/* Counts gone and the star up to 15px, same as the PDP section, same reason,
-                          same turn. This file is the SECOND copy of the reviews list, one tap away
-                          from the first, so changing only one of them is what makes two screens
-                          disagree about the same control. */}
                       <span className="inline-flex items-center gap-1">
                         {s}
                         <Star size={15} strokeWidth={0} aria-hidden className="fill-s-star" />

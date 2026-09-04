@@ -5879,6 +5879,7 @@
     "showOpeningHours": "Öffnungszeiten anzeigen",
     "contact": "Kontakt",
     "discoverMore": "Weitere Salons entdecken",
+    "categoryInCity": "{category} in {city}",
     "bundles": "Combos",
     "showLocation": "Standort anzeigen",
     "openInGoogleMaps": "{name}: In Google Maps öffnen",

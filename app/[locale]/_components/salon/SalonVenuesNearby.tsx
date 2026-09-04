@@ -42,6 +42,7 @@ export function SalonVenuesNearby({
   locale: string;
 }) {
   const t = useTranslations("common");
+  const tSalon = useTranslations("salon");
   const [items, setItems] = React.useState<NearbyVenue[]>([]);
   const [loading, setLoading] = React.useState(true);
   const scrollRef = React.useRef<HTMLDivElement>(null);
@@ -137,7 +138,7 @@ export function SalonVenuesNearby({
       <section ref={sectionRef}>
         {/* V3-D202 (A18): font-body → font-display + Scale B. */}
         <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
-          Ähnliche Stores
+          {tSalon("similarSalons")}
         </h2>
         {/* mockup-ok: skeleton matches the ported card's own w-[calc((100vw-44px)/1.25)]
             + gap-3, so the loading state doesn't jump size once real cards land. */}
@@ -160,7 +161,7 @@ export function SalonVenuesNearby({
       <div className="flex items-center justify-between">
         {/* V3-D202 (A18): font-body → font-display + Scale B. */}
         <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
-          Ähnliche Stores
+          {tSalon("similarSalons")}
         </h2>
         {/* Desktop arrow buttons */}
         <div className="hidden items-center gap-2 md:flex">

@@ -128,7 +128,7 @@ export function SalonAppCta({
             href={cityIsReal ? `/${locale}/${citySlug}/${activeCat}` : `/${locale}/${activeCat}`}
             className="font-body text-[14px] font-medium text-s-accent underline-offset-4 transition-opacity duration-150 hover:underline hover:opacity-80"
           >
-            {cityIsReal ? `${activeLabel} in ${cityLabel}` : activeLabel}
+            {cityIsReal ? t("categoryInCity", { category: activeLabel, city: cityLabel }) : activeLabel}
           </Link>
         </li>
       </ul>

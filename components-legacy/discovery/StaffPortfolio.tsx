@@ -18,12 +18,11 @@ interface PortfolioImage {
 
 interface StaffPortfolioProps {
   staff: StaffMember;
-  salonId: string;
   instagramUrl?: string | null;
   onBookWith?: (staffId: string) => void;
 }
 
-export default function StaffPortfolio({ staff, salonId, instagramUrl, onBookWith }: StaffPortfolioProps) {
+export default function StaffPortfolio({ staff, instagramUrl, onBookWith }: StaffPortfolioProps) {
   const [images, setImages] = useState<PortfolioImage[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -46,7 +45,7 @@ export default function StaffPortfolio({ staff, salonId, instagramUrl, onBookWit
     }
     load();
     return () => { cancelled = true; };
-  }, [salonId, staff.id]);
+  }, [staff.id]);
 
   return (
     <div className="p-4 rounded-[16px] bg-[--raised] border border-s-ink/5">

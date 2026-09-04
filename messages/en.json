@@ -5879,6 +5879,7 @@
     "showOpeningHours": "Show opening hours",
     "contact": "Contact",
     "discoverMore": "Discover more stores",
+    "categoryInCity": "{category} in {city}",
     "bundles": "Combos",
     "showLocation": "Show location",
     "openInGoogleMaps": "{name}: open in Google Maps",

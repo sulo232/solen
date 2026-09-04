@@ -1,10 +1,13 @@
 "use client";
 
+// Style/shape/material filtering was dropped here: the fetch moved to the plain
+// /api/staff/{staffId}/profile route, which takes no filter params, so the old chips
+// re-fetched the same unfiltered data on every tap and changed nothing on screen.
+
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslations } from "next-intl";
 import NailDesignCard from "./NailDesignCard";
 import Spinner from "@/components-legacy/ui/Spinner";
-import type { NailStyleCategory, NailShape, NailMaterial } from "@/lib/types";
 
 interface PortfolioImage {
   id: string;
@@ -22,42 +25,10 @@ interface TechPortfolioProps {
   limit?: number;
 }
 
-const STYLE_FILTERS: { value: NailStyleCategory; label: string }[] = [
-  { value: "french", label: "French" },
-  { value: "chrome", label: "Chrome" },
-  { value: "3d_art", label: "3D Art" },
-  { value: "ombre", label: "Ombré" },
-  { value: "marble", label: "Marble" },
-  { value: "glitter", label: "Glitter" },
-  { value: "minimal", label: "Minimal" },
-  { value: "abstract", label: "Abstract" },
-  { value: "floral", label: "Floral" },
-  { value: "bridal", label: "Bridal" },
-];
-
-const SHAPE_FILTERS: { value: NailShape; label: string }[] = [
-  { value: "almond", label: "Mandel" },
-  { value: "coffin", label: "Coffin" },
-  { value: "stiletto", label: "Stiletto" },
-  { value: "oval", label: "Oval" },
-  { value: "square", label: "Square" },
-  { value: "round", label: "Rund" },
-];
-
-const MATERIAL_FILTERS: { value: NailMaterial; label: string }[] = [
-  { value: "gel", label: "Gel" },
-  { value: "acrylic", label: "Acryl" },
-  { value: "dip_powder", label: "Dip Powder" },
-  { value: "shellac", label: "Shellac" },
-];
-
 export default function TechPortfolio({ staffId, staffName, salonSlug, initialImages, limit }: TechPortfolioProps) {
   const t = useTranslations("nail_dashboard") as any;
   const [images, setImages] = useState<PortfolioImage[]>(initialImages ?? []);
   const [loading, setLoading] = useState(!initialImages);
-  const [filterStyle, setFilterStyle] = useState<NailStyleCategory | null>(null);
-  const [filterShape, setFilterShape] = useState<NailShape | null>(null);
-  const [filterMaterial, setFilterMaterial] = useState<NailMaterial | null>(null);
   const [page, setPage] = useState(1);
   const pageRef = useRef(1);
   const [hasMore, setHasMore] = useState(true);
@@ -89,13 +60,13 @@ export default function TechPortfolio({ staffId, staffName, salonSlug, initialIm
     }
   }, [staffId]);
 
-  // Fetch on mount or filter change
+  // Fetch on mount
   useEffect(() => {
-    if (initialImages && !filterStyle && !filterShape && !filterMaterial) return;
+    if (initialImages) return;
     setPage(1);
     pageRef.current = 1;
     fetchImages(1, false);
-  }, [fetchImages, initialImages, filterStyle, filterShape, filterMaterial]);
+  }, [fetchImages, initialImages]);
 
   // Infinite scroll (only when no limit/preview mode)
   useEffect(() => {
@@ -118,34 +89,8 @@ export default function TechPortfolio({ staffId, staffName, salonSlug, initialIm
     return () => observer.disconnect();
   }, [hasMore, loading, limit, fetchImages]);
 
-  const showFilters = !limit;
-
   return (
     <div>
-      {/* Filter pills */}
-      {showFilters && (
-        <div className="mb-4 space-y-2">
-          <FilterRow
-            label={t("portfolio_filter_style")}
-            options={STYLE_FILTERS}
-            value={filterStyle}
-            onChange={(v) => setFilterStyle(v === filterStyle ? null : v)}
-          />
-          <FilterRow
-            label={t("portfolio_filter_shape")}
-            options={SHAPE_FILTERS}
-            value={filterShape}
-            onChange={(v) => setFilterShape(v === filterShape ? null : v)}
-          />
-          <FilterRow
-            label={t("portfolio_filter_material")}
-            options={MATERIAL_FILTERS}
-            value={filterMaterial}
-            onChange={(v) => setFilterMaterial(v === filterMaterial ? null : v)}
-          />
-        </div>
-      )}
-
       {/* Grid */}
       {images.length === 0 && !loading ? (
         <p className="text-sm text-s-ink/40 text-center py-8">
@@ -174,42 +119,6 @@ export default function TechPortfolio({ staffId, staffName, salonSlug, initialIm
 
       {/* Infinite scroll sentinel */}
       {!limit && hasMore && <div ref={sentinelRef} className="h-1" />}
-    </div>
-  );
-}
-
-// ─── Filter Row ───────────────────────────────
-
-function FilterRow<T extends string>({
-  label,
-  options,
-  value,
-  onChange,
-}: {
-  label: string;
-  options: { value: T; label: string }[];
-  value: T | null;
-  onChange: (v: T) => void;
-}) {
-  return (
-    <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
-      <span className="text-[12px] uppercase tracking-wider text-s-ink/40 shrink-0">
-        {label}
-      </span>
-      {options.map((opt) => (
-        <button
-          key={opt.value}
-          aria-pressed={value === opt.value}
-          onClick={() => onChange(opt.value)}
-          className={`shrink-0 text-xs px-3 py-1 rounded-pill border transition-colors duration-150 ${
-            value === opt.value
-              ? "bg-s-ink text-white border-s-accent"
-              : "bg-[--raised] text-s-ink/70 border-s-border hover:border-s-accent/30"
-          }`}
-        >
-          {opt.label}
-        </button>
-      ))}
     </div>
   );
 }

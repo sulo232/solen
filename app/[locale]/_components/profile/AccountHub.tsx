@@ -122,10 +122,15 @@ export default function AccountHub({
         ? `${t("payEndsIn")} ${wallet[0].last4}`
         : t("walletCardsCount", { count: wallet.length });
 
+  // activeVouchersCount null = the count query failed; omit the subline rather than tell the
+  // customer they have zero vouchers when the truth is unknown (same pattern as favoritesCount
+  // above).
   const couponsSub =
-    activeVouchersCount !== null && activeVouchersCount > 0
-      ? t("couponsRowActive", { count: activeVouchersCount })
-      : t("couponsRowEmptySub");
+    activeVouchersCount === null
+      ? undefined
+      : activeVouchersCount > 0
+        ? t("couponsRowActive", { count: activeVouchersCount })
+        : t("couponsRowEmptySub");
 
   const stampsSub = stamps ? t("stampsRowActive", { remaining: stamps.needed - stamps.collected }) : t("stampsRowEmptySub");
 

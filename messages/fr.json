@@ -5879,6 +5879,7 @@
     "showOpeningHours": "Afficher les horaires",
     "contact": "Contact",
     "discoverMore": "Découvrir d'autres salons",
+    "categoryInCity": "{category} à {city}",
     "bundles": "Combos",
     "showLocation": "Afficher l'emplacement",
     "openInGoogleMaps": "{name} : ouvrir dans Google Maps",

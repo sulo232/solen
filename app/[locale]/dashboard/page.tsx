@@ -124,11 +124,10 @@ export default function DashboardPage() {
         // advice=1 rides on the analytics call this page already makes, so the panel
         // costs no extra round trip from the browser.
         const analytics = sid ? fetch(`/api/analytics/salon/${sid}?period=week&advice=1`).then((r) => r.json()) : Promise.resolve(null);
-        const convos = sid ? fetch(`/api/conversations?salon_id=${sid}&unread=true`).then((r) => r.json()) : Promise.resolve(null);
         const staffStats = sid ? fetch(`/api/analytics/staff-comparison?salon_id=${sid}&period=month`).then((r) => r.json()) : Promise.resolve(null);
-        return Promise.all([todayBookings, analytics, convos, staffStats]);
+        return Promise.all([todayBookings, analytics, staffStats]);
       })
-      .then(([bData, analyticsData, convoData, staffData]) => {
+      .then(([bData, analyticsData, staffData]) => {
         setBookings(bData?.bookings ?? []);
         if (analyticsData) setStats(analyticsData);
         if (staffData?.staff) setStaff(staffData.staff);
