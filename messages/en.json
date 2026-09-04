@@ -4395,9 +4395,6 @@
     "timeline_publish": "To Discovery",
     "timeline_publishing": "...",
     "portfolio_empty": "No designs in portfolio yet",
-    "portfolio_filter_style": "Style",
-    "portfolio_filter_shape": "Shape",
-    "portfolio_filter_material": "Material",
     "day_sun": "Sun",
     "day_mon": "Mon",
     "day_tue": "Tue",
@@ -5381,7 +5378,6 @@
     "saved": "Saved!",
     "reset": "Reset",
     "express_menu": "Express Menu",
-    "walk_in_customer": "Walk-in Customer",
     "queue_display": "Queue Display",
     "now_serving": "Now Serving",
     "no_one_serving": "No one being served",
@@ -6398,8 +6394,7 @@
     "upKvRequestedExtra": "Requested extra",
     "upKvYouPaid": "You paid",
     "upNoneTitle": "No extra to review",
-    "upNoneBody": "There's no open request on this booking. It may have already been handled.",
-    "_todo_translate": false
+    "upNoneBody": "There's no open request on this booking. It may have already been handled."
   },
   "authRegister": {
     "roleHeading": "How would you like to start?",
