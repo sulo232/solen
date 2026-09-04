@@ -107,11 +107,20 @@ export const EMAIL_PREVIEWS: EmailPreviewEntry[] = [
       ),
   },
   {
-    id: "booking-reminder",
-    label: "Reminder, tomorrow",
+    id: "booking-reminder-24h",
+    label: "Reminder, 24h before (email)",
     group: "Booking (to the customer)",
     audience: "customer",
-    build: (l) => E.bookingReminder(TO, { service: S.service, salon: S.salon, time: S.time }, l),
+    build: (l) =>
+      E.bookingReminder(TO, { service: S.service, salon: S.salon, date: S.date, time: S.time, manageUrl: S.url, window: "24h" }, l),
+  },
+  {
+    id: "booking-reminder-1h",
+    label: "Reminder, 1h before (email)",
+    group: "Booking (to the customer)",
+    audience: "customer",
+    build: (l) =>
+      E.bookingReminder(TO, { service: S.service, salon: S.salon, date: S.date, time: S.time, manageUrl: S.url, window: "1h" }, l),
   },
   {
     id: "booking-pending-approval-customer",

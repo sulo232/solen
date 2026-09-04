@@ -123,8 +123,12 @@ export function wrapEmailHtml(html: string): string {
 export async function sendEmail(payload: EmailPayload, requestId?: string): Promise<void> {
   const apiKey = getServerEnv().RESEND_API_KEY;
   if (!apiKey || apiKey === "PASTE_RESEND_KEY_HERE") {
-    console.warn("[email] RESEND_API_KEY not configured, skipping email send", { requestId });
-    return;
+    // Was a warn + silent return: the docstring above already promised "throws on failure",
+    // but this branch didn't, so a caller's try/catch never ran and callers that claim-then-
+    // revert-on-catch (app/api/cron/sms-reminders/route.ts) treated an unsent email as sent.
+    // Throwing here is what makes the docstring true and every existing try/catch do its job.
+    console.error("[email] RESEND_API_KEY not configured, refusing to send", { requestId });
+    throw new Error("RESEND_API_KEY not configured");
   }
 
   // MERGED BY HAND 2026-08-14, both halves kept. The timeout below came from the July branch and
@@ -321,24 +325,72 @@ export function bookingReschedule(
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
 
+/**
+ * 24h / 1h booking reminder email.
+ *
+ * Was dead code (zero callers) until seo-comms-10 (2026-09-04): the owner asked for an
+ * email reminder alongside the existing SMS one, customer-choosable via
+ * profiles.notification_email / notification_sms. Called from
+ * app/api/cron/sms-reminders/route.ts, the live reminder cron (never the deprecated
+ * app/api/cron/reminders/route.ts stub).
+ *
+ * `window` picks the 24h ("tomorrow") vs 1h ("starting soon") copy, mirroring the two
+ * distinct SMS bodies already sent by that cron. `date`/`time` are pre-formatted by the
+ * caller (Europe/Zurich, the caller's Swiss locale), same convention as bookingConfirmation.
+ */
 export function bookingReminder(
   to: string,
-  vars: { service: string; salon: string; time: string },
+  vars: { service: string; salon: string; date: string; time: string; manageUrl?: string; window: "24h" | "1h" },
   locale: EmailLocale = "de"
 ): EmailPayload {
-  const subjects: Record<EmailLocale, string> = {
-    de: `Erinnerung: ${vars.service} morgen um ${vars.time}`,
-    en: `Reminder: ${vars.service} tomorrow at ${vars.time}`,
-    fr: `Rappel: ${vars.service} demain à ${vars.time}`,
-    it: `Promemoria: ${vars.service} domani alle ${vars.time}`,
+  const subjects: Record<EmailLocale, Record<"24h" | "1h", string>> = {
+    de: { "24h": `Erinnerung: ${vars.service} morgen um ${vars.time}`, "1h": `Erinnerung: ${vars.service} in 1 Stunde` },
+    en: { "24h": `Reminder: ${vars.service} tomorrow at ${vars.time}`, "1h": `Reminder: ${vars.service} in 1 hour` },
+    fr: { "24h": `Rappel: ${vars.service} demain à ${vars.time}`, "1h": `Rappel: ${vars.service} dans 1 heure` },
+    it: { "24h": `Promemoria: ${vars.service} domani alle ${vars.time}`, "1h": `Promemoria: ${vars.service} tra 1 ora` },
   };
+
+  // Same per-locale manage-link label as bookingConfirmation's CL constant.
+  const manageLabels: Record<EmailLocale, string> = {
+    de: "Buchung ansehen oder stornieren",
+    en: "View or cancel booking",
+    fr: "Voir ou annuler la réservation",
+    it: "Visualizza o annulla la prenotazione",
+  };
+  const manageLabel = manageLabels[locale];
+  const manageHtml = vars.manageUrl
+    ? `<p style="margin-top:12px"><a href="${vars.manageUrl}">${manageLabel} →</a></p>`
+    : "";
+
+  const lead: Record<EmailLocale, Record<"24h" | "1h", string>> = {
+    de: {
+      "24h": `<strong>${escapeHtml(vars.service)}</strong> bei <strong>${escapeHtml(vars.salon)}</strong> am ${vars.date} um ${vars.time} Uhr ist morgen. Wir freuen uns auf Sie!`,
+      "1h": `<strong>${escapeHtml(vars.service)}</strong> bei <strong>${escapeHtml(vars.salon)}</strong> beginnt in 1 Stunde, um ${vars.time} Uhr.`,
+    },
+    en: {
+      "24h": `<strong>${escapeHtml(vars.service)}</strong> at <strong>${escapeHtml(vars.salon)}</strong> on ${vars.date} at ${vars.time} is tomorrow. See you there!`,
+      "1h": `<strong>${escapeHtml(vars.service)}</strong> at <strong>${escapeHtml(vars.salon)}</strong> starts in 1 hour, at ${vars.time}.`,
+    },
+    fr: {
+      "24h": `<strong>${escapeHtml(vars.service)}</strong> chez <strong>${escapeHtml(vars.salon)}</strong> le ${vars.date} à ${vars.time} est demain. À bientôt!`,
+      "1h": `<strong>${escapeHtml(vars.service)}</strong> chez <strong>${escapeHtml(vars.salon)}</strong> commence dans 1 heure, à ${vars.time}.`,
+    },
+    it: {
+      "24h": `<strong>${escapeHtml(vars.service)}</strong> presso <strong>${escapeHtml(vars.salon)}</strong> il ${vars.date} alle ${vars.time} è domani. A presto!`,
+      "1h": `<strong>${escapeHtml(vars.service)}</strong> presso <strong>${escapeHtml(vars.salon)}</strong> inizia tra 1 ora, alle ${vars.time}.`,
+    },
+  };
+
+  const greeting: Record<EmailLocale, string> = { de: "Hallo,", en: "Hello,", fr: "Bonjour,", it: "Ciao," };
+
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>${escapeHtml(vars.service)} bei ${escapeHtml(vars.salon)} ist morgen um ${vars.time} Uhr. Wir freuen uns auf Sie!</p>`,
-    en: `<p>${escapeHtml(vars.service)} at ${escapeHtml(vars.salon)} is tomorrow at ${vars.time}. See you there!</p>`,
-    fr: `<p>${escapeHtml(vars.service)} chez ${escapeHtml(vars.salon)} est demain à ${vars.time}. À bientôt!</p>`,
-    it: `<p>${escapeHtml(vars.service)} presso ${escapeHtml(vars.salon)} è domani alle ${vars.time}. A presto!</p>`,
+    de: `<p>${greeting.de}</p><p>${lead.de[vars.window]}</p>${manageHtml}<p>solen.ch</p>`,
+    en: `<p>${greeting.en}</p><p>${lead.en[vars.window]}</p>${manageHtml}<p>solen.ch</p>`,
+    fr: `<p>${greeting.fr}</p><p>${lead.fr[vars.window]}</p>${manageHtml}<p>solen.ch</p>`,
+    it: `<p>${greeting.it}</p><p>${lead.it[vars.window]}</p>${manageHtml}<p>solen.ch</p>`,
   };
-  return { to, subject: subjects[locale], html: bodies[locale] };
+
+  return { to, subject: subjects[locale][vars.window], html: bodies[locale] };
 }
 
 export function recurringConfirmation(

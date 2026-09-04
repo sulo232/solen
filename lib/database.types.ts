@@ -969,6 +969,8 @@ export type Database = {
           service_id: string
           service_revenue: number | null
           slot_id: string
+          email_sent_1h: boolean | null
+          email_sent_24h: boolean | null
           sms_sent_1h: boolean | null
           sms_sent_24h: boolean | null
           staff_member_id: string | null
@@ -1055,6 +1057,8 @@ export type Database = {
           service_id: string
           service_revenue?: number | null
           slot_id: string
+          email_sent_1h?: boolean | null
+          email_sent_24h?: boolean | null
           sms_sent_1h?: boolean | null
           sms_sent_24h?: boolean | null
           staff_member_id?: string | null
@@ -1141,6 +1145,8 @@ export type Database = {
           service_id?: string
           service_revenue?: number | null
           slot_id?: string
+          email_sent_1h?: boolean | null
+          email_sent_24h?: boolean | null
           sms_sent_1h?: boolean | null
           sms_sent_24h?: boolean | null
           staff_member_id?: string | null
