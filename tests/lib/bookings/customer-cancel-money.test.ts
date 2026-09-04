@@ -10,6 +10,7 @@
 // and the not-prepaid fee-charge branch.
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import { makeDbStub } from "../../helpers/supabase-stub";
 
 const chargeFeeMock = vi.fn();
 vi.mock("@/lib/bookings/charge-fee", async (importOriginal) => {
@@ -26,6 +27,18 @@ vi.mock("@/lib/bookings/issue-refund", async (importOriginal) => {
   return {
     ...actual,
     issueRefund: (...args: unknown[]) => issueRefundMock(...args),
+  };
+});
+
+// Hold-release tests (deposit_held branch) call getStripe().paymentIntents.cancel
+// directly, no wrapping chokepoint module to intercept, mocked at the boundary same
+// as tests/lib/bookings/issue-refund.test.ts does.
+const paymentIntentsCancelMock = vi.fn();
+vi.mock("@/lib/stripe", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/lib/stripe")>();
+  return {
+    ...actual,
+    getStripe: () => ({ paymentIntents: { cancel: paymentIntentsCancelMock } }),
   };
 });
 
@@ -58,6 +71,7 @@ const FLAT_POLICY = { cancellation_fee_type: "flat", cancellation_fee_value: 20,
 beforeEach(() => {
   chargeFeeMock.mockReset();
   issueRefundMock.mockReset();
+  paymentIntentsCancelMock.mockReset();
 });
 
 describe("applyCustomerCancelMoney: prepaid path (fee netted out of the refund)", () => {
@@ -157,5 +171,74 @@ describe("applyCustomerCancelMoney: not-prepaid path (off-session fee charge)", 
     expect(chargeFeeMock).toHaveBeenCalledTimes(1); // the call DID happen and threw
     expect(result.feeChargeStatus).toBe("none");
     expect(result.feeChargedCents).toBe(0);
+  });
+});
+
+describe("applyCustomerCancelMoney: uncaptured-hold release (deposit_held)", () => {
+  // deposit_held bookings never carry paid_amount (see the write-site trail in the
+  // isUncapturedHold comment in customer-cancel-money.ts), so paid_amount stays null
+  // here same as a real row would have it.
+  function heldBooking(overrides: Partial<CustomerCancelBookingRow> = {}): CustomerCancelBookingRow {
+    return booking({
+      paid_amount: null,
+      payment_status: "deposit_held",
+      payment_intent_id: "pi_hold_1",
+      refunded_amount: null,
+      ...overrides,
+    });
+  }
+
+  it("cancels the PaymentIntent and releases the hold, no refund issued", async () => {
+    paymentIntentsCancelMock.mockResolvedValue({ id: "pi_hold_1", status: "canceled" });
+    const db = makeDbStub([{ data: { id: "b-1" }, error: null }]); // the CAS release update
+
+    const result = await applyCustomerCancelMoney(db, heldBooking(), FLAT_POLICY, "customer cancel");
+
+    expect(paymentIntentsCancelMock).toHaveBeenCalledTimes(1);
+    expect(paymentIntentsCancelMock).toHaveBeenCalledWith("pi_hold_1", { cancellation_reason: "requested_by_customer" });
+    expect(issueRefundMock).not.toHaveBeenCalled();
+    expect(chargeFeeMock).not.toHaveBeenCalled();
+    expect(result.refundAmount).toBe(0);
+  });
+
+  it("paid + paid_amount > 0 takes the refund path, never calls paymentIntents.cancel", async () => {
+    issueRefundMock.mockResolvedValue({ refundId: "re_paid", totalRefundedCents: 8000, paymentStatus: "refunded" });
+
+    const result = await applyCustomerCancelMoney(admin, booking(), FLAT_POLICY, "customer cancel"); // booking() default: paid_amount 10000, payment_status 'paid'
+
+    expect(issueRefundMock).toHaveBeenCalledTimes(1);
+    expect(paymentIntentsCancelMock).not.toHaveBeenCalled();
+    expect(result.refundAmount).toBe(8000);
+  });
+
+  it("deposit_held without a payment_intent_id: neither cancel nor refund fires, no throw", async () => {
+    const result = await applyCustomerCancelMoney(admin, heldBooking({ payment_intent_id: null }), FLAT_POLICY, "customer cancel");
+
+    expect(paymentIntentsCancelMock).not.toHaveBeenCalled();
+    expect(issueRefundMock).not.toHaveBeenCalled();
+    expect(chargeFeeMock).not.toHaveBeenCalled();
+    expect(result.refundAmount).toBe(0);
+  });
+
+  it("treats an already-canceled PaymentIntent as success (idempotent retry / cron race) and still releases the hold", async () => {
+    paymentIntentsCancelMock.mockRejectedValue({
+      code: "payment_intent_unexpected_state",
+      message: "You cannot cancel this PaymentIntent because it has a status of canceled.",
+    });
+    const db = makeDbStub([{ data: { id: "b-1" }, error: null }]);
+
+    await applyCustomerCancelMoney(db, heldBooking(), FLAT_POLICY, "customer cancel");
+
+    // release still attempted (not a hard failure) even though the cancel() call itself threw.
+    expect(paymentIntentsCancelMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not throw when paymentIntents.cancel fails for a real reason, and leaves the hold in place", async () => {
+    paymentIntentsCancelMock.mockRejectedValue({ code: "api_connection_error", message: "network error" });
+    const db = makeDbStub([]); // release path never reached: no .from() call expected
+
+    const result = await applyCustomerCancelMoney(db, heldBooking(), FLAT_POLICY, "customer cancel");
+
+    expect(result.refundAmount).toBe(0);
   });
 });

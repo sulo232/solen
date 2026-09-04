@@ -55,6 +55,12 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved, onD
   const [photos, setPhotos] = useState<string[]>((initial as unknown as Record<string, string[]>)?.photo_urls ?? []);
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
+  // While one photo delete is in flight for this service, ignore further delete
+  // clicks on its OTHER photos: two concurrent DELETEs raced the array write on
+  // the server (fixed with a CAS retry loop there), but a client that never fires
+  // the second request until the first settles avoids the race, and its retries,
+  // entirely for the common case of a user double-clicking.
+  const [deletingPhoto, setDeletingPhoto] = useState(false);
 
   const toggle = <T,>(field: "suitable_for" | "suitable_gender", val: T) => {
     const arr = form[field] as T[];
@@ -155,8 +161,9 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved, onD
               {photos.map((url, i) => (
                 <div key={i} className="relative w-16 h-16 rounded-btn overflow-hidden border border-s-border">
                   <Image src={url} alt="" fill className="object-cover" />
-                  <button type="button" onClick={async () => {
+                  <button type="button" disabled={deletingPhoto} onClick={async () => {
                     if (!initial?.id) { setPhotos(photos.filter((_, j) => j !== i)); return; }
+                    setDeletingPhoto(true);
                     try {
                       const res = await fetch(`/api/services/${initial.id}/photos`, {
                         method: "DELETE",
@@ -172,9 +179,9 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved, onD
                       }
                     } catch (err) {
                       console.error("[ServiceForm] photo delete failed:", err);
-                    }
+                    } finally { setDeletingPhoto(false); }
                   }}
-                    className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-s-ink/60 text-white flex items-center justify-center">
+                    className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-s-ink/60 text-white flex items-center justify-center disabled:opacity-50">
                     <X size={8} />
                   </button>
                 </div>

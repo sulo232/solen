@@ -93,6 +93,84 @@ export async function applyCustomerCancelMoney(
     booking.paid_amount > 0 &&
     !!booking.payment_intent_id;
 
+  // GENUINE uncaptured-hold release. payment_status === 'deposit_held' is the only
+  // hold-only status written in this repo (app/api/stripe/webhook/route.ts ~232-234,
+  // the async payment_intent.succeeded delivery for a manual-capture booking PI, and
+  // lib/barber/walkin-ticket.ts ~278-281, the paid walk-in queue flow); neither write
+  // site ever sets paid_amount, and the only two writers of paid_amount
+  // (app/api/stripe/webhook/route.ts ~163-172 and app/api/cron/pre-charge/route.ts
+  // ~135-141) both set it in the SAME update that flips payment_status to 'paid'. So
+  // wasPrepaid above is always false for a deposit_held booking and the refund branch
+  // below never runs for it. Left alone, the hold only releases on Stripe's own ~7-day
+  // authorization expiry; a customer cancel must release it now. Gated on the
+  // booking's ACTUAL state, not nested inside issueRefund's NOT_CAPTURED error (that
+  // branch never sees this booking, since it never has paid_amount to trigger a
+  // refund attempt in the first place). !wasPrepaid guard is defensive: the two
+  // states are mutually exclusive by every writer above, but this keeps the refund
+  // path and the hold-release path from ever both firing on the same booking.
+  const isUncapturedHold =
+    !wasPrepaid && booking.payment_status === "deposit_held" && !!booking.payment_intent_id;
+
+  if (isUncapturedHold && booking.payment_intent_id) {
+    const releaseHoldStatus = async () => {
+      // 'none' mirrors the existing convention this repo already uses for "no money
+      // held, no money paid" after a pre-capture PaymentIntent is voided (the
+      // payment_intent.payment_failed handler, app/api/stripe/webhook/route.ts
+      // ~529-535); there is no separate 'released'/'cancelled' payment_status value
+      // anywhere in the codebase, so this reuses that one instead of inventing a new
+      // one. CAS guard (.eq payment_status + .select().maybeSingle()): only downgrade
+      // from 'deposit_held', and confirm the update actually matched a row, so a
+      // webhook that captured this PI in the same race window is never clobbered and
+      // a lost race is visible instead of silently reporting success.
+      const { data: releasedRow, error: releaseErr } = await admin
+        .from("bookings")
+        .update({ payment_status: "none" })
+        .eq("id", booking.id)
+        .eq("payment_status", "deposit_held")
+        .select("id")
+        .maybeSingle();
+      if (releaseErr) {
+        console.error(`[customer-cancel-money] hold-release payment_status update failed for booking ${booking.id}:`, releaseErr.message);
+      } else if (!releasedRow) {
+        // 0 rows matched: the booking's payment_status already moved off 'deposit_held'
+        // between the read that produced `booking` and this update (e.g. a concurrent
+        // webhook captured it). The PaymentIntent cancel above either succeeded (in
+        // which case Stripe itself is now the source of truth) or was a no-op against
+        // an already-different PI state; either way this is not a silent failure the
+        // caller needs to know about, just not the row we thought we were updating.
+        console.error(`[customer-cancel-money] hold-release skipped for booking ${booking.id}: payment_status was no longer 'deposit_held'`);
+      }
+    };
+
+    try {
+      await getStripe().paymentIntents.cancel(booking.payment_intent_id, {
+        cancellation_reason: "requested_by_customer",
+      });
+      await releaseHoldStatus();
+    } catch (cancelErr) {
+      const stripeErr = cancelErr as { code?: string; message?: string } | null | undefined;
+      // Stripe throws payment_intent_unexpected_state when the PI is already
+      // canceled (a retry, or the release-deposits/release-payments cron got there
+      // first); that is the outcome we wanted, not a failure, so the booking still
+      // gets marked released. Any other error (network, restricted key, a status
+      // that isn't 'canceled') is a real failure: log it, non-blocking, same
+      // discipline as issueRefund/chargeFee above, the cancellation still proceeds
+      // and the hold stays 'deposit_held' for the release-deposits cron backstop.
+      const alreadyCanceled =
+        stripeErr?.code === "payment_intent_unexpected_state" &&
+        typeof stripeErr?.message === "string" &&
+        stripeErr.message.toLowerCase().includes("canceled");
+      if (alreadyCanceled) {
+        await releaseHoldStatus();
+      } else {
+        console.error(
+          `[customer-cancel-money] paymentIntents.cancel failed for booking ${booking.id} (${booking.payment_intent_id}):`,
+          cancelErr,
+        );
+      }
+    }
+  }
+
   if (wasPrepaid) {
     // Net the fee against the REMAINING (un-refunded) balance, not the gross paid
     // amount, so a booking that was already partially/fully refunded before this
@@ -116,35 +194,12 @@ export async function applyCustomerCancelMoney(
         // (same discipline as the canonical /cancel route).
         if (e instanceof RefundError) {
           console.error(`[customer-cancel-money] issueRefund failed for booking ${booking.id} (${e.code}):`, e.message);
-          // NOT_CAPTURED means the PaymentIntent is only an authorization hold
-          // (never captured), so issueRefund correctly refused to refund it. But
-          // an uncaptured hold left alone only releases on Stripe's own ~7-day
-          // clock; a cancelled booking must release it immediately. Cancel the
-          // PaymentIntent explicitly instead. Never touches the captured-payment
-          // (refund) path above.
-          if (e.code === "NOT_CAPTURED" && booking.payment_intent_id) {
-            try {
-              await getStripe().paymentIntents.cancel(booking.payment_intent_id);
-            } catch (cancelErr) {
-              const stripeErr = cancelErr as { code?: string; message?: string } | null | undefined;
-              // Stripe throws payment_intent_unexpected_state when the PI is
-              // already canceled (e.g. a retry, or a cron job got there first);
-              // that is the outcome we wanted, not a failure. Any other error
-              // (network, restricted key, a status that isn't 'canceled') is a
-              // real failure: log it, same non-blocking discipline as issueRefund
-              // above, the cancellation still proceeds.
-              const alreadyCanceled =
-                stripeErr?.code === "payment_intent_unexpected_state" &&
-                typeof stripeErr?.message === "string" &&
-                stripeErr.message.toLowerCase().includes("canceled");
-              if (!alreadyCanceled) {
-                console.error(
-                  `[customer-cancel-money] paymentIntents.cancel failed for booking ${booking.id} (${booking.payment_intent_id}):`,
-                  cancelErr,
-                );
-              }
-            }
-          }
+          // A NOT_CAPTURED throw here would mean issueRefund saw an uncaptured
+          // PaymentIntent, but that can only happen via a corrupted paid_amount
+          // (wasPrepaid, which gates this whole branch, requires paid_amount > 0,
+          // and no writer in this repo ever sets paid_amount on a genuine
+          // uncaptured hold, see isUncapturedHold above, which owns releasing
+          // those). Nothing else to do here beyond the log above.
         } else {
           console.error(`[customer-cancel-money] issueRefund threw for booking ${booking.id}:`, e);
         }

@@ -8,6 +8,18 @@ import { requireUploadHeader, verifyAndStripImage } from "@/lib/upload-security"
 import { removeObjectForUrl } from "@/lib/storage";
 import { validateBody, serviceDeletePhotoSchema } from "@/lib/validations";
 
+// Build a Postgres array-literal string for a text[] compare-and-set filter (the
+// DELETE handler below). postgrest-js's own .eq()/.filter() interpolate the value
+// via a template literal (`${value}`), and Array.prototype.toString() joins a JS
+// array with bare commas ("a,b"), not a valid Postgres array literal ("{a,b}"), so a
+// raw array handed to .eq() here would silently build a filter that never matches.
+// Each element is double-quoted with its own backslashes/quotes escaped first,
+// matching the element-escaping Postgres itself uses inside a `{"a","b"}` literal.
+function toPgTextArrayLiteral(urls: string[]): string {
+  const escaped = urls.map((u) => `"${u.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`);
+  return `{${escaped.join(",")}}`;
+}
+
 // POST /api/services/[id]/photos — Upload service photos to service-photos bucket
 export async function POST(
   req: NextRequest,
@@ -125,19 +137,61 @@ export async function DELETE(
   if (validationError) return NextResponse.json({ error: validationError.message }, { status: 400 });
   const { url } = parsed;
 
-  const currentUrls = (service.photo_urls as string[]) ?? [];
-  if (!currentUrls.includes(url)) {
-    return NextResponse.json({ error: "Photo not found" }, { status: 404 });
+  // Compare-and-set on the whole array write. Two concurrent DELETEs (different
+  // photo urls, same service) both read the same photo_urls, filter their own url
+  // out, and would otherwise write the whole array back unconditionally, so the
+  // second write silently reintroduces the url the first request already removed
+  // (an array column has no per-element conflict for Postgres to detect on its
+  // own). Filter the update on photo_urls still equalling the exact array we read;
+  // a miss means another delete won the race, so re-read the row's now-current
+  // array and retry, up to 3 attempts total.
+  let currentUrls = (service.photo_urls as string[]) ?? [];
+  let updatedUrls: string[] | null = null;
+  const MAX_ATTEMPTS = 3;
+
+  for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+    if (!currentUrls.includes(url)) {
+      return NextResponse.json({ error: "Photo not found" }, { status: 404 });
+    }
+    const nextUrls = currentUrls.filter((u) => u !== url);
+    const { data: casRow, error: updateError } = await supabase
+      .from("services")
+      .update({ photo_urls: nextUrls })
+      .eq("id", serviceId)
+      .filter("photo_urls", "eq", toPgTextArrayLiteral(currentUrls))
+      .select("id")
+      .maybeSingle();
+
+    if (updateError) return NextResponse.json({ error: updateError.message }, { status: 500 });
+
+    if (casRow) {
+      updatedUrls = nextUrls;
+      break;
+    }
+
+    // 0 rows matched: a concurrent delete on this service already changed
+    // photo_urls between our read and this write. Re-read the row's current array
+    // and retry against the fresh value rather than the stale one we started with.
+    const { data: refreshed, error: refreshError } = await supabase
+      .from("services")
+      .select("photo_urls")
+      .eq("id", serviceId)
+      .single();
+    if (refreshError || !refreshed) {
+      return NextResponse.json({ error: refreshError?.message ?? "Service not found" }, { status: 500 });
+    }
+    currentUrls = (refreshed.photo_urls as string[]) ?? [];
   }
 
-  const updatedUrls = currentUrls.filter((u) => u !== url);
-  const { error: updateError } = await supabase
-    .from("services")
-    .update({ photo_urls: updatedUrls })
-    .eq("id", serviceId);
+  if (!updatedUrls) {
+    console.error("[services photos DELETE] CAS retry exhausted for service", serviceId, "url", url);
+    return NextResponse.json({ error: "Photo delete conflict, please retry" }, { status: 409 });
+  }
 
-  if (updateError) return NextResponse.json({ error: updateError.message }, { status: 500 });
-
+  // Remove the storage object only AFTER the database write above actually
+  // succeeded (the CAS loop, not just "the request didn't error"), so a lost race
+  // that got retried never leaves photo_urls pointing at a file storage already
+  // deleted for a DIFFERENT request's url.
   // Same bucket + path shape as the upload above (${salon_id}/${serviceId}/${filename}),
   // ownership pinned to this service's own salon_id so removeObjectForUrl refuses a url
   // outside that prefix instead of trusting it. Best-effort: the DB row above is already
