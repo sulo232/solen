@@ -83,12 +83,14 @@ export interface AccountHubProps {
   displayName: string;
   /** The single next upcoming (confirmed/pending) booking, pre-formatted. null = none. */
   nextAppointment: { dateLabel: string; timeLabel: string } | null;
-  /** Real favorites count (Gespeichert row). */
-  favoritesCount: number;
+  /** Real favorites count (Gespeichert row). null = the count query failed (unknown), distinct
+   *  from a real, successful zero; the row renders with no count number in that case. */
+  favoritesCount: number | null;
   /** Real saved Stripe cards (Wallet row). Empty array = none saved. */
   wallet: AccountHubWalletCard[];
-  /** Real count of active (not expired, not redeemed, balance > 0) vouchers (Gutscheine row). */
-  activeVouchersCount: number;
+  /** Real count of active (not expired, not redeemed, balance > 0) vouchers (Gutscheine row).
+   *  null = the count query failed (unknown), distinct from a real, successful zero. */
+  activeVouchersCount: number | null;
   /** Closest-to-reward active loyalty card (Stempel row). null = no stamp progress yet. */
   stamps: { collected: number; needed: number } | null;
 }
@@ -121,7 +123,9 @@ export default function AccountHub({
         : t("walletCardsCount", { count: wallet.length });
 
   const couponsSub =
-    activeVouchersCount > 0 ? t("couponsRowActive", { count: activeVouchersCount }) : t("couponsRowEmptySub");
+    activeVouchersCount !== null && activeVouchersCount > 0
+      ? t("couponsRowActive", { count: activeVouchersCount })
+      : t("couponsRowEmptySub");
 
   const stampsSub = stamps ? t("stampsRowActive", { remaining: stamps.needed - stamps.collected }) : t("stampsRowEmptySub");
 
@@ -195,7 +199,10 @@ export default function AccountHub({
           // navigation row it is decoration, and this row is navigation.
           iconClassName="text-s-ink" // mockup-ok: account-row glyphs are ink, airbnb--profile-list.md IMG_6900
           label={t("tabSaved")}
-          sub={tProfile("salonsCount", { count: favoritesCount })}
+          // favoritesCount null = the count query failed; omit the subline rather than
+          // fabricate "0 Salons" (regression of GAP_FIXES #47's countOf() fix). Same row,
+          // same label, same link, only the count number is withheld.
+          sub={favoritesCount !== null ? tProfile("salonsCount", { count: favoritesCount }) : undefined}
         />
         <Row
           href={p("/profile/stamps")}

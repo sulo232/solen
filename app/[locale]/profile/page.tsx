@@ -102,6 +102,11 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
   if (loyaltyRes.error) console.error("[AccountHub] loyalty fetch error:", loyaltyRes.error.message);
   if (vouchersRes.error) console.error("[AccountHub] vouchers fetch error:", vouchersRes.error.message);
 
+  // Gespeichert row: real favorites count. null when the query itself failed, distinct from a
+  // real, successful zero, so AccountHub omits the number instead of fabricating "0 saved"
+  // (regression of the countOf() fix from GAP_FIXES #47, dropped in the 2026-08-02 hub rebuild).
+  const favoritesCount = favoritesCountRes.error ? null : (favoritesCountRes.count ?? 0);
+
   // Wallet row: saved Stripe cards, only looked up when a customer id exists (mirrors
   // GET /api/stripe/payment-methods's own guard, called server-side directly here instead of
   // an internal HTTP round trip since this is already a server component).
@@ -139,12 +144,16 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
   const stamps = loyaltyCards[0] ?? null;
 
   // Gutscheine: real active count, same three conditions as /api/profile/vouchers's GET.
+  // Same "don't fabricate a count" shape as favoritesCount above: null on a genuine query
+  // error, distinct from a real, successful zero.
   const now = new Date();
-  const activeVouchersCount = (vouchersRes.data ?? []).filter((v) => {
-    const isExpired = v.expires_at ? new Date(v.expires_at) < now : false;
-    const isRedeemed = v.redeemed_at !== null;
-    return !isExpired && !isRedeemed && (v.remaining_amount ?? 0) > 0;
-  }).length;
+  const activeVouchersCount = vouchersRes.error
+    ? null
+    : (vouchersRes.data ?? []).filter((v) => {
+        const isExpired = v.expires_at ? new Date(v.expires_at) < now : false;
+        const isRedeemed = v.redeemed_at !== null;
+        return !isExpired && !isRedeemed && (v.remaining_amount ?? 0) > 0;
+      }).length;
 
   const displayName = profile?.display_name?.trim() || user.email?.split("@")[0] || t("title");
   const avatarUrl = profile?.avatar_url && /^https?:\/\//.test(profile.avatar_url) ? profile.avatar_url : null;
@@ -156,7 +165,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
         avatarUrl={avatarUrl}
         displayName={displayName}
         nextAppointment={nextAppointment}
-        favoritesCount={favoritesCountRes.count ?? 0}
+        favoritesCount={favoritesCount}
         wallet={wallet}
         activeVouchersCount={activeVouchersCount}
         stamps={stamps}
