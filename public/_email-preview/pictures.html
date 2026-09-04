@@ -1,0 +1,89 @@
+<!doctype html>
+<!--
+  The pictures that go inside the booking emails, on one page so they can be judged together.
+
+  Mockup-scope: whole-page
+  Grounded-in: components-legacy/booking/BookingCard.tsx
+  Also grounded in: app/[locale]/_components/homepage/SalonCard.tsx (aspect-[5/4], rounded-[22px])
+  Exists-check: `npm run exists email` (2026-08-15, 61 hits, all templates and DB columns, no
+  picture surface) plus `public/_email-preview/directions.html` from 2026-08-15, which showed four
+  art directions with no real booking data in any of them. Net-new here: the picture is the real
+  BookingCard anatomy rendered to a flat image, and three made-for-us objects. REMOVED.md: no hit.
+
+  Every measurement on this page came from the owner's own 26 inbox screenshots, taken with PIL,
+  not eyeballed. The card copies BookingCard.tsx line for line: the 52px date tile (L111 to L114),
+  the salon name at 16px semibold (L119), the service at 14px (L122), the status pill (L138) and
+  the Total row (L145). Two deliberate departures, both because an email is not a screen: a photo
+  is added on top at 5/4 with radius 22, and the buttons are dropped, since a drawn button inside
+  a picture is a dead affordance.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>The pictures for your emails</title>
+<style>
+  *{box-sizing:border-box;-webkit-text-size-adjust:100%}
+  body{margin:0;background:#F4F4F5;color:#0A0A0A;
+       font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif}
+  header{padding:22px 16px 4px;padding-top:max(22px,env(safe-area-inset-top));max-width:1100px;margin:0 auto}
+  h1{margin:0;font-size:26px;font-weight:600;letter-spacing:-.02em}
+  .sub{margin:8px 0 0;font-size:15px;line-height:1.5;color:#6B6B6B;max-width:60ch}
+  main{max-width:1100px;margin:0 auto;padding:18px 16px 80px}
+  section{margin-top:28px}
+  h2{margin:0 0 4px;font-size:19px;font-weight:600}
+  .why{margin:0 0 14px;font-size:14px;line-height:1.5;color:#6B6B6B;max-width:62ch}
+  .row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  figure{margin:0;background:#fff;border-radius:20px;overflow:hidden}
+  figure img{display:block;width:100%;height:auto}
+  figcaption{padding:12px 14px 14px;font-size:14px;font-weight:600}
+  figcaption span{display:block;margin-top:3px;font-size:13px;font-weight:400;color:#6B6B6B}
+  .obj{display:grid;place-items:center;padding:10px}
+  .obj img{max-width:78%}
+  @media (max-width:720px){ .row{grid-template-columns:1fr} h1{font-size:22px} }
+</style>
+</head>
+<body>
+<header>
+  <h1>The pictures for your emails</h1>
+  <p class="sub">Two ways, both built from your 26 screenshots. Bolt puts its own scooter in the
+  scooter receipt and its own app in the welcome mail, so these are your booking card and your
+  own objects, nothing stock and nothing borrowed.</p>
+</header>
+<main>
+
+  <section>
+    <h2>Your booking, photographed from the app</h2>
+    <p class="why">The date tile, the status chip and the Total row are exactly what the booking
+    card already draws in the product. The photo is a seeded one for now, because no salon has
+    uploaded its own yet. On a phone this fills 47% of the first screen. Shown here in English;
+    each of the four languages gets its own copy, so a French customer reads French inside the
+    picture, not German.</p>
+    <div class="row">
+      <figure><img src="/_email-assets/art/art-confirmed-en.jpg" alt="Confirmed booking card">
+        <figcaption>Confirmed<span>Green tick, green chip</span></figcaption></figure>
+      <figure><img src="/_email-assets/art/art-cancelled-en.jpg" alt="Cancelled booking card">
+        <figcaption>Cancelled<span>The photo goes grey, so it reads at a glance</span></figcaption></figure>
+      <figure><img src="/_email-assets/art/art-reminder-en.jpg" alt="Reminder booking card">
+        <figcaption>Tomorrow<span>Amber clock, amber chip</span></figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Or one object per moment, made for this</h2>
+    <p class="why">The same idea as Bolt's scooter breaking out of the green block. These are new,
+    made today, in the same matte clay as the four category objects already on your site.</p>
+    <div class="row">
+      <figure class="obj"><img src="/_email-assets/generated/obj-confirmed.png" alt="Calendar with a green tick">
+        <figcaption>Confirmed</figcaption></figure>
+      <figure class="obj"><img src="/_email-assets/generated/obj-cancelled.png" alt="Calendar on its side">
+        <figcaption>Cancelled</figcaption></figure>
+      <figure class="obj"><img src="/_email-assets/generated/obj-reminder.png" alt="Clock with a motion ring">
+        <figcaption>Tomorrow</figcaption></figure>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

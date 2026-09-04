@@ -6397,7 +6397,8 @@
     "upKvRequestedExtra": "Requested extra",
     "upKvYouPaid": "You paid",
     "upNoneTitle": "No extra to review",
-    "upNoneBody": "There's no open request on this booking. It may have already been handled."
+    "upNoneBody": "There's no open request on this booking. It may have already been handled.",
+    "_todo_translate": false
   },
   "authRegister": {
     "roleHeading": "How would you like to start?",
