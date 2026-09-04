@@ -161,7 +161,7 @@ Everything below is a real file on this Mac, counted, not estimated.
 | remembered facts | 128 | the project memory folder |
 | the rulebook itself | 70,467 bytes project + 21,757 global | `CLAUDE.md` x2 |
 
-- [x] CORRECTION 2026-09-04 (his words: "Number three. I don't even understand what the fuck you just said") about my Codex answer, point 3, which said hooks are "fingerprinted" and "registered but unapproved". What changed: re-explained in plain words (every check I carry over to Codex is switched off until he approves it once inside Codex, and switches off again whenever I edit it, so his checks cannot run behind his back). Rule applied from then on: no Codex internals in a reply unless he asked by name. verified: this file, section 10i below, carries the plain version.
+- [x] CORRECTION 2026-09-04 (his words: "Number three. I don't even understand what the fuck you just said") about my Codex answer, point 3, which said hooks are "fingerprinted" and "registered but unapproved". What changed: re-explained in plain words (every check I carry over to Codex is switched off until he approves it once inside Codex, and switches off again whenever I edit it, so his checks cannot run behind his back). Rule applied from then on: no Codex internals in a reply unless he asked by name. commit 11c5cae07 (this file, section 10i, carries the plain version).
 
 ### 10i ANSWERED, 2026-09-04, verified against the official manual on this Mac, not from memory
 
@@ -208,13 +208,14 @@ the Codex app; it cannot be run from here.
 Rewritten 2026-09-04 late evening after his second round of answers. Gone from this list because he answered: Italian (applied live, 044ba143c), the harness branch ("don't worry about it"), the Codex import ("import everything", staged), the mockup pairs (A kept, C built and committed d963252a1, D not now, E approved and researched).
 
 1. **Publish the site.** solen.ch still runs the May version. Nothing has left this Mac since 2026-05-21, and every fix since is only here. Your three steps: publish main; set the cron secret on Netlify; switch the GitHub scheduled jobs back on (`gh workflow enable cron-jobs.yml`).
-2. **Delete the six switched-off cloud functions.** Their source is gone from the repo and they now answer nothing (neutered today, so no customer can reach them). Deleting them is tidy-up only; your money and your data are not touched either way. Say yes and I delete them.
+2. ~~**Delete the six switched-off cloud functions.**~~ DONE 2026-09-04 on his earlier "yeah" (10j-old): each of the six re-checked live first (all answered 410 Gone with the site key), then deleted with the Supabase command line; the project now lists 0 functions. Nothing in the repo calls any of them (0 hits, 10j). No data touched.
 3. **Delete two portfolio components nothing loads** (staff portfolio, nail-tech portfolio; only a /dev preview page imports them). The real salon portfolio is live and stays. Delete both, or keep for the switched-off nail feature?
 4. **The six empty old branches.** The triage (BRANCH_TRIAGE_2026-09-04.md) found nothing left on them that is not already on main. Delete them with their recovery numbers written down (my pick), or keep?
 5. **The sheet flick.** One old branch carries a better close-by-flick for bottom sheets (the branch's sheet reads the flick speed, main's only reads the distance). That is a feel change customers would notice, so it is built as a comparison you can feel on your phone: /en/dev/sheet-flick (commit 3d891ccd1), today's sheet on top, the proposed one below, same content. Say which one, or say keep.
 6. **Saved boards.** Three boards exist in the database, zero pins, and nothing on the site links to them. My pick: bury the feature (hide the routes, keep the tables). Say "delete" if you want the tables gone too, or "keep" to leave it.
 
 ## Log
+- 2026-09-04, later: sort fix committed cd25a9303 after a round-2 PASS; page-morph error screen fix eb75d4c8d; the six cloud functions deleted on his yeah (0 left). Map pill / cookie banner fix in its final check.
 - 21:30 walk done, council done, 15 fixes committed, mockup and Airbnb comparison in flight, offline-booking lift script ready (not run, tree not clean yet).
 - 23:10 every box closed or parked. 19 fixes committed (last: cleanup de8715bfc, calendar 3cdc94a96), mockup page e9d5b648c, Airbnb comparison 19fe1d95e, offline-booking lifted 051c7a3e0 (then e7919894c put back seven files the lift script had wrongly removed: ACTIVE.md, CONTEXT_SNAPSHOT.md, launch.json, four generated reports). Next: fast-forward main to this branch, closing readback with the parked decisions.
 

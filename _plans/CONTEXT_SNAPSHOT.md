@@ -2,41 +2,25 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-09-04T19:44:55 (trigger: auto)
+- taken: 2026-09-04T20:16:26 (trigger: auto)
 - branch: claude/cloud-code-codex-migration-86a820
 
 ## git
 ```
-47d6766b0 Two scheduled jobs no longer cancel or complete a booking that just moved
-48717dbb3 Booking reminders go by email as well as text, and the customer chooses
-06557b59b The backend map credited a commit that is not on this branch
-c1e43a145 Every ticked box now carries its proof, and his three corrections are in the plan
-e416bff38 Codex answered from the real manual: the checks DO carry over
+cd25a9303 Search sorts by price and by distance over the whole result set, not one arbitrary page
+c65bbfd04 Losing a booking race now answers "slot taken", not a raw database error
+11c5cae07 Plan notes: his correction on the Codex answer recorded in his words
+aa0420214 Plan notes: font, pair C and pair D boxes closed with their proof; no open box left in the file
+a9ddffe8c Home search: the last unused hook, four unused setters and a dead prop removed
 ```
 ```
-M _plans/EVERYTHING_TO_CODEX_2026-09-04.md
- M _plans/GAP_FIXES.md
- M app/[locale]/_components/homepage/HeartButton.tsx
- M app/[locale]/_components/homepage/SalonCard.tsx
- M app/[locale]/_components/homepage/SearchBar.tsx
- M app/[locale]/_components/profile/FavoritesList.tsx
- M app/[locale]/profile/edit/page.tsx
- M app/[locale]/profile/favorites/page.tsx
- M app/[locale]/profile/settings/SettingsForm.tsx
- M app/[locale]/profile/settings/delete/page.tsx
- M app/[locale]/profile/settings/language/page.tsx
- M app/[locale]/profile/settings/notifications/page.tsx
- M app/[locale]/profile/settings/password/page.tsx
- M app/api/bookings/route.ts
- M app/api/cron/welcome-series/route.ts
- M app/api/profile/route.ts
- M lib/validations.ts
- M messages/de.json
- M messages/en.json
- M messages/fr.json
+M app/[locale]/_components/primitives/CookieConsent.tsx
+ M app/[locale]/_components/search/SearchTemplate.tsx
+ M tailwind.config.js
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
+113 | EVERYTHING as a loop, then move it all to Codex (owner 2026-09-04: "research every single corner ... keep fixing it except for design make mockup ... merge everything ... transfer everything on Cloud Code to Codex", plus "mainly design, what principle is actually missing") | **IN PROGRESS** (2026-09-04 late evening: backend-perfect-before-handoff round, his second answers applied)
 81 | DESIGN CONSISTENCY, the one that closes design work instead of opening more (owner 2026-08-27: "a lot of inconsistencies... the search bar moves... weird back button... typography too", then "acc plan what happened to the planning harness") | **PAUSED** (paused 2026-08-31 on his word: "can you park whatever we're doing right now?")
 74 | OVERNIGHT LOOP: how I work + efficiency (speed/money) + harness + skills (owner 2026-08-24, going to sleep: "finish evrth as a. loop") | **ACTIVE** (2026-08-24)
 75 | HIS OPEN ASKS, the ones I measured instead of doing (owner 2026-08-24: "are you sure you finished everything? What about the one... like, the number three and also about the context and about the price and also the skills") | **ACTIVE** (2026-08-24)
