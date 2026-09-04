@@ -73,6 +73,47 @@ function useSalonMorphName() {
   }, []);
 }
 
+/** Quiets `next-view-transitions`' unhandled promise rejections (S3, 2026-09-04).
+ *
+ *  `next-view-transitions` (0.3.5, the latest release, checked today) drives every route change
+ *  through `document.startViewTransition(() => new Promise(...))`
+ *  (node_modules/next-view-transitions/dist/index.js lines 137-147) and never attaches a rejection
+ *  handler to the transition's own `finished` / `updateCallbackDone` / `ready` promises. Chrome caps
+ *  a view transition's DOM-update phase at 4s: when a route swap runs long (a dev compile, a cold
+ *  serverless page in prod), the browser aborts the transition and those promises reject with a
+ *  `DOMException` (`name: "TimeoutError"`, `message: "Transition was aborted because of timeout in
+ *  DOM update"`). Reproduced live on localhost:3461 today: four
+ *  `Uncaught (in promise) TimeoutError` after a few card taps.
+ *
+ *  Nothing in the library catches that rejection, so it surfaces as `window`'s `unhandledrejection`.
+ *  In development that pops the Next.js error overlay over the page even though the navigation
+ *  itself completed fine (which is why the owner's test links looked broken), in production it is
+ *  console noise for the same non-failure. This is the one client node already mounted around every
+ *  [locale] route and already owns view-transition behaviour (see `useSalonMorphName` above), so a
+ *  second global listener elsewhere would duplicate this one, not replace it.
+ *
+ *  The match is on the message prefix, not on `name === "TimeoutError"`: other web APIs (fetch,
+ *  AbortController) raise a `TimeoutError` DOMException too, and swallowing those would hide a real
+ *  bug. Chrome's View Transition API messages all start with "Transition was " (the timeout case
+ *  above, "Transition was skipped because ...", "Transition was aborted" on a duplicate
+ *  `view-transition-name`), so that prefix is the narrow, reliable signature.
+ */
+function useQuietMorphAborts() {
+  useEffect(() => {
+    const onUnhandledRejection = (event: PromiseRejectionEvent) => {
+      const reason = event.reason;
+      if (reason instanceof DOMException && reason.message.startsWith("Transition was ")) {
+        event.preventDefault();
+        console.warn("[PageTransition] page morph aborted, navigation continued:", reason.message);
+      }
+    };
+    window.addEventListener("unhandledrejection", onUnhandledRejection);
+    return () => {
+      window.removeEventListener("unhandledrejection", onUnhandledRejection);
+    };
+  }, []);
+}
+
 export default function PageTransition({ children, pathname: _pathname }: PageTransitionProps) {
   // V3-D75-pt-fix: AnimatePresence + mode="wait" was blocking child mount in
   // some Next.js App Router hydration paths — useEffects in nested client
@@ -80,5 +121,6 @@ export default function PageTransition({ children, pathname: _pathname }: PageTr
   // silently no-op'ing. Reverting to a plain pass-through; the 200ms page-fade
   // on route change is dropped in favor of children actually rendering.
   useSalonMorphName(); // S2: see the block above the hook
+  useQuietMorphAborts(); // S3: see the block above the hook
   return <>{children}</>;
 }
