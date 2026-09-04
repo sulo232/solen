@@ -2,22 +2,38 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-09-04T19:11:44 (trigger: auto)
+- taken: 2026-09-04T19:44:55 (trigger: auto)
 - branch: claude/cloud-code-codex-migration-86a820
 
 ## git
 ```
-c3171dac9 Plan notes: his ten answers handled, index row updated
-ba9a997f9 Mockup page: a link per pair, and pair E shows small text at 12 or 13 on the real card
-044ba143c Italian can be saved as a language, on the owner's word
-46fdef22f Workstream index: everything-to-Codex is waiting on his decisions, plan log closed at 23:10
-1dace5856 Plan notes: calendar, cleanup and offline lift ticked with their commits, old branches parked for him
+47d6766b0 Two scheduled jobs no longer cancel or complete a booking that just moved
+48717dbb3 Booking reminders go by email as well as text, and the customer chooses
+06557b59b The backend map credited a commit that is not on this branch
+c1e43a145 Every ticked box now carries its proof, and his three corrections are in the plan
+e416bff38 Codex answered from the real manual: the checks DO carry over
 ```
 ```
-M _plans/CONTEXT_SNAPSHOT.md
- M _plans/EVERYTHING_TO_CODEX_2026-09-04.md
+M _plans/EVERYTHING_TO_CODEX_2026-09-04.md
+ M _plans/GAP_FIXES.md
+ M app/[locale]/_components/homepage/HeartButton.tsx
+ M app/[locale]/_components/homepage/SalonCard.tsx
+ M app/[locale]/_components/homepage/SearchBar.tsx
+ M app/[locale]/_components/profile/FavoritesList.tsx
+ M app/[locale]/profile/edit/page.tsx
  M app/[locale]/profile/favorites/page.tsx
- M supabase/.temp/cli-latest
+ M app/[locale]/profile/settings/SettingsForm.tsx
+ M app/[locale]/profile/settings/delete/page.tsx
+ M app/[locale]/profile/settings/language/page.tsx
+ M app/[locale]/profile/settings/notifications/page.tsx
+ M app/[locale]/profile/settings/password/page.tsx
+ M app/api/bookings/route.ts
+ M app/api/cron/welcome-series/route.ts
+ M app/api/profile/route.ts
+ M lib/validations.ts
+ M messages/de.json
+ M messages/en.json
+ M messages/fr.json
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
