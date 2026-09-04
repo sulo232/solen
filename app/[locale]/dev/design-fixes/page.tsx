@@ -191,6 +191,28 @@ export default async function DesignFixesPage({
   const museCardDataMap = museRow ? await getSalonCardDataMap([museRow.id as string]) : {};
   const museCardData = museRow ? museCardDataMap[museRow.id as string] : undefined;
 
+  // Shared prop object for the real homepage SalonCard rendering the muse-beauty-studio salon.
+  // Pair C's "Proposed" half and Pair E (both variants) render the exact same card, so this is
+  // built once instead of the object literal being repeated three times.
+  const museCardProps: SalonCardProps | null = museCardData?.slug
+    ? {
+        slug: museCardData.slug,
+        salonId: museRow?.id as string,
+        name: museCardData.name ?? "",
+        rating: museCardData.rating,
+        reviewCount: museCardData.reviewCount,
+        photoUrl: museCardData.photoUrl ?? undefined,
+        category: museCardData.category ?? "coiffeur",
+        variant: "service",
+        priceFromCHF: museCardData.priceFromCHF,
+        priceFromService: nameForLocale(museCardData.priceFromServiceNames, locale),
+        address: museCardData.address ?? undefined,
+        postalCode: museCardData.postalCode ?? undefined,
+        city: museCardData.city ?? undefined,
+        citySelected: Boolean(museCardData.address),
+      }
+    : null;
+
   const services = museServicesRaw as unknown as Service[];
   const salonDetailStub = (museRow ?? {}) as unknown as SalonDetail; // unused inside SalonServices' render, see that file
 
@@ -203,7 +225,7 @@ export default async function DesignFixesPage({
         </p>
 
         {/* ---------------- PAIR A ---------------- */}
-        <PairTitle letter="A" title="Home walk-in band card" />
+        <PairTitle id="pair-a" letter="A" title="Home walk-in band card" />
         <PairLabel variant="Current" rule="The real WalkInBand card: its own rounded-[13px] card, wait estimate in text-s-success." />
         <WalkInBand />
         <PairLabel
@@ -217,7 +239,7 @@ export default async function DesignFixesPage({
         )}
 
         {/* ---------------- PAIR B ---------------- */}
-        <PairTitle letter="B" title="Home review card" />
+        <PairTitle id="pair-b" letter="B" title="Home review card" />
         <PairLabel variant="Current" rule="The real Reviews section, plus its card's own classes: border-s-border AND shadow-elevation-2 together." />
         <Reviews />
         {review ? (
@@ -229,7 +251,7 @@ export default async function DesignFixesPage({
         {review && <ReviewCardProposed review={review} locale={locale} />}
 
         {/* ---------------- PAIR C ---------------- */}
-        <PairTitle letter="C" title="Saved-salons card" />
+        <PairTitle id="pair-c" letter="C" title="Saved-salons card" />
         <PairLabel variant="Current" rule="components-legacy/SalonCard.tsx, exactly as FavoritesList.tsx calls it." />
         {legacySalon ? (
           <SavedCardCurrent salon={legacySalon} locale={locale} />
@@ -237,29 +259,14 @@ export default async function DesignFixesPage({
           <p className="text-[13px] text-s-ink-2">muse-beauty-studio did not resolve from the live query.</p>
         )}
         <PairLabel variant="Proposed" rule="The real homepage SalonCard for the same salon, per FLOORS LAW 8: one entity, one component." />
-        {museCardData?.slug ? (
-          <HomeSalonCard
-            slug={museCardData.slug}
-            salonId={museRow?.id as string}
-            name={museCardData.name ?? ""}
-            rating={museCardData.rating}
-            reviewCount={museCardData.reviewCount}
-            photoUrl={museCardData.photoUrl ?? undefined}
-            category={museCardData.category ?? "coiffeur"}
-            variant="service"
-            priceFromCHF={museCardData.priceFromCHF}
-            priceFromService={nameForLocale(museCardData.priceFromServiceNames, locale)}
-            address={museCardData.address ?? undefined}
-            postalCode={museCardData.postalCode ?? undefined}
-            city={museCardData.city ?? undefined}
-            citySelected={Boolean(museCardData.address)}
-          />
+        {museCardProps ? (
+          <HomeSalonCard {...museCardProps} />
         ) : (
           <p className="text-[13px] text-s-ink-2">muse-beauty-studio card data did not resolve.</p>
         )}
 
         {/* ---------------- PAIR D ---------------- */}
-        <PairTitle letter="D" title="Salon page type scale (services section)" />
+        <PairTitle id="pair-d" letter="D" title="Salon page type scale (services section)" />
         <PairLabel variant="Current" rule="app/[locale]/_components/salon/SalonServices.tsx as-is: 13/14/15/16/18-20px, 5-6 sizes in one screen." />
         {services.length > 0 ? (
           <SalonServices services={services} locale={locale} slug={MUSE_SLUG} salon={salonDetailStub} />
@@ -270,14 +277,47 @@ export default async function DesignFixesPage({
         {services.length > 0 && (
           <SalonServicesProposed services={services} locale={locale} slug={MUSE_SLUG} salon={salonDetailStub} />
         )}
+
+        {/* ---------------- PAIR E ---------------- */}
+        <PairTitle id="pair-e" letter="E" title="Small text: 12 vs 13, eyebrow 11 vs 12" />
+        <p className="mt-1 text-[12px] text-s-ink-2">
+          The frozen contract (meta 12, eyebrow 11, which matches the LOCKFILE ramp&apos;s own
+          mobile column) against that same ramp&apos;s desktop column (meta 13, eyebrow 12), on
+          the real homepage SalonCard for muse-beauty-studio, the same salon and data source as
+          Pair C.
+        </p>
+        {museCardProps ? (
+          <>
+            <PairEVariant
+              scopeClass="dfx-e-v1"
+              metaSize={12}
+              eyebrowSize={11}
+              label="Meta 12, eyebrow 11 (the contract)"
+              cardProps={museCardProps}
+            />
+            <PairEVariant
+              scopeClass="dfx-e-v2"
+              metaSize={13}
+              eyebrowSize={12}
+              label="Meta 13, eyebrow 12 (the LOCKFILE ramp)"
+              cardProps={museCardProps}
+            />
+          </>
+        ) : (
+          <p className="text-[13px] text-s-ink-2">muse-beauty-studio card data did not resolve.</p>
+        )}
       </div>
     </main>
   );
 }
 
-function PairTitle({ letter, title }: { letter: string; title: string }) {
+function PairTitle({ id, letter, title }: { id: string; letter: string; title: string }) {
   return (
-    <h2 className="mt-10 border-t border-s-border pt-6 font-body text-[14px] font-semibold text-s-ink">
+    <h2
+      id={id}
+      className="mt-10 scroll-mt-[16px] border-t border-s-border pt-6 font-body text-[14px] font-semibold text-s-ink"
+      style={{ scrollMarginTop: 16 }}
+    >
       {letter}. {title}
     </h2>
   );
@@ -366,5 +406,60 @@ function ReviewCardBody({ review, locale }: { review: ReviewCardData; locale: st
         &ldquo;{review.text}&rdquo;
       </p>
     </>
+  );
+}
+
+// ---------------------------------------------------------------------------------------------
+// PAIR E. SalonCard has no eyebrow of its own (source-read: no eyebrow text or tracked-uppercase
+// label anywhere in its JSX, confirmed already above for pairs A/C). The shared eyebrow
+// primitive meant for exactly this job, SectionMeta, is built to sit above a horizontally
+// scrolling rail per its own doc comment, but it has zero live callers anywhere in the app today
+// (that file says so itself: "No callsite renders this today"), so rendering it here would not
+// be depicting a real, live render. It also collides on this route with the mockup-depicts-gate,
+// purely on text: the file defining it sits in the same folder as the removed Coiffeur.tsx demo
+// section (REMOVED.md line 44), so its path string alone false-positives that graveyard keyword,
+// unrelated to what it actually renders.
+//
+// The one eyebrow that IS live on the real home page today is BusinessTeaser.tsx's "For Salons"
+// label (home.partner.eyebrow in messages/en.json). BusinessTeaser is a full B2B band (headline,
+// sub, CTA) that does not fit compactly above a card, and it exports no standalone eyebrow piece
+// to import (editing it is out of this route's file scope), so, the same technique this file
+// already uses above for Pair B's private ReviewCard, the eyebrow below is a byte-copy of that
+// paragraph's exact classes (font-body font-semibold tracking-[0.08em] text-s-ink-2), fed the
+// real shipped string, not an invented label.
+//
+// The meta-line override targets ONLY the category-label <div> inside the real SalonCard's info
+// stack (Row 2, "font-body text-[12px] font-normal leading-[1.35] text-s-ink-2 truncate",
+// source-read at the homepage SalonCard file). It is a bare <div>, while the card's other 12px
+// meta (rating, address, price) render through the CardMeta primitive as <span>s, so scoping the
+// override to a "div" tag with that one distinctive class keeps it off every other value.
+function PairEVariant({
+  scopeClass,
+  metaSize,
+  eyebrowSize,
+  label,
+  cardProps,
+}: {
+  scopeClass: string;
+  metaSize: number;
+  eyebrowSize: number;
+  label: string;
+  cardProps: SalonCardProps;
+}) {
+  return (
+    <div className={`mt-4 ${scopeClass}`}>
+      <style>{`.${scopeClass} div[class*="leading-[1.35]"] { font-size: ${metaSize}px; }`}</style>
+      <p
+        className="mb-2 px-2 font-body font-semibold tracking-[0.08em] text-s-ink-2"
+        style={{ fontSize: `${eyebrowSize}px` }}
+      >
+        For Salons
+      </p>
+      <HomeSalonCard {...cardProps} />
+      <p className="mt-2 text-[13px] font-semibold text-s-ink">{label}</p>
+      <p className="text-[12px] text-s-ink-2">
+        Meta {metaSize}px, eyebrow {eyebrowSize}px.
+      </p>
+    </div>
   );
 }
