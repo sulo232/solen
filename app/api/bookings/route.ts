@@ -16,6 +16,8 @@ import { loadPricedBundle } from "@/lib/pricing/bundle";
 import { completeReferralForFirstBooking } from "@/lib/referral/complete-referral";
 import { reportError } from "@/lib/error-report";
 import { resolveSwissLocale } from "@/lib/format";
+import { localizedField } from "@/lib/i18n/localized-field";
+import { zurichYmd } from "@/lib/time/zurich";
 import { resolveRequestUser } from "@/lib/auth/request-user";
 import { isSalonHidden, isViewerAdmin } from "@/lib/salon-detail";
 // Ties a completed booking back to the search that led to it, which is what feeds the personal row.
@@ -218,7 +220,7 @@ export async function POST(request: NextRequest) {
   // Kept as ONE string literal (not concatenated) so PostgREST's TS types infer the embedded shape.
   let slotQuery = db
     .from("availability_slots")
-    .select("id, salon_id, service_id, starts_at, ends_at, staff_member_id, price_override, status, salons(id, owner_id, name, address, is_active, listed_on_marketplace, is_test, auto_assign_method, daily_limit_enabled, daily_limit, online_booking_enabled, vacation_start, vacation_end, payment_mode, payment_mode_admin, payment_mode_enforced, booking_confirmation_mode, cancellation_fee_type, cancellation_fee_value, free_cancel_hours, no_show_fee_type, no_show_fee_value, vat_registered, vat_rate, vat_number), services(price, name_de, name_en)")
+    .select("id, salon_id, service_id, starts_at, ends_at, staff_member_id, price_override, status, salons(id, owner_id, name, address, is_active, listed_on_marketplace, is_test, auto_assign_method, daily_limit_enabled, daily_limit, online_booking_enabled, vacation_start, vacation_end, payment_mode, payment_mode_admin, payment_mode_enforced, booking_confirmation_mode, cancellation_fee_type, cancellation_fee_value, free_cancel_hours, no_show_fee_type, no_show_fee_value, vat_registered, vat_rate, vat_number), services(price, name_de, name_en, name_fr, name_it)")
     .eq("status", "available");
 
   if (slot_id) {
@@ -268,14 +270,17 @@ export async function POST(request: NextRequest) {
   const dailyLimitOn = sched?.daily_limit_enabled === true;
   const dailyLimit = Math.max(1, Number(sched?.daily_limit) || 20);
   const slotSalonId = String((candidateSlots[0] as { salon_id?: string }).salon_id ?? salon_id ?? "");
-  const bookingDay = String(candidateSlots[0].starts_at).slice(0, 10);
+  // Zurich-local calendar day, not a raw UTC slice: a slot whose Zurich-local start is
+  // between 00:00 and 02:00 sits on the previous UTC day, so a startsWith/slice prefix
+  // would silently bucket it (and its daily-limit count) onto the wrong day.
+  const bookingDay = zurichYmd(new Date(candidateSlots[0].starts_at as string));
 
   // Loose row type: the trimmed select (2026-06-30) makes PostgREST type the embedded
   // salons/services as arrays, but this is a to-one relation so the rest of the handler reads
   // them as single objects (as the `*` select implicitly allowed). Widen once here so the
   // existing object-style access (slot.salons?.name, slot.services?.price) stays valid, and so
   // the auto-assign `picked` (SlotRow) is assignable. Mirrors the file's existing `as any` style.
-  type LooseSlot = Record<string, any> & { id: string; salon_id: string; starts_at: string; ends_at: string; staff_member_id: string | null; services?: { price?: number; name_de?: string; name_en?: string } | null; salons?: Record<string, any> | null };
+  type LooseSlot = Record<string, any> & { id: string; salon_id: string; starts_at: string; ends_at: string; staff_member_id: string | null; services?: { price?: number; name_de?: string; name_en?: string; name_fr?: string; name_it?: string } | null; salons?: Record<string, any> | null };
   let slot = candidateSlots[0] as unknown as LooseSlot;
   // SP-1 fix: auto-assign counting MUST use the admin (service-role) client, not `db`. For a
   // logged-in customer `db` is the RLS session client, and bookings SELECT under RLS is
@@ -656,9 +661,10 @@ export async function POST(request: NextRequest) {
   // SP-G2: skip for online-pay bookings — they aren't confirmed/paid yet. The
   // Stripe webhook sends the confirmation once the full-prepay PI succeeds.
   // SP-1: a guest has no session email — use guest_email when given, else SKIP (no address).
-  const locale = (profile?.locale ?? "de") as "de" | "en";
-  const serviceNameKey = locale === "de" ? "name_de" : "name_en";
-  const serviceName = slot.services?.[serviceNameKey] ?? "Service";
+  const locale = (profile?.locale ?? "de") as "de" | "en" | "fr" | "it";
+  // Shared de->en fallback picker (lib/i18n/localized-field.ts), not a de/en-only ternary:
+  // that ternary showed fr/it customers the German name with no fr/it branch to notice.
+  const serviceName = localizedField(slot.services as Record<string, unknown> | null, "name", locale) || "Service";
   const salonName = slot.salons?.name ?? "Salon";
   const bookingDate = new Date(slot.starts_at).toLocaleDateString(resolveSwissLocale(locale));
   const bookingTime = new Date(slot.starts_at).toLocaleTimeString(resolveSwissLocale(locale), { hour: "2-digit", minute: "2-digit" });

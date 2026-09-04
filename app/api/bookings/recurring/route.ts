@@ -6,6 +6,7 @@ import { sendEmail, recurringConfirmation } from "@/lib/email";
 import { validateBody, recurringBookingSchema } from "@/lib/validations";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, bookingLimiter } from "@/lib/ratelimit";
+import { zurichYmd } from "@/lib/time/zurich";
 
 export async function POST(request: NextRequest) {
   const disabled = await checkFeatureEnabled("bookings");
@@ -44,9 +45,12 @@ export async function POST(request: NextRequest) {
   const { data: slots } = await slotQuery;
   const firstSlot = slots?.[0];
 
+  // Zurich-local calendar day, not a raw UTC slice: a slot whose Zurich-local start is
+  // between 00:00 and 02:00 sits on the previous UTC day, so a startsWith/slice prefix
+  // would silently bucket the recurring rule's next_booking_date onto the wrong day.
   const nextBookingDate = firstSlot
-    ? new Date(firstSlot.starts_at).toISOString().split("T")[0]
-    : new Date().toISOString().split("T")[0];
+    ? zurichYmd(new Date(firstSlot.starts_at))
+    : zurichYmd(new Date());
 
   // Create the recurring rule
   const { data: rule, error: ruleError } = await supabase

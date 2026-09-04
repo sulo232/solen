@@ -44,12 +44,28 @@ export async function POST(
   }
   const wasAlreadyConfirmed = booking.status === "confirmed";
 
-  const { error } = await admin
+  // CAS: re-assert the status read by resolveBookingActor above, mirroring the cancel
+  // route's guard. Without this, a concurrent cancel (which flips status to "cancelled" and
+  // frees the slot) can be silently overwritten back to "confirmed" by this update, leaving
+  // the booking confirmed against a freed/reassigned slot. .maybeSingle() so a lost race
+  // (0 rows) comes back as data=null instead of a PGRST116 error, distinguishable from a
+  // real DB error.
+  const { data: updatedBooking, error } = await admin
     .from("bookings")
     .update({ status: "confirmed" })
-    .eq("id", id);
+    .eq("id", id)
+    .eq("status", booking.status) // CAS
+    .select("id")
+    .maybeSingle();
 
   if (error) return NextResponse.json({ error: error.message, code: "DB_ERROR" }, { status: 500 });
+  if (!updatedBooking) {
+    console.error("[Confirm] CAS lost: booking changed concurrently", { bookingId: id });
+    return NextResponse.json(
+      { error: "Booking changed concurrently, please retry", code: "CONFLICT" },
+      { status: 409 },
+    );
+  }
 
   // Referral fix: complete a pending referral on the SAME transition the booking-create
   // path (status: "confirmed" at create, instant/in-person only) and the Stripe webhook

@@ -12,6 +12,7 @@ import { logAuditEvent } from "@/lib/audit";
 import { applyRateLimit, bookingLimiter, getClientIp } from "@/lib/ratelimit";
 import { resolveSwissLocale } from "@/lib/format";
 import { resolveBookingActor } from "@/lib/bookings/authorize";
+import { zurichYmd } from "@/lib/time/zurich";
 
 // Read-only refund preview for the cancel-confirm sheet (audit #7). Runs the SAME
 // policy math as POST (calculateCancellationFee) but mutates nothing — so the sheet can
@@ -305,7 +306,10 @@ export async function POST(
 
   // Notify waitlist entries for the freed slot
   const adminForWaitlist = createAdminSupabaseClient();
-  const cancelledDate = new Date(booking.starts_at).toISOString().split("T")[0];
+  // Zurich-local calendar day, not a raw UTC slice: a booking whose Zurich-local start is
+  // between 00:00 and 02:00 sits on the previous UTC day, so a startsWith/slice prefix would
+  // silently miss matching waitlist.preferred_date rows for that slot.
+  const cancelledDate = zurichYmd(new Date(booking.starts_at));
   const { data: waitlistEntries } = await adminForWaitlist
     .from("waitlist")
     .select("id, user_id")
