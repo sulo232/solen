@@ -1,5 +1,8 @@
 export const dynamic = "force-dynamic";
-export const runtime = "edge";
+// runtime = "edge" removed 2026-09-04: see app/api/auth/login/route.ts for the reason
+// (Netlify edge functions don't receive the trusted x-nf-client-connection-ip header,
+// per docs.netlify.com/build/edge-functions/api/, and this route uses none of the
+// edge-only APIs, so Node is the correct runtime for a route that rate-limits by IP).
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, authLimiter, getClientIp } from "@/lib/ratelimit";

@@ -432,18 +432,59 @@ export async function checkRateLimit(limiter: Ratelimit, key: string): Promise<b
  */
 type HeaderSource = { get(name: string): string | null };
 
+const IPV4_RE = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/;
+
+function isWellFormedIp(ip: string): boolean {
+  const v4 = IPV4_RE.exec(ip);
+  if (v4) return v4.slice(1).every((octet) => Number(octet) <= 255);
+  // Minimal IPv6 sanity check (hex groups + colons); good enough to reject a
+  // header value like "evil" without needing a full RFC 4291 parser.
+  return ip.includes(":") && /^[0-9a-fA-F:]+$/.test(ip);
+}
+
+// x-forwarded-for is a client-appended, comma-separated hop list ("client, proxy1, proxy2,
+// ...") that a trusted reverse proxy appends TO, it never rewrites earlier entries. So the
+// rightmost entry that is actually a routable public address is the one the trusted proxy
+// added; anything to its left, including the first entry, is caller-supplied and spoofable.
+// Private/reserved ranges (RFC 1918, loopback, link-local, unique-local IPv6) are skipped
+// from the right too, since a proxy chain sometimes appends its own internal hop address.
+function isPrivateOrReservedIp(ip: string): boolean {
+  if (!isWellFormedIp(ip)) return true;
+  if (ip === "127.0.0.1" || ip === "::1") return true;
+  if (/^127\./.test(ip)) return true;
+  if (/^10\./.test(ip)) return true;
+  if (/^192\.168\./.test(ip)) return true;
+  if (/^172\.(1[6-9]|2\d|3[01])\./.test(ip)) return true;
+  if (/^169\.254\./.test(ip)) return true; // IPv4 link-local
+  if (/^f[cd][0-9a-f]{2}:/i.test(ip)) return true; // IPv6 unique-local fc00::/7
+  if (/^fe80:/i.test(ip)) return true; // IPv6 link-local
+  return false;
+}
+
+function lastPublicForwardedFor(xff: string): string | null {
+  const hops = xff.split(",").map((hop) => hop.trim()).filter(Boolean);
+  for (let i = hops.length - 1; i >= 0; i--) {
+    if (!isPrivateOrReservedIp(hops[i])) return hops[i];
+  }
+  return null;
+}
+
 export function getClientIp(source: NextRequest | HeaderSource): string {
   const req: HeaderSource = "headers" in source ? source.headers : source;
+  const xff = req.get("x-forwarded-for");
   return (
-    // Platform-trusted headers first: x-forwarded-for's leftmost entry is attacker-supplied
-    // (an attacker can prepend any value), so every auth/OTP limiter keyed on it alone is
-    // trivially bypassed by rotating the header. Netlify's edge overwrites
+    // Platform-trusted headers first: Netlify's edge overwrites
     // x-nf-client-connection-ip with the real connecting IP, so it can't be spoofed by the
-    // client; x-real-ip is the common trusted-proxy equivalent. Only fall back to the
-    // spoofable XFF parse when neither trusted header is present (local/dev).
+    // client; x-real-ip is the common trusted-proxy equivalent. Only fall back to XFF when
+    // neither trusted header is present (local/dev, or a Node-runtime route sitting behind
+    // a proxy that only sets XFF).
     req.get("x-nf-client-connection-ip")?.trim() ||
     req.get("x-real-ip")?.trim() ||
-    req.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    // x-forwarded-for's LEFTMOST entry is attacker-supplied (a caller can prepend any
+    // value, e.g. "evil, 203.0.113.9"), so keying on it alone is trivially bypassed by
+    // rotating the header. The trusted proxy only ever APPENDS, so its entry is the
+    // rightmost one that isn't a private/reserved address; see lastPublicForwardedFor.
+    (xff ? lastPublicForwardedFor(xff) : null) ||
     "unknown"
   );
 }
