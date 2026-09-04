@@ -10,6 +10,8 @@ import { calculateNoShowFee } from "@/lib/cancellation-policy";
 import { notifyNoShowFee } from "@/lib/bookings/notify-no-show-fee";
 import type { Database } from "@/lib/database.types";
 import { verifyTrackingToken } from "@/lib/walkin/authz";
+import { sendSMS } from "@/lib/sms";
+import { barberYoureNextSMS, type EmailLocale } from "@/lib/email";
 
 // PATCH /api/walkin/queue/[id] — Salon owner/staff: update queue entry status
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -192,6 +194,27 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       } else {
         paymentCaptured = pi.status === "succeeded"; // already captured on an earlier call
       }
+      if (paymentCaptured) {
+        // Write back to the linked booking. lib/barber/walkin-ticket.ts:279-281 sets
+        // payment_status='deposit_held' the moment the booking is linked and nothing ever
+        // moved it off that value again, so a paid-and-completed walk-in's booking read
+        // 'deposit_held' forever. 'paid' is the same terminal value the webhook / pre-charge /
+        // release-payments paths already write on a successful capture (vocabulary =
+        // bookings_payment_status_check, supabase/migrations/068_megabuild_foundation.sql:20 :
+        // 'pending'|'card_saved'|'deposit_held'|'paid'|'none'|'refunded'|'partially_refunded'|
+        // 'disputed'). CAS on payment_status='deposit_held' so a booking already moved off it
+        // by another path is never clobbered; .select().maybeSingle() makes a lost race visible
+        // (data=null) rather than a silent zero-row success.
+        const { error: bookingErr } = await admin
+          .from("bookings")
+          .update({ payment_status: "paid" })
+          .eq("walkin_queue_id", id)
+          .eq("payment_status", "deposit_held")
+          .select("id")
+          .maybeSingle();
+        if (bookingErr) console.error("[walkin/queue PATCH] linked booking payment_status(paid) update failed:", bookingErr);
+        // else: no linked booking, or it already moved off deposit_held (not an error).
+      }
     } catch (e) {
       console.error("[walkin/queue PATCH] payment capture failed:", e);
       paymentCaptured = false; // surface to the dashboard so staff can retry/charge manually
@@ -232,6 +255,22 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       } else if (pi.status === "succeeded") {
         noShowFeeCaptured = pi.amount_received; // already captured on an earlier call (idempotent)
       }
+      if (noShowFeeCaptured !== null) {
+        // Same write-back as the completed branch above: a fee actually captured (full or
+        // partial) is a successful charge, so it reuses the shared 'paid' terminal value; a
+        // fully released hold (feeCents<=0, nothing charged) reuses 'none', the same "no money
+        // held, no money paid" convention lib/bookings/customer-cancel-money.ts:159-163 already
+        // documents for a voided PaymentIntent. Both are in bookings_payment_status_check.
+        const bookingPaymentStatus = noShowFeeCaptured > 0 ? "paid" : "none";
+        const { error: bookingErr } = await admin
+          .from("bookings")
+          .update({ payment_status: bookingPaymentStatus })
+          .eq("walkin_queue_id", id)
+          .eq("payment_status", "deposit_held")
+          .select("id")
+          .maybeSingle();
+        if (bookingErr) console.error(`[walkin/queue PATCH] linked booking payment_status(${bookingPaymentStatus}) update failed:`, bookingErr);
+      }
     } catch (e) {
       console.error("[walkin/queue PATCH] no-show fee capture failed:", e);
     }
@@ -245,8 +284,30 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     try {
       const stripe = getStripe();
       const pi = await stripe.paymentIntents.retrieve(entry.payment_intent_id);
-      if (pi.status === "succeeded") await stripe.refunds.create({ payment_intent: entry.payment_intent_id, reverse_transfer: true, refund_application_fee: true });
-      else if (pi.status !== "canceled") await stripe.paymentIntents.cancel(entry.payment_intent_id);
+      let bookingPaymentStatus: "refunded" | "none" | null = null;
+      if (pi.status === "succeeded") {
+        // idempotencyKey ties this refund to THIS queue entry: a retried/duplicate request for
+        // the same cancellation reuses Stripe's cached result instead of issuing a second
+        // refund + a second Connect transfer reversal against the same payment_intent.
+        await stripe.refunds.create(
+          { payment_intent: entry.payment_intent_id, reverse_transfer: true, refund_application_fee: true },
+          { idempotencyKey: `walkin-refund-${entry.id}` }
+        );
+        bookingPaymentStatus = "refunded";
+      } else if (pi.status !== "canceled") {
+        await stripe.paymentIntents.cancel(entry.payment_intent_id);
+        bookingPaymentStatus = "none"; // uncaptured-hold release, same convention as lib/bookings/customer-cancel-money.ts:159-163
+      }
+      if (bookingPaymentStatus) {
+        const { error: bookingErr } = await admin
+          .from("bookings")
+          .update({ payment_status: bookingPaymentStatus })
+          .eq("walkin_queue_id", id)
+          .eq("payment_status", "deposit_held")
+          .select("id")
+          .maybeSingle();
+        if (bookingErr) console.error(`[walkin/queue PATCH] linked booking payment_status(${bookingPaymentStatus}) update failed:`, bookingErr);
+      }
     } catch (e) {
       console.error("[walkin/queue PATCH] hold release on cancel failed:", e);
     }
@@ -255,8 +316,65 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   // Re-sequence the remaining waiting entries in ONE atomic statement (no N-update loop /
   // race) once someone leaves the active queue.
   if (["completed", "no_show", "cancelled"].includes(validated.status)) {
+    // Snapshot who is at the front of the WAITING line before resequencing, so the "you're
+    // next" SMS below fires only when the front-of-line identity actually changes (a chair
+    // freed up, or the prior front person left), never on every later cancel/no-show behind
+    // them. There is no "already notified" column on barber_walkin_queue to dedupe on
+    // otherwise, so this before/after compare is the guard.
+    const { data: prevFront } = await admin
+      .from("barber_walkin_queue")
+      .select("id")
+      .eq("salon_id", entry.salon_id)
+      .eq("status", "waiting")
+      .order("position", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+
     const { error: reseqErr } = await admin.rpc("resequence_walkin_queue", { p_salon_id: entry.salon_id });
-    if (reseqErr) console.error("[walkin/queue PATCH] resequence failed:", reseqErr);
+    if (reseqErr) {
+      console.error("[walkin/queue PATCH] resequence failed:", reseqErr);
+    } else {
+      // barberYoureNextSMS existed in lib/email.ts with zero callers. Fire it here, once, for
+      // whoever just became the new front of the waiting line.
+      try {
+        const { data: newFront } = await admin
+          .from("barber_walkin_queue")
+          .select("id, customer_id, customer_name, customer_phone")
+          .eq("salon_id", entry.salon_id)
+          .eq("status", "waiting")
+          .order("position", { ascending: true })
+          .limit(1)
+          .maybeSingle();
+        if (newFront && newFront.id !== prevFront?.id && newFront.customer_phone) {
+          let smsAllowed = true;
+          let locale: EmailLocale = "de";
+          if (newFront.customer_id) {
+            // Same opt-out convention as app/api/cron/sms-reminders/route.ts:92 (grepped
+            // "notification_sms" per the brief): only an explicit false blocks the send: a
+            // guest with no profile row, or a profile that never set the flag, defaults to
+            // allowed.
+            const { data: profile } = await admin
+              .from("profiles")
+              .select("notification_sms, locale")
+              .eq("id", newFront.customer_id)
+              .maybeSingle();
+            smsAllowed = profile?.notification_sms !== false;
+            if (profile?.locale === "en" || profile?.locale === "fr" || profile?.locale === "it") locale = profile.locale;
+          }
+          if (smsAllowed) {
+            const { data: salonRow } = await admin
+              .from("salons").select("name").eq("id", entry.salon_id).maybeSingle();
+            const smsOk = await sendSMS(
+              newFront.customer_phone,
+              barberYoureNextSMS({ customerName: newFront.customer_name, salonName: salonRow?.name ?? "Salon" }, locale)
+            );
+            if (!smsOk) console.error("[walkin/queue PATCH] you're-next SMS send failed for queue entry", newFront.id);
+          }
+        }
+      } catch (err) {
+        console.error("[walkin/queue PATCH] you're-next SMS failed:", err);
+      }
+    }
   }
 
   // N4: notify the customer a no-show fee was actually CAPTURED out of their held card
