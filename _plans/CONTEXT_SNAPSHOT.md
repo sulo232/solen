@@ -2,27 +2,30 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-09-04T17:27:15 (trigger: auto)
+- taken: 2026-09-04T17:57:50 (trigger: auto)
 - branch: claude/cloud-code-codex-migration-86a820
 
 ## git
 ```
-a6f3085f0 Walk-in ticket page never greets a customer by a made-up name
-ed70ad1d4 Inventory lists the four live tables it was missing
-b236c149a Newsletter and coming-soon signups are saved again
-21ee82b5c Plan log: 15 fixes landed, the phantom-column findings, the parked decisions
-034641637 Gift-voucher emails name the salon instead of "Solen"
+d76d5dbe8 Plan notes: proof lines on four boxes, calendar item split into its three parts
+485e0d339 Plan notes: every finished box carries its commit or file, the fix list is one line per fix
+80d37b5b0 A cancelled booking releases the customer's card hold, and quick photo deletes no longer undo each other
+19fe1d95e Design diagnosis: Airbnb measured with our own six floors, and it fails them too
+679943e73 Design diagnosis: the three formulas the design law never had
 ```
 ```
-M _plans/CONTEXT_SNAPSHOT.md
- M app/[locale]/salon/[slug]/booking/page.tsx
- M app/[locale]/salon/[slug]/layout.tsx
- M app/api/bookings/[id]/dispute/route.ts
- M app/api/bookings/route.ts
- M app/api/profile/export/route.ts
- M app/api/staff/[id]/profile/route.ts
- M lib/bookings/notify-upcharge.ts
- M lib/salon-detail.ts
+M _design-system/research/WHAT_IS_MISSING_2026-09-04.md
+ M app/[locale]/dashboard/calendar/page.tsx
+ M app/[locale]/onboarding/page.tsx
+ M app/api/auth/callback/route.ts
+ M app/api/dev/login/route.ts
+ M app/api/newsletter/route.ts
+ M app/api/slots/route.ts
+ M lib/time/zurich.ts
+ M lib/validations.ts
+?? app/[locale]/dev/design-fixes/
+?? lib/url-safety.ts
+?? supabase/migrations/20260904220000_slot_day_summary.sql
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
@@ -72,15 +75,14 @@ M _plans/CONTEXT_SNAPSHOT.md
 
 ## EVERYTHING_TO_CODEX_2026-09-04.md
 Open boxes:
-- [ ] 1f. Design: measured taste walk on the real phone screens (home, search, PDP, booking, profile, dashboard)
-- [ ] 2a. Fix every STILL-OPEN non-design item, coder + reviewer loop, one commit per verified chunk. IN PROGRESS 19:10: 9 fixes committed after a PASS review (payment mode agreement, card-hold release, hidden salon page, calendar timezone + refresh, sitemap, profile hub counts, nightly score monitoring, receipt link, plus the security trio). In review: service-photo delete, cron monitoring for two more nightly jobs. Building: walk-in wait-screen first name, dead dashboard fetch. Left after that: NEW-1 (dispute email link hardcodes German), the phantom-column and dead-link reports when they land.
-- [ ] 2b. Design findings become mockups (one section each, real page copy, English), never direct edits
-- [ ] 3b. After each wave, one short question to him only if the next wave depends on it; otherwise park and continue
-- [ ] 5a. Council pass over every fix batch before commit
-- [ ] 6b. Merge the 4 newer zero-conflict branches (email, offline-booking, pdp-styling, harness-everth) after his word on the live one
+- [ ] 2a. Fix every STILL-OPEN non-design item, coder + reviewer loop, one commit per verified chunk. IN PROGRESS 19:10: 9 fixes committed after a PASS review (payment mode agreement, card-hold release, hidden salon page, calendar timezone + refresh, sitemap, profile hub counts, nightly score monitoring, receipt link, plus the security trio). In review: service-photo delete, cron monitoring for two more nightly jobs. Building: walk-in wait-screen first name, dead dashboard fetch. Left after that: NEW-1 (dispute email link hardcodes German), the phantom-column and dead-link reports when they land. UPDATE 21:30: 15 committed. Since 19:10: walk-in first name, data export bookings, voucher email salon name, newsletter and coming-soon tables (created live, proven), portfolio components, dispute email locale, inventory refresh. In review: hidden-salon gate on booking and staff routes. Building: duplication cleanup + calendar day bug, five hardcoded-text fixes on the salon page, card-hold release + photo delete race, two dead email links (staff invite, welcome mail).
+  - [ ] 2a-9 duplication cleanup + calendar, split below
+    - [ ] 2a-9c calendar month view only ever showed one week: from/to added, review found the 1000-row cap hides everything past day 7; round 3 building a per-day count function (supabase/migrations/20260904220000_slot_day_summary.sql) and a summary mode on /api/slots
+- [ ] 2b. Design findings become mockups (one section each, real page copy, English), never direct edits IN PROGRESS 21:30: one page with four stacked current-vs-proposed pairs (walk-in card, review card, saved-salon card, salon-page type scale) being built at /en/dev/design-fixes.
+- [ ] 6b. Merge the 4 newer zero-conflict branches (email, offline-booking, pdp-styling, harness-everth) after his word on the live one UPDATE 22:00: email and pdp-styling are merged (neither is in `git branch --no-merged` any more). offline-booking: lift script ready (70 feature files in, 49 scratch files out, 2 files that would resurrect the deleted treatments page kept out), runs once the working tree is clean at the end of this turn. harness-everth (185 commits, tooling only) stays parked.
 - [ ] 6c. The 11 old branches: his 2026-08-14 call was "lift features, never merge wholesale". Ask whether "merge everything" overrides it; if not, lift the named features and delete the rest with recovery shas recorded
-- [ ] 8a. Screenshots of the real screens at phone size
-- [ ] 8b. Measured diagnosis per screen (sizes, weights, spacing, contrast, balance, colour provenance)
-- [ ] 8c. Airbnb live mobile capture of the matching screens, measured the same way
-- [ ] 8d. The missing principle(s), named, with the number that proves each
 - [ ] 8e. Mockup of the fix on one section, stacked variants, English
+  - [ ] 8e-1 walk-in band card: current hand-built card vs the real SalonCard (mockup-builder running, route app/[locale]/dev/design-fixes)
+  - [ ] 8e-2 review card: hairline + shadow vs hairline only (same page)
+  - [ ] 8e-3 saved-salon card: legacy card vs the real SalonCard (same page)
+  - [ ] 8e-4 salon-page services type scale: current sizes vs snapped to the lock (same page)

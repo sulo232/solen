@@ -76,11 +76,18 @@ every screen (nine distinct integers across three screens); ours are 17 permitte
 463 uses of 32 half-pixel and odd sizes, and two ramps that disagree. The lever is sameness and
 integers, not fewer sizes.
 
-What the numbers cannot see, and where the difference actually sits: Airbnb's first paint already
-carries 41 text elements on home (server-rendered); our search and inspo carry 0 at 1.5 s. One
-card component on every Airbnb screen; three of ours. And the nine existing rules that are broken
-on our screens (item "not missing" below) have no Airbnb counterpart because Airbnb does not ship
-a fallback typeface on its map or a card with both a hairline and a shadow.
+What the numbers cannot see. Airbnb's own skeleton time was NOT measured (every capture was taken
+10 to 14 s after navigation, and a raw-HTML fetch of both sites was inconclusive), so the
+first-paint point in item 3 stands on our side only: search and inspo carry 0 text at 1.5 s.
+Airbnb's home card and its search peek-sheet differ from each other too (photo, name, price and
+rating on home; photo carousel and heart only on search), so "one card everywhere" is not what
+separates the two products either. What measurably separates them: Airbnb's sizes are all
+integers (zero half-pixel sizes on three screens) against our 463 off-scale uses, its search
+screen is a map with price markers where ours is a grid, and the nine broken rules on our
+screens (fallback map typeface, hairline plus shadow, green wait text, hand-built cards) have no
+counterpart on Airbnb's. So the honest formula is: apply the rules that exist, sweep old code
+instead of only refusing new code, and add the two checks that do not exist (cross-screen
+sameness, first-paint time).
 
 ## Fix order
 
