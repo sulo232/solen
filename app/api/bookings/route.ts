@@ -577,6 +577,17 @@ export async function POST(request: NextRequest) {
         { status: 409 },
       );
     }
+    // Race-loser unique violation (bookings_one_active_per_slot, Postgres 23505): two requests
+    // both passed the pre-insert availability read above for the identical slot, and the loser's
+    // own INSERT (not claimSlot below, which only runs after this succeeds) hit the index. That
+    // used to fall through to the generic DB_ERROR 500 below, leaking the raw Postgres constraint
+    // text ("duplicate key value violates unique constraint ...") to the client. Same 409 shape as
+    // every other lost-the-race response in this route (SLOT_TAKEN, reused verbatim); the raw
+    // constraint text stays server-side in the console.error only.
+    if (bookingError.code === "23505" || bookingError.message?.includes("bookings_one_active_per_slot")) {
+      console.error("[bookings] insert lost the race on bookings_one_active_per_slot:", bookingError);
+      return NextResponse.json({ message: "Slot not available", code: "SLOT_TAKEN" }, { status: 409 });
+    }
     return NextResponse.json({ message: bookingError.message, code: "DB_ERROR" }, { status: 500 });
   }
 
