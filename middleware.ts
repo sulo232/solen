@@ -3,6 +3,88 @@ import { createServerClient } from "@supabase/ssr";
 import { locales, defaultLocale } from "./i18n";
 import { getPublicEnv } from "@/lib/env";
 
+// notfound-404-b (2026-09-04): root cause is app/[locale]/loading.tsx's Suspense boundary
+// flushing a 200 shell before any leaf page's notFound() resolves, measured to affect EVERY
+// not-found response under app/[locale]/* (a control path with no matching page.tsx at all
+// also came back 200). Fixed here, in middleware, which runs BEFORE that render tree starts,
+// instead of touching the shared loading.tsx boundary that every other route under
+// app/[locale] also depends on for its own skeleton. Two shapes handled below:
+//   1. /{locale}/{city}/{category} with an unknown city or category (mirrors the CATEGORIES
+//      list and the `cities WHERE is_active` check app/[locale]/[city]/[category]/page.tsx
+//      itself uses via lib/cities.ts's getActiveCityBySlug/getActiveCities).
+//   2. /{locale}/bookings/{id} bare path: only the report/refund/upcharge subpages ever had a
+//      page.tsx under this segment, so this exact shape is always a 404, for every id,
+//      existing or not (no page was added here on purpose); no DB lookup needed.
+// RESERVED_TOP_SEGMENTS is every OTHER top-level folder under app/[locale] (from `find
+// app/[locale] -maxdepth 1 -type d`, 2026-09-04): when the first segment after the locale is
+// one of these, the 3-segment path below can never be the [city]/[category] catch-all (Next's
+// own router already resolves it to that static/dynamic route first), so the check is skipped
+// and the request passes through untouched.
+const RESERVED_TOP_SEGMENTS = new Set([
+  "account", "agb", "auth", "barbershop", "blog", "booking", "booking-action", "bookings",
+  "brand", "coiffeur", "coming-soon", "confirmation", "dashboard", "datenschutz", "dev",
+  "help", "impressum", "inspo", "karriere", "kontakt", "legal", "loyalty", "nails",
+  "notifications", "onboarding", "partner", "presse", "privacy", "profile", "queue",
+  "recently-viewed", "referral", "reviews", "rewards", "salon", "search", "sicherheit",
+  "spa", "staff-invite", "termine", "terms", "tip", "tos", "ueber-uns", "unsubscribe",
+  "vouchers", "walk-in-join", "walk-in-pay", "walk-in-tip", "warum-solen",
+]);
+
+// reinvent-ok: this is NOT the SearchCategory UI list (app/[locale]/_components/homepage/
+// searchCategories.ts, which holds display labels like "Spa & Wellness" and icons, no
+// lowercase routing slugs) and NOT DISCOVERY_CATEGORIES (lib/discovery-categories.ts, a
+// DIFFERENT taxonomy per that file's own header: discovery_items.category != services.category,
+// joining them directly is a documented silent no-op). This is the routing-slug set the URL
+// segment itself must match, the exact same 4 literal values as
+// app/[locale]/[city]/[category]/page.tsx's own (non-exported) CATEGORIES const, duplicated
+// here the same way app/sitemap.ts already carries its own separate copy rather than importing
+// out of a page.tsx module.
+const CITY_CATEGORY_VALUES = new Set(["coiffeur", "nails", "barbershop", "spa"]);
+
+// 5-minute in-memory TTL cache of active city slugs, mirrors lib/cities.ts's own
+// getActiveCities() cache. NOT reused directly: getActiveCities() calls
+// createServerSupabaseClient(), which awaits next/headers cookies() internally, a
+// route-handler/Server-Component API that is not available in middleware. This queries the
+// same `cities WHERE is_active` table with the client already constructed below for the auth
+// check instead. Cost: one extra DB query per city/category-shaped request, at most once per
+// 5 minutes per running server instance (cache hit otherwise); falls back to the last-good
+// cached set (or an empty set, passing the request through unblocked) on a DB error.
+let activeCitySlugsCache: { slugs: Set<string>; fetchedAt: number } | null = null;
+const ACTIVE_CITY_SLUGS_TTL_MS = 5 * 60 * 1000;
+
+async function getActiveCitySlugsForMiddleware(supabase: any): Promise<Set<string>> {
+  if (activeCitySlugsCache && Date.now() - activeCitySlugsCache.fetchedAt < ACTIVE_CITY_SLUGS_TTL_MS) {
+    return activeCitySlugsCache.slugs;
+  }
+  const { data, error } = await supabase.from("cities").select("slug").eq("is_active", true);
+  if (error) {
+    console.error("[middleware] active-city lookup failed:", error.message);
+    return activeCitySlugsCache?.slugs ?? new Set<string>();
+  }
+  const slugs = new Set<string>((data ?? []).map((row: { slug: string }) => row.slug));
+  activeCitySlugsCache = { slugs, fetchedAt: Date.now() };
+  return slugs;
+}
+
+/**
+ * Self-fetches the SAME URL to get Next's own rendered not-found body (which today answers
+ * 200 due to app/[locale]/loading.tsx's Suspense boundary), then re-wraps that body as a real
+ * 404 response, so the customer still sees the real app/[locale]/not-found.tsx UI. The
+ * `x-notfound-bypass` header stops the self-fetch from re-entering this same check (infinite
+ * loop): it is read at the top of `middleware()` and short-circuits to a plain pass-through
+ * before anything else in this file runs.
+ */
+async function render404(request: NextRequest): Promise<NextResponse> {
+  const headers = new Headers(request.headers);
+  headers.set("x-notfound-bypass", "1");
+  const upstream = await fetch(request.nextUrl, { method: request.method, headers });
+  const body = await upstream.arrayBuffer();
+  const responseHeaders = new Headers(upstream.headers);
+  responseHeaders.delete("content-encoding");
+  responseHeaders.delete("content-length");
+  return new NextResponse(body, { status: 404, headers: responseHeaders });
+}
+
 function getLocaleFromRequest(request: NextRequest): string {
   // 1. Check URL path
   const pathname = request.nextUrl.pathname;
@@ -33,6 +115,12 @@ function getLocaleFromRequest(request: NextRequest): string {
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // notfound-404-b: short-circuit render404()'s own self-fetch before anything else in this
+  // file runs, otherwise it would recurse into itself forever.
+  if (request.headers.get("x-notfound-bypass") === "1") {
+    return NextResponse.next({ request });
+  }
 
   // A1-html-lang (2026-07-26): stamp the pathname onto a request header so the root
   // layout (app/layout.tsx, which sits ABOVE the [locale] segment and has no route
@@ -129,6 +217,12 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(`/${locale}/help`, request.url));
   }
 
+  // notfound-404-b, shape 2: /{locale}/bookings/{id} bare path is always a 404 (see the
+  // module comment above RESERVED_TOP_SEGMENTS). Pure path-shape check, no DB needed.
+  if (/^\/(de|en|fr|it)\/bookings\/[^/]+$/.test(pathname)) {
+    return render404(request);
+  }
+
   // Step 2: Supabase session refresh on every request
   let response = NextResponse.next({ request });
 
@@ -164,6 +258,21 @@ export async function middleware(request: NextRequest) {
         },
       }
     );
+
+    // notfound-404-b, shape 1: /{locale}/{city}/{category} with an unknown city or category.
+    // Only fires when the first segment isn't a known static route (RESERVED_TOP_SEGMENTS),
+    // i.e. only when Next's own router would otherwise fall through to the [city]/[category]
+    // catch-all.
+    const cityCategoryMatch = pathname.match(/^\/(de|en|fr|it)\/([^/]+)\/([^/]+)$/);
+    if (cityCategoryMatch) {
+      const [, , citySeg, categorySeg] = cityCategoryMatch;
+      if (!RESERVED_TOP_SEGMENTS.has(citySeg)) {
+        const activeCitySlugs = await getActiveCitySlugsForMiddleware(supabase);
+        if (!activeCitySlugs.has(citySeg) || !CITY_CATEGORY_VALUES.has(categorySeg)) {
+          return await render404(request);
+        }
+      }
+    }
 
     // SECURITY: Use getUser() for proper JWT verification, getSession() is not safe for auth decisions.
     // Defensive 4s timeout via Promise.race, guards against any edge runtime network hang.
