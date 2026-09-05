@@ -35,17 +35,17 @@ push, ever.
   - [x] Fresha structure: search results (Mobbin stills, cited per screen; fresha--*.md, 2026-09-05 09:50; no live pull, desktop-width only for search and home)
   - [x] Fresha structure: home (Mobbin stills, cited per screen; fresha--*.md, 2026-09-05 09:50; no live pull, desktop-width only for search and home)
   - [x] Airbnb look: listing page, checkout and confirmation, search results, and one consolidated look recipe with a port map to our tokens and named conflicts with the lockfile (live airbnb.com at 390 via Playwright, confirmation from Mobbin stills; 18 numbers, 6 named conflicts; airbnb--look-recipe.md, commit db44eb92d)
-  - [ ] (running: motion helper, started 04:10, Playwright on airbnb.com) Airbnb motion: card to page, sheet open and close, press states, category switch, back, measured ms and easing from video and animations.json
-  - [ ] (running: same motion helper, public 21st.dev site) 21st.dev motion kit: 6 to 10 components that fit a booking flow, timings measured, source kept
+  - [x] (airbnb--motion.md, 217 lines, seven timings verified from video and animations.json; one curve for all of Airbnb's chrome, logged as a conflict with our four tokens) Airbnb motion: card to page, sheet open and close, press states, category switch, back, measured ms and easing from video and animations.json
+  - [x] (21st-dev--motion-kit.md, 240 lines; 4 of the asked 6 to 10 timed, the site hides component source behind a sign-in wall and renders demos in sandboxed iframes, so no source was saved; licence tagged expect, not verified) 21st.dev motion kit: 6 to 10 components that fit a booking flow, timings measured, source kept
   - [ ] (running: comparison helper, script landed at scripts/measure/compare-solen.mjs, document pending) Standing comparison document Solen vs Fresha vs Airbnb per surface, differences ranked by what a customer notices, plus a re-runnable measure script for the Solen column
 - [x] Taste log: dated 2026-09-05 entry with his verbatim words (look Airbnb not completely; placement Fresha base; confirmation copied from Fresha); the CLAUDE.md source-of-truth block amended with the same date (commit d780f0f84)
 - [ ] Mockups, wave 1, at /en/dev/directions-0905/<surface>?v=a|b|c, each a real-component copy with seeded data, English, three genuinely different directions
-  - [ ] (queued behind the motion specs) booking confirmation screen: 3 directions (Fresha anatomy, Airbnb look, ours underneath)
-  - [ ] (queued behind the motion specs) booking flow steps with the motion BETWEEN steps: 3 directions, each proven on video
+  - [ ] (running: workflow, 3 builders since 10:45) booking confirmation screen: 3 directions (Fresha anatomy, Airbnb look, ours underneath)
+  - [ ] (running: workflow, 3 builders since 10:45) booking flow steps with the motion BETWEEN steps: 3 directions, each proven on video
   - [ ] (running: workflow wew5dwyft, 3 builders since 10:20) salon page: 3 directions
   - [ ] (running: workflow wew5dwyft, 3 builders since 10:20) search results: 3 directions
   - [ ] (running: workflow wew5dwyft, 3 builders since 10:20) home: 3 directions
-  - [ ] (queued behind the motion specs) click and press motion kit (button, card, pill, sheet): 3 directions, each proven on video
+  - [ ] (running: workflow, 3 builders since 10:45) click and press motion kit (button, card, pill, sheet): 3 directions, each proven on video
   - [ ] one index page stacking the directions per surface with the recommendation and the one line that flips it
   - [ ] one read-only critic per surface, one arbiter across the set; repaired once where a direction fails compliance
 - [ ] Verify: cold-load health on every link at phone width, screenshots, videos for the motion directions
