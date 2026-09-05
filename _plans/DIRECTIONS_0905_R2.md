@@ -14,8 +14,13 @@ Round 1: `DIRECTIONS_0905.md` (30 directions, index at /en/dev/directions-0905).
 - [ ] 2. Click and press kit: direction A is the press recipe for round 2
   - [ ] 2a. every round-2 mockup uses A's press motion (scale to 1 with no overshoot, 300ms swaps), B's spring is out
 - [ ] 3. Salon page: keep the live page; match the Services button with the Book button (read "aftr book" as the book button)
-  - [x] 3a. (measured, see log; verified: SalonServices.tsx:250, SalonMobileBookBar.tsx:71 and :80) identify the two buttons he means on the live page at 390 (service-row Buchen vs the main Book CTA vs the section-nav Services tab), measured
+  - [x] 3a. verified: commit dff73ad96 log line, SalonServices.tsx:250, SalonMobileBookBar.tsx:71 and :80. Identify the two buttons he means on the live page at 390 (service-row Buchen vs the main Book CTA vs the section-nav Services tab), measured
   - [ ] 3b. section mockup of the match, the one element at real size, variants stacked (no whole-page mockup for a one-element decision, owner 2026-08-15)
+    - [ ] 3b-1. variant 1: the live row untouched, as the control
+    - [ ] 3b-2. variant 2: the row Book takes the main Book button type, corner and height proportion, stays a neutral outline
+    - [ ] 3b-3. variant 3: the row Book is the sticky bar recipe in full (ink), with the one-commit-button conflict printed above it
+    - [ ] 3b-4. the sticky bar Book button rendered once below as the reference
+    - [ ] 3b-5. a read-only critic measures the three against the live row and returns PASS or a punch list, one repair round
 - [ ] 4. Search results: direction A
   - [ ] 4a. A's look improved under the shared look system (three looks)
   - [ ] 4b. the density-floor conflict he overruled (A fits one card in the fold) gets one line in the report, not a re-argument
