@@ -46,7 +46,7 @@ push, ever.
   - [ ] (round 1b running: workflow weol2x22u, 3 repair builders with punch lists; round 1 saved as df66fb6b3) search results: 3 directions
   - [ ] (round 1b running: workflow weol2x22u, 2 builders, c kept from round 1 df66fb6b3) home: 3 directions
   - [ ] i18n bug found by the arbiter and confirmed on the REAL /en salon page (curl shows Geöffnet bis, Geschlossen, Termin buchen; SalonServices.tsx passes label="ab"): coder fixing the shared salon components, reviewer after
-  - [ ] the direction frame's two fixed overlays (top strip at y=80, switcher at y=633..756 on the salon page) obstruct every comparison: coder moving it to one in-flow strip
+  - [x] (commit df66fb6b3 carries the rewrite of app/[locale]/dev/directions-0905/_shared/DirectionFrame.tsx:1; measured live 2026-09-05 15:40 at 390x844 on salon-page?v=a and booking-steps?v=b: the only fixed elements left are the pages' own nav y=0..110 and the booking bar y=775..844, nothing from the frame; 0 console errors) the direction frame's two fixed overlays obstructed every comparison: now one in-flow strip that scrolls away
   - [ ] (pass one: set DISTINCT; a FAIL on a real duplicate-key console error, b FAIL on a fifth size and a focus outline written to dodge the gate, c FAIL because the tilt renders no motion; pass two = three repairs in wave 1c) click and press motion kit (button, card, pill, sheet): 3 directions, each proven on video
   - [ ] one index page stacking the directions per surface with the recommendation and the one line that flips it
   - [ ] one read-only critic per surface, one arbiter across the set; repaired once where a direction fails compliance
