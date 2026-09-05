@@ -44,7 +44,7 @@ is logged as a named conflict for the owner to decide.
   19+) and the new sections (Pill / chip, Badge, Empty state, Status treatment, Colour provenance,
   Not reachable live this session).
 
-## The numbers (18 original + 22 added 2026-09-05)
+## The numbers (18 original + 33 added 2026-09-05)
 
 Rows 1-18 are the original consolidated set (unchanged, see Sources above). Rows 19+ are new
 measured values folded in from `airbnb--look-recipes.md`'s 2026-09-05 live capture, each citing
@@ -93,6 +93,17 @@ that capture's own section name so the raw method (`getComputedStyle`/`getBoundi
 | 38 | Search-result card, full recipe | box 342x406, radius 20px (matches row 9), no border, whole card is one link (305 such links found pre-rendered on the loaded page) | verified, 2026-09-05 | look-recipes.md (Card) |
 | 39 | Second hairline value (bottom-tab-bar top border) | `rgb(235,235,235)` (`#EBEBEB`), distinct from row 8's `rgb(221,221,221)`: Airbnb runs two hairline values by context, not one token | verified (PIL-sampled), 2026-09-05 | look-recipes.md (Colour provenance) |
 | 40 | Promotional blue (Get the App banner button only) | `rgb(0,115,229)` (`#0073E5`), a separate blue used nowhere else in the capture, not the brand pink and not spread across the UI | verified (PIL-sampled), 2026-09-05 | look-recipes.md (Colour provenance) |
+| 41 | "NEW" tag (profile hub cards) | small dark pill, white text, on a photo/illustration tile | expect (Mobbin still), 2026-09-05 | look-recipes.md (Pill/chip) |
+| 42 | "1 guest" / metadata rows (confirmation) | plain text, no pill | expect (Mobbin still), 2026-09-05 | look-recipes.md (Badge) |
+| 43 | "Switch to hosting" (profile hub, floating over content) | flat ink black, full pill (very rounded ends), white text + icon, floats above the bottom tab bar | expect (Mobbin still), 2026-09-05 | look-recipes.md (Secondary button) |
+| 44 | Section heading (home feed, e.g. "Beliebte Unterkünfte in Paris") | 18px/600, letter-spacing `-0.18px`; the wrapping `<h2>` itself resets to 14/400 for accessibility, the VISIBLE size lives on a nested `<span>`, confirmed by rendering, this is the number that matches the screenshot | verified, 2026-09-05 | look-recipes.md (Type ladder) |
+| 45 | Amenity row (listing) | 16px/400 ink `rgb(34,34,34)` | verified, 2026-09-05 | look-recipes.md (Type ladder) |
+| 46 | Host badge line ("X ist ein Superhost") (listing) | 14px/500 ink `rgb(34,34,34)` | verified, 2026-09-05 | look-recipes.md (Type ladder) |
+| 47 | Rating/reviews line (listing) | 12px/400 ink `rgb(34,34,34)` | verified, 2026-09-05 | look-recipes.md (Type ladder) |
+| 48 | Confirmation headline ("Your reservation is confirmed!") point size | reads roughly 22 to 24px bold, two-line, centred, black | expect (Mobbin still, not computed), 2026-09-05 | look-recipes.md (Type ladder) |
+| 49 | Photo carousel dots (search-result card) | small white dots, one filled/enlarged for the current index, sits at the bottom edge of the photo | verified (visual, from screenshot), 2026-09-05 | look-recipes.md (Card) |
+| 50 | Section-heading-to-heading span (home feed) | 293px total, includes a full 2-card photo row in between, not a pure gap ("Beliebte Unterkünfte" heading top `y=148` to "Tolle Hotels" heading top `y=465`) | verified, 2026-09-05 | look-recipes.md (Spacing) |
+| 51 | Card name-to-meta-to-price block height (home rail card) | name box 32px tall (2-line capable), meta box 32px tall, sits directly under the photo with no extra top padding measured | verified, 2026-09-05 | look-recipes.md (Spacing) |
 
 ## Port map (Airbnb value, our token or a proposed new value, inside our lock or not)
 
