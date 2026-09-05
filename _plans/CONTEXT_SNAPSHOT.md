@@ -2,38 +2,19 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-09-05T16:00:42 (trigger: auto)
+- taken: 2026-09-05T19:45:15 (trigger: auto)
 - branch: claude/cloud-code-codex-migration-86a820
 
 ## git
 ```
-a5d2acc4d Plan log: salon b rebuilt alone, press-kit pass running, two upcoming bookings seeded, wave-2 script ready
-b3db7da57 Salon page i18n: the category pill label reads All/Tous/Tutti per locale, and the duplicate bookAppointment key folds into bookNow
-bab90e6a6 Plan log: wave-2 references saved, waiting on builders under load
-67a611277 Wave-2 references: Fresha structure and Airbnb look for bookings list, payment step, profile and empty states (Mobbin, cited per fact)
-98e425868 Plan notes: i18n box closed with the review and commit
+37c33ebdd Plan: reference-capture and wave 1 parent boxes ticked
+350dc4ec0 Plan: wave 2 box ticked with its commit and verdicts
+69a9ed7ff Wave 2 directions: bookings list, review and pay step, profile hub, empty states, three declared-axis directions each
+6037b646b Plan log: two dev-server findings and wave 2 state
+27ad3e505 Search and home boxes ticked with their commits and verdicts; home c's header states the rendered weight
 ```
 ```
-M _design-system/_geometry-report.md
- M _plans/CONTEXT_SNAPSHOT.md
- M app/[locale]/dev/directions-0905/confirmation/_va/ConfirmationVariantAView.tsx
- M app/[locale]/dev/directions-0905/confirmation/_vb/TicketCardB.tsx
- M app/[locale]/dev/directions-0905/confirmation/_vc/ConfirmationCelebration.tsx
- M app/[locale]/dev/directions-0905/home/_va/HomeVariantA.tsx
- M app/[locale]/dev/directions-0905/home/_vb/HomeDirectionB.tsx
- D app/[locale]/dev/directions-0905/home/_vb/RecentlyViewedBig.tsx
- D app/[locale]/dev/directions-0905/home/_vb/SectionPrimitivesBig.tsx
- D app/[locale]/dev/directions-0905/home/_vb/TopCategoryRailsBig.tsx
- M app/[locale]/dev/directions-0905/press-motion/_va/PressMotionSceneA.tsx
- M app/[locale]/dev/directions-0905/press-motion/_vb/PressMotionDirectionB.tsx
- M app/[locale]/dev/directions-0905/press-motion/_vb/SpringPillRow.tsx
- M app/[locale]/dev/directions-0905/press-motion/_vc/PressMotionDirectionC.tsx
- M app/[locale]/dev/directions-0905/press-motion/_vc/TiltCard.tsx
- M app/[locale]/dev/directions-0905/salon-page/_va/SalonPageDirectionA.tsx
- D app/[locale]/dev/directions-0905/salon-page/_vb/GalleryHeroOverlay.tsx
- D app/[locale]/dev/directions-0905/salon-page/_vb/SalonPagePhotoLed.tsx
- M app/[locale]/dev/directions-0905/salon-page/_vc/DirectionC.tsx
- M app/[locale]/dev/directions-0905/salon-page/_vc/ServicesLead.tsx
+M _plans/CONTEXT_SNAPSHOT.md
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
