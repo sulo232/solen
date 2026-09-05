@@ -57,14 +57,20 @@ export function EmptyStatesDirectionB() {
       {/* ---- 1. Bookings (BookingsList.tsx tab shell) ---- */}
       <section className="border-b border-s-border">
         <div className="flex items-center gap-1 px-4 pt-4">
+          {/* REPAIR 2026-09-05: base class carried Tailwind's `font-medium` (500) for every
+              tab regardless of state; only the active tab's inline style overrode it to 600,
+              so the two inactive labels rendered at an undeclared third weight (500). Weight
+              now comes ONLY from the inline style per branch, matching the locked design
+              contract "nav" tabs row (active = 600 ink + underline, inactive = 400 ink-2, no
+              fill), so this direction carries exactly two weights: 400 and 600. */}
           {["Upcoming", "Past", "Cancelled"].map((label, i) => (
             <span
               key={label}
-              className="rounded-full px-3 py-1.5 text-[12px] font-medium"
+              className="rounded-full px-3 py-1.5 text-[12px]"
               style={
                 i === 0
                   ? { backgroundColor: "#F4F4F5", color: AIRBNB_INK, fontWeight: 600 }
-                  : { color: AIRBNB_SECONDARY_GREY }
+                  : { color: AIRBNB_SECONDARY_GREY, fontWeight: 400 }
               }
             >
               {label}

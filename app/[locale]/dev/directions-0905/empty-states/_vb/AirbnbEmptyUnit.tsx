@@ -11,8 +11,26 @@
 // Grounded-in: components-legacy/ui/EmptyState.tsx (the primitive this unit REPLACES for
 // Direction B, same job: icon + headline + subline + one CTA), _design-system/references/
 // airbnb--empty-states.md (copy shape: name what's missing, explain when it fills, one
-// action) and airbnb--look-recipe.md (the numbers: headline 22/600 row 2, secondary grey
-// row 4, ink row 5, CTA pill row 13). No new illustration binary: airbnb--empty-states.md's
+// action) and airbnb--look-recipe.md (the numbers: secondary grey row 4, ink row 5, CTA
+// pill row 13). No new illustration binary: airbnb--empty-states.md's
+//
+// REPAIR 2026-09-05, headline size: airbnb--empty-states.md itself describes every Airbnb
+// empty-state title only qualitatively ("bold", "large" -> Trips "Build the perfect trip",
+// Messages "You don't have any messages (bold)") and says so explicitly in its own "Not
+// measured" section ("Exact pt sizes... for any element in this file" were never captured,
+// login-gated Mobbin thumbnails only). So the concrete px number here is NOT from that file;
+// it is airbnb--look-recipe.md's row 1 port map treatment of Airbnb's actual title anchor
+// (26px), which that port map already concludes "sits just under our 28px floor... would need
+// to round up to 28, not copy 26 literally, to stay compliant" (FLOORS LAW 6, >=28px display
+// anchor). 28px is used here as that compliant round-up, reaching 1.8x+ the direction's own
+// 14px body per the Emphasis Budget ratio floor (28/14 = 2.0), not as a literal Airbnb-measured
+// empty-state number, which does not exist in either source file.
+//
+// REPAIR 2026-09-05, CTA weight: row 13 measures Airbnb's own "Reserve" CTA text at 16/500.
+// This unit keeps 600 (a named deviation, not a match) so the direction's total weight count
+// stays at exactly two (400 body/inactive-tab, 600 headline/active-tab/CTA) per the <=2-weight
+// ceiling; adding a third distinct weight (500) for the CTA alone would trade one violation for
+// another. Logged as a broken-lock-within-a-broken-lock in this direction's Conflicts list.
 // own "Not measured" section confirms no Airbnb icon glyph pt-size was ever captured (only
 // Mobbin thumbnails were available), so this unit draws a single large Lucide glyph with NO
 // background tile, matching the one Airbnb empty-state icon treatment that IS fully
@@ -94,7 +112,7 @@ export function AirbnbEmptyUnit({
           size and weight" as an explicitly breakable lock, so headline + CTA render at
           Airbnb's true 600 via inline style, which the class-based selector cannot reach. */}
       <h3
-        className="mt-4 text-[22px] leading-snug"
+        className="mt-4 text-[28px] leading-tight"
         style={{ color: AIRBNB_INK, fontWeight: 600 }}
       >
         {headline}
