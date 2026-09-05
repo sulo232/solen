@@ -119,22 +119,29 @@ async function getSalonSlugsForMiddleware(supabase: any): Promise<Set<string>> {
 const BOOKING_ID_UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**
- * Self-fetches the SAME URL to get Next's own rendered not-found body (which today answers
- * 200 due to app/[locale]/loading.tsx's Suspense boundary), then re-wraps that body as a real
- * 404 response, so the customer still sees the real app/[locale]/not-found.tsx UI. The
- * `x-notfound-bypass` header stops the self-fetch from re-entering this same check (infinite
- * loop): it is read at the top of `middleware()` and short-circuits to a plain pass-through
- * before anything else in this file runs.
+ * notfound-404-e (2026-09-05): rewrites instead of self-fetching the same URL. That
+ * self-fetch (measured tonight, production build behind a reverse proxy) failed outright
+ * with an SSL 'packet length too long' error, so through a proxy all four bad-URL shapes
+ * answered 200/200/500/200 instead of 404, and Netlify always puts this app behind a proxy.
+ * A rewrite is the primitive middleware is meant to use for this (no network call, no
+ * proxy in the path). Target is `/${locale}/__404/__404/__404/__404`, a path shape no
+ * page.tsx anywhere under app/[locale] can ever match, so Next answers with its own
+ * app/[locale]/not-found.tsx render with no data-awaiting leaf page in between. A dedicated
+ * `__not-found/page.tsx` calling notFound() synchronously was tried first and measured
+ * live to still return 200 with a client-rendered fallback ("Switched to client rendering
+ * because the server rendering errored"): app/[locale]/loading.tsx's Suspense boundary
+ * flushes a 200 shell before ANY page's notFound() resolves, even one with no await at
+ * all, so a dedicated target page cannot dodge it, only a route with no page.tsx can.
+ * `headers` forwards the SAME request.headers instance already stamped with x-pathname
+ * (and anything else) earlier in `middleware()`, so the rewritten render still knows the
+ * real request; `locale` comes from getLocaleFromRequest so the 404 renders in the
+ * visitor's own language.
  */
-async function render404(request: NextRequest): Promise<NextResponse> {
-  const headers = new Headers(request.headers);
-  headers.set("x-notfound-bypass", "1");
-  const upstream = await fetch(request.nextUrl, { method: request.method, headers });
-  const body = await upstream.arrayBuffer();
-  const responseHeaders = new Headers(upstream.headers);
-  responseHeaders.delete("content-encoding");
-  responseHeaders.delete("content-length");
-  return new NextResponse(body, { status: 404, headers: responseHeaders });
+function render404(request: NextRequest): NextResponse {
+  const locale = getLocaleFromRequest(request);
+  return NextResponse.rewrite(new URL(`/${locale}/__404/__404/__404/__404`, request.url), {
+    request: { headers: request.headers },
+  });
 }
 
 function getLocaleFromRequest(request: NextRequest): string {
@@ -167,12 +174,6 @@ function getLocaleFromRequest(request: NextRequest): string {
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-
-  // notfound-404-b: short-circuit render404()'s own self-fetch before anything else in this
-  // file runs, otherwise it would recurse into itself forever.
-  if (request.headers.get("x-notfound-bypass") === "1") {
-    return NextResponse.next({ request });
-  }
 
   // A1-html-lang (2026-07-26): stamp the pathname onto a request header so the root
   // layout (app/layout.tsx, which sits ABOVE the [locale] segment and has no route
@@ -321,7 +322,7 @@ export async function middleware(request: NextRequest) {
       if (!RESERVED_TOP_SEGMENTS.has(citySeg)) {
         const activeCitySlugs = await getActiveCitySlugsForMiddleware(supabase);
         if (!activeCitySlugs.has(citySeg) || !CITY_CATEGORY_VALUES.has(categorySeg)) {
-          return await render404(request);
+          return render404(request);
         }
       }
     }
@@ -334,7 +335,7 @@ export async function middleware(request: NextRequest) {
       const [, , salonSlug] = salonSlugMatch;
       const salonSlugs = await getSalonSlugsForMiddleware(supabase);
       if (!salonSlugs.has(salonSlug)) {
-        return await render404(request);
+        return render404(request);
       }
     }
 
@@ -357,7 +358,7 @@ export async function middleware(request: NextRequest) {
     if (bookingSubpageMatch) {
       const [, , bookingId] = bookingSubpageMatch;
       if (!BOOKING_ID_UUID_RE.test(bookingId)) {
-        return await render404(request);
+        return render404(request);
       }
     }
 
