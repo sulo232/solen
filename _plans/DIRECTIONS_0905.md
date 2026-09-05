@@ -42,9 +42,11 @@ push, ever.
 - [ ] Mockups, wave 1, at /en/dev/directions-0905/<surface>?v=a|b|c, each a real-component copy with seeded data, English, three genuinely different directions
   - [ ] (running: workflow, 3 builders since 10:45) booking confirmation screen: 3 directions (Fresha anatomy, Airbnb look, ours underneath)
   - [ ] (running: workflow, 3 builders since 10:45) booking flow steps with the motion BETWEEN steps: 3 directions, each proven on video
-  - [ ] (running: workflow wew5dwyft, 3 builders since 10:20) salon page: 3 directions
-  - [ ] (running: workflow wew5dwyft, 3 builders since 10:20) search results: 3 directions
-  - [ ] (running: workflow wew5dwyft, 3 builders since 10:20) home: 3 directions
+  - [ ] (round 1 built, 9 routes on disk; arbiter: salon set = three gallery treatments on one order, a = the live page; home a and b = the live page; search DISTINCT but b rendered as the grid it was briefed not to be; two critics rate-limited. Round 1b re-briefs with declared axes and a LOOK-FULL direction per screen, scratchpad directions-0905-wave1b.workflow.js) salon page: 3 directions
+  - [ ] (round 1b: repair-only, punch lists in the workflow file) search results: 3 directions
+  - [ ] (round 1b: a query-builder-first, b Airbnb look at full strength, c kept) home: 3 directions
+  - [ ] i18n bug found by the arbiter and confirmed on the REAL /en salon page (curl shows Geöffnet bis, Geschlossen, Termin buchen; SalonServices.tsx passes label="ab"): coder fixing the shared salon components, reviewer after
+  - [ ] the direction frame's two fixed overlays (top strip at y=80, switcher at y=633..756 on the salon page) obstruct every comparison: coder moving it to one in-flow strip
   - [ ] (running: workflow, 3 builders since 10:45) click and press motion kit (button, card, pill, sheet): 3 directions, each proven on video
   - [ ] one index page stacking the directions per surface with the recommendation and the one line that flips it
   - [ ] one read-only critic per surface, one arbiter across the set; repaired once where a direction fails compliance
