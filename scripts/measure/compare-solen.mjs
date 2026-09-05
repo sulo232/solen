@@ -355,7 +355,6 @@ async function addFirstServiceToCart(page) {
   await page.waitForTimeout(450);
 
   const cartText = await page.evaluate(() => document.body.innerText).catch(() => '');
-  if (process.env.DEBUG_MEASURE) console.error('DEBUG cartText snippet:', JSON.stringify(cartText.slice(0, 400)));
   return /[1-9]\d*\s*item/i.test(cartText);
 }
 
@@ -432,7 +431,6 @@ async function run() {
         results.push(await measureCurrentPage(page, 'booking-services', [], { skipMotionTap: true }));
 
         const addedToCart = await addFirstServiceToCart(page);
-        if (process.env.DEBUG_MEASURE) console.error('DEBUG addedToCart:', addedToCart, 'url:', page.url());
         if (!addedToCart || derailed()) {
           const reason = derailed()
             ? `wizard navigated to ${page.url()} instead of adding to cart`
@@ -442,18 +440,8 @@ async function run() {
           results.push({ screen: 'booking-review', tag: 'not-measured', reason });
         } else {
           const continue1 = await page.$('button:has-text("Continue")');
-          if (process.env.DEBUG_MEASURE) {
-            const disabledAttr = continue1 ? await continue1.getAttribute('disabled').catch(() => 'N/A') : 'no-button-found';
-            console.error('DEBUG continue1 found:', !!continue1, 'disabled attr:', disabledAttr);
-          }
-          if (continue1) await continue1.click({ timeout: 2000 }).catch((e) => {
-            if (process.env.DEBUG_MEASURE) console.error('DEBUG continue1 click error:', String(e).slice(0, 200));
-          });
+          if (continue1) await continue1.click({ timeout: 2000 }).catch(() => {});
           await page.waitForTimeout(700);
-          if (process.env.DEBUG_MEASURE) {
-            const bodyTxt = await page.evaluate(() => document.body.innerText.slice(0, 300)).catch(() => '');
-            console.error('DEBUG after continue1 click, url:', page.url(), 'body snippet:', JSON.stringify(bodyTxt));
-          }
 
           if (derailed()) {
             const reason = `wizard navigated to ${page.url()} after clicking Continue on the services step`;
