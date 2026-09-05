@@ -52,8 +52,11 @@
 //   owner call only, already logged in the reference file itself.
 // - Airbnb's own home screen carries six distinct sizes and four-plus weights in one viewport.
 //   This file adds zero new sizes or weights beyond what the reused chrome and the reused card
-//   already render (an 18px/600 heading recipe borrowed from the existing SectionTitle component,
-//   a 14px/600 name and a 12px/400 meta/price, both already baked into SalonCard).
+//   already render (an 18px heading recipe borrowed from the existing SectionTitle component,
+//   a 14px name and a 12px/400 meta/price, both already baked into SalonCard). The heading and the
+//   name are written as font-semibold (600) but RENDER at weight 500: app/globals.css:269-271 maps
+//   .font-semibold and .font-bold to 500 inside main on every non-dashboard surface, the same
+//   sitewide rule direction b's files disclose. Measured with getComputedStyle, not read off the class.
 // - The brief's own phrase "nearby, sorted by distance" is not literally true here: no geolocation
 //   exists on this dev route, and presenting an un-sorted list as sorted would be a fabricated
 //   claim (CLAUDE.md taste rule 1). The curated nearby id order is used verbatim, un-resorted, and
