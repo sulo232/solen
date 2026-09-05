@@ -30,19 +30,44 @@ precedence chain in `CLAUDE.md`).
 node scripts/measure/compare-solen.mjs [baseUrl]
 ```
 
-Defaults to `http://localhost:3461`. Requires the dev server already running (this script never
-starts, stops, or rebuilds it). Writes `scripts/measure/out/solen-measurements.json` and
+Defaults to `http://localhost:3461`. Requires a server already running at that URL (this script
+never starts, stops, or rebuilds one). Writes `scripts/measure/out/solen-measurements.json` and
 `scripts/measure/out/solen-measurements.md`, and prints both to stdout. Every navigation goes
 through the shared `scripts/_measure-guard.mjs` guard: a page that errored, redirected somewhere
 unexpected, or rendered nothing gets **no verdict**, only a `not-measured` entry with a reason.
 
-This run: **2026-09-05**, against `http://localhost:3461`, English locale, 390x844 viewport,
-2x device scale, one fresh browser context per standalone screen (home, search, salon, bookings
-list) and one continuous context for the four booking-wizard steps (they are one client-side
-route, not four page loads). Full raw output: `scripts/measure/out/solen-measurements.json`.
+**A production build (`next build` + `next start`) gives the cleanest reading for the seven public
+screens** (home, search results, the salon page, and the four booking-wizard steps): nothing else
+is competing for the server, and it is the build a customer actually gets. The two signed-in
+screens, bookings list and confirmation, cannot be reached on a production build at all: their
+sign-in shortcut (`GET /api/dev/login`) answers HTTP 404 whenever `NODE_ENV` is not `development`
+(`app/api/dev/login/route.ts:20`), a deliberate boundary so a seed-customer bypass can never reach
+production. Measuring those two screens needs a dev server instead. Pass a real booking id
+belonging to the seed customer with `COMPARE_BOOKING_ID` so the confirmation screen has something
+to load (the bookings list is client-rendered and links no booking id in its own HTML, so the
+script cannot always recover one on its own):
 
-Every Solen number below is **tag: verified** (measured live this run) unless marked
-`not-measured`. Every Fresha fact is **structure**, sourced from a spec file already on disk
+```
+COMPARE_BOOKING_ID=<uuid> NODE_PATH=<main checkout>/node_modules node scripts/measure/compare-solen.mjs <baseUrl>
+```
+
+`NODE_PATH` matters only when running from a worktree with no `node_modules` of its own; point it
+at the main checkout's `node_modules` in that case.
+
+This document's numbers come from two runs, both **2026-09-05**. Run 3, a production build of
+commit `c6f994c57` (`next build` + `next start`, English locale, 390x844 viewport, 2x device
+scale), finished 19:49 with only this script's own browser hitting the server; it supplies
+sections 1 through 4. Run 4, a `next dev` server at commit `69a9ed7ff` plus three uncommitted
+mockup edits under `app/[locale]/dev/` (none rendered by any measured screen), ran a few minutes
+later while three mockup-builder helper sessions were also rendering other pages on that same
+server; it supplies sections 5 and 6, the two signed-in screens the production build cannot reach.
+Every navigation used one fresh browser context per standalone screen (home, search, salon), one
+continuous context across the four booking-wizard steps (they are one client-side route, not four
+page loads), and one continuous context for the bookings list plus confirmation (the sign-in has
+to persist from one to the other).
+
+Every Solen number below is **tag: verified** (measured live in one of these two runs) unless
+marked `not-measured`. Every Fresha fact is **structure**, sourced from a spec file already on disk
 (`_design-system/references/fresha--*.md`, all dated 2026-09-05, each screen independently
 Mobbin-image-verified and cited by `mobbin_url`) or is stated as `assume`/`expect` exactly as that
 file tags it. Every Airbnb fact is **look**, sourced from `_design-system/references/
@@ -60,11 +85,11 @@ does not appear.
 | distinct font sizes / weights | 9 sizes (12,13,14,15,16,17,18,20,22) / 4 weights (400,500,600,700) | not measured in px (desktop-only Mobbin capture this pass); H1 is the dominant size, rest of the hero is small meta text (`fresha--home.md` item 2, citing the existing `public/_mockups/homepage-rhythm/hero.html` capture) | type scale carries ~14 named tiers 10-72px+ across the whole product, but **zero tracking on every tier** and a 3-weight vocabulary (`book`/`medium`/`semibold`), not our 400/500/600/700 (`AIRBNB_SYSTEM_VS_OURS.md` section 2c) |
 | anchor size / ratio to body | 22px anchor, 12px body, **1.83x** | Fresha's H1 is measured elsewhere at 40px/44 line-height/700 weight, 2 lines (`fresha--home.md` item 2, citing existing SPEC.md) | Airbnb's display tier runs 40/48/60/72px depending on screen; the 28px anchor Solen locks to is itself convergent with Apple/Material's own 28pt/28sp title tier (`AIRBNB_TEARDOWN_2026-08-16.md` section on the emphasis-budget floor) |
 | photo % of first viewport | **28.6%** | hero sits on a full-bleed **gradient wash, zero photography** (`fresha--home.md` Conflict 1, verified) | not separately measured for a consumer home screen this pass; operator-screen teardown found photography is not the load-bearing element on list-shaped screens (see section 2 below) |
-| weight >=600 share | **3.7%** | not measured | Airbnb's own emphasis-budget finding: PDP measured 17.6% (16 of 91 elements), well under the ~30% ceiling; account screen measured 33.3%, over it (`AIRBNB_SYSTEM_VS_OURS.md` section 3, item 11) |
+| weight >=600 share | **3.4%** | not measured | Airbnb's own emphasis-budget finding: PDP measured 17.6% (16 of 91 elements), well under the ~30% ceiling; account screen measured 33.3%, over it (`AIRBNB_SYSTEM_VS_OURS.md` section 3, item 11) |
 | section gap (median) | 0px (n=2 gaps measured; only 2 qualifying top-level sections detected above the fold) | not measured | not measured for this screen |
 | sticky bottom CTA | no | Fresha's homepage has no sticky CTA either; the query bar itself is the primary action, built in place (`fresha--home.md` Philosophy) | n/a |
 | content units in first viewport | 7 | not measured | not measured |
-| box-shadow / radius vocabulary | 13 distinct shadows, 13 distinct radii (9999, 16, 40, 11, 22, 6, 24, 4, 15, 13, 12, 2, 10px) | not measured | Airbnb radius scale: 4, 8, 12, 16, 20, 24, 28, 32 (`AIRBNB_SYSTEM_VS_OURS.md` section 2d) |
+| box-shadow / radius vocabulary | 13 distinct shadows, 12 distinct radii (9999, 16, 40, 11, 22, 6, 24, 15, 13, 12, 2, 10px) | not measured | Airbnb radius scale: 4, 8, 12, 16, 20, 24, 28, 32 (`AIRBNB_SYSTEM_VS_OURS.md` section 2d) |
 | motion | tap -> 34 concurrent `document.getAnimations()`; transition durations in use: 0.15s, 0.2s, 0.22s, 0.28s, 0.3s, 0.32s | not measured | not measured |
 
 Caveat on the motion row (applies to every screen below too): `document.getAnimations()` counts
@@ -78,9 +103,9 @@ that instant. Treat this as an upper bound on visible motion, not a causal count
 | measure | Solen (measured, verified) | Fresha (structure, cited) | Airbnb (look, cited) |
 |---|---|---|---|
 | distinct sizes / weights | 8 sizes (12-18, 22) / 4 weights | not measured in px | n/a (no Airbnb search-results capture cited this pass) |
-| anchor / ratio | 22px / 13px body / **1.69x** | not measured | n/a |
-| photo % of first viewport | **60.8%** | every result card's photo runs the full card width at roughly 4:3 (`fresha--search-results.md` item 4, verified) | n/a |
-| weight >=600 share | **21.7%** | not measured | n/a |
+| anchor / ratio | 22px / 12px body / **1.83x** | not measured | n/a |
+| photo % of first viewport | **41.7%** | every result card's photo runs the full card width at roughly 4:3 (`fresha--search-results.md` item 4, verified) | n/a |
+| weight >=600 share | **5.2%** | not measured | n/a |
 | content units in first viewport | **0** (heuristic artifact, see caveats; the page visibly renders result cards) | Fresha's list column shows one card per venue with up to 3 service rows nested inside each card (`fresha--search-results.md` item 4) | n/a |
 | sticky CTA | no | no primary CTA on this screen; commit happens per-card via a "See more" link or the inline time chips (`fresha--search-results.md` item 4) | n/a |
 | selected-filter fill | Solen's locked rule: neutral grey fill (`bg-s-bg-sunken`), never blue, never brand-color (design contract `filter pill` row) | **solid purple fill** on the selected "Venue type" segment inside the Filters modal (`fresha--search-results.md` item 3 + Conflict 1, verified) | n/a |
@@ -135,44 +160,59 @@ it is not mistaken for the true primary action's label.
 
 ## 5. Confirmation screen
 
-| measure | Solen | Fresha (structure, cited) | Airbnb (look, cited) |
+| measure | Solen (measured, verified) | Fresha (structure, cited) | Airbnb (look, cited) |
 |---|---|---|---|
-| status | **not measured** this run (see section 7) | | |
+| status | **verified**, via the dev server (run 4; the production build cannot reach this screen, see section 7): 10 sizes (12, 12.5, 13, 14, 14.5, 15, 16, 17, 24, 29) / 3 weights (400, 500, 600), anchor 29px / body 12px / **2.42x**, photo **28.4%** of first viewport, weight>=600 share **13.8%**, **6** content units in first viewport, no sticky bottom CTA, 4 distinct shadows, 5 distinct radii (9999, 16, 99, 24, 10px) | | |
 | status indicator | `BookingConfirmation.tsx` renders a text-based status ("green 'confirmed' text when it is actually 'paid'", per that file's own code comment, read via `fresha--confirmation.md`'s port map) | **filled pale-lavender pill**, checkmark icon + "Confirmed" in deep-purple ink (`fresha--confirmation.md` item 2, verified) | Airbnb's terminal-moment screens ("Your reservation is confirmed!") use a full warm-cream page tint, still with a plain **black button**, no filled status pill (`AIRBNB_TEARDOWN_2026-08-16.md` section 1, "Warm tint... the shapes", verified) |
 | action rows | none: current component opens sheets from a plain date row and "a quiet red text row" (`fresha--confirmation.md` port map, citing `BookingConfirmation.tsx` lines 55-59) | four tappable rows, each a tinted icon disc + bold title + grey subtitle: Add to calendar, Getting there, Manage appointment, Venue details (`fresha--confirmation.md` item 5, verified) | not applicable, no Airbnb confirmation-screen action-row capture cited this pass |
-| primary CTA | n/a, not reached | **none anywhere on the screen** (deliberate: "confirming and informing, not selling a next action", `fresha--confirmation.md` Philosophy, verified) | Airbnb's confirmed-state screens keep one black CTA even in the celebratory moment (see row above); this is a direct Fresha/Airbnb disagreement, noted rather than resolved |
+| primary CTA | none found this run (`ctaFound: false`, no sticky bottom bar either), consistent with a plain informational screen | **none anywhere on the screen** (deliberate: "confirming and informing, not selling a next action", `fresha--confirmation.md` Philosophy, verified) | Airbnb's confirmed-state screens keep one black CTA even in the celebratory moment (see row above); this is a direct Fresha/Airbnb disagreement, noted rather than resolved |
 | price breakdown | `servicePrice`/`pricePaid`/`priceLabel` props already exist on the component (`fresha--confirmation.md` port map) | "Overview" list (one row per booked item) then a bold "Total" row (`fresha--confirmation.md` item 6, verified) | n/a |
 | cancellation policy visible | `lib/cancellation-policy.ts` exists but is not confirmed rendered on this screen (`fresha--confirmation.md` port map) | one plain paragraph with the cutoff hours bolded, e.g. "72 hours" (`fresha--confirmation.md` item 8, verified) | n/a |
 
-## 6. Bookings list (`/en/bookings`, signed in as the seed customer)
+## 6. Bookings list (`/en/profile/bookings`, signed in as the seed customer)
+
+The real bookings list lives at `/en/profile/bookings`. `/en/bookings` has no page of its own: an
+unknown one-segment path falls through to the city route, so that address quietly renders the
+Basel salons search page instead, not an error and not the bookings list. This run's own
+`attemptedUrl` (the login redirect target) and the script's own comment at
+`compare-solen.mjs:547` both name `/en/profile/bookings` as the real route; any earlier reference
+to `/en/bookings` for this screen was wrong.
 
 | measure | Solen (measured, verified) |
 |---|---|
-| distinct sizes / weights | 9 sizes (12, 13, 13.5, 14, 14.5, 15, 16, 20, 96) / 3 weights (400, 500, 600) |
-| anchor / ratio | 96px / 12px body / **8x** (see caveat below) |
-| photo % of first viewport | 5.7% |
-| weight >=600 share | 21.4% |
-| text elements found | **14 total** |
+| distinct sizes / weights | 7 sizes (12, 13, 14, 15, 16, 18, 22) / 4 weights (400, 500, 600, 700) |
+| anchor / ratio | 22px / 12px body / **1.83x** |
+| photo % of first viewport | 0% |
+| weight >=600 share | 14.3% |
+| text elements found | **35 total** |
 | content units in first viewport | 6 |
 
 No Fresha/Airbnb column: the task scoped reference capture to home, search, venue, booking flow,
 and confirmation; a bookings-list / "my appointments" capture was not commissioned this pass and none
 exists on disk to cite, so adding one here would be a guess, which this document does not do.
 
-**Caveat on the 96px anchor:** 14 total text elements on the whole first viewport, against 6+ on
-every other screen measured, strongly suggests this account currently has **zero real bookings**
-and the screen is rendering an empty state (a large icon-or-initial glyph is a common empty-state
-anchor). This is consistent with, and likely the direct cause of, the confirmation screen also
-being not-measured (section 7): the seed customer `kunde@solen.ch` has no bookings to link to.
+**This account has real bookings.** The page carries a working `Rebook` CTA (`ctaFound: true`,
+`ctaText: "Rebook"`) and a real booking id, `d21c23e3-fe0f-444f-999e-2f8d616f5b3c`, recovered
+directly from its own rendered links; that id is what let this run measure the confirmation screen
+in section 5 from an actual booking rather than a guess. Every number above is a dev-server (run
+4) reading, not a production one, because the production build's seed sign-in route answers HTTP
+404 by design (see section 7).
 
 ## 7. What could not be measured, and why
 
-- **Confirmation screen.** The seed customer account used for this run (`kunde@solen.ch`) has no
-  bookings: the bookings-list page rendered only 14 text elements and no `/bookings/<uuid>` links
-  were found in its HTML. Creating a real booking to measure against would require completing the
-  booking wizard through the Stripe pay step, which the brief marks a hard stop (never spend
-  money). Result: `confirmation` is tagged `not-measured` with this exact reason in the JSON, not
-  guessed from the component's source code.
+- **Confirmation and bookings-list, on the production build.** Both routes need the seed customer
+  signed in, and the sign-in shortcut (`GET /api/dev/login`) answers HTTP 404 whenever `NODE_ENV`
+  is not `development` (`app/api/dev/login/route.ts:20`; the file's own comment says this must
+  never bypass auth in production). Run 3, the production build behind sections 1 through 4, hit
+  exactly this wall for both screens (the JSON's `attemptedUrl` is the login URL itself, `status:
+  404`). This is a working safety boundary, not a bug. Both screens were instead measured on a dev
+  server (run 4), where `NODE_ENV=development` lets the shortcut work; sections 5 and 6 above carry
+  those dev-server numbers. Three mockup-builder helper sessions were also rendering other pages on
+  that dev server during the run, lighter load than the ten helpers behind the two earlier runs this
+  document used to be built from (the reason this rewrite exists: those two runs disagreed with
+  each other on screens nothing had touched). Every other screen in this document, home through the
+  four booking-wizard steps, has a clean production-build reading with no other traffic on the
+  server.
 - **Fresha's home page below the fold.** `fresha--home.md` states plainly that every Mobbin query
   this pass returned only the hero and search-dropdown states; the main feed section list below
   "Recently viewed" was never reached. That gap is inherited here, not filled.
@@ -180,12 +220,8 @@ being not-measured (section 7): the seed customer `kunde@solen.ch` has no bookin
   was desktop-width (~1440px class, list+map split). Whether Fresha collapses to a full-width list
   with a map toggle at mobile widths is `assume`, stated as unchecked in `fresha--search-results.md`,
   and repeated as unchecked here.
-- **The salon-page sticky bottom bar's absence.** Measured `false` this run on a cold, no-scroll
-  load; this project's own law says a `SalonMobileBookBar` should be present. Whether that is a
-  genuine regression, a bar that mounts on a scroll/hydration trigger this script's 300ms settle
-  window didn't reach, or a measurement-script miss (e.g. the bar uses a CSS mechanism other than
-  `position: fixed`/`sticky` that the detector didn't match) was not root-caused this pass. Flagged
-  as the single highest-priority follow-up, not silently resolved either way.
+- **The salon-page sticky bottom bar's absence.** Measured `false` on both runs, on a cold,
+  no-scroll load; this project's own law says a `SalonMobileBookBar` should be present.
   **ROOT-CAUSED 2026-09-05, from the component, not the script.** `SalonMobileBookBar.tsx:69`
   returns null while `!hasConsented`, a deliberate change dated 2026-07-25 (comment in the same
   file): the bar sits at z-800 above the cookie banner and was eating the banner's taps, so it now
@@ -199,16 +235,16 @@ being not-measured (section 7): the seed customer `kunde@solen.ch` has no bookin
   salon page instead of the real staff-selection screen, because a generic "click the first visible
   button" motion probe and a same-DOM-order "Continue" lookup could each grab the wrong element
   inside a stateful wizard. The final script version verifies the cart actually gained an item and
-  checks the wizard never navigated off its own URL before trusting a step's numbers; this run's
-  data passed those checks, but the flow is timing-sensitive (relies on fixed waits, not true
+  checks the wizard never navigated off its own URL before trusting a step's numbers; run 3's data
+  passed those checks, but the flow is timing-sensitive (relies on fixed waits, not true
   network/render-idle signals) and could still flake on a slower machine or a future rebuild. Rerun
   and compare before trusting a single pass on a fast-changing booking screen.
 - **`contentUnitsFirstViewport` on search-results (reported 0).** The heuristic looks for a DOM
-  parent with 3+ direct children sharing a tag+class-prefix signature; it returned 0 despite the
-  page visibly rendering result cards, most likely because the actual card list isn't a flat
-  sibling group at any single DOM level this heuristic inspected. Treat this specific number as a
-  known miss, not evidence the page is empty (photo % 60.8% and text-element count on the same
-  screen contradict an empty read).
+  parent with 3+ direct children sharing a tag+class-prefix signature; it returned 0 on both runs
+  despite the page visibly rendering result cards, most likely because the actual card list isn't a
+  flat sibling group at any single DOM level this heuristic inspected. Treat this specific number as
+  a known miss, not evidence the page is empty (photo % 41.7% and a real text-element count on the
+  same screen contradict an empty read).
 - **Airbnb's booking/checkout flow and confirmation screen were not independently re-captured this
   pass.** The Airbnb citations here are limited to what already exists in
   `AIRBNB_SYSTEM_VS_OURS.md` (an account-screen deep dive) and `AIRBNB_TEARDOWN_2026-08-16.md` (an
@@ -330,5 +366,8 @@ Every number in sections 1-6 above carries its tag inline (a bare number with no
 `verified`; `assume`/`expect` is spelled out in the same sentence). Nothing in this document states
 a Fresha or Airbnb fact from memory: every citation traces to a `mobbin_url` inside an existing
 `_design-system/references/*.md` file, or to a `getComputedStyle`/`getBoundingClientRect` value
-this run's own script printed to `scripts/measure/out/solen-measurements.json`. Where neither kind
-of evidence existed for a cell, that cell says "not measured", not a plausible-sounding guess.
+one of this pass's two runs printed to `scripts/measure/out/solen-measurements.json` (run 3, a
+production build, for sections 1 through 4; run 4, a dev server, for sections 5 and 6, since the
+script overwrites that same path on every invocation and the production build cannot reach a
+signed-in screen at all). Where neither kind of evidence existed for a cell, that cell says "not
+measured", not a plausible-sounding guess.
