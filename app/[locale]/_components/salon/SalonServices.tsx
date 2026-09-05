@@ -134,7 +134,7 @@ export function SalonServices({
               onClick={() => setActiveCat(c)}
               size="sm"
             >
-              {c === "alle" ? "Alle" : capitalize(c)}
+              {c === "alle" ? t("allCategories") : capitalize(c)}
             </TabPill>
           ))}
         </div>

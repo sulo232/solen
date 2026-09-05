@@ -79,7 +79,7 @@ export function SalonMobileBookBar({
         href={bookingHref}
         className="font-body flex w-full items-center justify-center gap-2 rounded-full bg-s-ink py-3.5 text-[15px] font-semibold text-white transition-[colors,transform] hover:bg-black active:bg-black active:scale-[0.97] active:duration-[80ms] active:ease-glide"
       >
-        {t("bookAppointment")}
+        {t("bookNow")}
         <ChevronRight size={16} strokeWidth={1.9} />
       </Link>
     </div>,
