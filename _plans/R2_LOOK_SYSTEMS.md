@@ -451,8 +451,22 @@ seed row is the expected move, not fabrication (`CLAUDE.md` taste rule 1, in cap
 
 `tailwind.config.js:289` says `input: "16px"`. `LOCKFILE.md:580`, `SOURCE.md`'s radius table and
 `CLAUDE.md:140` all say 12, and the LOCKFILE row records that he kept the shipped 12 over 16 on
-2026-06-08. 37 live call sites. **Verdict: DECIDE.** Fix the token to 12; the three documents already
-agree with each other and with him, and this is a code-versus-doc defect, not a taste question.
+2026-06-08. 37 live call sites. ~~**Verdict: DECIDE.** Fix the token to 12; the three documents already
+agree with each other and with him, and this is a code-versus-doc defect, not a taste question.~~
+
+**CORRECTED 2026-09-06, measured:** none of the 37 `rounded-input` call sites is a native `<input>`,
+`<textarea>` or `<select>`, they are wrappers, avatars, photo thumbnails and modal shells. A native
+input's radius is set by a separate, unconditional rule in `app/globals.css`: the selector starting at
+line 434 (`input:not([type="checkbox"])...`, ten `:not()` clauses, plus textarea and select) sets
+`border-radius: 12px` at line 441, with no reference to `rounded-input` at all. Tailwind 3.4 compiles
+`@layer` to plain CSS with no real cascade layers, so that ten-clause selector out-specifies the single
+`.rounded-input` utility class. A section mockup at `/en/dev/directions-0905-r2/input-radius` measured
+both rows live at 358x56, radius 12px, border 1px solid `rgb(228,228,231)`, white, 16/400, zero console
+errors: every real input already renders 12. Fixing the token to 12 would move all 37 non-input
+elements to 12 and would change no input's rendered radius at all.
+
+**Verdict: DECIDE, flipped.** The token value stays; the record is corrected (LOCKFILE.md:582 note,
+WHAT_IS_MISSING G3) and the rename is parked in SUGGESTIONS.md.
 
 ---
 

@@ -43,6 +43,8 @@
 
 ## S9. `rounded-input` renders 16px on 37 sites while three documents and the owner say 12 , [code][mockup] | effort S | no lock
 
+**SUPERSEDED 2026-09-06, measured, do not apply.** Every native input already renders 12px (app/globals.css:441, a base rule that out-specifies the utility), and none of the 37 `rounded-input` sites is an input, so changing the token would move 37 wrappers and photos and no field. The live suggestion is S15 (rename the token). Kept for the record.
+
 - **what:** one token value. `input: "16px"` becomes `12px`.
 - **where:** `tailwind.config.js:289`. No document changes: the three that describe it already agree
   with each other.
@@ -148,6 +150,26 @@
   Treatwell 6). That one is his.
 - **effort:** S per row.
 - **source:** `research/WHAT_IS_MISSING_2026-09-05.md` G8, G12, G13, G14.
+
+## S15. Rename the rounded-input token , [code] | effort S | no lock
+
+- **what:** the token is 16px and sits on 37 non-input elements (wrappers, avatars, photo thumbnails,
+  modal shells) while native inputs get their 12px from a separate rule in `app/globals.css:441`
+  (inside the `@layer base` block starting `:434`, which out-specifies the single `.rounded-input`
+  utility since Tailwind 3.4 emits no real cascade layers). A rename to a name that says what it is,
+  the entity-card 16 that `CLAUDE.md:134` already locks, is a zero-visual-change mechanical sweep: no
+  element currently rendered with `rounded-input` changes size, only the class name changes.
+- **where:** `tailwind.config.js:289` plus the 37 call sites (list:
+  `scratchpad/r2/rounded-input-sites.txt`), none of which is a native `<input>`, `<textarea>` or
+  `<select>`.
+- **why:** a token whose name promises a value it never delivers is the same "value typed versus value
+  stated" defect `research/WHAT_IS_MISSING_2026-09-05.md` names throughout, just running the other
+  direction, the name is wrong rather than the number. Verified this run: `input:not([type=checkbox])
+  ...` in `app/globals.css:434` sets `border-radius: 12px` at `:441`, unconditionally, on every native
+  input/textarea/select, with no reference to `rounded-input` at all.
+- **effort:** S. Mechanical find-and-replace of the class name; no document changes, since none of the
+  three radius documents ever described a non-input element.
+- **source:** `research/WHAT_IS_MISSING_2026-09-05.md` G3 (corrected 2026-09-06).
 
 ---
 

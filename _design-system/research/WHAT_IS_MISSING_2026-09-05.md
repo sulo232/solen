@@ -88,8 +88,25 @@ One row per gap. "09-04?" says whether the 2026-09-04 answer already named it.
 | | |
 |---|---|
 | **The number** | `tailwind.config.js:289` `input: "16px"` (verified) against `_design-system/LOCKFILE.md:580` "`input` 12px ... Owner kept shipped 12 over 16, 2026-06-08", `_design-system/SOURCE.md`'s radius table "`rounded-input` 12px ... corrected here 2026-07-12", and `CLAUDE.md:140` "Height 48, radius **12**". **37** live uses of `rounded-input` (verified). So a control the owner personally settled on 2026-06-08 renders at the value he rejected, on every one of those 37 sites. |
-| **Belongs in** | `tailwind.config.js:289`. One line. No document changes; the three documents already agree with each other. |
+| **Belongs in** | No token change; the LOCKFILE gets a note, and the token rename is a suggestion (S15, see below). |
 | **09-04?** | No. Neither did `DESIGN_FILES_AUDIT.md`. New this run. |
+
+**CORRECTED 2026-09-06, measured:** the 37 sites are not native inputs. A native `<input>`, `<textarea>`
+or `<select>` gets its radius from a separate, unconditional rule in `app/globals.css`: the selector
+starting at line 434 (`input:not([type="checkbox"])...`, ten `:not()` clauses, plus textarea and
+select) sets `border-radius: 12px` at line 441, with no reference to `rounded-input` at all. Tailwind
+3.4 compiles `@layer` to plain CSS with no real cascade layers, so that ten-clause selector
+out-specifies the single `.rounded-input` utility class wherever both could apply. Grepping the 37 live
+`rounded-input` call sites under `app/`, `components/`, `components-legacy/`, `lib/` (list:
+`scratchpad/r2/rounded-input-sites.txt`) finds zero on an `<input>`, `<textarea>` or `<select>`: 24 are
+`<div>`, one `<span>`, one `<motion.*>`, one `<img>`, the rest sit inside className strings on
+wrappers. A section mockup built to check this live, `/en/dev/directions-0905-r2/input-radius`, renders
+both its rows at 358x56, radius 12px, border 1px solid `rgb(228,228,231)`, white, 16/400, zero console
+errors. So the gap was a token-naming defect, not a rendered one: every real input already matches the
+three documents and the owner's 2026-06-08 call. `rounded-input` is a misnamed second 16px radius token
+that has never once reached an input. Changing its value to 12 would move all 37 non-input elements
+(wrappers, avatars, photo thumbnails, modal shells) and would change no field's rendered radius at all.
+~~The fix is one line in `tailwind.config.js`.~~
 
 ### G4. `elevation-2` is defined twice with two different values, and the LOCKFILE asserts an equality the config does not hold
 
@@ -247,7 +264,8 @@ Every line here was checked this run. Writing any of these again is duplication,
 ## The one-sentence answer, for the reply and not only for this file
 
 Nothing is missing from the law; what is missing is that **the value a builder types and the value the
-law states are different values**, in at least five places measured this run (radius 99 vs 16, input 16
-vs 12, elevation-2 two ways, CTA 14 vs 15, and a status badge whose own shipped colours break the taste
-rule that describes it), and no check compares the two, so thirty mockups obeyed the tokens, passed every
-gate, and landed on the wrong side of the law.
+law states are different values**, in at least four rendered places measured this run (radius 99 vs 16,
+elevation-2 two ways, CTA 14 vs 15, and a status badge whose own shipped colours break the taste rule
+that describes it) plus one naming defect (a token called input that no input renders), and no check
+compares the two, so thirty mockups obeyed the tokens, passed every gate, and landed on the wrong side
+of the law.
