@@ -136,10 +136,30 @@ const BOOKING_ID_UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-
  * (and anything else) earlier in `middleware()`, so the rewritten render still knows the
  * real request; `locale` comes from getLocaleFromRequest so the 404 renders in the
  * visitor's own language.
+ *
+ * notfound-404-f (2026-09-05): the destination's HOST still comes from request.nextUrl (never
+ * from the request's own Host/x-forwarded-proto headers, see the deviation note in this
+ * round's report), because Next's own internal-vs-external check for a middleware rewrite
+ * (node_modules/next/dist/shared/lib/router/utils/relativize-url.js: a strict string equality
+ * between the destination's origin and the server's own "initUrl") is built entirely from the
+ * running server's own bind address (node_modules/next/dist/server/lib/router-utils/
+ * resolve-routes.js ~line 101-104: opts.hostname/opts.port), never from a client-sent header,
+ * since this project's next.config.mjs has no experimental.trustHostHeader; building the host
+ * from the client's Host header instead was measured, live, to make Next treat the rewrite as
+ * an EXTERNAL one and actually fetch whatever domain that header names over the real network
+ * (confirmed by real Cloudflare response headers coming back for a `Host: example.com` test),
+ * an SSRF-shaped hole since Host is attacker-controlled input. The actual reproduction (`next
+ * start -p 3480 -H 127.0.0.1`) was isolated to the PROTOCOL alone: `X-Forwarded-Proto: https`
+ * with no Host override still 500s, while `Host: example.com` with no forwarded-proto override
+ * still 404s cleanly, so only the protocol was ever the problem, never the host. The fix is to
+ * stop trusting `x-forwarded-proto` for this one internal hop and hardcode `http`, since the
+ * rewrite never actually leaves the same process; the destination host keeps coming from
+ * request.nextUrl.host, the one source in this measurement that is never client-influenced.
  */
 function render404(request: NextRequest): NextResponse {
   const locale = getLocaleFromRequest(request);
-  return NextResponse.rewrite(new URL(`/${locale}/__404/__404/__404/__404`, request.url), {
+  const destination = new URL(`/${locale}/__404/__404/__404/__404`, `http://${request.nextUrl.host}`);
+  return NextResponse.rewrite(destination, {
     request: { headers: request.headers },
   });
 }
