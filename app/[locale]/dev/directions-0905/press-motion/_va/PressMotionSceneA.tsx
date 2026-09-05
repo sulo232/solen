@@ -154,11 +154,19 @@ export default function PressMotionSceneA({ salon }: { salon: SeedSalon | null }
   const [durationIndex, setDurationIndex] = React.useState(0);
   const [sheetOpen, setSheetOpen] = React.useState(false);
 
-  const realDurations = (salon?.services ?? [])
+  // Keyed by the real service id, not the label: two real seeded services can share the
+  // same duration ("30 min" twice), and keying by label produced a repeating React
+  // duplicate-key console error on every load (punch item, 2026-09-05). The fallback list
+  // (no live salon) has no service id, so it keys by its own fixed index instead, which is
+  // stable because that array is a hardcoded literal, never reordered.
+  const realDurationPills = (salon?.services ?? [])
     .slice(0, 4)
-    .map((s) => `${s.duration_minutes} min`);
-  const fallbackDurations = ["30 min", "45 min", "60 min", "90 min"];
-  const pills = realDurations.length > 0 ? realDurations : fallbackDurations;
+    .map((s) => ({ key: s.id, label: `${s.duration_minutes} min` }));
+  const fallbackDurationPills = ["30 min", "45 min", "60 min", "90 min"].map((label, i) => ({
+    key: `fallback-${i}`,
+    label,
+  }));
+  const pills = realDurationPills.length > 0 ? realDurationPills : fallbackDurationPills;
 
   return (
     <div className="bg-white pb-24">
@@ -188,14 +196,14 @@ export default function PressMotionSceneA({ salon }: { salon: SeedSalon | null }
 
       <StripLabel>TabPill row (an instant fill swap, then a scale tick)</StripLabel>
       <div className="flex flex-wrap gap-2 px-4 py-5">
-        {pills.map((label, i) => (
+        {pills.map((entry, i) => (
           <PressPillA
-            key={label}
+            key={entry.key}
             id={i === 1 ? "pma-pill-second" : undefined} // plural-ok: DOM id for capture selector, not user copy
             active={durationIndex === i}
             onClick={() => setDurationIndex(i)}
           >
-            {label}
+            {entry.label}
           </PressPillA>
         ))}
       </div>

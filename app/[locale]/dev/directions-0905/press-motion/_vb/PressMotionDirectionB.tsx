@@ -47,9 +47,11 @@
 // non-gesture UI spring and can be flicked closed by release velocity (./SpringSheet.tsx);
 // see that file's own header for the LOCKFILE citations behind each of its numbers.
 //
-// floors (customer-facing motion kit, FLOORS LAW's finished-screen pass): (a) photographic
-// focal = the real seeded salon's cover photo inside SalonCard; (b) one clearly biggest
-// element = the 28px "Spring" page title (the display anchor, FLOORS LAW 6); (c) a real
+// floors: this is a component and motion demo page under /dev, not a discovery/search/PDP/
+// booking/checkout/profile screen, so FLOORS LAW's customer-screen scope (including the
+// display-anchor floor) does not bind the page as a whole, same scoping direction C's own
+// header states; the type budget (<=4 sizes, <=2 weights) still does and is measured live.
+// (a) photographic focal = the real seeded salon's cover photo inside SalonCard; (c) a real
 // tabular number = the seeded service's CHF price, tabular-nums, both in the salon card and
 // the sheet's service row; (d) a semantic-colour moment = the green success-toast badge
 // (`s-success` circle-badge, Toast.tsx's own tone treatment) fired by the primary button and
@@ -108,7 +110,7 @@ export default function PressMotionDirectionB({ salon }: PressMotionDirectionBPr
   return (
     <div className="mx-auto flex max-w-[402px] flex-col gap-10 px-4 pb-32 pt-6">
       <section className="flex flex-col gap-2">
-        <h2 className="font-heading text-[28px] font-semibold leading-tight text-s-ink">
+        <h2 className="font-heading text-[15px] font-semibold leading-tight text-s-ink">
           Spring
         </h2>
         <p className="text-[14px] leading-[1.4] text-s-ink-2">

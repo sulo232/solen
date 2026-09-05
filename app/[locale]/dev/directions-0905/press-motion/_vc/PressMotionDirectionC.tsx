@@ -41,8 +41,16 @@
 // a plain-surface button is outside the elevation guidance elsewhere in this system, kept here
 // on purpose because the whole direction needs something to lose on press (DepthButton.tsx).
 // (2) the pill row's underline replaces the real TabPill's locked calm-gray fill, built as a
-// copy rather than an edit for exactly that reason (PressPillRow.tsx). Neither touches the real
-// shared primitive.
+// copy rather than an edit for exactly that reason (PressPillRow.tsx). (3) the salon card gets a
+// SECOND shadow wrapped around the real, unmodified SalonCard so it too has a losable resting
+// elevation (the punch item: "every button/card carries a losable resting elevation"), same
+// whisper-shadow trade as (1), applied one layer outside the card instead of inside it
+// (TiltCard.tsx). None of the three touch a real shared primitive.
+//
+// REPAIR PASS (2026-09-05): TiltCard.tsx's pointer-tracked tilt previously rendered no motion at
+// all under a synchronous automated check (root cause and fix documented in that file's own
+// header); it is now driven by direct synchronous DOM writes during drag and a SPRING_GENTLE
+// release, and it now also carries the elevation-loss treatment named in conflict (3) above.
 //
 // floors: this is a component and motion demo page under /dev, not a discovery/search/PDP/
 // booking/checkout/profile screen, so FLOORS LAW's customer-screen scope does not bind the page

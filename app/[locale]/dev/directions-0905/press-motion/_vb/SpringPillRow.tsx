@@ -23,14 +23,14 @@
 // Depicts: pill row anatomy (radius, height, colors, weights) -> TabPill.tsx (copied).
 // Depicts: sort labels (Recommended, Price, Rating, Distance) -> NET-NEW: generic demo labels for this motion kit, not a real filter surface's live copy, no counts or invented data.
 //
-// Focus treatment: the design contract locks "Buttons and links keep the global 2px ink
-// outline. No halo, ever." (CLAUDE.md, focus row), the same ink-edge focus affordance
-// TabPill.tsx itself ships (a width-2 ink-colored outline, offset 2, on focus-visible).
-// Written here via a Tailwind arbitrary-property declaration for the width rather than
-// the shorthand numbered utility, since the class-form no-focus-ring gate refuses that
-// numbered utility on sight regardless of color (its raw-CSS sibling pattern does carry
-// an ink-color exception, this one does not). Same rendered CSS, not a new ring, not a
-// halo, not a workaround of the gate's intent, only of a gap in its class-token spelling.
+// Focus treatment: none added on this control. The design contract locks focus globally
+// in app/globals.css (the 2px ink outline, no halo, "tapping it changes NOTHING visible"
+// otherwise); no control adds its own focus styling on top of that, so this file declares
+// none, same as the real TabPill.tsx's own buttons rely on the global rule rather than a
+// per-component one. A per-control focus-visible declaration was here in an earlier pass
+// specifically to get a numbered outline utility past the armed no-focus-ring gate (by
+// this comment's own prior wording); that was code written to evade a gate, a defect on
+// its own regardless of the rendered color, and it is removed rather than reworded.
 //
 // Sources: _design-system/references/21st-dev--motion-kit.md ("In-place option/pill
 // select" measured the SELECT itself: 150ms cubic-bezier(0.4,0,0.2,1), an exact match to
@@ -58,11 +58,6 @@ interface SpringPillRowProps {
  *  per row). */
 const LAYOUT_ID = "press-motion-b-pill-fill";
 
-const FOCUS_RING = cn(
-  "focus-visible:outline focus-visible:outline-s-ink",
-  "focus-visible:[outline-width:2px] focus-visible:outline-offset-2",
-);
-
 export function SpringPillRow({ options, active, onChange }: SpringPillRowProps) {
   const reduce = useReducedMotion();
 
@@ -84,7 +79,6 @@ export function SpringPillRow({ options, active, onChange }: SpringPillRowProps)
             className={cn(
               "relative inline-flex h-11 shrink-0 select-none items-center whitespace-nowrap",
               "rounded-[16px] border px-4 font-body text-[13px]",
-              FOCUS_RING,
               isActive
                 ? "border-s-bg-sunken font-semibold text-s-ink"
                 : "border-s-border bg-white font-medium text-s-ink-2 hover:text-s-ink",
