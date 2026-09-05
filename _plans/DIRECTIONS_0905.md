@@ -19,33 +19,33 @@ push, ever.
 
 ## Boxes
 
-- [x] CORRECTION: the 2026-09-04 micro-mockup batch is rejected as a format
-  - [x] graveyard line written (REMOVED.md) in his words (2026-09-05 04:05, `npm run removed`, entry "mockups-0904 micro-treatment index")
-  - [x] the /en/dev/mockups-0904 index is no longer offered to him (files stay in git, unlinked; not in any reply since)
-- [x] Readback of every ask sent as the first lines of the reply (seven numbered lines, 2026-09-05 04:20)
-- [x] Harden (category 1, his own words), ~/.claude/hooks/mockup-variations.py, already wired on UserPromptSubmit
-  - [x] fires on "all mockups" / "all the screens" with no variation word (the 2026-09-04 goal wording that produced the rejected batch)
-  - [x] the injected note names the rejected micro-tweak format and the whole-screen-times-three-directions unit
-  - [x] self-test 19/19: case 16 (the goal wording, fires), case 17 (today's dictated message, fires), case 18 (a folder deletion, silent)
-- [x] 21st.dev MCP: status reported to him (not connected, key missing or reset, the paste is his); the public site is researched by the motion helper in a browser
+- [x] CORRECTION: the 2026-09-04 micro-mockup batch is rejected as a format (commit d780f0f84)
+  - [x] graveyard line written (REMOVED.md) in his words (2026-09-05 04:05, `npm run removed`, entry "mockups-0904 micro-treatment index", _design-system/REMOVED.md:142, commit d780f0f84)
+  - [x] the /en/dev/mockups-0904 index is no longer offered to him (files stay in git, unlinked; verified: no /mockups-0904 link in any reply since 04:20, the only links sent were none)
+- [x] Readback of every ask sent as the first lines of the reply (seven numbered lines, 2026-09-05 04:20; verified: the reply opens with "Read back, what I understood:" then items 1 to 7)
+- [x] Harden (category 1, his own words), ~/.claude/hooks/mockup-variations.py, already wired on UserPromptSubmit (~/.claude/settings.json:996; verified: `python3 ~/.claude/hooks/mockup-variations.py --selftest` prints 19/19)
+  - [x] fires on "all mockups" / "all the screens" with no variation word (the 2026-09-04 goal wording that produced the rejected batch; mockup-variations.py BULK_VARIATION, the `\\ball (the |of the )?(mock ?ups?|screens?|pages?|surfaces?)` arm)
+  - [x] the injected note names the rejected micro-tweak format and the whole-screen-times-three-directions unit (mockup-variations.py, the "THE UNIT IS A WHOLE SCREEN, NOT A TWEAK" paragraph in additionalContext)
+  - [x] self-test 19/19: case 16 (the goal wording, fires), case 17 (today's dictated message, fires), case 18 (a folder deletion, silent); verified: selftest output ends "19/19"
+- [x] 21st.dev MCP: status reported to him (not connected, key missing or reset, the paste is his; verified: the session's MCP list reports magic (-32001) "Not authenticated - your API key is missing or was reset"); the public site is researched by the motion helper in a browser
 - [ ] Reference capture, real captures only
-  - [x] Fresha structure: booking flow steps (services, professional, time, review) (Mobbin stills, cited per screen; fresha--*.md, 2026-09-05 09:50; no live pull, desktop-width only for search and home)
+  - [x] Fresha structure: booking flow steps (services, professional, time, review) (Mobbin stills, cited per screen; fresha--*.md, 2026-09-05 09:50; no live pull, desktop-width only for search and home; commit 62b95bc5d)
   - [x] Fresha structure: booking confirmation screen (his named example) (Mobbin stills, cited per screen; fresha--*.md, 2026-09-05 09:50; no live pull, desktop-width only for search and home)
   - [x] Fresha structure: venue (salon) page (Mobbin stills, cited per screen; fresha--*.md, 2026-09-05 09:50; no live pull, desktop-width only for search and home)
   - [x] Fresha structure: search results (Mobbin stills, cited per screen; fresha--*.md, 2026-09-05 09:50; no live pull, desktop-width only for search and home)
   - [x] Fresha structure: home (Mobbin stills, cited per screen; fresha--*.md, 2026-09-05 09:50; no live pull, desktop-width only for search and home)
-  - [x] Airbnb look: listing page, checkout and confirmation, search results, and one consolidated look recipe with a port map to our tokens and named conflicts with the lockfile (live airbnb.com at 390 via Playwright, confirmation from Mobbin stills; 18 numbers, 6 named conflicts; airbnb--look-recipe.md, 2026-09-05 10:00)
-  - [ ] Airbnb motion: card to page, sheet open and close, press states, category switch, back, measured ms and easing from video and animations.json
-  - [ ] 21st.dev motion kit: 6 to 10 components that fit a booking flow, timings measured, source kept
-  - [ ] Standing comparison document Solen vs Fresha vs Airbnb per surface, differences ranked by what a customer notices, plus a re-runnable measure script for the Solen column
+  - [x] Airbnb look: listing page, checkout and confirmation, search results, and one consolidated look recipe with a port map to our tokens and named conflicts with the lockfile (live airbnb.com at 390 via Playwright, confirmation from Mobbin stills; 18 numbers, 6 named conflicts; airbnb--look-recipe.md, commit db44eb92d)
+  - [ ] (running: motion helper, started 04:10, Playwright on airbnb.com) Airbnb motion: card to page, sheet open and close, press states, category switch, back, measured ms and easing from video and animations.json
+  - [ ] (running: same motion helper, public 21st.dev site) 21st.dev motion kit: 6 to 10 components that fit a booking flow, timings measured, source kept
+  - [ ] (running: comparison helper, script landed at scripts/measure/compare-solen.mjs, document pending) Standing comparison document Solen vs Fresha vs Airbnb per surface, differences ranked by what a customer notices, plus a re-runnable measure script for the Solen column
 - [x] Taste log: dated 2026-09-05 entry with his verbatim words (look Airbnb not completely; placement Fresha base; confirmation copied from Fresha); the CLAUDE.md source-of-truth block amended with the same date (commit d780f0f84)
 - [ ] Mockups, wave 1, at /en/dev/directions-0905/<surface>?v=a|b|c, each a real-component copy with seeded data, English, three genuinely different directions
-  - [ ] booking confirmation screen: 3 directions (Fresha anatomy, Airbnb look, ours underneath)
-  - [ ] booking flow steps with the motion BETWEEN steps: 3 directions, each proven on video
-  - [ ] salon page: 3 directions
-  - [ ] search results: 3 directions
-  - [ ] home: 3 directions
-  - [ ] click and press motion kit (button, card, pill, sheet): 3 directions, each proven on video
+  - [ ] (queued behind the motion specs) booking confirmation screen: 3 directions (Fresha anatomy, Airbnb look, ours underneath)
+  - [ ] (queued behind the motion specs) booking flow steps with the motion BETWEEN steps: 3 directions, each proven on video
+  - [ ] (running: workflow wew5dwyft, 3 builders since 10:20) salon page: 3 directions
+  - [ ] (running: workflow wew5dwyft, 3 builders since 10:20) search results: 3 directions
+  - [ ] (running: workflow wew5dwyft, 3 builders since 10:20) home: 3 directions
+  - [ ] (queued behind the motion specs) click and press motion kit (button, card, pill, sheet): 3 directions, each proven on video
   - [ ] one index page stacking the directions per surface with the recommendation and the one line that flips it
   - [ ] one read-only critic per surface, one arbiter across the set; repaired once where a direction fails compliance
 - [ ] Verify: cold-load health on every link at phone width, screenshots, videos for the motion directions

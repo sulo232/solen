@@ -231,6 +231,19 @@ function collectMetricsInPage(args) {
   };
 }
 
+async function collectTransitionDurations(page) {
+  return page
+    .evaluate(() => {
+      const set = new Set();
+      document.querySelectorAll('body *').forEach((el) => {
+        const d = getComputedStyle(el).transitionDuration;
+        if (d && d !== '0s') set.add(d);
+      });
+      return Array.from(set).slice(0, 15);
+    })
+    .catch(() => []);
+}
+
 async function measureMotion(page) {
   const destructive = /delete|l.schen|cancel|stornieren|remove|entfernen|logout|abmelden|log out/i;
   let clicked = false;
@@ -251,24 +264,27 @@ async function measureMotion(page) {
   }
   await page.waitForTimeout(350);
   const animationsAfterTap = await page.evaluate(() => document.getAnimations().length).catch(() => null);
-  const transitionDurations = await page
-    .evaluate(() => {
-      const set = new Set();
-      document.querySelectorAll('body *').forEach((el) => {
-        const d = getComputedStyle(el).transitionDuration;
-        if (d && d !== '0s') set.add(d);
-      });
-      return Array.from(set).slice(0, 15);
-    })
-    .catch(() => []);
+  const transitionDurations = await collectTransitionDurations(page);
   return { tappedSomething: clicked, animationsAfterTap, transitionDurations };
 }
 
-async function measureCurrentPage(page, label, notes = []) {
+async function measureCurrentPage(page, label, notes = [], opts = {}) {
+  const { skipMotionTap = false } = opts;
   await page.waitForTimeout(300);
   const metrics = await page.evaluate(collectMetricsInPage, [VIEWPORT.width, VIEWPORT.height]);
-  const motion = await measureMotion(page);
-  return { screen: label, tag: 'verified', notes, url: page.url(), ...metrics, motion };
+  // Capture the URL BEFORE any motion tap: a tap can navigate (e.g. a card link), and the
+  // report must describe the screen the static metrics actually came from, not wherever the
+  // tap happened to land.
+  const url = page.url();
+  const motion = skipMotionTap
+    ? {
+        tappedSomething: false,
+        animationsAfterTap: null,
+        transitionDurations: await collectTransitionDurations(page),
+        skippedReason: 'mid-flow step: a probe tap risks corrupting booking-wizard state; animation-count-after-tap not measured here, transition-duration values are still real computed styles',
+      }
+    : await measureMotion(page);
+  return { screen: label, tag: 'verified', notes, url, ...metrics, motion };
 }
 
 async function coldContext(browser) {
@@ -278,6 +294,69 @@ async function coldContext(browser) {
 function notMeasured(screen, g) {
   console.error(refusal(g.url, g));
   return { screen, tag: 'not-measured', reason: g.reason, attemptedUrl: g.url, status: g.status };
+}
+
+// A cookie-consent banner's own "Accept/Continue" control can sit earlier in the DOM than the
+// booking wizard's sticky bar, so a generic `button:has-text("Continue")` lookup can click the
+// banner instead of the wizard. Dismiss it once, right after guardedGoto/_measure-guard proves
+// the real page loaded, before any further interaction.
+async function dismissCookieBanner(page) {
+  await page.waitForTimeout(400);
+  const clicked = await page
+    .evaluate(() => {
+      const words = /accept|akzeptieren|zustimmen|alle akzeptieren|got it|einverstanden/i;
+      const btn = Array.from(document.querySelectorAll('button')).find(
+        (b) => words.test(b.textContent || '') && b.offsetParent !== null
+      );
+      if (btn) {
+        btn.click();
+        return true;
+      }
+      return false;
+    })
+    .catch(() => false);
+  if (clicked) await page.waitForTimeout(300);
+  return clicked;
+}
+
+// addFirstServiceToCart: clicks inside a wizard page that guardedGoto (see _measure-guard.mjs
+// above) already proved is real. Handles the ServiceDetailSheet that opens for a service with
+// addons/required options. Clicks fire via real DOM .click() calls in the page so React's event
+// delegation picks them up. Returns true only if the cart summary shows a non-zero item count
+// afterward: prove behavior, not existence, applied to a script step instead of a product filter.
+async function addFirstServiceToCart(page) {
+  const clicked = await page.evaluate(() => {
+    const addButtons = Array.from(document.querySelectorAll('[aria-label]')).filter((b) =>
+      /^add$/i.test(b.getAttribute('aria-label') || '')
+    );
+    if (!addButtons.length) return false;
+    addButtons[0].click();
+    return true;
+  });
+  if (!clicked) return false;
+  await page.waitForTimeout(450);
+
+  // A sheet may have opened (required option or addons). Pick a first option, then Done.
+  await page.evaluate(() => {
+    const doneBtn = Array.from(document.querySelectorAll('button')).find((b) => /^\s*done\s*$/i.test(b.textContent || ''));
+    if (!doneBtn) return;
+    const container =
+      doneBtn.closest('[role="dialog"]') || doneBtn.parentElement?.parentElement?.parentElement || document.body;
+    const candidates = Array.from(container.querySelectorAll('button')).filter(
+      (b) => b !== doneBtn && !/remove|close/i.test(b.textContent || '') && b.offsetParent !== null
+    );
+    if (candidates.length) candidates[0].click();
+  });
+  await page.waitForTimeout(300);
+  await page.evaluate(() => {
+    const doneBtn = Array.from(document.querySelectorAll('button')).find((b) => /^\s*done\s*$/i.test(b.textContent || ''));
+    if (doneBtn) doneBtn.click();
+  });
+  await page.waitForTimeout(450);
+
+  const cartText = await page.evaluate(() => document.body.innerText).catch(() => '');
+  if (process.env.DEBUG_MEASURE) console.error('DEBUG cartText snippet:', JSON.stringify(cartText.slice(0, 400)));
+  return /[1-9]\d*\s*item/i.test(cartText);
 }
 
 // ---------------------------------------------------------------------------
@@ -316,11 +395,26 @@ async function run() {
   }
 
   // --- booking flow: services -> staff -> time -> review, one continuous cold context ---
+  // Every intermediate step skips the motion-probe tap (skipMotionTap: true): a stray click
+  // inside a stateful wizard can derail the whole sequence (this bit a first attempt at this
+  // script, see git history), so animation-count-after-tap is only measured on the standalone
+  // screens where a click discards a whole-context page anyway.
   {
     const bookingCtx = await coldContext(browser);
     const page = await bookingCtx.newPage();
     const startUrl = `${BASE_URL}/en/salon/${TEST_SALON_SLUG}/booking`;
     const g0 = await guardedGoto(page, startUrl, { expectSelector: 'main', minElements: 10 });
+
+    // The wizard is a client-side state machine on ONE url; if a click ever navigates us off
+    // that url, the flow derailed (e.g. an exit control was hit instead of "Continue") and
+    // every step after that point would silently measure the wrong screen. Stop and say so
+    // rather than keep measuring: not-measured beats a mislabeled screen.
+    function derailed() {
+      return stripSlash(page.url()) !== stripSlash(startUrl);
+    }
+    function stripSlash(u) {
+      return u.replace(/\/+$/, '');
+    }
 
     if (!g0.ok) {
       results.push(notMeasured('booking-services', g0));
@@ -329,79 +423,127 @@ async function run() {
       results.push({ screen: 'booking-review', tag: 'not-measured', reason: 'blocked: services step failed to load' });
     } else {
       try {
+        // Dismiss any cookie-consent banner FIRST: its own "Accept" control can otherwise be
+        // the element a generic `button:has-text("Continue")` lookup clicks instead of the
+        // wizard's real sticky-bar Continue button, silently derailing every step after it.
+        await dismissCookieBanner(page);
+
         // Step 1: services-staff step.
-        results.push(await measureCurrentPage(page, 'booking-services'));
+        results.push(await measureCurrentPage(page, 'booking-services', [], { skipMotionTap: true }));
 
-        // Add a service to the cart: any element whose aria-label matches "add" (English UI).
-        const addBtn = await page.$('[aria-label i="add"]').catch(() => null);
-        if (addBtn) {
-          await addBtn.click({ timeout: 2000 }).catch(() => {});
-          await page.waitForTimeout(300);
-        }
-        const continue1 = await page.$('button:has-text("Continue")');
-        if (continue1) await continue1.click({ timeout: 2000 }).catch(() => {});
-        await page.waitForTimeout(600);
-
-        // Step 2: staff (skipped by the wizard if the salon has <=1 staff; "Any" is
-        // pre-selected by default, so if this step renders the continue button is already live).
-        const staffHeading = await page.$('text=/stylist|staff|mitarbeiter/i').catch(() => null);
-        if (staffHeading) {
-          results.push(await measureCurrentPage(page, 'booking-staff'));
-          const continue2 = await page.$('button:has-text("Continue")');
-          if (continue2) await continue2.click({ timeout: 2000 }).catch(() => {});
-          await page.waitForTimeout(600);
+        const addedToCart = await addFirstServiceToCart(page);
+        if (process.env.DEBUG_MEASURE) console.error('DEBUG addedToCart:', addedToCart, 'url:', page.url());
+        if (!addedToCart || derailed()) {
+          const reason = derailed()
+            ? `wizard navigated to ${page.url()} instead of adding to cart`
+            : 'clicking the first "Add" control never produced a non-zero cart item count (selector or sheet-flow mismatch)';
+          results.push({ screen: 'booking-staff', tag: 'not-measured', reason });
+          results.push({ screen: 'booking-time', tag: 'not-measured', reason });
+          results.push({ screen: 'booking-review', tag: 'not-measured', reason });
         } else {
-          results.push({
-            screen: 'booking-staff',
-            tag: 'not-measured',
-            reason: 'staff step did not render (wizard auto-advanced, this salon likely has 1 staff member or the DOM markers changed)',
+          const continue1 = await page.$('button:has-text("Continue")');
+          if (process.env.DEBUG_MEASURE) {
+            const disabledAttr = continue1 ? await continue1.getAttribute('disabled').catch(() => 'N/A') : 'no-button-found';
+            console.error('DEBUG continue1 found:', !!continue1, 'disabled attr:', disabledAttr);
+          }
+          if (continue1) await continue1.click({ timeout: 2000 }).catch((e) => {
+            if (process.env.DEBUG_MEASURE) console.error('DEBUG continue1 click error:', String(e).slice(0, 200));
           });
-        }
-
-        // Step 3: datetime
-        results.push(await measureCurrentPage(page, 'booking-time'));
-
-        // Pick a date: first enabled date-strip button (aria-pressed attr present, not disabled).
-        const dateBtn = await page.$('button[aria-pressed="false"]:not([disabled])').catch(() => null);
-        if (dateBtn) {
-          await dateBtn.click({ timeout: 2000 }).catch(() => {});
-          await page.waitForTimeout(1000); // slots fetch
-        }
-        // Pick a time slot: first available option in the listbox.
-        const slotOptions = await page.$$('[role="listbox"] [role="option"]');
-        let pickedSlot = false;
-        for (const opt of slotOptions) {
-          const disabled = await opt.getAttribute('aria-disabled').catch(() => null);
-          const label = (await opt.getAttribute('aria-label').catch(() => '')) || '';
-          if (disabled === 'true' || /unavailable|nicht verf.gbar/i.test(label)) continue;
-          await opt.click({ timeout: 2000 }).catch(() => {});
-          pickedSlot = true;
-          break;
-        }
-        await page.waitForTimeout(400);
-        const continue3 = await page.$('button:has-text("Continue")');
-        if (pickedSlot && continue3) {
-          await continue3.click({ timeout: 2000 }).catch(() => {});
           await page.waitForTimeout(700);
-        }
+          if (process.env.DEBUG_MEASURE) {
+            const bodyTxt = await page.evaluate(() => document.body.innerText.slice(0, 300)).catch(() => '');
+            console.error('DEBUG after continue1 click, url:', page.url(), 'body snippet:', JSON.stringify(bodyTxt));
+          }
 
-        // Optional hair step may appear between datetime and pay-confirm; skip it generically.
-        const payMarker = await page.$('text=/pay|bezahlen|summary|zusammenfassung/i').catch(() => null);
-        const continueHair = await page.$('button:has-text("Continue")');
-        if (continueHair && !payMarker) {
-          await continueHair.click({ timeout: 2000 }).catch(() => {});
-          await page.waitForTimeout(700);
-        }
+          if (derailed()) {
+            const reason = `wizard navigated to ${page.url()} after clicking Continue on the services step`;
+            results.push({ screen: 'booking-staff', tag: 'not-measured', reason });
+            results.push({ screen: 'booking-time', tag: 'not-measured', reason });
+            results.push({ screen: 'booking-review', tag: 'not-measured', reason });
+          } else {
+            // Step 2: staff (skipped by the wizard if the salon has <=1 staff; "Any" is
+            // pre-selected by default, so if this step renders the continue button is live).
+            const staffHeading = await page.$('text=/stylist|staff|mitarbeiter/i').catch(() => null);
+            if (staffHeading) {
+              results.push(await measureCurrentPage(page, 'booking-staff', [], { skipMotionTap: true }));
+              const continue2 = await page.$('button:has-text("Continue")');
+              if (continue2) await continue2.click({ timeout: 2000 }).catch(() => {});
+              await page.waitForTimeout(700);
+            } else {
+              results.push({
+                screen: 'booking-staff',
+                tag: 'not-measured',
+                reason: 'staff step did not render (wizard auto-advanced, this salon likely has 1 staff member or the DOM markers changed)',
+              });
+            }
 
-        // Step 4: review / pay-confirm summary. Measured but NEVER submitted (no card entry,
-        // no submit-pay click) -- this is the hard stop named in the brief.
-        results.push(
-          await measureCurrentPage(page, 'booking-review', [
-            pickedSlot
-              ? 'pay-confirm summary screen; Stripe payment step itself was never submitted (hard stop, no money spent)'
-              : 'no bookable slot was found to select, so this may still be the datetime step rather than the true review/pay-confirm screen: verify screen field before trusting the numbers',
-          ])
-        );
+            if (derailed()) {
+              const reason = `wizard navigated to ${page.url()} instead of reaching the datetime step`;
+              results.push({ screen: 'booking-time', tag: 'not-measured', reason });
+              results.push({ screen: 'booking-review', tag: 'not-measured', reason });
+            } else {
+              // Step 3: datetime
+              results.push(await measureCurrentPage(page, 'booking-time', [], { skipMotionTap: true }));
+
+              // Pick a date: first enabled date-strip button (aria-pressed present, not disabled).
+              const dateBtn = await page.$('button[aria-pressed="false"]:not([disabled])').catch(() => null);
+              if (dateBtn) {
+                await dateBtn.click({ timeout: 2000 }).catch(() => {});
+                await page.waitForTimeout(1100); // slots fetch
+              }
+              // Pick a time slot: first available option in the listbox.
+              const slotOptions = await page.$$('[role="listbox"] [role="option"]');
+              let pickedSlot = false;
+              for (const opt of slotOptions) {
+                const disabled = await opt.getAttribute('aria-disabled').catch(() => null);
+                const label = (await opt.getAttribute('aria-label').catch(() => '')) || '';
+                if (disabled === 'true' || /unavailable|nicht verf.gbar/i.test(label)) continue;
+                await opt.click({ timeout: 2000 }).catch(() => {});
+                pickedSlot = true;
+                break;
+              }
+              await page.waitForTimeout(400);
+              const continue3 = await page.$('button:has-text("Continue")');
+              if (pickedSlot && continue3) {
+                await continue3.click({ timeout: 2000 }).catch(() => {});
+                await page.waitForTimeout(800);
+              }
+
+              // Optional hair step may appear between datetime and pay-confirm; skip it generically.
+              const payMarker = await page.$('text=/pay|bezahlen|summary|zusammenfassung/i').catch(() => null);
+              const continueHair = await page.$('button:has-text("Continue")');
+              if (continueHair && !payMarker) {
+                await continueHair.click({ timeout: 2000 }).catch(() => {});
+                await page.waitForTimeout(800);
+              }
+
+              if (derailed()) {
+                results.push({
+                  screen: 'booking-review',
+                  tag: 'not-measured',
+                  reason: `wizard navigated to ${page.url()} instead of reaching the review/pay-confirm step`,
+                });
+              } else if (!pickedSlot) {
+                results.push({
+                  screen: 'booking-review',
+                  tag: 'not-measured',
+                  reason: 'no bookable slot was available to select, so the flow could not advance past the datetime step',
+                });
+              } else {
+                // Step 4: review / pay-confirm summary. Measured but NEVER submitted (no card
+                // entry, no submit-pay click) -- the hard stop named in the brief.
+                results.push(
+                  await measureCurrentPage(
+                    page,
+                    'booking-review',
+                    ['pay-confirm summary screen; the Stripe payment step itself was never submitted (hard stop, no money spent)'],
+                    { skipMotionTap: true }
+                  )
+                );
+              }
+            }
+          }
+        }
       } catch (e) {
         results.push({ screen: 'booking-flow', tag: 'not-measured', reason: `interaction failed mid-flow: ${String(e).slice(0, 300)}` });
       }
