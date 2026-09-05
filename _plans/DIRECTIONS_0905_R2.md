@@ -14,7 +14,7 @@ Round 1: `DIRECTIONS_0905.md` (30 directions, index at /en/dev/directions-0905).
 - [ ] 2. Click and press kit: direction A is the press recipe for round 2
   - [ ] 2a. every round-2 mockup uses A's press motion (scale to 1 with no overshoot, 300ms swaps), B's spring is out
 - [ ] 3. Salon page: keep the live page; match the Services button with the Book button (read "aftr book" as the book button)
-  - [ ] 3a. identify the two buttons he means on the live page at 390 (service-row Buchen vs the main Book CTA vs the section-nav Services tab), measured
+  - [x] 3a. (measured, see log; verified: SalonServices.tsx:250, SalonMobileBookBar.tsx:71 and :80) identify the two buttons he means on the live page at 390 (service-row Buchen vs the main Book CTA vs the section-nav Services tab), measured
   - [ ] 3b. section mockup of the match, the one element at real size, variants stacked (no whole-page mockup for a one-element decision, owner 2026-08-15)
 - [ ] 4. Search results: direction A
   - [ ] 4a. A's look improved under the shared look system (three looks)
@@ -52,3 +52,5 @@ Pick: option 4, not mechanically decidable. The 09-04 research was delivered to 
 
 ## Log
 - 22:08: readback sent, plan written, servers on 3461 and 3480 and both tunnels answer 200.
+- 22:15: research fan-out launched, wf_87fe7dc7-215: six readers at once (round-1 pick measurement, Airbnb, Fresha and Treatwell look captures live at 390, design-files audit with the round-1 critic journals, one Opus critique of why rule-passing picks read unfinished), then one Opus judge writes WHAT_IS_MISSING_2026-09-05.md, R2_LOOK_SYSTEMS.md (base recipes plus three look systems) and refreshes SUGGESTIONS.md, then a skeptic traces every number and a fixer applies the punch list. Boxes 5a, 6c, 10b, 11a, 11b, 12a, 12b run inside it.
+- 22:27: box 3a measured on the live salon page at 390 (dev server, seeded salon muse-beauty-studio, page 5779px tall): six per-service Book links at 74x38, white fill, hairline, 13px weight 500, 9999px corner (SalonServices.tsx:250); the section-nav Services tab at 57x49, no fill, 14px weight 400, grey #6B6B6B; and NO main Book button on a first visit, because SalonMobileBookBar.tsx:71 returns null until cookie consent, so the only main Book button is the sticky bar's ink capsule (15px weight 600, SalonMobileBookBar.tsx:80) once consent is given. Read of his ask: the six row buttons take the main Book button's recipe. Built as a stacked section (current, matched in shape as outline, matched in full as ink with the one-commit-button conflict printed) inside the build fan-out; the build workflow is written (scratchpad r2-build.workflow.js: kit first, then 6 screens x 3 systems plus 3 home structures plus the button section, critic per screen, one repair round, arbiter, index) and waits on the research.
