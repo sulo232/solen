@@ -7,108 +7,164 @@
 // app/[locale]/dev/airbnb-03-salon/page.tsx (a different surface, the salon page not
 // confirmation) because none of them is the confirmation screen. This file is the Direction C
 // treatment of the REAL app/[locale]/confirmation/page.tsx + BookingConfirmation.tsx (see
-// Grounded-in below), not a duplicate of any file above.
+// Grounded-in below), not a duplicate of any file above. Filename kept (`ConfirmationCelebration.tsx`)
+// so the sibling server wrapper's import does not need touching; the export symbol
+// `ConfirmationCelebration` is also kept for the same reason, even though the content below no
+// longer renders a celebration of any kind, see REBUILD note.
 
 /**
- * ConfirmationCelebration, Direction C ("What happens next") of the confirmation
- * screen comparison. Copy of the real BookingConfirmation.tsx screen with ONE
- * restructure applied: the screen leads with the timeline of what happens next
- * (confirmed, reminder, the visit) and the three actions, the booking facts collapse
- * into a compact summary that expands on tap, and the celebration (SuccessMark +
- * staggered timeline) is the single biggest motion moment on the page.
+ * ConfirmationCelebration (component name kept for import stability; the screen it renders is
+ * "What happens next", not a celebration), Direction C of the confirmation screen comparison.
  *
- * Grounded-in: components-legacy/booking/BookingConfirmation.tsx (hero photo + frosted
- * help icon, salon name/address row, isPaid/isConfirming/isCancelledNow derivation,
- * handleCalendar's .ics technique, directionsHref, manageHref, and the VAT/total labels
- * -> all copied logic and copy, not re-invented), app/[locale]/_components/primitives/
- * SuccessMark.tsx (the existing celebration primitive, reused unmodified),
- * app/[locale]/_components/primitives/motion.ts (ENTER_RECIPE / GLIDE_EASE, reused not
- * forked), app/[locale]/_components/primitives/ServiceDisclosureRow.tsx (the shipped
- * chevron+AnimatePresence accordion technique this file's summary-card expand mirrors,
- * height/opacity not opacity+scale+blur, per that file's own "not a card ENTER" comment),
- * app/[locale]/_components/salon/MetaDot.tsx (the no-glyph separator, reused instead of a
- * middle-dot).
+ * REBUILD 2026-09-05: this file previously shipped the big 58px `<SuccessMark>` disc as the
+ * page's centered hero moment and rendered the salon row ABOVE that celebration block, in an
+ * order its own header called "a bespoke order without naming it." Both are wrong and are
+ * corrected here:
+ *   1. The big SuccessMark celebration disc is OWNER-KILLED for this screen (TASTE_LOG.md
+ *      2026-07-16 "C4 celebration screens: KEEP the calm confirmation", plus
+ *      components-legacy/booking/BookingConfirmation.tsx's own header: "The big SuccessMark disc
+ *      is an owner-killed pattern and does not come back for any state"). It does not come back
+ *      in this rebuild, or in any other direction of this surface.
+ *   2. CONTRADICTION FOUND AND SURFACED (CLAUDE.md rule 18, "surface contradictions, don't
+ *      proceed on the wrong framing"): the brief for this rebuild describes the calm confirmed
+ *      moment as "the small success disc and the confirmed line the real screen uses". Reading
+ *      components-legacy/booking/BookingConfirmation.tsx end to end (this turn) shows it renders
+ *      NO disc of any size for the confirmed moment, small or big, only a colour-branched
+ *      headline (green when paid, ink when confirming/pay-at-salon, red when cancelled) plus,
+ *      separately, a small pale-green check chip in its MONEY card ("Paid"). There is no disc
+ *      anywhere on the real screen. Built on what is actually true: the calm confirmed moment
+ *      below reuses the real screen's two ACTUAL ingredients (the small pale-green check chip,
+ *      only when the booking is actually paid, plus the colour-branched headline text), never the
+ *      SuccessMark component, at any size.
+ *   3. This direction's own declared order is now: confirmed moment, date and time, timeline
+ *      plus actions, salon, collapsed facts (the assigned VARY axis for this direction, replacing
+ *      Fresha's plain top-to-bottom order per this direction's own brief; see Conflicts).
  *
- * Reference-checked: _design-system/references/fresha--confirmation.md,
- * _design-system/references/airbnb--look-recipe.md,
- * _design-system/references/airbnb--checkout-and-confirmation.md,
- * _design-system/references/airbnb--motion.md,
- * _design-system/references/21st-dev--motion-kit.md (all read in full this turn).
+ * Grounded-in: components-legacy/booking/BookingConfirmation.tsx (hero photo + frosted help icon,
+ * salon name/address row + chevron, isPaid/isConfirming/isCancelledNow derivation, the paid-chip
+ * markup, handleCalendar's .ics technique, directionsHref, manageHref, referenceCode footer, and
+ * the VAT rate/net/vat labels , all copied logic and copy, not re-invented),
+ * app/[locale]/_components/primitives/motion.ts (ENTER_RECIPE / ENTER_DURATION / GLIDE_EASE,
+ * reused not forked), app/[locale]/_components/primitives/ServiceDisclosureRow.tsx (the shipped
+ * chevron+AnimatePresence accordion technique the summary-card expand below mirrors exactly:
+ * height/opacity, 180ms GLIDE_EASE, chevron rotate over 260ms ease-glide , confirmed by reading
+ * that file this turn, not re-derived), app/[locale]/_components/salon/MetaDot.tsx (the no-glyph
+ * separator, used instead of a middle-dot or pipe per LOCKFILE §2.5 A12).
+ *
+ * Reference-checked this turn: _design-system/references/fresha--confirmation.md (Fresha's own
+ * small confirmed-state chip sits alone, then the biggest text on the screen is the date/time
+ * headline , that pairing is exactly what this rebuild's "confirmed moment" -> "date and time"
+ * order borrows), _design-system/references/airbnb--look-recipe.md, _design-system/references/
+ * airbnb--checkout-and-confirmation.md, _design-system/references/airbnb--motion.md (read in
+ * full; it has NO section actually titled or covering "the confirmation moment" , its ten
+ * measured sections are search-expand, category-switch, gallery-open, reserve-entry, card-tap,
+ * back-nav and button press/hover feedback, none of them Airbnb's own post-booking confirmation
+ * screen; see Conflicts for this contradiction between the brief's phrasing and the file's actual
+ * contents), _design-system/references/21st-dev--motion-kit.md (read in full; its own "NOT
+ * CAPTURED" section explicitly names "a dedicated success/confirmation checkmark animation" as
+ * not captured this session either).
  *
  * Depicts: hero photo + frosted help icon -> components-legacy/booking/BookingConfirmation.tsx
- * Depicts: salon name/address row with chevron -> components-legacy/booking/BookingConfirmation.tsx
- * Depicts: celebration mark -> app/[locale]/_components/primitives/SuccessMark.tsx
- * Depicts: payment-state derivation (isPaid/isConfirming/isCancelledNow) -> components-legacy/booking/BookingConfirmation.tsx
+ * Depicts: calm confirmed moment (pale-green check chip + colour-branched headline text) -> components-legacy/booking/BookingConfirmation.tsx
+ * Depicts: date/time as the display anchor -> components-legacy/booking/BookingConfirmation.tsx (date row, size/position treated as this direction's anchor)
+ * Depicts: duration subtext below the date/time anchor -> components-legacy/booking/BookingConfirmation.tsx (same date row already carries duration)
+ * Depicts: timeline anatomy (confirmed / reminder / the visit) -> NET-NEW: this direction's own idea, the assigned VARY axis
+ * Depicts: relative visit countdown (Tomorrow / In N days) -> NET-NEW: computed from the real booking.startsAt, never fabricated
+ * Depicts: reminder window copy (24 hours before) -> app/api/cron/sms-reminders/route.ts
+ * Depicts: cancellation policy line placement above the actions -> components-legacy/booking/PayConfirmStep.tsx
+ * Depicts: cancellation window hours -> ./getCancellationInfo.ts
  * Depicts: add-to-calendar .ics technique -> components-legacy/booking/BookingConfirmation.tsx
  * Depicts: directions link -> components-legacy/booking/BookingConfirmation.tsx
- * Depicts: manage booking link -> components-legacy/booking/BookingConfirmation.tsx
- * Depicts: cancellation policy line placement above actions -> components-legacy/booking/PayConfirmStep.tsx
- * Depicts: VAT total / net / rate labels -> components-legacy/booking/BookingConfirmation.tsx
- * Depicts: meta separator -> app/[locale]/_components/salon/MetaDot.tsx
- * Depicts: reference code footer -> components-legacy/booking/BookingConfirmation.tsx
- * Depicts: timeline anatomy (confirmed / reminder / the visit) -> NET-NEW: this direction's own idea, the assigned VARY axis
- * Depicts: compact expandable summary -> NET-NEW: this direction's own idea, the assigned VARY axis
- * Depicts: 24h reminder window copy -> app/api/cron/sms-reminders/route.ts
+ * Depicts: manage booking link and reference code footer -> components-legacy/booking/BookingConfirmation.tsx
+ * Depicts: salon row (name, address, chevron) -> components-legacy/booking/BookingConfirmation.tsx
+ * Depicts: compact expandable summary header -> NET-NEW: this direction's own idea, the assigned VARY axis
+ * Depicts: professional row inside the expanded summary -> components-legacy/booking/BookingConfirmation.tsx
+ * Depicts: VAT net/rate/amount rows inside the expanded summary -> components-legacy/booking/BookingConfirmation.tsx
  *
- * Sources: fresha--confirmation.md (element roster: photo hero, status/date moment, action
- * rows, overview+total, cancellation policy, booking ref, nothing sticky, no primary CTA on
- * a receipt), airbnb--look-recipe.md + airbnb--checkout-and-confirmation.md (the reference
- * files record Airbnb's own multi-step commit as ink-black already, so the LOCKED Solen ink
- * CTA token was kept unchanged, only its radius stayed at Solen's own 16px lock rather than
- * Airbnb's 12px), airbnb--motion.md (press-feedback timing family) and
- * _design-system/MOTION.md (THE ENTER RECIPE: opacity+scale+blur, 280ms glide, LOCKED,
- * gate-enforced; the brief text said "opacity, y, scale" but the locked file has no y-axis
- * translate and a gate blocks opacity-without-blur, so the locked file's shape was followed).
- * Timeline stagger uses 60ms per this direction's own brief (not the shared enterStaggerContainer's
- * locked 50ms default, which is a different named token for a different context; this file
- * builds its own Variants off the same ENTER_RECIPE from/to values rather than editing the
- * shared primitive).
+ * Direction: "What happens next" (v=c). The screen leads with the sequence of what happens after
+ * booking (confirmed now, reminder day-before, the visit) and the three actions; the booking
+ * facts (service, professional, price+VAT, duration) collapse into a tap-to-expand summary rather
+ * than sitting in an always-open card.
+ *
+ * Sources: fresha--confirmation.md (small confirmed-state chip then the biggest text is
+ * date/time; no primary CTA on a receipt; nothing sticky), airbnb--look-recipe.md +
+ * airbnb--checkout-and-confirmation.md (Airbnb's own multi-step commit is ink-black already, so
+ * Solen's locked ink CTA token needed no change), airbnb--motion.md (press-feedback timing
+ * family; NO confirmation-moment section exists in it, see Conflicts), 21st-dev--motion-kit.md
+ * (no success-checkmark capture exists in it either; its Tabs finding, 150ms
+ * `cubic-bezier(0.4,0,0.2,1)` = Solen's own locked `snap` token exactly, is not used on this
+ * screen since nothing here is an in-place state flip), _design-system/MOTION.md (THE ENTER
+ * RECIPE: opacity+scale+blur together, 280ms, `glide` ease, LOCKED, used for the timeline rows'
+ * entrance). Timeline stagger uses 60ms per this direction's own brief (not the shared
+ * `enterStaggerContainer`'s locked 50ms default, a different named token for a different
+ * context); this file builds its own Variants off the same ENTER_RECIPE from/to values rather
+ * than editing that shared primitive.
  *
  * Conflicts:
- * - CONFLICT [dated taste decision]: TASTE_LOG.md 2026-07-16 records "C4 celebration screens:
- *   KEEP the calm confirmation" (owner verbatim: "that's okay, but... not for that, not how
- *   you did it with c four"), and BookingConfirmation.tsx's own header comment states that
- *   the big SuccessMark disc is an owner-killed pattern for THIS exact screen. Direction C's
- *   assigned brief explicitly asks for "the celebration is the biggest motion on the page
- *   (SuccessMark...)", the opposite of that dated decision. Built exactly as briefed (this is
- *   the assigned VARY axis, not mine to overrule per the fan-out contract), flagged here so
- *   the orchestrator can weigh it against the 2026-07-16 kill before this direction is shown.
- * - CONFLICT [CTA radius]: Airbnb's own checkout/confirmation commit ("Next"/"Got it") is
- *   ink-black already (matches Solen's ink CTA lock), but at radius 12px against Solen's
- *   locked 16px button radius. Kept Solen's 16px lock.
+ * - CONFLICT [contradiction, resolved above]: the brief describes the calm confirmed moment as
+ *   pairing "the small success disc" with "the confirmed line the real screen uses". The real
+ *   screen (read in full this turn) has no disc, small or big, only a colour-branched headline
+ *   plus a separate small pale-green check chip in its money card. Built on the real screen's
+ *   actual two ingredients (chip + headline text), never a disc.
+ * - CONFLICT [reference gap]: the brief names "airbnb--motion.md (the confirmation moment)" as a
+ *   motion source. That file's own scope note and its ten measured section headings (search-
+ *   expand, category-switch, gallery-open, reserve-entry, card-tap, back-nav, press/hover) do not
+ *   include Airbnb's own post-booking confirmation screen at all; it was never captured. Per
+ *   CLAUDE.md's "look at the reference, not only the spec" rule, the stills/file win over the
+ *   brief's paraphrase: there is no Airbnb confirmation-moment motion data to build against. The
+ *   timeline entrance below is grounded instead in Solen's own locked ENTER RECIPE (the only
+ *   actually-measured entrance timing available for this exact use), and the summary-expand is
+ *   grounded in the shipped `ServiceDisclosureRow.tsx` accordion (also actually measured, live in
+ *   this codebase). Nothing here was invented to fill the gap; the gap is named instead.
+ * - CONFLICT [dated taste decision, upheld not revived]: TASTE_LOG.md 2026-07-16 records "C4
+ *   celebration screens: KEEP the calm confirmation" and BookingConfirmation.tsx's own header
+ *   states the big SuccessMark disc is owner-killed for this exact screen. The PREVIOUS revision
+ *   of this direction's file violated that decision (58px SuccessMark, centered celebration
+ *   block). This rebuild removes it entirely; no conflict remains, flagged here only as the
+ *   record of what was wrong and is now fixed.
+ * - CONFLICT [CTA radius]: Airbnb's own checkout/confirmation commit is ink-black already (matches
+ *   Solen's ink CTA lock) but at radius 12px against Solen's shipped `rounded-btn` 99px capsule.
+ *   Per this round's settled radius note (a 16px button corner was shown and rejected 2026-09-02,
+ *   "I never wanted this corner thing"), the shipped capsule token is kept unchanged; button
+ *   radius is not re-litigated by this file.
  * - CONFLICT [confirmation background warmth]: Airbnb's confirmation screens use a warm cream
- *   background (the only warm surface in that whole capture). Taste rule 3 bans warm cream by
- *   name. Kept white per the lock.
+ *   background. Taste rule 3 bans warm cream by name. Kept white per the lock.
  * - No conflict on stickiness: per fresha--confirmation.md, a post-purchase receipt carries no
  *   primary CTA and nothing sticky; the sticky-bar floor (hierarchy-density-06) is scoped to a
- *   screen with a single primary COMMIT action (Buchen/Bezahlen), which this is not. Actions
- *   render inline, matching the real BookingConfirmation.tsx.
+ *   screen with a single primary COMMIT action (Buchen/Bezahlen), which this is not. All three
+ *   actions render inline.
+ * - Scope limit, named not silently dropped: the real screen's GUEST access-link block
+ *   (`props.isGuest && props.accessLink`) is not reproduced here, same as the previous revision of
+ *   this direction. This is a structure/treatment exploration of the confirmed-and-owner-linked
+ *   path, not a full parity rebuild of every guest-specific affordance.
  *
- * measured: measure-ok. Every rendered size (14px name, 12px meta, 15px CTA/button label,
- * 28px display anchor) is pulled from Solen's own LOCKED design-contract token table
+ * measured: measure-ok. Every rendered size (28px display anchor, 15px CTA/price, 14px
+ * name/title, 12px meta) is pulled from Solen's own LOCKED design-contract token table
  * (CLAUDE.md "Design contract" row "text size": name 14, meta 12, CTA 15, plus the FLOORS LAW
- * display-anchor floor >=28), not eyeballed off the Fresha/Airbnb stills. Both reference
- * captures explicitly tag their own confirmation-screen numbers `assume` (Mobbin stills only,
- * no computed styles reachable for someone else's app screen, stated in
- * airbnb--checkout-and-confirmation.md's own "Not measured" section), so porting a literal
- * px value from either reference here would itself be an eyeball, not a measurement; the
- * LOCKED Solen token table is the actual measured source for every size in this file.
+ * display-anchor floor >=28), never eyeballed off the Fresha/Airbnb stills, both of which tag
+ * their own confirmation-screen numbers `assume` in their own text (no computed styles reachable
+ * for someone else's app screen). Exactly four distinct sizes render on this screen: 28 / 15 / 14
+ * / 12 (the confirmed-state chip text is set to 12, the meta bucket, rather than the real
+ * screen's literal 13px chip size, specifically so this screen does not add a fifth distinct
+ * size).
  *
- * emphasis-ok: weight >=600 is deliberately kept to only THREE anchors on this screen (the
- * 28px celebration headline, the price value in the summary row, and the primary "Add to
- * calendar" ink CTA), per FLOORS LAW 7a ("keep weight on the ONE anchor per section... body and
- * meta text stay font-normal"). Every row title (timeline rows, salon name, expanded rows,
- * the secondary Directions button, the Manage booking link) stays font-normal; the signal for
- * those comes from the icon, the ink colour on a coloured link, or position, not weight.
+ * emphasis-ok: weight is deliberately binary, font-semibold (600) or font-normal (400), so the
+ * whole screen carries exactly two weight classes (FLOORS LAW type budget: <=4 sizes AND <=2
+ * weights). Semibold is spent on only four elements: the 28px date/time anchor, the 15px price
+ * value in the collapsed summary header, and the two 15px action-button labels. Every row title
+ * (confirmed-moment line, timeline row titles, salon name, service name, staff name, the
+ * secondary Directions button's own row context) and every meta line stays font-normal.
  *
- * floors: (a) photo focal = the real salon cover photo hero; (b) one biggest element = the
- * 28px "Booking confirmed!" headline, matching the display-anchor floor even though the photo
- * already exempts it; (c) real tabular number = the real price (tabular-nums) + the real
- * reminder-window/cancellation-hours figures; (d) semantic colour = SuccessMark's green disc +
- * white check (icon-only, per the contrast tier rule); (e) no dead-grey zone = white throughout,
- * the one sunken tray is the timeline connector rail only; (f) worst-case content: salon name
- * truncates (line-clamp/truncate), the service name truncates, a long staff name truncates, none
- * of that breaks the two-ink-anchor rule (name+price) or the 28px anchor.
+ * floors: (a) photo focal = the real salon cover photo hero; (b) one biggest element = the 28px
+ * date/time headline (Fresha's own "biggest text on the screen" position), which also satisfies
+ * the FLOORS LAW display-anchor floor even though the photo already exempts it; (c) real tabular
+ * number = the real price (tabular-nums), the real duration in minutes, the real relative-visit
+ * countdown computed from `booking.startsAt`, and the real cancellation-window hours; (d)
+ * semantic colour = the pale-green paid chip + green confirmed-row disc (icon-only per the
+ * contrast-tier rule, never body text); (e) no dead-grey zone = white throughout, the one sunken
+ * tray is the timeline connector rail hairline only; (f) worst-case content: the salon name and
+ * service name both truncate, a long staff name truncates, none of that breaks the two-ink-anchor
+ * rule (name+price) or the 28px anchor.
  */
 import { useState } from "react";
 import Link from "next/link";
@@ -128,13 +184,12 @@ import {
 import { FROST_GLASS } from "@/lib/frost-glass";
 import { Avatar } from "@/app/[locale]/_components/primitives/Avatar";
 import { MetaDot } from "@/app/[locale]/_components/salon/MetaDot";
-import { SuccessMark } from "@/app/[locale]/_components/primitives/SuccessMark";
 import { ENTER_RECIPE, ENTER_DURATION, GLIDE_EASE } from "@/app/[locale]/_components/primitives/motion";
 import type { BookingConfirmationProps } from "@/components-legacy/booking/BookingConfirmation";
 
 // This direction's own timeline stagger (60ms, per this direction's brief), built off the same
-// ENTER_RECIPE opacity+scale+blur values rather than the shared enterStaggerContainer (which is
-// locked to a 50ms step for its own callers, a different named token, not edited here).
+// ENTER_RECIPE opacity+scale+blur values rather than the shared enterStaggerContainer (locked to
+// a 50ms step for its own callers, a different named token, not edited here).
 const timelineContainer: Variants = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.06 } },
@@ -167,6 +222,12 @@ export function ConfirmationCelebration({
   const isConfirming = !isPaid && (booking.hasOnlinePayment || booking.paymentStatus === "processing");
   const isCancelledNow = booking.status === "cancelled";
   const showVat = isPaid && booking.vatRate > 0;
+
+  // Real, derived from booking.startsAt, never fabricated. A three-way STATE label (today /
+  // tomorrow / N-days-out), not a counted-noun plural, so this is a status ternary, not the
+  // "N items" pattern the plural-ternary check targets. plural-ok
+  const diffDays = Math.round((start.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+  const relativeVisit = diffDays <= 0 ? "Today" : diffDays === 1 ? "Tomorrow" : `In ${diffDays} days`; // plural-ok: mockup-only English state label (today/tomorrow/in N days), not routed through next-intl per this dev comparison's own English-only rule
 
   const hasPhoto = Boolean(booking.salonCoverUrl);
   const helpHref = `/${locale}/help`;
@@ -201,12 +262,12 @@ export function ConfirmationCelebration({
     URL.revokeObjectURL(url);
   };
 
-  const confirmedSubtext = isCancelledNow
-    ? "Cancelled"
+  const confirmedLine = isCancelledNow
+    ? "Appointment cancelled"
     : isPaid
-      ? "Paid online"
+      ? "Confirmed"
       : isConfirming
-        ? "Confirming payment…"
+        ? "Confirming payment"
         : "Pay at the salon";
 
   return (
@@ -240,34 +301,41 @@ export function ConfirmationCelebration({
         )}
 
         <div className="px-5">
-          {/* ── salon row, trust floor: who you're booking with, visible above the actions ── */}
-          <Link href={`/${locale}/salon/${booking.salonSlug}`} className="mt-4 flex items-center gap-2 py-1">
-            <div className="min-w-0 flex-1">
-              <div className="truncate text-[14px] tracking-[-0.01em] text-s-ink">
-                {booking.salonName}
-              </div>
-              {booking.salonAddress && (
-                <div className="mt-0.5 flex items-center gap-1 text-[12px] text-s-ink-2">
-                  <MapPin size={12} className="shrink-0 text-s-ink-2" aria-hidden />
-                  <span className="truncate">{booking.salonAddress}</span>
-                </div>
-              )}
-            </div>
-            <ChevronRight size={17} strokeWidth={1.9} className="shrink-0 text-s-ink-2" aria-hidden />
-          </Link>
-
-          {/* ── celebration: the biggest motion moment on the page ── */}
-          <div className="mt-8 flex flex-col items-center text-center">
-            {!isCancelledNow && <SuccessMark size={58} />}
-            <h1
-              className="celebrate-rise mt-4 text-[28px] font-semibold leading-[1.15] tracking-[-0.02em] text-s-ink"
-              style={{ animationDelay: "0.2s" }}
+          {/* ── 1. calm confirmed moment: the real screen's own two ingredients (a small
+              pale-green check chip, only when actually paid, plus the colour-branched headline
+              text), never a disc, never centered, never the celebration size ── */}
+          <div className="mt-5 flex items-center gap-2">
+            {isPaid && (
+              <span className="inline-flex items-center gap-1 rounded-pill bg-s-success-bg px-2 py-[3px] text-[12px] font-normal text-s-success">
+                <Check size={12} strokeWidth={2.6} aria-hidden />
+                Paid
+              </span>
+            )}
+            <span
+              className={`text-[14px] font-normal ${
+                isCancelledNow ? "text-s-error" : isPaid ? "text-s-success" : "text-s-ink"
+              }`}
             >
-              {isCancelledNow ? "Appointment cancelled" : "Booking confirmed!"}
-            </h1>
+              {confirmedLine}
+            </span>
           </div>
 
-          {/* ── timeline: what happens next, staggered 60ms apart ── */}
+          {/* ── 2. date and time: the display anchor, biggest text on the screen (Fresha's own
+              structure), duration subtext directly below it ── */}
+          <h1 className="mt-2 text-[28px] font-semibold leading-[1.15] tracking-[-0.02em] text-s-ink">
+            {dateStr}
+          </h1>
+          <div className="mt-1 flex items-center text-[12px] font-normal text-s-ink-2">
+            <span>{timeStr}</span>
+            {booking.durationMinutes ? (
+              <>
+                <MetaDot />
+                <span>{booking.durationMinutes} min</span>
+              </>
+            ) : null}
+          </div>
+
+          {/* ── 3. timeline plus the three actions ── */}
           <motion.ol
             variants={timelineContainer}
             initial={reduceMotion ? "visible" : "hidden"}
@@ -281,8 +349,8 @@ export function ConfirmationCelebration({
                 <Check size={17} strokeWidth={2.4} className="text-white" aria-hidden />
               </span>
               <div className="min-w-0 flex-1 pt-1.5">
-                <div className="text-[14px] text-s-ink">Confirmed</div>
-                <div className="mt-0.5 text-[12px] text-s-ink-2">{confirmedSubtext}</div>
+                <div className="text-[14px] font-normal text-s-ink">Confirmed</div>
+                <div className="mt-0.5 text-[12px] font-normal text-s-ink-2">Just now</div>
               </div>
             </motion.li>
 
@@ -292,8 +360,8 @@ export function ConfirmationCelebration({
                   <Bell size={16} strokeWidth={1.9} className="text-s-ink-2" aria-hidden />
                 </span>
                 <div className="min-w-0 flex-1 pt-1.5">
-                  <div className="text-[14px] text-s-ink">Reminder</div>
-                  <div className="mt-0.5 text-[12px] text-s-ink-2">Sent 24 hours before your appointment</div>
+                  <div className="text-[14px] font-normal text-s-ink">Reminder</div>
+                  <div className="mt-0.5 text-[12px] font-normal text-s-ink-2">Sent 24 hours before your appointment</div>
                 </div>
               </motion.li>
             )}
@@ -304,26 +372,71 @@ export function ConfirmationCelebration({
                   <Calendar size={16} strokeWidth={1.9} className="text-s-ink-2" aria-hidden />
                 </span>
                 <div className="min-w-0 flex-1 pt-1.5">
-                  <div className="text-[14px] text-s-ink">Your visit</div>
-                  <div className="mt-0.5 flex items-center text-[12px] text-s-ink-2">
-                    <span>{dateStr}</span>
-                    <MetaDot />
-                    <span>{timeStr}</span>
-                    {booking.durationMinutes ? (
-                      <>
-                        <MetaDot />
-                        <span>{booking.durationMinutes} min</span>
-                      </>
-                    ) : null}
-                  </div>
+                  <div className="text-[14px] font-normal text-s-ink">Your visit</div>
+                  <div className="mt-0.5 text-[12px] font-normal text-s-ink-2">{relativeVisit}</div>
                 </div>
               </motion.li>
             )}
           </motion.ol>
 
-          {/* ── compact summary, collapsed by default, expands on tap (accordion technique
-              mirrors ServiceDisclosureRow.tsx: height/opacity, not the card ENTER recipe) ── */}
-          <div className="mt-6 overflow-hidden rounded-card border border-s-border bg-white">
+          {/* ── trust floor: cancellation term, rendered in the DOM above the actions ── */}
+          {!isCancelledNow && (
+            <div className="mt-5 flex items-start gap-2 px-1">
+              <ShieldCheck size={14} strokeWidth={1.6} className="mt-[2px] shrink-0 text-s-success" aria-hidden />
+              <p className="text-[12px] font-normal leading-[1.5] text-s-ink-2">
+                {`Free cancellation up to ${freeCancelHours}h before your appointment.`}
+              </p>
+            </div>
+          )}
+
+          <button
+            type="button"
+            onClick={handleCalendar}
+            className="mt-3 flex h-[52px] w-full items-center justify-center gap-2 rounded-btn bg-s-ink text-[15px] font-semibold text-white transition-[filter,transform] duration-150 hover:brightness-[0.94] active:scale-[0.98]"
+          >
+            <Calendar size={17} strokeWidth={1.9} aria-hidden />
+            Add to calendar
+          </button>
+          <a
+            href={directionsHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2.5 flex h-[50px] w-full items-center justify-center gap-2 rounded-btn border border-s-border bg-white text-[15px] font-semibold text-s-ink"
+          >
+            <MapPin size={17} strokeWidth={1.9} aria-hidden />
+            Directions
+          </a>
+          <div className="mt-4 flex items-center justify-between gap-3 border-t border-s-border pt-4 text-[12px]">
+            {booking.referenceCode ? (
+              <span className="font-normal text-s-ink-2">{booking.referenceCode}</span>
+            ) : (
+              <span />
+            )}
+            <Link href={manageHref} className="inline-flex items-center gap-0.5 font-normal text-s-accent">
+              Manage booking
+              <ChevronRight size={15} strokeWidth={1.9} aria-hidden />
+            </Link>
+          </div>
+
+          {/* ── 4. salon row, follows the timeline+actions per this direction's declared order ── */}
+          <Link href={`/${locale}/salon/${booking.salonSlug}`} className="mt-6 flex items-center gap-2 border-t border-s-border py-4">
+            <div className="min-w-0 flex-1">
+              <div className="truncate text-[14px] font-normal tracking-[-0.01em] text-s-ink">
+                {booking.salonName}
+              </div>
+              {booking.salonAddress && (
+                <div className="mt-0.5 flex items-center gap-1 text-[12px] font-normal text-s-ink-2">
+                  <MapPin size={12} className="shrink-0 text-s-ink-2" aria-hidden />
+                  <span className="truncate">{booking.salonAddress}</span>
+                </div>
+              )}
+            </div>
+            <ChevronRight size={17} strokeWidth={1.9} className="shrink-0 text-s-ink-2" aria-hidden />
+          </Link>
+
+          {/* ── 5. collapsed facts: compact by default, expands on tap (accordion technique
+              mirrors ServiceDisclosureRow.tsx exactly: height/opacity, 180ms GLIDE_EASE) ── */}
+          <div className="overflow-hidden rounded-card border border-s-border bg-white">
             <button
               type="button"
               onClick={() => setExpanded((v) => !v)}
@@ -332,12 +445,14 @@ export function ConfirmationCelebration({
             >
               <Scissors size={18} strokeWidth={1.9} className="shrink-0 text-s-ink-2" aria-hidden />
               <div className="min-w-0 flex-1">
-                <div className="truncate text-[14px] tracking-[-0.01em] text-s-ink">
+                <div className="truncate text-[14px] font-normal tracking-[-0.01em] text-s-ink">
                   {booking.serviceName}
                 </div>
-                <div className="mt-0.5 text-[12px] text-s-ink-2">
-                  {showVat ? "Total (incl. VAT)" : "Total"}
-                </div>
+                {booking.durationMinutes ? (
+                  <div className="mt-0.5 text-[12px] font-normal text-s-ink-2">
+                    {showVat ? `${booking.durationMinutes} min, incl. VAT` : `${booking.durationMinutes} min`}
+                  </div>
+                ) : null}
               </div>
               <span className="shrink-0 text-[15px] font-semibold tabular-nums text-s-ink">
                 {booking.priceLabel}
@@ -346,7 +461,7 @@ export function ConfirmationCelebration({
                 size={18}
                 strokeWidth={1.9}
                 aria-hidden
-                className={`shrink-0 text-s-ink-2 transition-transform duration-[180ms] ${expanded ? "rotate-180" : ""}`}
+                className={`shrink-0 text-s-ink-2 transition-transform duration-[260ms] ease-glide ${expanded ? "rotate-180" : ""}`}
               />
             </button>
 
@@ -360,22 +475,14 @@ export function ConfirmationCelebration({
                   transition={{ duration: 0.18, ease: GLIDE_EASE }}
                   className="overflow-hidden"
                 >
-                  <hr className="border-s-border" />
-                  <div className="flex items-center gap-3 p-4">
-                    <Calendar size={18} strokeWidth={1.9} className="shrink-0 text-s-ink-2" aria-hidden />
-                    <div className="min-w-0 flex-1">
-                      <div className="text-[14px] text-s-ink">{dateStr}</div>
-                      <div className="mt-0.5 text-[12px] text-s-ink-2">{timeStr}</div>
-                    </div>
-                  </div>
                   {booking.staffName && (
                     <>
                       <hr className="border-s-border" />
                       <div className="flex items-center gap-3 p-4">
                         <Avatar src={null} name={booking.staffName} size="xs" />
                         <div className="min-w-0 flex-1">
-                          <div className="truncate text-[14px] text-s-ink">{booking.staffName}</div>
-                          <div className="mt-0.5 text-[12px] text-s-ink-2">your stylist</div>
+                          <div className="truncate text-[14px] font-normal text-s-ink">{booking.staffName}</div>
+                          <div className="mt-0.5 text-[12px] font-normal text-s-ink-2">your stylist</div>
                         </div>
                       </div>
                     </>
@@ -383,7 +490,7 @@ export function ConfirmationCelebration({
                   {showVat && (
                     <>
                       <hr className="border-s-border" />
-                      <div className="flex flex-col gap-1.5 p-4 text-[12px] text-s-ink-2">
+                      <div className="flex flex-col gap-1.5 p-4 text-[12px] font-normal text-s-ink-2">
                         <div className="flex items-center justify-between">
                           <span>Net</span>
                           <span className="tabular-nums">{booking.netLabel}</span>
@@ -398,44 +505,6 @@ export function ConfirmationCelebration({
                 </motion.div>
               )}
             </AnimatePresence>
-          </div>
-
-          {/* ── trust floor: cancellation term, rendered in the DOM above the actions ── */}
-          <div className="mt-4 flex items-start gap-2 px-1">
-            <ShieldCheck size={14} strokeWidth={1.6} className="mt-[2px] shrink-0 text-s-success" aria-hidden />
-            <p className="text-[12px] leading-[1.5] text-s-ink-2">
-              {`Free cancellation up to ${freeCancelHours}h before your appointment.`}
-            </p>
-          </div>
-
-          {/* ── three actions ── */}
-          <button
-            type="button"
-            onClick={handleCalendar}
-            className="mt-3 flex h-[52px] w-full items-center justify-center gap-2 rounded-btn bg-s-ink text-[15px] font-semibold text-white transition-[filter,transform] duration-150 hover:brightness-[0.94] active:scale-[0.98]"
-          >
-            <Calendar size={17} strokeWidth={1.9} aria-hidden />
-            Add to calendar
-          </button>
-          <a
-            href={directionsHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-2.5 flex h-[50px] w-full items-center justify-center gap-2 rounded-btn border border-s-border bg-white text-[15px] text-s-ink"
-          >
-            <MapPin size={17} strokeWidth={1.9} aria-hidden />
-            Directions
-          </a>
-          <div className="mt-4 flex items-center justify-between gap-3 border-t border-s-border pt-4 text-[12px]">
-            {booking.referenceCode ? (
-              <span className="text-s-ink-2">{booking.referenceCode}</span>
-            ) : (
-              <span />
-            )}
-            <Link href={manageHref} className="inline-flex items-center gap-0.5 text-s-accent">
-              Manage booking
-              <ChevronRight size={15} strokeWidth={1.9} aria-hidden />
-            </Link>
           </div>
         </div>
       </main>

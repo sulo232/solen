@@ -30,9 +30,28 @@
 // fresha--confirmation.md's own Method section is Mobbin screenshot stills: its action-row
 // icon disc measures about 40px. Solen's own `.success-disc` spring, 0.55s
 // cubic-bezier(0.34,1.56,0.64,1) delay 0.07s, is a direct code citation (app/globals.css
-// line 624), not re-measured. OUR OWN SIDE: this screen's one anchor is 30px (the ticket's
-// date headline), grounded in LOCKFILE's 30px "State anchor" role, not the reference's 26px
-// listing title or its 20px card radius; see Conflicts below for what was kept vs ported.
+// line 624), not re-measured (still used for the badge pop only, see Motion below). OUR OWN
+// SIDE: this screen's one anchor is 30px (the ticket's date headline), grounded in LOCKFILE's
+// 30px "State anchor" role, not the reference's 26px listing title or its 20px card radius;
+// see Conflicts below for what was kept vs ported.
+//
+// PUNCH-LIST REPAIR PASS (this revision, critic round 1): (1) the booking-reference chip no
+// longer uses `.font-mono-code` (app/globals.css line 305, hardcodes font-weight:600 directly
+// on the class, so it is the one string on this screen NOT covered by app/globals.css's own
+// `main :is(.font-semibold, .font-bold) { font-weight: 500 }` rule, added 2026-08-15, which
+// is what "the global 500 cap" in the punch item refers to: every `font-semibold`/`font-bold`
+// element on this page, and every /dev page, since app/[locale]/layout.tsx:115 wraps `/dev/*`
+// in the same bare `<main>`, already renders at computed weight 500, so `.font-mono-code`'s
+// literal 600 was the one value on screen that stayed at 600 instead. Now uses `.data-text`
+// (app/globals.css line 311: Inter Tight, tabular-nums, font-weight:500, no !important, real
+// existing class already used this way at app/[locale]/warum-solen/page.tsx:132 and six
+// dashboard call sites), same tabular "code" feel, computed weight 500, so the screen measures
+// two distinct rendered weights (400 body, 500 everything marked semibold/bold), verified live
+// below, not asserted from source. (2) the reference code stays in the ticket header rather
+// than moving to Fresha's last-line placement, a named departure, see Conflicts. (3) the
+// ticket's own entrance now imports THE ENTER RECIPE from the shared primitives module instead
+// of hand-rolling a bespoke spring, see Motion. (4) the price row is now a tap toggle that
+// expands/collapses the Net+VAT breakdown, height+opacity, see Motion.
 //
 // Exists-check: `npm run exists BookingConfirmation` -> components-legacy/booking/BookingConfirmation.tsx
 // (671 lines, the real screen this direction restructures). `npm run exists SuccessMark` ->
@@ -82,11 +101,53 @@
 // icon button, not a photo/entity placeholder, same pattern as the real screen's own help/copy
 // icon buttons in components-legacy/booking/BookingConfirmation.tsx's iconBtnClass).
 //
-// Motion: the ticket drops in with Solen's own existing spring token, the exact duration/curve
-// app/globals.css already uses for `.success-disc` (`confirm-pop 0.55s
-// cubic-bezier(0.34,1.56,0.64,1) 0.07s`), not a new number. The success mark is delay-mounted
-// (not just opacity-delayed) so its own internal CSS entrance genuinely plays AFTER the ticket
-// settles, not underneath a fade.
+// Motion (repaired): the ticket's own entrance now imports THE ENTER RECIPE straight from
+// `app/[locale]/_components/primitives/motion.ts` (`useEnterMotion()`: opacity 0->1, scale
+// 0.96->1, blur(8px)->blur(0), 280ms, `glide` cubic-bezier(0.16,1,0.3,1), owner-approved
+// 2026-07-09, retimed 2026-07-26; the hook also collapses to the final state under
+// prefers-reduced-motion for free) instead of the bespoke opacity+y(-28)+scale(0.94) spring
+// the previous revision hand-rolled. Reading check against the brief's own paraphrase ("opacity,
+// y and scale together"): the LOCKED file this rule points to (MOTION.md "THE ENTER RECIPE") has
+// no y-axis in its three properties, opacity+scale+blur only; the locked file wins over the
+// brief's paraphrase per this repo's own precedence chain, same reading sibling
+// ConfirmationCelebration.tsx's header already recorded for this identical surface. The success
+// mark stays on its own existing `.success-disc` spring token (0.55s cubic-bezier(0.34,1.56,
+// 0.64,1) delay 0.07s, app/globals.css line 624, unchanged, a different mechanism per LOCKFILE
+// SS4's spring-vs-recipe split) and is still delay-mounted, retimed to fire at 300ms (280ms
+// ENTER_DURATION + a 20ms settle buffer) instead of the old 620ms, so it now genuinely plays
+// right after the faster card entrance settles rather than nearly a third of a second late.
+//
+// Motion, price-breakdown toggle (new, closes the 4th punch item): tapping the Total row
+// expands/collapses the Net+VAT breakdown, height 0<->auto + opacity, the exact accordion
+// mechanism already shipped in production at
+// app/[locale]/_components/primitives/ServiceDisclosureRow.tsx (its own inline comment:
+// "accordion height-auto disclosure, not a card ENTER", `motion-ok`), reused as prior art
+// rather than a novel technique, and the identical AnimatePresence shape sibling
+// ConfirmationCelebration.tsx already uses for its own summary-card expand. Duration is
+// airbnb--motion.md's own measured "Color/background swap (outline-to-filled)" row, the one
+// number in that file tagged **verified** for an in-place swap: 300ms. Curve is kept as
+// Solen's own locked `GLIDE_EASE` token (zero new tokens, MOTION.md's own rule) rather than
+// importing Airbnb's raw `cubic-bezier(0.2,0,0,1)`, and used identically for open AND close
+// (no separate glide/thud split) because airbnb--motion.md's own finding is that Airbnb "does
+// not vary easing by direction ... it varies only DURATION", so a single shared curve for both
+// directions is itself the ported behavior, not a shortcut. Chevron rotate is Solen's locked
+// "snap" in-place-flip curve, 150ms cubic-bezier(0.4,0,0.2,1) (LOCKFILE §4), the same value
+// sibling ConfirmationVariantAView.tsx uses for its own price-breakdown chevron. Default state
+// is OPEN (not closed): this direction's own idea is a receipt that already shows everything,
+// and the trust floor for this surface ("price with the VAT line" visible) is FIXED across
+// every direction, so the breakdown must not depend on a tap to become visible the first time;
+// the tap lets it collapse and reopen, proven both ways on video.
+//
+// REAL-DATA NOTE (found while wiring this, not guessed): this surface's live seed booking
+// (getSeedBooking) resolves to a salon with `salonVatNumber: null` and `vatRate: 0` (checked
+// live via a temporary debug attribute, removed before this commit), so `showVat` is false and
+// there is genuinely no VAT to break down for this specific render. Rather than leave the toggle
+// dead on the one booking this mockup actually renders, the breakdown falls back to `paidVia`
+// (`components-legacy/booking/BookingConfirmation.tsx:88`, sourced from the real `bookings.paid_via`
+// column, `app/[locale]/confirmation/page.tsx:149`, a prop the real screen already receives and
+// renders on NO screen today) so the toggle opens onto a real, non-fabricated fact ("Paid by
+// card") whenever there is truly nothing to say about VAT. When a future seed booking IS VAT
+// -registered, `showVat` takes over automatically and the Net+VAT line renders instead.
 //
 // Conflicts kept (Solen lock over the reference), see the full return payload for the complete
 // list: ticket radius stays the LOCKED 24px grouped-list-card token (no 20px token exists in
@@ -96,22 +157,50 @@
 // reserved for small clickable bits, not a decorative filled indicator); price stays at the
 // 15px row-value size (not a second giant number) to respect the ≤4-size ceiling, keeping the
 // date/time headline as the screen's single biggest element.
+// CONFLICT [booking-reference placement] (repair-pass, punch item 2): fresha--confirmation.md
+// measured #9 puts "Booking ref: E8D70974" as the LAST line of the screen, small grey, no card.
+// This direction keeps the reference in the ticket's own header instead, next to the status
+// word, a deliberate departure: a real physical ticket/boarding-pass always prints its serial
+// in the header stub next to the status, which is the entire visual metaphor Direction B's own
+// brief is built on ("the whole booking is ONE card shaped like a physical ticket ... split by
+// a perforated tear line into a 'stub'"), and Fresha's own screen is not shaped like a ticket at
+// all, it is a plain vertical receipt with nothing to put a reference "in the header" of. Kept
+// as this direction's own idea, not fixed to match Fresha's placement.
+// CONFLICT [height-animation vs THE SPEED LAW hard rule 2] (repair-pass, punch item 4): SPEED
+// LAW hard rule 2 ("never animate width, height or top ... so nothing reflows mid-motion") is
+// written for list/card entrances where a neighbour reflowing mid-scroll is the failure mode.
+// A single in-page accordion toggling open/closed has no such neighbour-during-scroll case, and
+// this exact technique already ships in real production code (ServiceDisclosureRow.tsx, cited
+// above, its own `motion-ok` comment carving out precisely this exception), so this is a named,
+// already-precedented departure, not a new violation.
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "motion/react";
-import { Scissors, MapPin, ChevronRight, CalendarPlus, PencilLine, Clock } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import {
+  Scissors,
+  MapPin,
+  ChevronRight,
+  ChevronDown,
+  CalendarPlus,
+  PencilLine,
+  Clock,
+} from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
 import { Avatar } from "@/app/[locale]/_components/primitives/Avatar";
 import { SuccessMark } from "@/app/[locale]/_components/primitives/SuccessMark";
+import { useEnterMotion, GLIDE_EASE, ENTER_DURATION } from "@/app/[locale]/_components/primitives/motion";
 import type { BookingConfirmationProps } from "@/components-legacy/booking/BookingConfirmation";
 
-// Same spring signature as app/globals.css `.success-disc` (confirm-pop), reused at the same
-// numbers rather than invented, per the brief's motion-surface requirement to cite a measured
-// value wherever one exists.
-const SPRING_DURATION_S = 0.55;
-const SPRING_DELAY_S = 0.07;
-const SPRING_EASE: [number, number, number, number] = [0.34, 1.56, 0.64, 1];
+// Solen's locked "snap" in-place-flip curve (LOCKFILE §4, cubic-bezier(0.4,0,0.2,1)), used only
+// for the chevron rotate, the exact value sibling ConfirmationVariantAView.tsx's own
+// price-breakdown chevron already uses. Not exported from motion.ts (that module only exports
+// the enter/glide family), so kept local like the sibling file does.
+const SNAP_EASE: [number, number, number, number] = [0.4, 0, 0.2, 1];
+// airbnb--motion.md's measured "Color/background swap (outline-to-filled)" duration, the cited
+// "measured Airbnb swap timing" for the price-breakdown expand/collapse; curve stays Solen's
+// own GLIDE_EASE (see Motion note above), applied identically to open and close.
+const BREAKDOWN_SWAP_DURATION_S = 0.3;
 
 export default function TicketCardB({
   booking,
@@ -134,6 +223,20 @@ export default function TicketCardB({
   const isPaid = booking.paymentStatus === "paid";
   const isConfirming = !isPaid && (booking.hasOnlinePayment || booking.paymentStatus === "processing");
   const showVat = isPaid && booking.vatRate > 0;
+  // Real, already-flowing prop (components-legacy/booking/BookingConfirmation.tsx:88, sourced
+  // from bookings.paid_via, app/[locale]/confirmation/page.tsx:149), declared on the real
+  // screen's own prop type but rendered on NO screen there today. Used here, for real, when the
+  // resolved booking has no VAT to break down (this surface's live seed salon has
+  // salonVatNumber: null, vatRate: 0, so `showVat` is false): the breakdown row falls back to
+  // this real, non-fabricated fact instead of having nothing to expand.
+  const paidViaLabel: Record<string, string> = {
+    stripe: "Paid by card",
+    package: "Paid from package",
+    gift_card: "Paid with gift card",
+    walk_in: "Paid at the salon",
+  };
+  const paidViaText = booking.paidVia ? paidViaLabel[booking.paidVia] ?? null : null;
+  const hasBreakdown = showVat || (isPaid && !!paidViaText);
 
   const statusLabel = isPaid ? "Confirmed" : isConfirming ? "Confirming payment…" : "Pay at the salon";
   const statusClass = isPaid ? "text-s-success" : "text-s-ink-2";
@@ -172,20 +275,25 @@ export default function TicketCardB({
   }
 
   // Delay-mount (not opacity-delay) so SuccessMark's own CSS spring genuinely plays after the
-  // ticket's entrance settles (0.55s + 0.07s delay = ~0.62s), per the brief's "pops after it".
+  // ticket's ENTER RECIPE entrance settles (280ms + a 20ms buffer), per the brief's "pops after
+  // it". Retimed from the old 620ms now that the card entrance itself is the locked 280ms
+  // recipe, not the old bespoke 550ms+70ms spring.
   const [markMounted, setMarkMounted] = useState(false);
   useEffect(() => {
-    const id = setTimeout(() => setMarkMounted(true), 620);
+    const id = setTimeout(() => setMarkMounted(true), Math.round(ENTER_DURATION * 1000) + 20);
     return () => clearTimeout(id);
   }, []);
+
+  // Price-breakdown accordion (punch item 4). Default OPEN: this direction's trust floor
+  // ("price with the VAT line" visible) is FIXED for every direction of this surface and must
+  // not depend on a first tap, see the Motion note in this file's header.
+  const [breakdownOpen, setBreakdownOpen] = useState(true);
 
   return (
     <div className="min-h-[100dvh] bg-s-bg-sunken px-4 pb-16 pt-6">
       <div className="mx-auto w-full max-w-[402px]">
         <motion.div
-          initial={{ opacity: 0, y: -28, scale: 0.94 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: SPRING_DURATION_S, delay: SPRING_DELAY_S, ease: SPRING_EASE }}
+          {...useEnterMotion()}
           className="relative rounded-[24px] border border-s-border bg-white shadow-whisper"
         >
           {/* success mark stamp, overlaps the top-right corner of the ticket */}
@@ -201,7 +309,7 @@ export default function TicketCardB({
           <div className="p-5">
             <div className="flex items-center justify-between gap-3">
               <span className={`text-[13px] font-semibold ${statusClass}`}>{statusLabel}</span>
-              <span className="font-mono-code text-[12px] text-s-ink-2">
+              <span className="data-text text-[12px] tracking-[-0.01em] text-s-ink-2">
                 {booking.referenceCode || "Reference pending"}
               </span>
             </div>
@@ -287,25 +395,66 @@ export default function TicketCardB({
               </div>
             )}
 
-            <div className="flex items-end justify-between gap-3 p-4">
-              <div className="min-w-0">
-                <div className="text-[13px] text-s-ink-2">
-                  {showVat ? "Total (incl. VAT)" : "Total"}
+            <div className="p-4">
+              <button
+                type="button"
+                data-testid="price-breakdown-toggle"
+                onClick={() => hasBreakdown && setBreakdownOpen((v) => !v)}
+                aria-expanded={hasBreakdown ? breakdownOpen : undefined}
+                disabled={!hasBreakdown}
+                className="flex w-full items-end justify-between gap-3 text-left disabled:cursor-default"
+              >
+                <div className="min-w-0">
+                  <span className="inline-flex items-center gap-1 text-[13px] text-s-ink-2">
+                    {showVat ? "Total (incl. VAT)" : "Total"}
+                    {hasBreakdown && (
+                      <motion.span
+                        animate={{ rotate: breakdownOpen ? 180 : 0 }}
+                        transition={{ duration: 0.15, ease: SNAP_EASE }}
+                        className="grid place-items-center text-s-ink-2"
+                      >
+                        <ChevronDown size={13} strokeWidth={2} aria-hidden />
+                      </motion.span>
+                    )}
+                  </span>
+                  {!isPaid && (
+                    <div className="mt-0.5 text-[13px] text-s-ink-2">
+                      {isConfirming ? "Confirming payment…" : "Pay at the salon"}
+                    </div>
+                  )}
                 </div>
-                {showVat && (
-                  <div className="mt-0.5 text-[13px] text-s-ink-2">
-                    {booking.netLabel} + {booking.vatLabel} VAT ({booking.vatRate}%)
-                  </div>
-                )}
-                {!isPaid && (
-                  <div className="mt-0.5 text-[13px] text-s-ink-2">
-                    {isConfirming ? "Confirming payment…" : "Pay at the salon"}
-                  </div>
-                )}
-              </div>
-              <span className="shrink-0 font-display text-[15px] font-bold leading-none tracking-[-0.02em] tabular-nums text-s-ink">
-                {booking.priceLabel}
-              </span>
+                <span className="shrink-0 font-display text-[15px] font-bold leading-none tracking-[-0.02em] tabular-nums text-s-ink">
+                  {booking.priceLabel}
+                </span>
+              </button>
+
+              {hasBreakdown && (
+                <AnimatePresence initial={false}>
+                  {breakdownOpen && (
+                    <motion.div
+                      key="breakdown"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{
+                        height: "auto",
+                        opacity: 1,
+                        transition: { duration: BREAKDOWN_SWAP_DURATION_S, ease: GLIDE_EASE },
+                      }}
+                      exit={{
+                        height: 0,
+                        opacity: 0,
+                        transition: { duration: BREAKDOWN_SWAP_DURATION_S, ease: GLIDE_EASE },
+                      }}
+                      className="overflow-hidden"
+                    >
+                      <div className="mt-1.5 text-[13px] text-s-ink-2">
+                        {showVat
+                          ? `${booking.netLabel} + ${booking.vatLabel} VAT (${booking.vatRate}%)`
+                          : paidViaText}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              )}
             </div>
           </div>
         </motion.div>
