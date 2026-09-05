@@ -34,7 +34,7 @@ push, ever.
   - [x] Fresha structure: venue (salon) page (Mobbin stills, cited per screen; fresha--*.md, 2026-09-05 09:50; no live pull, desktop-width only for search and home)
   - [x] Fresha structure: search results (Mobbin stills, cited per screen; fresha--*.md, 2026-09-05 09:50; no live pull, desktop-width only for search and home)
   - [x] Fresha structure: home (Mobbin stills, cited per screen; fresha--*.md, 2026-09-05 09:50; no live pull, desktop-width only for search and home)
-  - [ ] Airbnb look: listing page, checkout and confirmation, search results, and one consolidated look recipe with a port map to our tokens and named conflicts with the lockfile
+  - [x] Airbnb look: listing page, checkout and confirmation, search results, and one consolidated look recipe with a port map to our tokens and named conflicts with the lockfile (live airbnb.com at 390 via Playwright, confirmation from Mobbin stills; 18 numbers, 6 named conflicts; airbnb--look-recipe.md, 2026-09-05 10:00)
   - [ ] Airbnb motion: card to page, sheet open and close, press states, category switch, back, measured ms and easing from video and animations.json
   - [ ] 21st.dev motion kit: 6 to 10 components that fit a booking flow, timings measured, source kept
   - [ ] Standing comparison document Solen vs Fresha vs Airbnb per surface, differences ranked by what a customer notices, plus a re-runnable measure script for the Solen column
