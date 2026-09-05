@@ -2,20 +2,25 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-09-05T02:52:20 (trigger: auto)
+- taken: 2026-09-05T10:12:38 (trigger: auto)
 - branch: claude/cloud-code-codex-migration-86a820
 
 ## git
 ```
-e7c832029 Plan notes: the 404 fix's third round and its leftover logged
-3a50d705e The 404 rewrite stays inside the server whatever a proxy says about the protocol
-3ac1c594a The 404 answer no longer depends on the server calling itself
-265711783 Plan notes: closing pass logged, two more decisions parked for him, index row 113 current
-ec7b19530 Dark-mode CSS can no longer be generated for the web, whatever text a file contains
+c9fbca05d Plan notes: commit shas behind the motion capture boxes
+e54c24c15 checkpoint(auto): 3 uncommitted file(s) at turn end
+0182c467a Motion captures: Airbnb's timings from video, and what 21st.dev exposes without an account
+3d8faeccb Plan notes: evidence behind every ticked box, running helpers named on the open ones; comparison script snapshot
+0e5823d76 Plan notes: captures saved, nine static builders running, motion builders queued
+```
+```
+M _plans/DIRECTIONS_0905.md
+?? _design-system/references/COMPARE_SOLEN_FRESHA_AIRBNB.md
+?? app/[locale]/dev/directions-0905/home/
+?? app/[locale]/dev/directions-0905/search-results/
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
-113 | EVERYTHING as a loop, then move it all to Codex (owner 2026-09-04: "research every single corner ... keep fixing it except for design make mockup ... merge everything ... transfer everything on Cloud Code to Codex", plus "mainly design, what principle is actually missing") | **IN PROGRESS** (2026-09-05 02:15: 20 bug slices and 28 mockups saved, main fast-forwarded to ec7b19530, production copy rebuilding for his links; eight decisions his)
 81 | DESIGN CONSISTENCY, the one that closes design work instead of opening more (owner 2026-08-27: "a lot of inconsistencies... the search bar moves... weird back button... typography too", then "acc plan what happened to the planning harness") | **PAUSED** (paused 2026-08-31 on his word: "can you park whatever we're doing right now?")
 74 | OVERNIGHT LOOP: how I work + efficiency (speed/money) + harness + skills (owner 2026-08-24, going to sleep: "finish evrth as a. loop") | **ACTIVE** (2026-08-24)
 75 | HIS OPEN ASKS, the ones I measured instead of doing (owner 2026-08-24: "are you sure you finished everything? What about the one... like, the number three and also about the context and about the price and also the skills") | **ACTIVE** (2026-08-24)
@@ -58,3 +63,4 @@ ec7b19530 Dark-mode CSS can no longer be generated for the web, whatever text a 
 110 | DESIGN RE-ENGINEER , improve the system we have, measured against live Airbnb | **ACTIVE** (2026-07-28)
 72 | REFUND PROCESS: does it exist, who decides, is it legal (owner 2026-08-19: "Is there even a refund process, and how does it even proceed? Who is gonna decide it? ... with the tax and fix if it's legal or not") | **ACTIVE** (2026-08-19)
 111 | GATE + HOOK STRESS TEST , all 305 hooks driven with real payloads, not read (owner 2026-08-17: "actually evaluate and stress test each one") | **ACTIVE** (2026-08-18)
+114 | Directions loop (owner 2026-09-05, dictated: "the mock up is completely ass ... let's ditch this whole thing"; new task: more motion on click and between screens, UI elements that look good, 21st.dev MCP or research live in Chrome, keep comparing with Fresha and Airbnb, look = Airbnb not completely, placement = Fresha base, "make me tons of mock ups ... multiple directions ... stop cheaping out", as a loop) | **ACTIVE** (2026-09-05 10:20: Fresha and Airbnb captures saved, nine static builders running, nine motion builders queued behind the motion captures)
