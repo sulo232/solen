@@ -25,12 +25,12 @@ Round 1: `DIRECTIONS_0905.md` (30 directions, index at /en/dev/directions-0905).
   - [ ] 4a. A's look improved under the shared look system (three looks)
   - [ ] 4b. the density-floor conflict he overruled (A fits one card in the fold) gets one line in the report, not a re-argument
 - [ ] 5. Home: keep the live page; none of the three; three NEW structural directions
-  - [ ] 5a. Fresha and Airbnb home captured again live for placement and look before building
+  - [x] 5a. verified: _design-system/references/airbnb--look-recipes.md:20-23 (airbnb.ch home at 390, logged out) and fresha--look-recipes.md:20 (fresha.com/de home at 390), captured live 2026-09-05 by wf_87fe7dc7-215. Fresha and Airbnb home captured again live for placement and look before building
   - [ ] 5b. three directions that differ in structure, none of them round 1's A, B or C
 - [ ] 6. Bookings list: direction A's Get directions and Manage buttons kept
   - [ ] 6a. only on the next appointment, not on every booking
   - [ ] 6b. more compact than round 1's
-  - [ ] 6c. the Confirmed badge is the badge component the design system already uses elsewhere (find it: StatusPill was deleted 2026-06-30, StatusInline survives; what the live bookings list actually renders is measured first)
+  - [x] 6c. verified: components-legacy/booking/BookingCard.tsx:85-89 and :138 (rounded-pill px-2.5 py-1 text-[12px] font-semibold, bg-s-success/10 text-s-success), the live bookings list route app/[locale]/profile/bookings/page.tsx:3 renders BookingsList from that folder. The Confirmed badge is the badge component the design system already uses elsewhere (find it: StatusPill was deleted 2026-06-30, StatusInline survives; what the live bookings list actually renders is measured first)
   - [ ] 6d. three look directions with 6a to 6c fixed
 - [ ] 7. Review and pay: direction A's structure, design improved a lot (three looks)
 - [ ] 8. Profile hub: C's what's-next block, mixed with B's separation and A's simplicity, design improved (three looks)
@@ -40,11 +40,11 @@ Round 1: `DIRECTIONS_0905.md` (30 directions, index at /en/dev/directions-0905).
   - [ ] 10b. each system captured from a real source (Airbnb live for the look, Fresha live for placement, his 2026-09-05 rule), not invented
   - [ ] 10c. a critic per screen grades compliance and sameness across the eight screens of one system; one arbiter across the three systems
 - [ ] 11. Consistency: one system for pill shades, pill contrast and typography across the picks
-  - [ ] 11a. measure round 1's picks first: every pill fill and text colour, every font size and weight, every button radius, per screen, in one table
+  - [x] 11a. verified: scratchpad r2/measure/ROUND1_LOOK_TABLE.md (51.7 KB, per-page JSON beside it): across the 12 pages 15 distinct pill fills, 6 pill text colours, 18 font sizes, 4 weights, 7 button radii. Measure round 1 picks first: every pill fill and text colour, every font size and weight, every button radius, per screen, in one table
   - [ ] 11b. the one system written down, extending an existing file (LOCKFILE or PRINCIPLES), not a new law file
   - [ ] 11c. every round-2 mockup measured against it before it ships (page-level type budget and colour provenance)
 - [ ] 12. CORRECTION: front-end research, what principles and design files are missing. Asked 2026-09-04 ("mainly design, what principle is actually missing"), answered in `_design-system/research/WHAT_IS_MISSING_2026-09-04.md` (no floor missing; three formulas missing: one type ramp, a cross-screen sameness check, a skeleton time floor). He asked again today, so that answer either never reached him or does not explain why 30 rule-following mockups still look ass. Re-run with round 1 as the evidence.
-  - [ ] 12a. web research first: how Airbnb, Fresha and Treatwell define the look-level pieces we lack (pill, badge, button, type ladder, spacing rhythm), captured live, not recalled
+  - [x] 12a. verified: _design-system/references/airbnb--look-recipes.md (223 lines), fresha--look-recipes.md (199), treatwell--look-recipes.md (159), each with Identity, Philosophy, Measured, Port map, Conflicts; Treatwell login-walled screens not reachable and said so. Web research first: how Airbnb, Fresha and Treatwell define the look-level pieces we lack (pill, badge, button, type ladder, spacing rhythm), captured live, not recalled
   - [ ] 12b. the gap list, each gap named with the number that proves it and the file it belongs in
   - [ ] 12c. the missing files written, or the existing ones extended, this round
   - [ ] 12d. the answer stated in the closing report itself, not only in a file (why the 09-04 answer did not land)
