@@ -1,6 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   // darkMode removed 2026-05-02 per Q62 — single light theme.
+  // With no darkMode key, Tailwind 3 defaults to 'media': any stray dark:
+  // token in a scanned file would silently emit a real
+  // @media (prefers-color-scheme: dark) rule on this light-only web app.
+  // Pin it to the 'selector' strategy against a class no page ever carries,
+  // so a stray dark: token compiles to a dead, unreachable rule instead.
+  darkMode: ["selector", ".solen-dark-never"],
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     // V2 rebuild (2026-05-03): legacy components moved from `components/` to
