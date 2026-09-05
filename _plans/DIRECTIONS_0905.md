@@ -60,3 +60,4 @@ push, ever.
 ## Log
 
 - 2026-09-05 04:10 , loop opened. Graveyard line for the micro-mockup batch. Four research helpers dispatched (Fresha structure, Airbnb look, motion incl. 21st.dev, standing comparison).
+- 2026-09-05 10:20 , captures in: Fresha structure for five screens (Mobbin, cited), Airbnb look for three screens plus the 18-number recipe (live at 390), the scaffold (route gate, real booking loader resolving a confirmed Fade Factory booking, comparison frame). Nine static builders launched (salon page, search results, home feed, three directions each) with a critic per screen and one arbiter. The motion captures and the comparison document are still being written; the nine motion builders (confirmation, booking steps, press kit) start when they land. A helper left a measure-first skip flag in ~/.claude; removed.
