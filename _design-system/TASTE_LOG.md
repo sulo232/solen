@@ -1239,3 +1239,39 @@ White surfaces only, no `#F4F4F5` anywhere on the terminal, no warm cream. ONE c
 `{13, 15, 18, 28}` with 14 deleted and the anchor at 2.15x the body. Nothing under 44px. Verified
 still live by polling it for 30 seconds untouched: the attention count went 10 -> 11 -> 12 as two
 bookings arrived on their own.
+
+---
+
+## 2026-09-05 , TWO AXES AGAIN: THE LOOK FROM AIRBNB "BUT NOT COMPLETELY", PLACEMENT FROM FRESHA AS THE BASE
+
+**Owner, verbatim (dictated, decoded from speech-to-text):** "on the design part, I want Airbnb style,
+but not completely. And for the architecture itself, like, how the placements and stuff, how the UI
+elements look, we can use Fresha as a base. For example, on the confirmation screen, maybe we can copy
+it from them, because they have the same type of stuff that we want." In the same message: "I want
+more motion when I click stuff, between stuff. And also more UI elements that actually look good."
+And on the 2026-09-04 batch of 28 single-treatment mockups: "the mockup is completely ass, I don't
+know why you keep doing that, let's ditch this whole thing" and "make me tons of mockups, not just
+one, multiple directions, stop cheaping out, actually do it."
+
+**What it changes.** The 2026-08-12 entry put Airbnb on both axes. This restores two axes, with a
+different pair than the pre-August rule: STRUCTURE AND PLACEMENT (which elements, in what order,
+where the actions and the summary sit, what is sticky) come from Fresha, captured per screen from
+Mobbin or the live site, never from memory. THE LOOK AND THE MOTION (type, colour, radii, depth,
+spacing rhythm, transitions, press feedback) come from Airbnb, and "not completely" means Airbnb's
+finish sits on Solen's own contract: ink commit button, blue only on small clickable bits, the
+locked radii, no dark mode, the floors. Uber is not named and stays out.
+
+**What it does not change.** The statutory tier and the floors outrank both sources. Every dated
+decision in this log that he made by name stands (the pill border he killed 2026-07-31, card shape
+A on 2026-08-14, the 16px chip corner he rejected on sight 2026-09-02). Mockup-first binds: nothing
+lands in real code before he has seen it on his phone.
+
+**A format rule, new, from the same message.** A mockup batch is WHOLE SCREENS, each in at least
+three directions that differ in structure or strategy, stacked so he compares in one glance, with
+motion proven on video. The single-treatment micro-mockup index is graveyarded (REMOVED.md,
+2026-09-05).
+
+**Where the captures live:** `_design-system/references/fresha--*.md` (structure),
+`airbnb--look-recipe.md` and `airbnb--motion.md` (look and motion), `21st-dev--motion-kit.md`, and
+`COMPARE_SOLEN_FRESHA_AIRBNB.md`, the standing comparison he asked to keep running. Mockups:
+`/en/dev/directions-0905`. Plan: `_plans/DIRECTIONS_0905.md`.
