@@ -41,6 +41,22 @@ const RESERVED_TOP_SEGMENTS = new Set([
 // out of a page.tsx module.
 const CITY_CATEGORY_VALUES = new Set(["coiffeur", "nails", "barbershop", "spa"]);
 
+// reinvent-ok: notfound-404-c (2026-09-05) extends the SAME mechanism above to two more
+// shapes that still answer 200 with the not-found body on the production copy, both
+// measured live before this change: (3) /{locale}/salon/{slug} for a slug absent from the
+// salons table (measured: /en/salon/nonexistent-slug-xyz -> 200), and (4)
+// /{locale}/bookings/{id}/(report|refund|upcharge) for a malformed (non-UUID) booking id.
+// Same render404() helper, same cached-lookup pattern as shape 1's activeCitySlugsCache
+// for (3). Shape (4) originally also ran a per-request existence query against the
+// `bookings` table on the request's anon Supabase client; removed here (2026-09-05, see
+// the comment at that check below) because `bookings` carries row-level security and
+// these are the guest refund/report/upcharge pages, so the anon query came back null for
+// a real booking and 404'd the exact page a signed-out user is meant to reach. A
+// well-formed but nonexistent booking id is therefore no longer caught in middleware;
+// only the page itself, running behind the permission wall the user is actually subject
+// to, can tell the difference. No new category/taxonomy data introduced here, only
+// salon-slug lookups plus the pre-existing UUID-shape check for bookings.
+
 // 5-minute in-memory TTL cache of active city slugs, mirrors lib/cities.ts's own
 // getActiveCities() cache. NOT reused directly: getActiveCities() calls
 // createServerSupabaseClient(), which awaits next/headers cookies() internally, a
@@ -65,6 +81,42 @@ async function getActiveCitySlugsForMiddleware(supabase: any): Promise<Set<strin
   activeCitySlugsCache = { slugs, fetchedAt: Date.now() };
   return slugs;
 }
+
+// notfound-404-c: same 5-minute in-memory TTL cache pattern as activeCitySlugsCache above,
+// for the salon PDP's slug. app/[locale]/salon/[slug]/page.tsx resolves a slug via
+// lib/salon-detail.ts's loadSalonDetailWithAccess, which ALSO gates on
+// is_active/listed_on_marketplace/frozen (isSalonHidden) after the row is found, returning
+// null (today rendered as a 200 not-found body via the same Suspense-boundary bug this
+// file's module comment describes) for a hidden-but-existing salon. This cache
+// deliberately holds EVERY row's slug regardless of that visibility gate, so a hidden
+// salon's slug still passes this check and falls through to the page's own (still-buggy)
+// notFound() unchanged; only a slug ABSENT from the table gets the new hard 404 here.
+// Live count checked 2026-09-05 (_inventory/_db-snapshot.json): 28 rows in `salons`.
+let salonSlugsCache: { slugs: Set<string>; fetchedAt: number } | null = null;
+
+async function getSalonSlugsForMiddleware(supabase: any): Promise<Set<string>> {
+  if (salonSlugsCache && Date.now() - salonSlugsCache.fetchedAt < ACTIVE_CITY_SLUGS_TTL_MS) {
+    return salonSlugsCache.slugs;
+  }
+  const { data, error } = await supabase.from("salons").select("slug");
+  if (error) {
+    console.error("[middleware] salon-slug lookup failed:", error.message);
+    return salonSlugsCache?.slugs ?? new Set<string>();
+  }
+  const slugs = new Set<string>(
+    (data ?? [])
+      .map((row: { slug: string | null }) => row.slug)
+      .filter((slug: string | null): slug is string => Boolean(slug))
+  );
+  salonSlugsCache = { slugs, fetchedAt: Date.now() };
+  return slugs;
+}
+
+// notfound-404-c: bookings.id is a UUID column (same format check
+// lib/salon-detail.ts's loadSalonDetailWithAccess already uses for its own slug-or-uuid
+// branch), so a malformed id on the report/refund/upcharge shape is answered 404 with no
+// DB round trip at all.
+const BOOKING_ID_UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**
  * Self-fetches the SAME URL to get Next's own rendered not-found body (which today answers
@@ -271,6 +323,41 @@ export async function middleware(request: NextRequest) {
         if (!activeCitySlugs.has(citySeg) || !CITY_CATEGORY_VALUES.has(categorySeg)) {
           return await render404(request);
         }
+      }
+    }
+
+    // notfound-404-c, shape 3: /{locale}/salon/{slug} for a slug absent from the salons
+    // table entirely. See the comment above getSalonSlugsForMiddleware for what "absent"
+    // does and does not cover (a hidden-but-existing salon is left untouched here).
+    const salonSlugMatch = pathname.match(/^\/(de|en|fr|it)\/salon\/([^/]+)$/);
+    if (salonSlugMatch) {
+      const [, , salonSlug] = salonSlugMatch;
+      const salonSlugs = await getSalonSlugsForMiddleware(supabase);
+      if (!salonSlugs.has(salonSlug)) {
+        return await render404(request);
+      }
+    }
+
+    // notfound-404-c, shape 4: /{locale}/bookings/{id}/(report|refund|upcharge). Only a
+    // malformed (non-UUID) id is answered 404 here, with no DB call at all. A per-request
+    // existence query against `bookings` used to run here too; removed 2026-09-05 because
+    // `bookings` has row-level security and this middleware runs on the request's anon
+    // Supabase client (no session for a guest), so the query came back null for a real
+    // booking and 404'd the exact guest refund/report/upcharge page it was built for
+    // (app/[locale]/bookings/[id]/refund/page.tsx). Switching to a privileged key here is
+    // not the fix: it would ship the service key into the edge bundle and turn this check
+    // into an unauthenticated probe for which booking ids exist. RESIDUAL, stated plainly:
+    // a well-formed but nonexistent booking id still answers 200 with the not-found body
+    // on this exact path shape, because the row is invisible to a guest behind the
+    // permission wall, and only the page itself, once it actually queries with the
+    // request's real (possibly signed-in) auth context, can tell the two cases apart.
+    const bookingSubpageMatch = pathname.match(
+      /^\/(de|en|fr|it)\/bookings\/([^/]+)\/(report|refund|upcharge)$/
+    );
+    if (bookingSubpageMatch) {
+      const [, , bookingId] = bookingSubpageMatch;
+      if (!BOOKING_ID_UUID_RE.test(bookingId)) {
+        return await render404(request);
       }
     }
 
