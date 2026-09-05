@@ -2,19 +2,16 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-09-05T19:45:15 (trigger: auto)
+- taken: 2026-09-05T21:29:38 (trigger: auto)
 - branch: claude/cloud-code-codex-migration-86a820
 
 ## git
 ```
-37c33ebdd Plan: reference-capture and wave 1 parent boxes ticked
-350dc4ec0 Plan: wave 2 box ticked with its commit and verdicts
-69a9ed7ff Wave 2 directions: bookings list, review and pay step, profile hub, empty states, three declared-axis directions each
-6037b646b Plan log: two dev-server findings and wave 2 state
-27ad3e505 Search and home boxes ticked with their commits and verdicts; home c's header states the rendered weight
-```
-```
-M _plans/CONTEXT_SNAPSHOT.md
+444303d28 Plan: verify and save boxes ticked, loop closed; context snapshot
+00ba11323 Plan: index and judge boxes ticked, verify box updated by the index coder's own link check
+dc8f5c595 Directions index: one scroll-only page over the ten surfaces, three directions each with a 390px screenshot, the judge's pick per surface with why, cost and the line that flips it; every one of the 30 links answered 200 on the dev server
+5906a83ab Plan log: final judge and index run launched
+db1173bb8 Plan log: last two repairs done, 27 of 30 directions PASS into the judge, judge argument builder bug fixed
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
