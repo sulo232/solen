@@ -579,7 +579,7 @@ One-off campaign-style decorative type → use `style={{}}` inline + `// V3-D{n}
 | `search` | 99px | Search bar outer container (fully rounded) |
 | `pill` | 9999px | Availability pills, tags |
 | `btn` | 99px | CTA buttons, action buttons |
-| `input` | 12px | Form inputs (stable, NOT pill). Owner kept shipped 12 over 16, 2026-06-08 — LOCKFILE had drifted ahead of code. |
+| `input` | 12px | Form inputs (stable, NOT pill). Owner kept shipped 12 over 16, 2026-06-08 — LOCKFILE had drifted ahead of code. Measured 2026-09-06: the 12 a native input renders comes from app/globals.css:441 (the base rule whose selector starts at line 434, which out-specifies Tailwind utilities); the Tailwind token `rounded-input` (tailwind.config.js:289) is 16px and never reaches an input, its 37 uses are wrappers, avatars and photo shells. Rename parked in SUGGESTIONS.md. |
 | `sheet` | 28px | Bottom sheets |
 | `rounded-full` | 9999px | Avatars, icon buttons |
 | `rounded-2xl` | 16px | Sidebar card, info cards |
