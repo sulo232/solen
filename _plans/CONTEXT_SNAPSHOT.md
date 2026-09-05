@@ -2,34 +2,20 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-09-05T01:16:24 (trigger: auto)
+- taken: 2026-09-05T02:52:20 (trigger: auto)
 - branch: claude/cloud-code-codex-migration-86a820
 
 ## git
 ```
-04544959b Plan log: 12 bug fixes saved, two refund migrations applied live, four follow-ups running
-cb269931d Five small customer-page fixes: translated buttons, coordinate directions, receipt ownership, map counts, layer tokens
-9903265bf The For-you cards on the home page carry the same price and city lines as their neighbours
-ac9ed936a On desktop the search results show one map button, not two
-f6f1636c6 Login, sign-up and phone checks rate-limit on the real client address
-```
-```
-M _design-system/_geometry-report.md
- M app/[locale]/_components/homepage/NearbyMap.tsx
- M app/[locale]/_components/search/SearchOverlay.tsx
- M app/api/auth/callback/route.ts
- M app/api/auth/logout/route.ts
- M app/api/profile/route.ts
- M app/api/stripe/booking-pay-intent/route.ts
- M lib/loyalty/perks.ts
- M lib/validations.ts
- M middleware.ts
-?? app/[locale]/dev/mockups-0904/
-?? public/_mockups/_assets/where-step-height/
+e7c832029 Plan notes: the 404 fix's third round and its leftover logged
+3a50d705e The 404 rewrite stays inside the server whatever a proxy says about the protocol
+3ac1c594a The 404 answer no longer depends on the server calling itself
+265711783 Plan notes: closing pass logged, two more decisions parked for him, index row 113 current
+ec7b19530 Dark-mode CSS can no longer be generated for the web, whatever text a file contains
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
-113 | EVERYTHING as a loop, then move it all to Codex (owner 2026-09-04: "research every single corner ... keep fixing it except for design make mockup ... merge everything ... transfer everything on Cloud Code to Codex", plus "mainly design, what principle is actually missing") | **IN PROGRESS** (2026-09-04 night: every fix committed and reviewed, production copy rebuilding for his links; four decisions his)
+113 | EVERYTHING as a loop, then move it all to Codex (owner 2026-09-04: "research every single corner ... keep fixing it except for design make mockup ... merge everything ... transfer everything on Cloud Code to Codex", plus "mainly design, what principle is actually missing") | **IN PROGRESS** (2026-09-05 02:15: 20 bug slices and 28 mockups saved, main fast-forwarded to ec7b19530, production copy rebuilding for his links; eight decisions his)
 81 | DESIGN CONSISTENCY, the one that closes design work instead of opening more (owner 2026-08-27: "a lot of inconsistencies... the search bar moves... weird back button... typography too", then "acc plan what happened to the planning harness") | **PAUSED** (paused 2026-08-31 on his word: "can you park whatever we're doing right now?")
 74 | OVERNIGHT LOOP: how I work + efficiency (speed/money) + harness + skills (owner 2026-08-24, going to sleep: "finish evrth as a. loop") | **ACTIVE** (2026-08-24)
 75 | HIS OPEN ASKS, the ones I measured instead of doing (owner 2026-08-24: "are you sure you finished everything? What about the one... like, the number three and also about the context and about the price and also the skills") | **ACTIVE** (2026-08-24)
