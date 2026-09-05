@@ -35,34 +35,39 @@
 // 30px "State anchor" role, not the reference's 26px listing title or its 20px card radius;
 // see Conflicts below for what was kept vs ported.
 //
-// PUNCH-LIST REPAIR PASS (this revision, critic round 1): (1) the booking-reference chip no
-// longer uses `.font-mono-code` (app/globals.css line 305, hardcodes font-weight:600 directly
-// on the class, so it is the one string on this screen NOT covered by app/globals.css's own
-// `main :is(.font-semibold, .font-bold) { font-weight: 500 }` rule, added 2026-08-15, which
-// is what "the global 500 cap" in the punch item refers to: every `font-semibold`/`font-bold`
-// element on this page, and every /dev page, since app/[locale]/layout.tsx:115 wraps `/dev/*`
-// in the same bare `<main>`, already renders at computed weight 500, so `.font-mono-code`'s
-// literal 600 was the one value on screen that stayed at 600 instead. Now uses `.data-text`
-// (app/globals.css line 311: Inter Tight, tabular-nums, font-weight:500, no !important, real
-// existing class already used this way at app/[locale]/warum-solen/page.tsx:132 and six
-// dashboard call sites), same tabular "code" feel, computed weight 500, so the screen measures
-// two distinct rendered weights (400 body, 500 everything marked semibold/bold), verified live
-// below, not asserted from source. (2) the reference code stays in the ticket header rather
-// than moving to Fresha's last-line placement, a named departure, see Conflicts. (3) the
-// ticket's own entrance now imports THE ENTER RECIPE from the shared primitives module instead
-// of hand-rolling a bespoke spring, see Motion. (4) the price row is now a tap toggle that
-// expands/collapses the Net+VAT breakdown, height+opacity, see Motion.
+// PUNCH-LIST REPAIR PASS 1 (critic round 1, history): (1) booking-reference chip moved off
+// `.font-mono-code` (literal weight 600) onto a tabular class at computed weight 500. (2) the
+// reference code stays in the ticket header, a named departure, see Conflicts. (3) the ticket's
+// entrance imported THE ENTER RECIPE via `useEnterMotion()`. (4) the price row became a tap
+// toggle for the Net+VAT breakdown.
+//
+// PUNCH-LIST REPAIR PASS 2 (critic round 2, this revision): (1) GRAVEYARD: removed the
+// `<SuccessMark size={38}>` corner stamp entirely (components-legacy/booking/BookingConfirmation.tsx's
+// own header + TASTE_LOG 2026-07-16 C4 both name the celebration disc owner-killed at every
+// size; only the calm `statusLabel` text line remains as the confirmed moment, no replacement
+// badge added). SuccessMark import, its delay-mount `useEffect`/`useState` and the `useEffect`
+// react import are all removed with it, nothing else used them. (2) ENTRANCE: `useEnterMotion()`
+// (JS/useEffect-driven, ships inline `opacity:0` in the raw SSR HTML per pass-1's own file) is
+// replaced with a local, scoped, native CSS `@keyframes` entrance (`.tb-enter`, see the `ENTER_CSS`
+// constant above the component), same fix sibling `ConfirmationVariantAView.tsx`'s own repair
+// pass used for the identical blank-recorder failure. (3) FOCUS: `focus-visible:outline-none` is
+// removed from the salon link; the global 2px ink outline (design contract's focus row) now
+// applies on keyboard focus, no substitute halo added, `focus-visible:bg-s-bg-sunken` is a
+// background fill, not a ring, so it stays. (4) EMPHASIS BUDGET: `font-semibold`/`font-bold` is
+// now kept on exactly three elements (date/time headline, salon name, total price); the status
+// label, service name, staff name and the three action labels all dropped to the unstyled
+// default (400) weight. See the updated Type scale note below for the re-measured ratio.
 //
 // Exists-check: `npm run exists BookingConfirmation` -> components-legacy/booking/BookingConfirmation.tsx
 // (671 lines, the real screen this direction restructures). `npm run exists SuccessMark` ->
-// app/[locale]/_components/primitives/SuccessMark.tsx, real, live, zero graveyard hits (grepped
-// _design-system/REMOVED.md before writing this, no "successmark" or "confirmation" entry).
-// `npm run exists Avatar` -> app/[locale]/_components/primitives/Avatar.tsx, real, reused unchanged.
+// app/[locale]/_components/primitives/SuccessMark.tsx, real, live, graveyarded FOR THIS SCREEN
+// specifically (TASTE_LOG 2026-07-16 C4, "KEEP the calm confirmation"), which is why pass 2
+// removes it rather than reusing it. `npm run exists Avatar` -> app/[locale]/_components/primitives/Avatar.tsx,
+// real, reused unchanged.
 //
 // Grounded-in: components-legacy/booking/BookingConfirmation.tsx (props shape, handleCalendar
 // ICS logic, directionsHref Google Maps pattern, all copied below with the SAME derivations,
-// only the container anatomy changes), app/[locale]/_components/primitives/SuccessMark.tsx
-// (reused unchanged, delay-mounted instead of mounting at page load).
+// only the container anatomy changes).
 //
 // Depicts: date/time headline (biggest element) -> components-legacy/booking/BookingConfirmation.tsx dateStr/timeStr derivation
 // Depicts: salon name/address row -> components-legacy/booking/BookingConfirmation.tsx salon link block
@@ -70,7 +75,6 @@
 // Depicts: ICS download -> components-legacy/booking/BookingConfirmation.tsx handleCalendar (copied verbatim)
 // Depicts: directions link -> components-legacy/booking/BookingConfirmation.tsx directionsHref (copied verbatim)
 // Depicts: manage booking link -> app/[locale]/booking/lookup/page.tsx (real route, same manageHref fallback as the real screen)
-// Depicts: success mark pop-in -> app/[locale]/_components/primitives/SuccessMark.tsx
 // Depicts: perforated tear line -> NET-NEW: the brief's own direction line names this element, no cited Fresha/Airbnb file draws a ticket-tear motif
 //
 // DIRECTION B: Ticket. Structural idea (this builder's one VARY axis): the whole booking is
@@ -92,8 +96,19 @@
 // Type scale: only 4 sizes on this screen (30 / 15 / 13 / 12), the gate-enforced ceiling.
 // 30px is the LOCKFILE "State anchor" role (30/600, "the one live fact a screen exists to show"),
 // used once, for the date/time headline, this direction's single biggest element. 15px carries
-// every named/value row (salon, service, staff, price), matching the "Service-row name 15px/600"
-// role. 13px carries meta/secondary lines. 12px carries captions (reference code, action labels).
+// every named/value row (salon, service, staff, price). 13px carries meta/secondary lines. 12px
+// carries captions (reference code, action labels).
+//
+// Emphasis budget (repaired, closes punch item 4): `font-semibold`/`font-bold` now sits on
+// exactly three elements, the date/time headline, the salon name and the total price, all three
+// named as the kept anchors by the punch item itself. Every other row label (status line, service
+// name, staff name) and every action label (Add to calendar / Directions / Manage booking) is now
+// the unstyled default weight (400, no class). Combined with app/[locale]/layout.tsx's own
+// `main :is(.font-semibold, .font-bold) { font-weight: 500 }` rule (every /dev page renders under
+// a bare `<main>`), the screen renders exactly two computed weights, 400 and 500, well inside the
+// ≤2-weight ceiling, and the emphasis-weight element count drops from the critic's measured
+// 11-of-20 (55%) to 3 of the same first-viewport element set, re-measured live below this file's
+// return payload (see this builder's `measuredUsed`).
 //
 // The 3 icon-circle action buttons below are PLAIN ICON BUTTONS (Add to calendar / Directions /
 // Manage booking), not a photo-or-fallback slot for any entity: there is no salon/staff photo
@@ -101,21 +116,17 @@
 // icon button, not a photo/entity placeholder, same pattern as the real screen's own help/copy
 // icon buttons in components-legacy/booking/BookingConfirmation.tsx's iconBtnClass).
 //
-// Motion (repaired): the ticket's own entrance now imports THE ENTER RECIPE straight from
-// `app/[locale]/_components/primitives/motion.ts` (`useEnterMotion()`: opacity 0->1, scale
-// 0.96->1, blur(8px)->blur(0), 280ms, `glide` cubic-bezier(0.16,1,0.3,1), owner-approved
-// 2026-07-09, retimed 2026-07-26; the hook also collapses to the final state under
-// prefers-reduced-motion for free) instead of the bespoke opacity+y(-28)+scale(0.94) spring
-// the previous revision hand-rolled. Reading check against the brief's own paraphrase ("opacity,
-// y and scale together"): the LOCKED file this rule points to (MOTION.md "THE ENTER RECIPE") has
-// no y-axis in its three properties, opacity+scale+blur only; the locked file wins over the
-// brief's paraphrase per this repo's own precedence chain, same reading sibling
-// ConfirmationCelebration.tsx's header already recorded for this identical surface. The success
-// mark stays on its own existing `.success-disc` spring token (0.55s cubic-bezier(0.34,1.56,
-// 0.64,1) delay 0.07s, app/globals.css line 624, unchanged, a different mechanism per LOCKFILE
-// SS4's spring-vs-recipe split) and is still delay-mounted, retimed to fire at 300ms (280ms
-// ENTER_DURATION + a 20ms settle buffer) instead of the old 620ms, so it now genuinely plays
-// right after the faster card entrance settles rather than nearly a third of a second late.
+// Motion (repaired again, closes punch item 2): the ticket's entrance is now the local, scoped,
+// native CSS `@keyframes` recipe defined in the `ENTER_CSS` constant above the component (same
+// three properties and same locked numbers as THE ENTER RECIPE, opacity 0->1, scale 0.96->1,
+// blur(8px)->blur(0), 280ms, `glide` cubic-bezier(0.16,1,0.3,1)), not the JS/`useEnterMotion()`
+// hook pass 1 used. The base `.tb-enter` rule renders the ticket at `opacity:1` with zero JS
+// dependency; the keyframe only plays inside `@media (prefers-reduced-motion: no-preference)`, so
+// a reduced-motion user gets the final state immediately and a stalled-hydration user still sees
+// the ticket painted after the animation's own wall-clock 280ms, since a CSS keyframe runs on the
+// browser's timeline, not React's `useEffect`. The corner `<SuccessMark>` badge (and its delay-
+// mount timer, tied to `useEnterMotion`'s settle time) is removed entirely per punch item 1, so
+// there is no longer a second, JS-driven pop layered after the card entrance on this direction.
 //
 // Motion, price-breakdown toggle (new, closes the 4th punch item): tapping the Total row
 // expands/collapses the Net+VAT breakdown, height 0<->auto + opacity, the exact accordion
@@ -173,7 +184,7 @@
 // this exact technique already ships in real production code (ServiceDisclosureRow.tsx, cited
 // above, its own `motion-ok` comment carving out precisely this exception), so this is a named,
 // already-precedented departure, not a new violation.
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
@@ -188,8 +199,7 @@ import {
 } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
 import { Avatar } from "@/app/[locale]/_components/primitives/Avatar";
-import { SuccessMark } from "@/app/[locale]/_components/primitives/SuccessMark";
-import { useEnterMotion, GLIDE_EASE, ENTER_DURATION } from "@/app/[locale]/_components/primitives/motion";
+import { GLIDE_EASE, ENTER_DURATION } from "@/app/[locale]/_components/primitives/motion";
 import type { BookingConfirmationProps } from "@/components-legacy/booking/BookingConfirmation";
 
 // Solen's locked "snap" in-place-flip curve (LOCKFILE §4, cubic-bezier(0.4,0,0.2,1)), used only
@@ -201,6 +211,33 @@ const SNAP_EASE: [number, number, number, number] = [0.4, 0, 0.2, 1];
 // "measured Airbnb swap timing" for the price-breakdown expand/collapse; curve stays Solen's
 // own GLIDE_EASE (see Motion note above), applied identically to open and close.
 const BREAKDOWN_SWAP_DURATION_S = 0.3;
+
+// PUNCH REPAIR (critic round, entrance item): same fix sibling ConfirmationVariantAView.tsx's
+// own repair pass used for the identical blank-recorder failure, cited by name in this file's
+// header Motion note above. useEnterMotion() is Framer-Motion/useEffect driven, so the SSR HTML
+// ships the ticket at inline `opacity:0` and the page is genuinely blank until React hydrates;
+// this repo's own documented fact ("hydration on `next dev` is known to be non-deterministic")
+// means that blank window can span the whole capture. Replaced with a local, scoped, native CSS
+// `@keyframes` entrance: the base rule renders `.tb-enter` at `opacity:1` with zero JS and zero
+// animation dependency, and the keyframe is layered on ADDITIVELY only inside
+// `@media (prefers-reduced-motion: no-preference)`, so a reduced-motion user never receives it
+// and a stalled-hydration user still sees the ticket after the animation's own wall-clock
+// duration, since CSS keyframe animations run on the browser's timeline, not React's `useEffect`.
+// Same three properties and the same locked numbers as THE ENTER RECIPE, unchanged
+// (`GLIDE_EASE`/`ENTER_DURATION`, imported from the shared module, not re-derived): opacity
+// 0->1, scale 0.96->1, blur(8px)->blur(0), 280ms, `cubic-bezier(0.16,1,0.3,1)`.
+const GLIDE_CSS_EASE = `cubic-bezier(${GLIDE_EASE.join(",")})`;
+const ENTER_MS = Math.round(ENTER_DURATION * 1000);
+const ENTER_CSS = `
+  .tb-enter { opacity: 1; }
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes tbEnter {
+      from { opacity: 0; transform: scale(0.96); filter: blur(8px); }
+      to { opacity: 1; transform: scale(1); filter: blur(0); }
+    }
+    .tb-enter { animation: tbEnter ${ENTER_MS}ms ${GLIDE_CSS_EASE} both; }
+  }
+`;
 
 export default function TicketCardB({
   booking,
@@ -274,16 +311,6 @@ export default function TicketCardB({
     URL.revokeObjectURL(url);
   }
 
-  // Delay-mount (not opacity-delay) so SuccessMark's own CSS spring genuinely plays after the
-  // ticket's ENTER RECIPE entrance settles (280ms + a 20ms buffer), per the brief's "pops after
-  // it". Retimed from the old 620ms now that the card entrance itself is the locked 280ms
-  // recipe, not the old bespoke 550ms+70ms spring.
-  const [markMounted, setMarkMounted] = useState(false);
-  useEffect(() => {
-    const id = setTimeout(() => setMarkMounted(true), Math.round(ENTER_DURATION * 1000) + 20);
-    return () => clearTimeout(id);
-  }, []);
-
   // Price-breakdown accordion (punch item 4). Default OPEN: this direction's trust floor
   // ("price with the VAT line" visible) is FIXED for every direction of this surface and must
   // not depend on a first tap, see the Motion note in this file's header.
@@ -292,24 +319,14 @@ export default function TicketCardB({
   return (
     <div className="min-h-[100dvh] bg-s-bg-sunken px-4 pb-16 pt-6">
       <div className="mx-auto w-full max-w-[402px]">
-        <motion.div
-          {...useEnterMotion()}
-          className="relative rounded-[24px] border border-s-border bg-white shadow-whisper"
-        >
-          {/* success mark stamp, overlaps the top-right corner of the ticket */}
-          <div className="pointer-events-none absolute -top-3 right-4 z-10">
-            {markMounted && (
-              <div className="rounded-full bg-s-bg-sunken p-[3px]">
-                <SuccessMark size={38} />
-              </div>
-            )}
-          </div>
-
-          {/* ── ticket stub: confirmed moment, date/time (biggest), salon ── */}
+        <style>{ENTER_CSS}</style>
+        <div className="tb-enter relative rounded-[24px] border border-s-border bg-white shadow-whisper">
+          {/* ── ticket stub: confirmed moment (calm line, no celebration disc), date/time
+              (biggest), salon ── */}
           <div className="p-5">
             <div className="flex items-center justify-between gap-3">
-              <span className={`text-[13px] font-semibold ${statusClass}`}>{statusLabel}</span>
-              <span className="data-text text-[12px] tracking-[-0.01em] text-s-ink-2">
+              <span className={`text-[13px] ${statusClass}`}>{statusLabel}</span>
+              <span className="font-display tabular-nums text-[12px] tracking-[-0.01em] text-s-ink-2">
                 {booking.referenceCode || "Reference pending"}
               </span>
             </div>
@@ -329,7 +346,7 @@ export default function TicketCardB({
 
             <Link
               href={`/${locale}/salon/${booking.salonSlug}`}
-              className="mt-4 flex items-center gap-3 rounded-[12px] py-1 focus-visible:bg-s-bg-sunken focus-visible:outline-none"
+              className="mt-4 flex items-center gap-3 rounded-[12px] py-1 focus-visible:bg-s-bg-sunken"
             >
               {booking.salonCoverUrl ? (
                 <div className="relative h-[44px] w-[44px] shrink-0 overflow-hidden rounded-[12px]">
@@ -372,7 +389,7 @@ export default function TicketCardB({
             <div className="flex items-center gap-3 p-4">
               <Scissors size={17} strokeWidth={1.9} className="shrink-0 text-s-ink-2" aria-hidden />
               <div className="min-w-0 flex-1">
-                <div className="truncate font-display text-[15px] font-semibold tracking-[-0.01em] text-s-ink">
+                <div className="truncate font-display text-[15px] tracking-[-0.01em] text-s-ink">
                   {booking.serviceName}
                 </div>
                 {booking.servicePrice != null && (
@@ -387,7 +404,7 @@ export default function TicketCardB({
               <div className="flex items-center gap-3 p-4">
                 <Avatar src={null} name={booking.staffName} size="xs" />
                 <div className="min-w-0 flex-1">
-                  <div className="truncate font-display text-[15px] font-semibold tracking-[-0.01em] text-s-ink">
+                  <div className="truncate font-display text-[15px] tracking-[-0.01em] text-s-ink">
                     {booking.staffName}
                   </div>
                   <div className="mt-0.5 text-[13px] text-s-ink-2">Your stylist</div>
@@ -457,7 +474,7 @@ export default function TicketCardB({
               )}
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* ── trust floor: cancellation term rendered above the actions ── */}
         <p className="mt-5 text-center text-[13px] text-s-ink-2">
@@ -475,7 +492,7 @@ export default function TicketCardB({
             <span className="grid h-11 w-11 place-items-center rounded-full bg-s-bg-sunken text-s-ink"> {/* content-image-ok: plain icon button, not a photo/entity placeholder */}
               <CalendarPlus size={18} strokeWidth={1.9} aria-hidden />
             </span>
-            <span className="text-center text-[12px] font-semibold leading-tight text-s-ink">
+            <span className="text-center text-[12px] leading-tight text-s-ink">
               Add to calendar
             </span>
           </button>
@@ -489,7 +506,7 @@ export default function TicketCardB({
             <span className="grid h-11 w-11 place-items-center rounded-full bg-s-bg-sunken text-s-ink"> {/* content-image-ok: plain icon button, not a photo/entity placeholder */}
               <MapPin size={18} strokeWidth={1.9} aria-hidden />
             </span>
-            <span className="text-center text-[12px] font-semibold leading-tight text-s-ink">
+            <span className="text-center text-[12px] leading-tight text-s-ink">
               Directions
             </span>
           </a>
@@ -501,7 +518,7 @@ export default function TicketCardB({
             <span className="grid h-11 w-11 place-items-center rounded-full bg-s-bg-sunken text-s-ink"> {/* content-image-ok: plain icon button, not a photo/entity placeholder */}
               <PencilLine size={18} strokeWidth={1.9} aria-hidden />
             </span>
-            <span className="text-center text-[12px] font-semibold leading-tight text-s-ink">
+            <span className="text-center text-[12px] leading-tight text-s-ink">
               Manage booking
             </span>
           </Link>

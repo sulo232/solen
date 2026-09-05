@@ -97,8 +97,10 @@
  * RECIPE: opacity+scale+blur together, 280ms, `glide` ease, LOCKED, used for the timeline rows'
  * entrance). Timeline stagger uses 60ms per this direction's own brief (not the shared
  * `enterStaggerContainer`'s locked 50ms default, a different named token for a different
- * context); this file builds its own Variants off the same ENTER_RECIPE from/to values rather
- * than editing that shared primitive.
+ * context); the timeline rows carry the same ENTER RECIPE from/to values as a native CSS
+ * @keyframes rule (see the PUNCH FIX note above the imports and the `<style>` block right
+ * after the timeline `<ol>`), not a framer-motion Variants object, per the 2026-09-05 critic
+ * round (JS-driven stagger shipped invisible inline opacity:0 in the SSR HTML).
  *
  * Conflicts:
  * - CONFLICT [contradiction, resolved above]: the brief describes the calm confirmed moment as
@@ -169,7 +171,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { AnimatePresence, motion, useReducedMotion, type Variants } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import {
   Check,
   Calendar,
@@ -184,20 +186,22 @@ import {
 import { FROST_GLASS } from "@/lib/frost-glass";
 import { Avatar } from "@/app/[locale]/_components/primitives/Avatar";
 import { MetaDot } from "@/app/[locale]/_components/salon/MetaDot";
-import { ENTER_RECIPE, ENTER_DURATION, GLIDE_EASE } from "@/app/[locale]/_components/primitives/motion";
+import { GLIDE_EASE } from "@/app/[locale]/_components/primitives/motion";
 import type { BookingConfirmationProps } from "@/components-legacy/booking/BookingConfirmation";
 
-// This direction's own timeline stagger (60ms, per this direction's brief), built off the same
-// ENTER_RECIPE opacity+scale+blur values rather than the shared enterStaggerContainer (locked to
-// a 50ms step for its own callers, a different named token, not edited here).
-const timelineContainer: Variants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.06 } },
-};
-const timelineItem: Variants = {
-  hidden: ENTER_RECIPE.initial,
-  visible: { ...ENTER_RECIPE.animate, transition: { duration: ENTER_DURATION, ease: GLIDE_EASE } },
-};
+// PUNCH FIX 2026-09-05 (critic round): the timeline, this direction's declared lead content,
+// was invisible for ~1600ms after first paint on a fresh navigation. Cause: framer-motion's
+// `motion.li` ships its `initial={opacity:0,...}` state as an INLINE style in the
+// server-rendered HTML, so the rows stayed invisible until React hydrated and framer's own JS
+// took over. Fixed by dropping the JS-driven stagger for the timeline rows ONLY (the
+// summary-expand accordion further down still uses framer-motion/AnimatePresence, untouched,
+// it was not the reported problem) in favour of a native CSS @keyframes stagger, same ENTER
+// RECIPE numbers (opacity 0->1, scale .96->1, blur 8px->0, 280ms, GLIDE_EASE), driven purely
+// by `animation-delay` per row (0/60/120ms, see the timelineDelays list + <style> block below)
+// so the browser paints and animates the rows with zero JavaScript, before hydration.
+// `prefers-reduced-motion` is honoured with a plain CSS media query instead of the
+// `useReducedMotion()` hook (no longer needed here once nothing reads motion state in JS).
+const timelineDelays = ["0ms", "60ms", "120ms"] as const;
 
 export function ConfirmationCelebration({
   booking,
@@ -208,7 +212,6 @@ export function ConfirmationCelebration({
   freeCancelHours: number;
   locale: string;
 }) {
-  const reduceMotion = useReducedMotion();
   const [expanded, setExpanded] = useState(false);
 
   const localeCode =
@@ -335,16 +338,14 @@ export function ConfirmationCelebration({
             ) : null}
           </div>
 
-          {/* ── 3. timeline plus the three actions ── */}
-          <motion.ol
-            variants={timelineContainer}
-            initial={reduceMotion ? "visible" : "hidden"}
-            animate="visible"
-            className="relative mt-8 flex flex-col gap-5 pl-1"
-          >
+          {/* ── 3. timeline plus the three actions. Plain markup, no framer-motion variants:
+              see the PUNCH FIX note in the imports block above. Each row paints in the SSR
+              HTML with no inline opacity, then a scoped CSS @keyframes animation (defined in
+              the <style> tag right after this list) staggers it in via animation-delay. ── */}
+          <ol className="relative mt-8 flex flex-col gap-5 pl-1">
             <span aria-hidden className="absolute left-[19px] top-3 bottom-3 w-px bg-s-border" />
 
-            <motion.li variants={reduceMotion ? undefined : timelineItem} className="relative flex gap-3">
+            <li className="vc-timeline-row relative flex gap-3" style={{ animationDelay: timelineDelays[0] }}>
               <span className="relative z-10 grid h-10 w-10 shrink-0 place-items-center rounded-full bg-s-success">
                 <Check size={17} strokeWidth={2.4} className="text-white" aria-hidden />
               </span>
@@ -352,10 +353,10 @@ export function ConfirmationCelebration({
                 <div className="text-[14px] font-normal text-s-ink">Confirmed</div>
                 <div className="mt-0.5 text-[12px] font-normal text-s-ink-2">Just now</div>
               </div>
-            </motion.li>
+            </li>
 
             {!isCancelledNow && (
-              <motion.li variants={reduceMotion ? undefined : timelineItem} className="relative flex gap-3">
+              <li className="vc-timeline-row relative flex gap-3" style={{ animationDelay: timelineDelays[1] }}>
                 <span className="relative z-10 grid h-10 w-10 shrink-0 place-items-center rounded-full border border-s-border bg-white">
                   <Bell size={16} strokeWidth={1.9} className="text-s-ink-2" aria-hidden />
                 </span>
@@ -363,11 +364,11 @@ export function ConfirmationCelebration({
                   <div className="text-[14px] font-normal text-s-ink">Reminder</div>
                   <div className="mt-0.5 text-[12px] font-normal text-s-ink-2">Sent 24 hours before your appointment</div>
                 </div>
-              </motion.li>
+              </li>
             )}
 
             {!isCancelledNow && (
-              <motion.li variants={reduceMotion ? undefined : timelineItem} className="relative flex gap-3">
+              <li className="vc-timeline-row relative flex gap-3" style={{ animationDelay: timelineDelays[2] }}>
                 <span className="relative z-10 grid h-10 w-10 shrink-0 place-items-center rounded-full border border-s-border bg-white">
                   <Calendar size={16} strokeWidth={1.9} className="text-s-ink-2" aria-hidden />
                 </span>
@@ -375,9 +376,31 @@ export function ConfirmationCelebration({
                   <div className="text-[14px] font-normal text-s-ink">Your visit</div>
                   <div className="mt-0.5 text-[12px] font-normal text-s-ink-2">{relativeVisit}</div>
                 </div>
-              </motion.li>
+              </li>
             )}
-          </motion.ol>
+          </ol>
+
+          {/* Scoped, native CSS keyframes for the three rows above. Same numbers as
+              _components/primitives/motion.ts ENTER_RECIPE (280ms, cubic-bezier(0.16,1,0.3,1)
+              = GLIDE_EASE, opacity+scale+blur together), 60ms stagger via animation-delay.
+              `animation-fill-mode: both` supplies the pre-animation frame purely through CSS
+              (never an inline style attribute), so the row is present in the SSR HTML and the
+              browser paints + animates it before hydration, no JS required. A dedicated class
+              name (`vc-timeline-row`, prefixed for this direction) avoids colliding with any
+              other rule; this is a one-off <style> tag local to this file, not an edit to
+              app/globals.css. */}
+          <style>{`
+            @keyframes vc-timeline-enter {
+              from { opacity: 0; transform: scale(0.96); filter: blur(8px); }
+              to { opacity: 1; transform: scale(1); filter: blur(0); }
+            }
+            .vc-timeline-row {
+              animation: vc-timeline-enter 280ms cubic-bezier(0.16, 1, 0.3, 1) both;
+            }
+            @media (prefers-reduced-motion: reduce) {
+              .vc-timeline-row { animation: none; }
+            }
+          `}</style>
 
           {/* ── trust floor: cancellation term, rendered in the DOM above the actions ── */}
           {!isCancelledNow && (

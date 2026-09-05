@@ -14,7 +14,7 @@
 // Depicts: booking data -> app/[locale]/dev/directions-0905/_shared/seedBooking.ts getSeedBooking()
 // Depicts: ticket status/date/salon/service/staff/price rows -> components-legacy/booking/BookingConfirmation.tsx (same props, reordered)
 // Depicts: ICS download + directions link -> components-legacy/booking/BookingConfirmation.tsx handleCalendar/directionsHref
-// Depicts: success mark entrance -> app/[locale]/_components/primitives/SuccessMark.tsx
+// Depicts: confirmed moment (calm text line, no celebration disc) -> components-legacy/booking/BookingConfirmation.tsx's own header + TASTE_LOG 2026-07-16 C4 (SuccessMark removed from this direction, critic round 2 repair)
 // Depicts: card radius/shadow -> app/tailwind.config.js rounded-card + shadow-elevation-2 tokens
 // Depicts: perforated tear line -> NET-NEW: brief's own direction names this element, no cited Fresha/Airbnb file draws it
 // Depicts: icon-label action row -> NET-NEW: composes Fresha's action-row content into a 3-up row per this direction's brief line

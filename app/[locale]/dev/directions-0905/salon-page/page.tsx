@@ -14,7 +14,7 @@
 
 import { DirectionFrame } from "@/app/[locale]/dev/directions-0905/_shared/DirectionFrame";
 import { loadSalonDetailWithStatus } from "@/lib/salon-detail";
-import { SalonPagePhotoLed } from "./_vb/SalonPagePhotoLed";
+import { SalonPageAirbnbLook } from "./_vb/SalonPageAirbnbLook";
 import { SalonPageDirectionA } from "./_va/SalonPageDirectionA";
 import { DirectionC } from "./_vc/DirectionC";
 
@@ -22,7 +22,7 @@ const SALON_SLUG = "muse-beauty-studio";
 
 const DIRECTIONS = [
   { value: "a", label: "Fresha order" },
-  { value: "b", label: "Photo-led gallery with a frosted name overlay" },
+  { value: "b", label: "Airbnb look, full strength (locks broken on purpose)" },
   { value: "c", label: "Book-first: compact gallery, services lead, sticky bar tracks the pick" },
 ];
 
@@ -58,7 +58,7 @@ export default async function SalonPageDirections({
         <SalonPageDirectionA salon={salon} openStatus={openStatus} todayKey={todayKey} locale={locale} slug={SALON_SLUG} />
       )}
       {v === "b" && (
-        <SalonPagePhotoLed salon={salon} openStatus={openStatus} todayKey={todayKey} locale={locale} />
+        <SalonPageAirbnbLook salon={salon} openStatus={openStatus} todayKey={todayKey} locale={locale} />
       )}
       {v === "c" && (
         <DirectionC salon={salon} openStatus={openStatus} todayKey={todayKey} locale={locale} />

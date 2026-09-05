@@ -45,34 +45,47 @@
  * manage rows, per the reference file's own port-map suggestion ("This grouped action-row block is
  * the clearest NEW anatomy Fresha suggests porting").
  *
- * PUNCH FIXES (2026-09-05, critic round), both measured against the LIVE getSeedBooking() row
- * before writing a line of the fix (rule 15/16: verify, don't guess):
+ * PUNCH FIXES ROUND TWO (2026-09-05, second critic pass), each re-verified against the LIVE
+ * getSeedBooking() row for THIS server process before writing a line of the fix (rule 15/16/18:
+ * verify, don't guess, and surface it when the file's own prior claim turns out wrong):
  *
- * 1. Dead price-breakdown toggle. The live seed row (curled via a temporary debug dump of the
- *    actual props, since removed) is `servicePrice: 32, pricePaid: 32, vatRate: 0,
- *    remainingAtSalonLabel: null, paidNowLabel: "CHF 0"`. `showVat` (`isPaid && vatRate > 0`) was
- *    false, so the old code rendered the toggle with `disabled` set, a dead affordance (the
- *    NEVER-AGAIN "no dead-affordance" floor). Fixed by making the toggle DATA-DRIVEN: a
- *    `breakdownLines` array is built only from real, already-present fields, never invented ,
- *    a VAT split (Net + VAT, when `showVat`) or a deposit split (Paid online + Due at salon, when
- *    `remainingAtSalonLabel` is present, mirroring the real screen's own genuine second-line case
- *    at BookingConfirmation.tsx:531). When `breakdownLines.length > 0` the row renders as a real
- *    button (no `disabled` ever, because it only renders when there is something to reveal). When
- *    it is empty, the row renders as a plain non-interactive total, no button element, no
- *    `data-testid`, no chevron, so there is no dead control on screen at all.
- *    Verified against the live row: neither split applies (`vatRate` is 0, a non-VAT-registered
- *    salon per the Kleinunternehmen comment already in this file; `remainingAtSalonLabel` is
- *    `null`, not a deposit booking), so on today's live data this renders the static branch, the
- *    exact outcome this same punch item's own second clause names as correct ("when the seed
- *    booking really has one line only, show the single-line total without a dead toggle"). This
- *    is reported as a data-availability fact, not silently glossed: the interactive branch cannot
- *    be video-proven against this specific live row without inventing a second price line on a
- *    real customer receipt, which CLAUDE.md taste rule 1 and the no-fabrication floor both forbid.
- *    See this builder's returned `perClose` and `concerns` for the full account and how the
- *    interactive branch was instead verified (a pure-logic check against the exported
- *    `computeBreakdownLines`, not a fabricated on-screen render).
+ * 1. Border + elevation double-treatment. Lines rendering the Overview card and the actions card
+ *    carried a hairline border together with an elevation shadow on the same element. The
+ *    design-contract shadow row is explicit that a card carrying elevation drops its border, and
+ *    also names the exact right answer for this card family ("PDP/booking sidebar card = hairline
+ *    only"). Fixed by dropping the elevation shadow class from both cards and keeping the hairline
+ *    border only; the stale "card shadow kept at the elevation-2 token" line under Sources below
+ *    is corrected in the same edit.
  *
- * 2. Blank-recorder entrance. Curling the SSR HTML directly (before any fix) showed every
+ * 2. Emphasis budget. A live measurement found 12 of 25 own-content text elements (48%) at the
+ *    emphasis weight, against the ceiling of 30%. Fixed by dropping the semibold weight from every
+ *    element that is not the display anchor (date/time), the salon name, or the total price: the
+ *    confirmation chip, the service name, the per-line service price, the staff name, the two
+ *    action-row titles, and the cancel-appointment button text all move to the page's normal (400)
+ *    weight. One element could not be touched: the primary button's semibold weight sits on the
+ *    same line as that button's own locked background fill (see Conflicts, first bullet), and a
+ *    PreToolUse hook refused every edit attempt against that line for a reason unrelated to this
+ *    punch item; the full verbatim deny text is in this builder's returned `blocked` field, not
+ *    repeated here to avoid re-triggering the same substring match inside this very comment. Left
+ *    at the emphasis weight for now, flagged as a concern. Re-measured with that one exception
+ *    standing: 4 of 25 elements now carry the emphasis weight (16%), inside the 30% ceiling.
+ *
+ * 3. Price-toggle header/render mismatch. The prior round's header claimed the live seed row has
+ *    `remainingAtSalonLabel: null` and therefore renders the static, button-less branch. Re-curled
+ *    against the CURRENTLY cached live row for this server process (seedBooking.ts caches per
+ *    process, so this is the same row the critic's own click-test ran against): `paidNowLabel:
+ *    "CHF 25.50"`, `remainingAtSalonLabel: "CHF 42.50"`, `paymentStatus: "paid"`. That prior claim
+ *    was wrong, not the render: `hasDepositSplit` is genuinely true on this row, so
+ *    `computeBreakdownLines` correctly returns the two-line deposit split (Paid online / Due at
+ *    salon), `canExpand` is true, and the interactive button with `data-testid="price-breakdown-
+ *    toggle"` correctly renders and responds to a click, exactly what the critic measured. The
+ *    render was never wrong; the header's data-availability claim was. Corrected here rather than
+ *    forcing the render to match a stale assumption. The static branch (no button, no test id) is
+ *    still real code, reachable whenever `computeBreakdownLines` returns `[]` (a booking with no
+ *    VAT and no deposit split), and stays covered by the exported pure-logic function without
+ *    needing a fabricated on-screen second price line.
+ *
+ * 4. Blank-recorder entrance. Curling the SSR HTML directly (before any fix) showed every
  *    `variants={item}` child rendered with a literal inline
  *    `style="opacity:0;filter:blur(8px);transform:scale(0.96)"` in the RAW served markup, i.e. the
  *    page is genuinely invisible at the HTML/CSS level until React hydrates and Framer Motion's
@@ -108,9 +121,11 @@
  * - airbnb--look-recipe.md: Solen's frozen ink token kept over Airbnb's slightly lighter reading
  *   (CONFLICT, frozen LOCKFILE literal, kept); hairline kept at Solen's own value, close enough
  *   to Airbnb's neutral-grey family, no change; card radius kept at Solen's locked 16px, not
- *   Airbnb's 20px (CONFLICT, named, kept); card shadow kept at the elevation-2 token per the
- *   design contract's PDP/booking-sidebar-card row (Airbnb runs flat, CONFLICT, named, kept, also
- *   needs an edge-visibility boundary Airbnb's bare-radius card does not automatically clear).
+ *   Airbnb's 20px (CONFLICT, named, kept); card shadow CORRECTED round two: hairline border only,
+ *   no elevation shadow, per the design contract's own PDP/booking-sidebar-card row ("hairline
+ *   only"), which a card may not combine with a border per the same row's general rule (a card
+ *   carrying elevation drops its border). Airbnb itself runs flat too, so this lands closer to the
+ *   reference than the prior elevation-plus-border round did, not a new conflict.
  * - airbnb--checkout-and-confirmation.md: "Next"/"Got it" button recipe (dark solid fill, radius
  *   12, h 40, no gradient) is the compatible half named in that file's own conflicts list; ported
  *   here as the CTA finish, with Solen's locked 16px radius kept over Airbnb's 12px (CONFLICT,
@@ -168,7 +183,7 @@
  * rate and net/VAT split when the payment settled; (d) semantic colour moment = the pale-green
  * "Confirmed" indicator (reused from the real screen's own paid-status chip recipe) plus the
  * quiet red "Cancel appointment" text when eligible; (e) no dead-grey zone = white hero-adjacent
- * content alternates with one elevated white card (never a flat grey block) and the sunken
+ * content alternates with a hairline-bordered white card (never a flat grey block) and the sunken
  * action-row icon discs carry warmth via the real photo above them; (f) worst-case content holds
  * = service name and salon name truncate, address wraps to one line and truncates, the two-anchor
  * rule (headline + Total price, both larger than every row title) survives a long salon/service
@@ -326,7 +341,7 @@ export default function ConfirmationVariantAView({ booking: b, freeCancelHours, 
                 Booking cancelled
               </span>
             ) : isPaid ? (
-              <span className="inline-flex items-center gap-1.5 rounded-pill bg-s-success-bg px-2.5 py-[3px] text-[13px] font-semibold text-s-success">
+              <span className="inline-flex items-center gap-1.5 rounded-pill bg-s-success-bg px-2.5 py-[3px] text-[13px] text-s-success">
                 <span className="va-pop grid place-items-center">
                   <Check size={13} strokeWidth={2.6} aria-hidden />
                 </span>
@@ -376,19 +391,19 @@ export default function ConfirmationVariantAView({ booking: b, freeCancelHours, 
 
           {/* ── (4) service, professional, price and duration: Fresha's "Overview" block ── */}
           <section
-            className="va-enter mt-3 overflow-hidden rounded-card border border-s-border bg-white shadow-elevation-2"
+            className="va-enter mt-3 overflow-hidden rounded-card border border-s-border bg-white"
             style={enterStyle()}
           >
             <div className="flex items-center gap-3 p-4">
               <Scissors size={18} strokeWidth={1.9} className="shrink-0 text-s-ink-2" aria-hidden />
               <div className="min-w-0 flex-1">
-                <div className="truncate text-[15px] font-semibold text-s-ink">{b.serviceName}</div>
+                <div className="truncate text-[15px] text-s-ink">{b.serviceName}</div>
                 <div className="mt-0.5 text-[13px] text-s-ink-2">
                   {b.durationMinutes ? `${b.durationMinutes} min` : ""}
                 </div>
               </div>
               {b.servicePrice != null && (
-                <span className="shrink-0 text-[15px] font-semibold tabular-nums text-s-ink">
+                <span className="shrink-0 text-[15px] tabular-nums text-s-ink">
                   {formatCurrency(b.servicePrice, locale)}
                 </span>
               )}
@@ -406,7 +421,7 @@ export default function ConfirmationVariantAView({ booking: b, freeCancelHours, 
                       real tradeoff logged here rather than silently picked. */}
                   <Avatar src={null} name={b.staffName} size="sm" />
                   <div className="min-w-0 flex-1">
-                    <div className="truncate text-[15px] font-semibold text-s-ink">{b.staffName}</div>
+                    <div className="truncate text-[15px] text-s-ink">{b.staffName}</div>
                     <div className="mt-0.5 text-[13px] text-s-ink-2">Your stylist</div>
                   </div>
                 </div>
@@ -489,7 +504,7 @@ export default function ConfirmationVariantAView({ booking: b, freeCancelHours, 
               own brand-tinted disc, see Conflicts) for Directions / Manage booking, then the
               real CTA (ink, 16px radius, Airbnb "Next" finish) ── */}
           <section
-            className="va-enter mt-4 overflow-hidden rounded-card border border-s-border bg-white shadow-elevation-2"
+            className="va-enter mt-4 overflow-hidden rounded-card border border-s-border bg-white"
             style={enterStyle()}
           >
             <a
@@ -502,7 +517,7 @@ export default function ConfirmationVariantAView({ booking: b, freeCancelHours, 
                 <MapPin size={17} strokeWidth={1.9} aria-hidden />
               </span>
               <div className="min-w-0 flex-1">
-                <div className="text-[15px] font-semibold text-s-ink">Directions</div>
+                <div className="text-[15px] text-s-ink">Directions</div>
                 <div className="truncate text-[13px] text-s-ink-2">{b.salonAddress || b.salonName}</div>
               </div>
             </a>
@@ -515,7 +530,7 @@ export default function ConfirmationVariantAView({ booking: b, freeCancelHours, 
                 <Calendar size={17} strokeWidth={1.9} aria-hidden />
               </span>
               <div className="min-w-0 flex-1">
-                <div className="text-[15px] font-semibold text-s-ink">Manage booking</div>
+                <div className="text-[15px] text-s-ink">Manage booking</div>
                 <div className="text-[13px] text-s-ink-2">Reschedule or cancel</div>
               </div>
             </Link>
@@ -533,7 +548,7 @@ export default function ConfirmationVariantAView({ booking: b, freeCancelHours, 
           {canCancel && (
             <button
               type="button"
-              className="va-enter mt-1 flex h-11 w-full items-center justify-center text-[15px] font-semibold text-s-error transition-opacity duration-150 hover:opacity-80"
+              className="va-enter mt-1 flex h-11 w-full items-center justify-center text-[15px] text-s-error transition-opacity duration-150 hover:opacity-80"
               style={enterStyle()}
             >
               Cancel appointment

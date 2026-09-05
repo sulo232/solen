@@ -3,6 +3,7 @@
 import * as React from "react";
 import { flushSync } from "react-dom";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { motion, AnimatePresence, useReducedMotion, type Transition } from "motion/react";
 import {
   Calendar,
@@ -108,6 +109,7 @@ const PERIODS: { label: string; value: string; icon: LucideIcon }[] = [
 export function SearchBar() {
   const params = useParams<{ locale: string }>()!;
   const locale = params?.locale ?? "de";
+  const t = useTranslations("ui.searchOverlay");
 
   const [active, setActive] = React.useState<Segment | null>(null);
   // V2-D51 Path C (completed): the resting hero pill now opens the full-page
@@ -267,22 +269,22 @@ export function SearchBar() {
         >
           <CollapsedRow
             icon={<Search size={18} strokeWidth={1.9} />}
-            ariaLabel="Service suchen"
-            value={service || "Service"}
+            ariaLabel={t("ariaSearchService")}
+            value={service || t("serviceField")}
             isPlaceholder={!service}
             onClick={() => openOverlay("service")}
           />
           <CollapsedRow
             icon={<MapPin size={18} strokeWidth={1.9} />}
-            ariaLabel="Standort wählen"
-            value={stadt || "Stadt"}
+            ariaLabel={t("ariaChooseCity")}
+            value={stadt || t("cityField")}
             isPlaceholder={!stadt}
             onClick={() => openOverlay("stadt")}
           />
           <CollapsedRow
             icon={<Calendar size={18} strokeWidth={1.9} />}
-            ariaLabel="Zeit wählen"
-            value={zeit || "Zeit"}
+            ariaLabel={t("ariaChooseTime")}
+            value={zeit || t("timeField")}
             isPlaceholder={!zeit}
             onClick={() => openOverlay("zeit")}
           />
@@ -333,7 +335,7 @@ export function SearchBar() {
                 30 Sekunden") + "finden" implies the result is waiting
                 vs. "suchen" implying effort. Drops the redundant brand
                 mention (user is already ON Solen). */}
-            Termine finden
+            {t("findAppointmentsCta")}
           </button>
         </motion.div>
       </motion.div>

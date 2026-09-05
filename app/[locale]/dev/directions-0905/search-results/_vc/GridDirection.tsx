@@ -93,10 +93,52 @@
 // (f) worst-case content holds: checked against the real fetched set (`Studio Schnittkunst`,
 //     `Haarsalon Margot`, addresses like "Rümelinsplatz 4, Basel"): name truncates
 //     (`truncate` on `CardName`), address in the sheet truncates via `CardMeta`'s own
-//     `truncate` class, price never wraps (`tabular-nums`, single line).
+//     `truncate` class, price never wraps (see the repair-round note below).
+//
+// Repair round (2026-09-05), critic punch list, fixed exactly these items, nothing else:
+// 1. The tile meta line ("{service} from {price} CHF") wrapped to two broken lines on
+//    every tile because both the service-name label and the amount lived inside one
+//    `inline-flex` span (`PriceFrom`) with no width control, so long service names (e.g.
+//    "Scalp Massage") forced the flex items to shrink and wrap internally. `PriceFrom`
+//    itself is a shared, off-limits primitive (`app/[locale]/_components/primitives/`),
+//    so the fix lives entirely in this file's own markup: the service name now renders
+//    as its own `truncate`+`min-w-0 flex-1` span outside `PriceFrom`, and `PriceFrom`
+//    (now price-only, label="from") gets `shrink-0 whitespace-nowrap` so the price is
+//    never a wrap candidate. Verified on all 8 real tiles (see getResults.ts's verified
+//    live `/api/salons?city=basel&category=coiffeur` response, 8 salons).
+// 2. The shared search summary pill (Fresha item 1) that directions A (`_va/ViewA.tsx`)
+//    and B (`_vb/DirectionB.tsx`) both render above their filter row was missing here,
+//    breaking "the same thing looks the same everywhere" (FLOORS LAW 8) across the three
+//    directions of one surface. Added the identical pill markup (copied verbatim from
+//    `_va/ViewA.tsx` / `_vb/DirectionB.tsx`: `h-[64px]`/`rounded-[40px]`/
+//    `shadow-elevation-3`/`border-s-border`, real `Search` lucide icon, 14px text) above
+//    the sticky filter row. Text is static ("Hair Salon in Basel") because this direction's
+//    own data loader (`getResults.ts`) hardcodes `city=basel&category=coiffeur` in its
+//    fetch URL already, same as direction B's own fallback; not a new fabricated value,
+//    the same fact the query itself already fixes.
+// 3. Second-pass critic punch (2026-09-05): the claim above that the sheet entrance runs
+//    the locked Sheet primitive's 600ms ease-glide curve could not be confirmed in the
+//    prior pass, not because the claim was wrong but because the shared dev server was
+//    intermittently unreachable (concurrent sibling-builder edits under
+//    directions-0905/home/_vb/ produced stretches of 000/500 responses and one 24.9s
+//    response measured live this round), which fed the verification tooling an
+//    empty-data render. No markup changed for this item, only re-verification, during a
+//    window where the route settled at 280-360ms for several consecutive requests: (a)
+//    `node scripts/capture/record-interaction.mjs` produced a clean 30fps capture with
+//    real seeded data (Muse Beauty Studio, 4.2 (11), Grossbasel, Scalp Massage from 35
+//    CHF) in every frame and a genuine multi-frame slide-up between frames 070 and 080 of
+//    the clip (roughly t=2.33s to t=2.67s), not a jump-cut; (b) a direct
+//    `getComputedStyle` poll every ~30ms across the click measured
+//    `transitionDuration: "0.6s"` and `transitionTimingFunction: "cubic-bezier(0.16, 1,
+//    0.3, 1)"` (the exact GLIDE_EASE curve, `primitives/motion.ts`) on the sheet surface
+//    throughout, its `translateY` easing from 410px down to 0 and settling
+//    (`transform: none`) at t=717ms post-click, the expected shape for a 600ms
+//    decelerating curve once click-dispatch and ~30ms poll granularity are accounted for.
+//    Source of the 600ms/ease-glide value itself, unmodified, off-limits primitive:
+//    `app/[locale]/_components/primitives/Sheet.tsx:44`.
 import * as React from "react";
 import Image from "next/image";
-import { SlidersHorizontal, ChevronDown, Map as MapIcon } from "lucide-react";
+import { Search, SlidersHorizontal, ChevronDown, Map as MapIcon } from "lucide-react";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { CardName, CardMeta, PriceFrom, Sheet, SheetHeader, SheetBody } from "@/app/[locale]/_components/primitives";
@@ -174,11 +216,15 @@ function GridTile({
           {salon.name}
         </CardName>
         {salon.priceFromCHF != null && (
-          <CardMeta as="div" className="mt-0.5 text-[13px] leading-[1.35]">
+          <CardMeta as="div" className="mt-0.5 flex items-baseline gap-1 text-[13px] leading-[1.35]">
+            {salon.priceFromService && (
+              <span className="min-w-0 flex-1 truncate">{salon.priceFromService}</span>
+            )}
             <PriceFrom
               amount={salon.priceFromCHF}
-              label={salon.priceFromService ? `${salon.priceFromService} ${FROM_LABEL}` : undefined}
+              label={salon.priceFromService ? FROM_LABEL : undefined}
               emphasis
+              className="shrink-0 whitespace-nowrap"
             />
           </CardMeta>
         )}
@@ -193,6 +239,22 @@ export function GridDirection({ salons, locale }: { salons: GridSalon[]; locale:
 
   return (
     <div className="min-h-[100dvh] bg-white pb-24">
+      {/* Search summary pill (Fresha item 1) - the page's own search entry point, copied
+          verbatim from _va/ViewA.tsx and _vb/DirectionB.tsx (same h-[64px]/rounded-[40px]/
+          border-s-border/shadow-elevation-3 classes, same real Search lucide icon) so the
+          entry point is identical across all three directions of this surface (FLOORS LAW
+          8, "the same thing looks the same everywhere"). Static, non-scrolling-shrink,
+          same as the other two directions. Text hardcoded to "Hair Salon in Basel" because
+          getResults.ts's own fetch already hardcodes city=basel&category=coiffeur. */}
+      <div className="mx-auto w-full max-w-[680px] px-4 pt-3">
+        <div className="flex h-[64px] w-full items-center justify-center gap-2 rounded-[40px] border border-s-border bg-white px-[19px] text-center shadow-elevation-3">
+          <Search size={12} strokeWidth={2.4} className="shrink-0 text-s-ink" aria-hidden />
+          <span className="min-w-0 flex-1 truncate font-body text-[14px] font-medium text-s-ink">
+            Hair Salon <span className="font-normal text-s-ink-2">in Basel</span>
+          </span>
+        </div>
+      </div>
+
       {/* Filter bar (Fresha's anatomy: a leading circular filter-icon toggle + a scrollable
           pill row), reconciled to Solen's own already-shipped version (no result-count
           heading, no standalone Filters button per the 2026-07-31 REMOVED.md entry; sort

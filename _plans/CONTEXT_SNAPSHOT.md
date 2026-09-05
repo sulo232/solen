@@ -2,22 +2,38 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-09-05T10:12:38 (trigger: auto)
+- taken: 2026-09-05T16:00:42 (trigger: auto)
 - branch: claude/cloud-code-codex-migration-86a820
 
 ## git
 ```
-c9fbca05d Plan notes: commit shas behind the motion capture boxes
-e54c24c15 checkpoint(auto): 3 uncommitted file(s) at turn end
-0182c467a Motion captures: Airbnb's timings from video, and what 21st.dev exposes without an account
-3d8faeccb Plan notes: evidence behind every ticked box, running helpers named on the open ones; comparison script snapshot
-0e5823d76 Plan notes: captures saved, nine static builders running, motion builders queued
+a5d2acc4d Plan log: salon b rebuilt alone, press-kit pass running, two upcoming bookings seeded, wave-2 script ready
+b3db7da57 Salon page i18n: the category pill label reads All/Tous/Tutti per locale, and the duplicate bookAppointment key folds into bookNow
+bab90e6a6 Plan log: wave-2 references saved, waiting on builders under load
+67a611277 Wave-2 references: Fresha structure and Airbnb look for bookings list, payment step, profile and empty states (Mobbin, cited per fact)
+98e425868 Plan notes: i18n box closed with the review and commit
 ```
 ```
-M _plans/DIRECTIONS_0905.md
-?? _design-system/references/COMPARE_SOLEN_FRESHA_AIRBNB.md
-?? app/[locale]/dev/directions-0905/home/
-?? app/[locale]/dev/directions-0905/search-results/
+M _design-system/_geometry-report.md
+ M _plans/CONTEXT_SNAPSHOT.md
+ M app/[locale]/dev/directions-0905/confirmation/_va/ConfirmationVariantAView.tsx
+ M app/[locale]/dev/directions-0905/confirmation/_vb/TicketCardB.tsx
+ M app/[locale]/dev/directions-0905/confirmation/_vc/ConfirmationCelebration.tsx
+ M app/[locale]/dev/directions-0905/home/_va/HomeVariantA.tsx
+ M app/[locale]/dev/directions-0905/home/_vb/HomeDirectionB.tsx
+ D app/[locale]/dev/directions-0905/home/_vb/RecentlyViewedBig.tsx
+ D app/[locale]/dev/directions-0905/home/_vb/SectionPrimitivesBig.tsx
+ D app/[locale]/dev/directions-0905/home/_vb/TopCategoryRailsBig.tsx
+ M app/[locale]/dev/directions-0905/press-motion/_va/PressMotionSceneA.tsx
+ M app/[locale]/dev/directions-0905/press-motion/_vb/PressMotionDirectionB.tsx
+ M app/[locale]/dev/directions-0905/press-motion/_vb/SpringPillRow.tsx
+ M app/[locale]/dev/directions-0905/press-motion/_vc/PressMotionDirectionC.tsx
+ M app/[locale]/dev/directions-0905/press-motion/_vc/TiltCard.tsx
+ M app/[locale]/dev/directions-0905/salon-page/_va/SalonPageDirectionA.tsx
+ D app/[locale]/dev/directions-0905/salon-page/_vb/GalleryHeroOverlay.tsx
+ D app/[locale]/dev/directions-0905/salon-page/_vb/SalonPagePhotoLed.tsx
+ M app/[locale]/dev/directions-0905/salon-page/_vc/DirectionC.tsx
+ M app/[locale]/dev/directions-0905/salon-page/_vc/ServicesLead.tsx
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
@@ -63,4 +79,4 @@ M _plans/DIRECTIONS_0905.md
 110 | DESIGN RE-ENGINEER , improve the system we have, measured against live Airbnb | **ACTIVE** (2026-07-28)
 72 | REFUND PROCESS: does it exist, who decides, is it legal (owner 2026-08-19: "Is there even a refund process, and how does it even proceed? Who is gonna decide it? ... with the tax and fix if it's legal or not") | **ACTIVE** (2026-08-19)
 111 | GATE + HOOK STRESS TEST , all 305 hooks driven with real payloads, not read (owner 2026-08-17: "actually evaluate and stress test each one") | **ACTIVE** (2026-08-18)
-114 | Directions loop (owner 2026-09-05, dictated: "the mock up is completely ass ... let's ditch this whole thing"; new task: more motion on click and between screens, UI elements that look good, 21st.dev MCP or research live in Chrome, keep comparing with Fresha and Airbnb, look = Airbnb not completely, placement = Fresha base, "make me tons of mock ups ... multiple directions ... stop cheaping out", as a loop) | **ACTIVE** (2026-09-05 10:20: Fresha and Airbnb captures saved, nine static builders running, nine motion builders queued behind the motion captures)
+114 | Directions loop (owner 2026-09-05, dictated: "the mock up is completely ass ... let's ditch this whole thing"; new task: more motion on click and between screens, UI elements that look good, 21st.dev MCP or research live in Chrome, keep comparing with Fresha and Airbnb, look = Airbnb not completely, placement = Fresha base, "make me tons of mock ups ... multiple directions ... stop cheaping out", as a loop) | **ACTIVE** (2026-09-05 10:20: every capture and the comparison saved, its top finding root-caused, 18 builders running (six screens, three directions each) behind the motion captures)

@@ -21,7 +21,7 @@
 // Depicts: "See all" link -> app/[locale]/_components/salon/SalonServices.tsx (unchanged SeeAllButton call, still routes straight to the booking flow).
 
 import * as React from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { motion } from "motion/react";
 import { Check } from "lucide-react";
 import type { Service, SalonDetail } from "@/app/[locale]/_components/salon/_shared";
@@ -29,7 +29,12 @@ import { capitalize } from "@/app/[locale]/_components/salon/_shared";
 import { TabPill } from "@/app/[locale]/_components/primitives/TabPill";
 import { PriceFrom, SeeAllButton, ServiceDisclosureRow } from "@/app/[locale]/_components/primitives";
 import { useEnterMotion } from "@/app/[locale]/_components/primitives/motion";
+import { localizedField } from "@/lib/i18n/localized-field";
 import { cn } from "@/lib/utils";
+// REPAIR 2026-09-05: FROM_LABEL reuse (rule 12, don't re-declare), same import the real
+// SalonServices.tsx uses at line 12, the locale "ab"/"from"/"des"/"da" price-prefix map.
+// Was hardcoded label="ab" (German) on this English mockup route; fixed below.
+import { FROM_LABEL } from "@/app/[locale]/_components/search/SalonResultCard";
 
 function formatDurationDE(mins: number): string {
   return `${mins} min`;
@@ -146,14 +151,21 @@ function ServiceRow({
   onChoose: (service: Service) => void;
 }) {
   const t = useTranslations("salonDetail");
+  const locale = useLocale();
   const checkMotion = useEnterMotion();
+  // mockup-ok, English rule: the real SalonServices.tsx reads service.name_de unconditionally
+  // (grepped before this fix), a pre-existing i18n gap on the live page this direction does
+  // not otherwise touch. This copy is mine per the brief's own allowance, and the FORMAT LAW
+  // requires English-only copy on this route, so it resolves through localizedField's
+  // locale-aware de/en fallback chain instead of carrying the hardcoded German field forward.
+  const serviceName = localizedField(service as unknown as Record<string, unknown>, "name", locale);
 
   const inner = (
     <div className="flex items-center justify-between gap-4">
       <ServiceDisclosureRow
         title={
           <div className="font-body text-[15px] font-medium text-s-ink md:text-[16px]">
-            {service.name_de}
+            {serviceName}
           </div>
         }
         meta={
@@ -164,7 +176,7 @@ function ServiceRow({
         description={service.description_de}
         price={
           <div className="font-body mt-3 flex items-center gap-1.5 text-[14px] text-s-ink md:text-[15px]">
-            <PriceFrom amount={service.price} label="ab" emphasis />
+            <PriceFrom amount={service.price} label={FROM_LABEL[locale] ?? FROM_LABEL.en} emphasis />
             {chosen && (
               <motion.span {...checkMotion} className="inline-flex text-s-ink" aria-hidden>
                 <Check size={15} strokeWidth={2.4} />
