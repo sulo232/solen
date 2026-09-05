@@ -8,6 +8,7 @@
  *
  * Usage: node scripts/measure/compare-solen.mjs [baseUrl]
  *   baseUrl defaults to http://localhost:3461
+ *   COMPARE_BOOKING_ID=<uuid> names a booking of the seed customer for the confirmation row (the list links no id).
  *
  * Read-only against the app: navigates and clicks inside the booking wizard (client-side
  * state only) and never reaches the Stripe pay step. Never enters credentials.
@@ -543,7 +544,8 @@ async function run() {
   {
     const ctx = await coldContext(browser);
     const page = await ctx.newPage();
-    const loginUrl = `${BASE_URL}/api/dev/login?to=${encodeURIComponent('/en/bookings')}&email=${CUSTOMER_EMAIL}`;
+    // The real bookings list lives at /en/profile/bookings; /en/bookings has no page and falls through to the city route.
+    const loginUrl = `${BASE_URL}/api/dev/login?to=${encodeURIComponent('/en/profile/bookings')}&email=${CUSTOMER_EMAIL}`;
     // The dev-login route 307-redirects to the target path, so redirects are expected here.
     const g = await guardedGoto(page, loginUrl, { expectSelector: 'main', minElements: 5, allowRedirect: true });
 
@@ -555,10 +557,13 @@ async function run() {
 
       // Try to recover a real booking id from the rendered list to drive /confirmation.
       const hrefs = await page.$$eval('a[href]', (as) => as.map((a) => a.getAttribute('href')));
-      const idPattern = /bookings\/([0-9a-fA-F-]{36})/;
+      // Links may carry the id as /bookings/<id> or ?booking_id=<id>; the list is client-rendered, so if no link
+      // carries one, COMPARE_BOOKING_ID (a booking of the seed customer, set by the caller) is the fallback.
+      const idPattern = /(?:bookings\/|booking_id=)([0-9a-fA-F-]{36})/;
       const ids = [
         ...new Set(hrefs.map((h) => (h && idPattern.exec(h) ? idPattern.exec(h)[1] : null)).filter(Boolean)),
       ];
+      if (ids.length === 0 && process.env.COMPARE_BOOKING_ID) ids.push(process.env.COMPARE_BOOKING_ID);
 
       let confirmationMeasured = false;
       let lastRefusal = null;
@@ -579,7 +584,7 @@ async function run() {
           results.push({
             screen: 'confirmation',
             tag: 'not-measured',
-            reason: 'no booking ids found in hrefs on /en/bookings (seed customer may have zero bookings, or the list links elsewhere than /bookings/<id>)',
+            reason: 'no booking ids found in hrefs on /en/profile/bookings and COMPARE_BOOKING_ID is not set (the list is client-rendered and links no booking id in its HTML)',
           });
         } else {
           results.push(notMeasured('confirmation', lastRefusal));
