@@ -19,6 +19,16 @@
 //
 // "use client" is required here (state + the real SearchOverlay, itself client-only), the same
 // reason SearchBar.tsx itself is a client component.
+//
+// SECOND REPAIR ROUND, critic punch item: this file's own PillSegment label (below) was set at
+// text-[13px], a 5th distinct first-viewport font size (12/13/14/18/31) on top of the 4-size
+// ceiling, introduced by this fork and not listed in HomeVariantA.tsx's Conflicts block. Folded
+// into the 12px tier already present in the same viewport (CategoryPillRow's chip label, and the
+// meta-text scale in the design contract table), leaving 12/14/18/31 (4 distinct) on the first
+// viewport this direction draws. Not folded into 14 because 14 is already load-bearing for the
+// session-greeting line ("Hi, {name}") one step up in the same hero block; 12 keeps the segment
+// label read as secondary/meta text next to its icon, the same role CategoryPillRow's own 12px
+// chip label plays.
 "use client";
 
 import * as React from "react";
@@ -136,7 +146,7 @@ function PillSegment({
       )}
     >
       <span className="shrink-0 text-s-ink-2">{icon}</span>
-      <span className="min-w-0 flex-1 truncate font-body text-[13px] font-medium text-s-ink-2 tracking-[-0.005em]">
+      <span className="min-w-0 flex-1 truncate font-body text-[12px] font-medium text-s-ink-2 tracking-[-0.005em]">
         {value}
       </span>
     </button>

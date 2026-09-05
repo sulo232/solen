@@ -78,6 +78,19 @@
  * and C. Re-verified after the fix, this turn (see the return payload's motionProof/
  * measuredUsed for the exact numbers and the bottom-200px crop).
  *
+ * REPAIR ROUND 4 (2026-09-05, critic punch item): the round-3 close claim ("map pill
+ * now matches a and c") was measured false on two counts. (1) The Map control still
+ * rendered as an inert `<div>`, no aria-label, no button semantics, while ViewA.tsx
+ * (A) and GridDirection.tsx (C) both use a real `<button type="button"
+ * aria-label="Map">`. Fixed: real button, aria-label="Map". (2) It measured 41.5px
+ * tall, under the locked 44px touch-target floor, because it carried no
+ * `min-h-[44px]` the way A's does. Fixed: added `min-h-[44px]`. (3) The search
+ * summary pill's `pt-24` (justified in-file by "DirectionFrame's fixed label strip",
+ * which DirectionFrame.tsx:44-53 states plainly no longer exists, "never fixed or
+ * sticky") sat the pill at y=140, 84px lower than the identical pill in A and C
+ * (y=56). Fixed: `pt-3`, matching A and C. Re-verified after all three fixes, this
+ * turn (see the return payload's measuredUsed and viewport screenshots).
+ *
  * Direction: photo-first Airbnb-treatment cards. STRUCTURE = Fresha (search summary bar,
  * then a filter-chip row, then the result grid) per
  * `_design-system/references/fresha--search-results.md`. CARD FINISH = Airbnb, per
@@ -179,14 +192,16 @@ export async function DirectionB({ locale }: { locale: string }) {
       {/* Search summary pill. Real classes from SearchTemplate's own "big search" pill
           (~line 1327): h-[64px], rounded-[40px], border-s-border, shadow-elevation-3.
           Static here (no scroll-shrink, no tap-to-open overlay: this direction is a
-          static surface). */}
-      {/* pt-24 (not the real component's own pt-4): this /dev comparison route wraps
-          every direction in DirectionFrame's fixed label strip (top-20, ~35px tall,
-          measured bottom edge at y=115 in a fresh render), which the real live page
-          never has. Without this clearance the 64px search pill starts at y=56 and
-          renders BEHIND the label strip. Scaffold-clearance only, not a treatment
-          change: the real page's own top spacing is untouched by this. */}
-      <div className="mx-auto w-full max-w-[680px] px-4 pt-24">
+          static surface).
+          REPAIR ROUND 4 (2026-09-05, critic punch item): pt-24 previously sat here on
+          the stated premise that DirectionFrame renders a FIXED label strip this pill
+          had to clear. Read live: DirectionFrame.tsx:44-53 states plainly the strip is
+          `position: static` ("never fixed or sticky"), it scrolls away with the page
+          like any other in-flow element, so there is nothing to clear. Siblings A and C
+          both sit at pt-3 under the identical strip and render fine. Measured before
+          the fix (Playwright, 390x844, this turn): the pill sat at y=140, 84px lower
+          than the identical pill in A and C (y=56). Fixed to pt-3, matching A and C. */}
+      <div className="mx-auto w-full max-w-[680px] px-4 pt-3">
         <div className="flex h-[64px] w-full items-center justify-center gap-2 rounded-[40px] border border-s-border bg-white px-[19px] text-center shadow-elevation-3">
           <Search size={12} strokeWidth={2.4} className="shrink-0 text-s-ink" aria-hidden />
           <span className="min-w-0 flex-1">
@@ -282,11 +297,21 @@ export async function DirectionB({ locale }: { locale: string }) {
           siblings A and C (both bottom-[86px], y~714-758), breaking FLOORS LAW 8
           ("the same thing looks the same everywhere") on the one element every
           sibling declares must match. Fixed: bottom-[86px], same anchor as A and C.
-          Static here, no map view wired. */}
-      <div className="fixed bottom-[86px] left-1/2 z-40 -translate-x-1/2 inline-flex items-center gap-2 rounded-pill bg-[#0A0A0A] px-[18px] py-[11px] font-body text-[13px] font-medium text-white shadow-[0_6px_20px_rgba(50,47,44,0.18),0_2px_6px_rgba(50,47,44,0.10)]">
+          REPAIR ROUND 4 (2026-09-05, critic punch item): this rendered as an inert
+          `<div>` with no aria-label and no button semantics, while siblings A
+          (ViewA.tsx:231-239) and C (GridDirection.tsx:329-342) both use a real
+          `<button type="button" aria-label="Map">`. Also measured at 41.5px tall,
+          under the locked 44px touch-target floor, because it carried no
+          `min-h-[44px]` the way A's does. Fixed: real button, aria-label="Map",
+          min-h-[44px], matching A. Static here, no map view wired. */}
+      <button
+        type="button"
+        aria-label="Map"
+        className="fixed bottom-[86px] left-1/2 z-40 -translate-x-1/2 inline-flex min-h-[44px] items-center gap-2 rounded-pill bg-[#0A0A0A] px-[18px] py-[11px] font-body text-[13px] font-medium text-white shadow-[0_6px_20px_rgba(50,47,44,0.18),0_2px_6px_rgba(50,47,44,0.10)]"
+      >
         <MapIcon size={16} strokeWidth={1.9} aria-hidden />
         Map
-      </div>
+      </button>
     </div>
   );
 }

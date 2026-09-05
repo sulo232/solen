@@ -8,9 +8,10 @@
 // recipe).
 //
 // exists-check: net-new vs app/[locale]/_components/search/SalonResultCard.tsx (its "grid"
-// variant renders name+rating+price on the tile itself; this direction's whole idea is a
-// STRIPPED tile, name+price only, with the full stack deferred to a tap-opened sheet, so it
-// is a genuinely different tile, not a re-skin of an existing one) and the `?layout=grid`
+// variant renders name+rating+price on the tile itself; this direction's own tile now also
+// carries the rating, per the 2026-09-05 second repair round below, so the remaining
+// difference from that variant is the deferred address/service line and card chrome, still
+// pushed to the tap-opened sheet) and the `?layout=grid`
 // escape hatch inside SearchTemplate.tsx (same 2-col grid gap values reused below for
 // fidelity, `grid-cols-2 gap-x-3 gap-y-4`, but that hatch still renders the FULL
 // SalonResultCard per tile, not a stripped one). The bottom sheet reuses the REAL
@@ -19,17 +20,18 @@
 //
 // Depicts: filter bar -> app/[locale]/_components/search/SearchTemplate.tsx (the REAL, currently-live filter row `/en/basel/coiffeur` renders today: circular filter toggle + Sort/Open now/Price/Rating pills, no result-count heading, no standalone Filters button, per the 2026-07-31 REMOVED.md entry)
 // Depicts: grid tile photo/heart/radius/shadow -> app/[locale]/_components/search/SalonResultCard.tsx (its "grid" variant)
-// Depicts: grid tile name+price-only text stack -> NET-NEW: no existing tile omits rating; this is the direction's one stated idea
+// Depicts: grid tile name+rating+price text stack -> app/[locale]/_components/primitives/RatingStars.tsx (real, unmodified "compact" mode: star `#FFC32B` + value in the wrapping CardMeta's `text-s-ink-2` + count in the primitive's own `text-s-accent` blue), rating row added on the tile itself as of the 2026-09-05 second repair round (see below); price-only was this direction's original stated idea, corrected below
 // Depicts: bottom sheet shell -> app/[locale]/_components/primitives/Sheet.tsx (real, locked bottom-sheet primitive, unmodified)
 // Depicts: full-info card inside the sheet -> app/[locale]/_components/search/SalonResultCard.tsx ("card" variant, real, unmodified import)
 // Depicts: map entry pill -> app/[locale]/_components/search/SearchTemplate.tsx (the real floating map FAB the live mobile category page renders, MAP_FAB_LABEL.en === "Map")
 // Depicts: heart save control -> app/[locale]/_components/homepage/HeartButton.tsx (real, unmodified component; unauthenticated here so every heart renders unsaved)
 //
 // Direction: a dense 2-column, photo-first grid (Airbnb's web grid shape) under the real
-// Fresha-derived filter bar; each tile shows only the photo + name + from-price; tapping a
-// tile opens a bottom sheet holding the REAL, full `SalonResultCard` (name, rating, address,
-// price) for that salon, so the dense scan view and the full-info view are two distinct
-// states instead of one crowded tile.
+// Fresha-derived filter bar; each tile shows the photo + name + rating + from-price (rating
+// added 2026-09-05 second repair round, see below); tapping a tile opens a bottom sheet
+// holding the REAL, full `SalonResultCard` (name, rating, address, price) for that salon, so
+// the dense scan view stays lighter than the sheet's address/service-line detail, while the
+// FLOORS LAW semantic-colour moment lives on the resting tile too, not only in the sheet.
 //
 // Sources: _design-system/references/fresha--search-results.md (filter-bar-then-results
 // order; Solen's own already-reconciled version is used verbatim below, since the owner's
@@ -79,15 +81,13 @@
 //     single element competes for size against them (name/price are both small, recessive).
 // (c) a real/tabular number: YES, every tile's "from CHF {price}" is `tabular-nums` and is
 //     the REAL computed `min_price` from the live `/api/salons` response, not invented.
-// (d) a semantic-color moment: NOT on the closed-grid frame by design (the direction's own
-//     idea is a stripped tile, name+price only, so no rating/star/success color renders on
-//     a tile; the filter pills are neutral gray per lock; the map pill is ink). It DOES
-//     appear the moment a tile opens (the sheet's real `SalonResultCard` renders
-//     `RatingStars`, `#FFC32B`), so the semantic-color moment exists in the screen's
-//     INTERACTION, not in its resting frame. Flagged honestly rather than bolting an
-//     unrequested rating badge onto the tile to force a checkbox green light, per copy
-//     economy ("a tag must add a decision-relevant fact not already on the row") and per
-//     staying inside my one VARY axis instead of redesigning the tile the brief specified.
+// (d) a semantic-color moment: FIXED in the second repair round (below). YES on the resting,
+//     closed-grid frame: every tile with a real rating now renders the actual `RatingStars`
+//     primitive (real `average_rating` + `review_count` from the same `/api/salons` row the
+//     sheet already uses, never a placeholder), so the yellow `#FFC32B` star is visible on
+//     every tile before any tap, matching directions A and B, which both carry the star on
+//     the resting card. A salon with no rating renders no star row (real data only, never a
+//     fabricated placeholder).
 // (e) no dead-grey zone: YES, tiles + photos + filter row fill the viewport; the only
 //     non-photo, non-text area is the standard page gutter.
 // (f) worst-case content holds: checked against the real fetched set (`Studio Schnittkunst`,
@@ -136,12 +136,24 @@
 //    decelerating curve once click-dispatch and ~30ms poll granularity are accounted for.
 //    Source of the 600ms/ease-glide value itself, unmodified, off-limits primitive:
 //    `app/[locale]/_components/primitives/Sheet.tsx:44`.
+// 4. Third-pass critic punch (2026-09-05), FLOORS LAW finished-screen pass item (d): "at
+//    least one semantic-color moment" failed on the whole resting grid (all 8 tiles), since
+//    the stripped tile rendered only name + from-price and `RatingStars` (`#FFC32B`) never
+//    mounted until a tile was tapped open, while sibling directions A and B both carry the
+//    star on every resting card. Fixed by putting the real rating on the resting tile: one
+//    `CardMeta` line under the name using the real, unmodified `RatingStars` primitive
+//    (compact mode) fed the same `average_rating`/`review_count` fields `getResults.ts`
+//    already fetches from the live `/api/salons` row (the same data the sheet already
+//    shows), never a placeholder. A salon with `rating == null` renders no star row at all
+//    (real data only). The tile's info stack is otherwise unchanged (photo, heart, name,
+//    price); this direction's own idea (the full address/service-line detail deferred to
+//    the tap-opened sheet) is untouched.
 import * as React from "react";
 import Image from "next/image";
 import { Search, SlidersHorizontal, ChevronDown, Map as MapIcon } from "lucide-react";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
-import { CardName, CardMeta, PriceFrom, Sheet, SheetHeader, SheetBody } from "@/app/[locale]/_components/primitives";
+import { CardName, CardMeta, PriceFrom, RatingStars, Sheet, SheetHeader, SheetBody } from "@/app/[locale]/_components/primitives";
 import { useStaggerVariants } from "@/app/[locale]/_components/primitives/motion";
 import { HeartButton } from "@/app/[locale]/_components/homepage/HeartButton";
 import { SalonResultCard } from "@/app/[locale]/_components/search/SalonResultCard";
@@ -215,6 +227,11 @@ function GridTile({
         <CardName as="h3" className="truncate text-[14px] leading-[1.25] tracking-[-0.01em]">
           {salon.name}
         </CardName>
+        {salon.rating != null && (
+          <CardMeta as="div" className="mt-0.5 flex items-center gap-1 text-[13px] leading-[1.35]">
+            <RatingStars value={salon.rating} count={salon.reviewCount || undefined} size="sm" />
+          </CardMeta>
+        )}
         {salon.priceFromCHF != null && (
           <CardMeta as="div" className="mt-0.5 flex items-baseline gap-1 text-[13px] leading-[1.35]">
             {salon.priceFromService && (

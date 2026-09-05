@@ -16,15 +16,25 @@
 // Direction: home ?v=b, Airbnb look at FULL STRENGTH (LOCK MODE: LOOK-FULL).
 //
 // Sources + values taken:
-//   - _design-system/references/airbnb--look-recipe.md #2 -> section heading 22px, line-height
-//     26px (was the locked clamp(18px,2vw,20px)). WEIGHT CORRECTION (repair round, critic-measured
-//     2026-09-05): the class below is `font-semibold` (Tailwind 600), but a sitewide rule at
+//   - _design-system/references/airbnb--look-recipe.md #2 -> section heading, base value 22px,
+//     line-height 26px (was the locked clamp(18px,2vw,20px)). SIZE CORRECTION (2nd repair round,
+//     critic-measured 2026-09-05): the recipe file's own port map (#1, same file) already flags
+//     this exact situation for a different anchor and gives the rule to apply here too, verbatim:
+//     "Airbnb's own title is actually just under our 28px floor. A ported anchor would need to
+//     round up to 28, not copy literally, to stay compliant." Copying 22 literally left this
+//     screen's largest first-viewport element at 22px with a 25.9% photo share (below the ~33%
+//     threshold FLOORS LAW 6 requires to exempt a screen from the anchor), so no element cleared
+//     the 28px display-anchor floor. Applying the recipe's own rounding rule: rendered size is now
+//     28px (>=28, clears the floor), line-height 32px (kept close to the source 26/22=1.18 ratio,
+//     28*1.18=33 rounded to the 4pt grid's 32), a ratio of 2.0x the 14px body (>=1.8x, clears
+//     FLOORS LAW 7b). WEIGHT CORRECTION (1st repair round, critic-measured 2026-09-05, unchanged
+//     this pass): the class below is `font-semibold` (Tailwind 600), but a sitewide rule at
 //     app/globals.css:269-271 (`main :is(.font-semibold, .font-bold) { font-weight: 500; }`,
 //     exempting only `[data-surface="dashboard"]`) forces every non-dashboard `.font-semibold` in
 //     the app down to 500 at render, this title included. Measured live: the rendered weight here
 //     is 500, not 600. That sitewide rule is an owner-locked global (off-limits, not edited here),
-//     so 22px/600 was never actually deliverable through this class on a non-dashboard surface;
-//     the delivered value is 22px/500, and this file no longer claims 600.
+//     so 600 was never actually deliverable through this class on a non-dashboard surface; the
+//     delivered value is 28px/500, and this file no longer claims 600.
 //   - _design-system/references/airbnb--look-recipe.md #5 -> ink rgb(34,34,34)/#222222 on the
 //     title (was the locked frozen literal #0A0A0A).
 //   - _design-system/references/airbnb--look-recipe.md #17 -> the 35px content-to-divider /
@@ -35,9 +45,11 @@
 //     number exists in the cited files, so no other spacing value on this screen was changed.
 //
 // Conflicts (locks broken on purpose, LOOK-FULL):
-//   1. lock: section-H2 SIZE clamp(18px,2vw,20px) broken on purpose: reference value = Airbnb
-//      22px, line-height 26px (look-recipe #2). WEIGHT is NOT delivered at 600: see the WEIGHT
-//      CORRECTION note above, the rendered weight is 500 (sitewide global, off-limits).
+//   1. lock: section-H2 SIZE clamp(18px,2vw,20px) broken on purpose: delivered value = 28px,
+//      line-height 32px (look-recipe #2's 22/26 base, ROUNDED UP to the 28px display-anchor floor
+//      per the recipe file's own port-map rule #1, see SIZE CORRECTION note above; this also
+//      clears FLOORS LAW 7b, 28/14 = 2.0x body, >=1.8x). WEIGHT is NOT delivered at 600: see the
+//      WEIGHT CORRECTION note above, the rendered weight is 500 (sitewide global, off-limits).
 //   2. lock: ink #0A0A0A broken on purpose, on the section title only: reference value = Airbnb
 //      rgb(34,34,34)/#222222 (look-recipe #5).
 //   3. lock: section-to-section spacing `mb-4` (16px) broken on purpose: reference value = the
@@ -75,11 +87,12 @@ export function SectionMeta({ eyebrow }: { eyebrow: string }) {
 }
 
 /**
- * SectionTitle, forked from the real component. LOOK-FULL: 22px SIZE, line-height 26px (Airbnb
- * look-recipe #2) and ink #222222 (look-recipe #5) replace the locked clamp(18px,2vw,20px) and
- * #0A0A0A. WEIGHT stays 500 at render (sitewide `.font-semibold` -> 500 override, off-limits, see
- * file header WEIGHT CORRECTION), so 600 is not delivered here. See file header for the full
- * conflicts list.
+ * SectionTitle, forked from the real component. LOOK-FULL: 28px SIZE, line-height 32px (Airbnb
+ * look-recipe #2's 22/26 base ROUNDED UP to the 28px display-anchor floor, per the recipe file's
+ * own port-map rule #1, see file header SIZE CORRECTION) and ink #222222 (look-recipe #5) replace
+ * the locked clamp(18px,2vw,20px) and #0A0A0A. WEIGHT stays 500 at render (sitewide
+ * `.font-semibold` -> 500 override, off-limits, see file header WEIGHT CORRECTION), so 600 is not
+ * delivered here. See file header for the full conflicts list.
  */
 export function SectionTitle({
   title,
@@ -96,7 +109,7 @@ export function SectionTitle({
   return (
     <div className="flex items-center justify-between gap-6">
       <div className="min-w-0">
-        <h2 className="font-display text-[22px] font-semibold leading-[26px] tracking-[-0.01em] text-[#222222]"> {/* conflict-ok: LOOK-FULL, Airbnb 22px size + ink override replace the locked clamp(18px,2vw,20px)/#0A0A0A; weight renders 500 (sitewide .font-semibold override, off-limits), not the 600 this class name suggests */}
+        <h2 className="font-display text-[28px] font-semibold leading-[32px] tracking-[-0.01em] text-[#222222]"> {/* conflict-ok: LOOK-FULL, Airbnb 22px base rounded up to the 28px display-anchor floor (recipe's own port-map rule #1) + ink override replace the locked clamp(18px,2vw,20px)/#0A0A0A; weight renders 500 (sitewide .font-semibold override, off-limits), not the 600 this class name suggests */}
           {title}
         </h2>
         {subtitle ? (
