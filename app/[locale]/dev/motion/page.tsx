@@ -16,6 +16,7 @@ import { MotionGallery } from "./_parts/MotionGallery";
 const FIXTURE_SLUG = "cuts-and-culture";
 
 export default async function MotionPage({
+  params,
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
@@ -23,10 +24,11 @@ export default async function MotionPage({
 }) {
   if (process.env.NODE_ENV === "production") notFound();
 
+  const { locale } = await params;
   const sp = await searchParams;
   const slug = sp.salon?.trim() || FIXTURE_SLUG;
 
-  const result = await loadSalonDetailWithStatus(slug);
+  const result = await loadSalonDetailWithStatus(slug, locale);
   if (!result) notFound();
   const { salon } = result;
 

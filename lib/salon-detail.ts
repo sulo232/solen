@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import {
   computeOpenStatus,
@@ -250,12 +251,16 @@ export async function loadSalonDetail(slug: string): Promise<SalonDetail | null>
  * a plain serializable prop makes SSR HTML and client hydration render the
  * identical value.
  */
-export async function loadSalonDetailWithStatus(slug: string): Promise<SalonDetailWithStatus | null> {
+export async function loadSalonDetailWithStatus(
+  slug: string,
+  locale: string,
+): Promise<SalonDetailWithStatus | null> {
   const salon = await loadSalonDetail(slug);
   if (!salon) return null;
 
   const now = nowInTimezone((salon as { timezone?: string }).timezone);
-  const openStatus = computeOpenStatus(salon.opening_hours, now);
+  const t = await getTranslations({ locale, namespace: "salonDetail" });
+  const openStatus = computeOpenStatus(salon.opening_hours, now, t);
   // `now` is a nowInTimezone()-shaped Date: UTC fields encode the salon
   // timezone's wall clock, so read the day-of-week via getUTCDay(), not the
   // server process's own local getDay() (same UTC-getter contract as

@@ -56,7 +56,7 @@ export default async function ScrollMotionPage({
   const variant: BarVariant = sp.v === "2" ? "2" : sp.v === "3" ? "3" : "1";
   const slug = sp.salon?.trim() || FIXTURE_SLUG;
 
-  const result = await loadSalonDetailWithStatus(slug);
+  const result = await loadSalonDetailWithStatus(slug, locale);
   if (!result) notFound();
   const { salon, openStatus } = result;
 

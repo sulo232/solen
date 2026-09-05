@@ -50,6 +50,7 @@ const STEPS: { key: Step; label: string }[] = [
 ];
 
 export default async function ReportFlowDevPage({
+  params,
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
@@ -57,6 +58,7 @@ export default async function ReportFlowDevPage({
 }) {
   if (process.env.NODE_ENV === "production") notFound();
 
+  const { locale } = await params;
   const sp = await searchParams;
   const v: "1" | "2" | "3" = sp.v === "2" ? "2" : sp.v === "3" ? "3" : "1";
   const step: Step = sp.step === "detail" ? "detail" : sp.step === "done" ? "done" : "reason";
@@ -67,7 +69,7 @@ export default async function ReportFlowDevPage({
   const stepRequested = sp.step === "reason" || sp.step === "detail" || sp.step === "done";
   const active = DIRECTIONS.find((d) => d.key === v) ?? DIRECTIONS[0];
 
-  const result = await loadSalonDetailWithStatus(FIXTURE_SLUG);
+  const result = await loadSalonDetailWithStatus(FIXTURE_SLUG, locale);
   if (!result) notFound();
   const { salon } = result;
 

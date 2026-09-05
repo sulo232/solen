@@ -37,7 +37,7 @@ export default async function SalonPageDirections({
   const sp = await searchParams;
   const v: "a" | "b" | "c" = sp.v === "b" ? "b" : sp.v === "c" ? "c" : "a";
 
-  const result = await loadSalonDetailWithStatus(SALON_SLUG);
+  const result = await loadSalonDetailWithStatus(SALON_SLUG, locale);
 
   if (!result) {
     return (

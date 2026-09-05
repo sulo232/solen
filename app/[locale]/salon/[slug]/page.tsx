@@ -28,8 +28,8 @@ export default async function SalonProfilePage({
 }: {
   params: Promise<{ locale: string; slug: string }>;
 }) {
-  const { slug } = await params;
-  const result = await loadSalonDetailWithStatus(slug);
+  const { slug, locale } = await params;
+  const result = await loadSalonDetailWithStatus(slug, locale);
 
   if (!result) notFound();
 

@@ -36,17 +36,20 @@ import { VariantSwitcher } from "../_shared/VariantSwitcher";
 import { ScrollToId } from "../_shared/ScrollToId";
 
 export default async function MockShadowPage({
+  params,
   searchParams,
 }: {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<{ v?: string }>;
 }) {
   if (process.env.NODE_ENV === "production") notFound();
+  const { locale } = await params;
   const { v } = await searchParams;
   const variant = v === "gesetz" ? "gesetz" : "aktuell";
 
   const seed = await getSeedSalon("de");
   if (!seed) notFound();
-  const detail = await loadSalonDetailWithStatus(seed.slug);
+  const detail = await loadSalonDetailWithStatus(seed.slug, locale);
   if (!detail || detail.salon.services.length === 0) notFound();
 
   return (

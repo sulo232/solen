@@ -19,17 +19,20 @@ const FIXTURE_SLUG = "cuts-and-culture";
 // really does have 11 seeded gallery photos, so it's exposed here as an optional `?salon=` param
 // to review the full 9-tile grid honestly, instead of faking data on the default fixture.
 export default async function PdpOverhaulPage({
+  params,
   searchParams,
 }: {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<{ salon?: string | string[] }>;
 }) {
   if (process.env.NODE_ENV === "production") notFound();
 
-  const params = await searchParams;
-  const rawSalonParam = Array.isArray(params.salon) ? params.salon[0] : params.salon;
+  const { locale } = await params;
+  const sp = await searchParams;
+  const rawSalonParam = Array.isArray(sp.salon) ? sp.salon[0] : sp.salon;
   const slug = rawSalonParam || FIXTURE_SLUG;
 
-  const result = await loadSalonDetailWithStatus(slug);
+  const result = await loadSalonDetailWithStatus(slug, locale);
   if (!result) notFound();
   const { salon, openStatus, todayKey } = result;
 

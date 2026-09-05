@@ -36,17 +36,20 @@ import { getSeedSalon } from "../_shared/seedSalon";
 import { VariantSwitcher } from "../_shared/VariantSwitcher";
 
 export default async function MockBackButtonPage({
+  params,
   searchParams,
 }: {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<{ v?: string }>;
 }) {
   if (process.env.NODE_ENV === "production") notFound();
+  const { locale } = await params;
   const { v } = await searchParams;
   const variant = v === "44" ? "44" : "40";
 
   const seed = await getSeedSalon("de");
   if (!seed) notFound();
-  const detail = await loadSalonDetailWithStatus(seed.slug);
+  const detail = await loadSalonDetailWithStatus(seed.slug, locale);
   if (!detail) notFound();
 
   return (

@@ -130,8 +130,13 @@ const SIZE_CSS = `
    REINTRODUCED a 3rd weight, not removed one; verified live below. */
 `;
 
-export default async function DesktopTypeSalonMockup() {
-  const result = await loadSalonDetailWithStatus(MUSE_SLUG);
+export default async function DesktopTypeSalonMockup({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const result = await loadSalonDetailWithStatus(MUSE_SLUG, locale);
   if (!result) notFound();
   const { salon, openStatus, todayKey } = result;
 

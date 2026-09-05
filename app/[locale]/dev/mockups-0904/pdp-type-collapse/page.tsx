@@ -64,7 +64,7 @@ export default async function PdpTypeCollapsePage({
   if (process.env.NODE_ENV === "production" && process.env.SOLEN_DEV_PAGES !== "1") notFound();
 
   const { locale } = await params;
-  const result = await loadSalonDetailWithStatus(MUSE_SLUG);
+  const result = await loadSalonDetailWithStatus(MUSE_SLUG, locale);
 
   if (!result) {
     return (

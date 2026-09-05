@@ -55,7 +55,7 @@ export default async function SeeAllDirectionsPage({
   const sp = await searchParams;
   const v: Direction = sp.v === "2" ? "2" : sp.v === "3" ? "3" : "1";
 
-  const result = await loadSalonDetailWithStatus(FIXTURE_SLUG);
+  const result = await loadSalonDetailWithStatus(FIXTURE_SLUG, locale);
   if (!result) notFound();
   const { salon } = result;
 

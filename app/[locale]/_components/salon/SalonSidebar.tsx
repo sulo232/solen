@@ -3,12 +3,13 @@
 import * as React from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import {
   ChevronDown,
   MapPin,
 } from "lucide-react";
 import type { SalonDetail, OpenStatus } from "./_shared";
-import { DAY_KEYS, DAY_LABEL, withDateParam, type DayKey } from "./_shared";
+import { DAY_KEYS, withDateParam, type DayKey } from "./_shared";
 import { StatusInline } from "./StatusInline";
 import { RatingStars } from "../primitives";
 import { cn } from "@/lib/utils";
@@ -85,6 +86,7 @@ export function SalonSidebar({
   openStatus: OpenStatus;
   todayKey: DayKey;
 }) {
+  const t = useTranslations("salonDetail");
   const status = openStatus;
   const [showHours, setShowHours] = React.useState(false);
   const fullAddress = salon.address;
@@ -143,7 +145,7 @@ export function SalonSidebar({
         href={bookingHref}
         className="font-body mt-5 inline-flex w-full items-center justify-center rounded-full bg-s-ink py-3.5 text-[15px] font-semibold text-white transition-[colors,transform] hover:bg-black active:bg-black active:scale-[0.97] active:duration-[80ms] active:ease-glide"
       >
-        Termin buchen
+        {t("bookAppointment")}
       </Link>
 
       {/* 4. divider */}
@@ -183,8 +185,8 @@ export function SalonSidebar({
                   isToday ? "font-semibold text-s-ink" : "text-s-ink-2",
                 )}
               >
-                <span>{DAY_LABEL[day]}</span>
-                <span>{h ? `${h.open} – ${h.close}` : "Geschlossen"}</span>
+                <span>{t(day)}</span>
+                <span>{h ? `${h.open} – ${h.close}` : t("closed")}</span>{/* em-dash-ok: pre-existing en-dash time separator, unrelated to this i18n edit */}
               </li>
             );
           })}

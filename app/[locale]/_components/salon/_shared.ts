@@ -333,11 +333,29 @@ export function nowInTimezone(timezone?: string | null): Date {
   }
 }
 
+/**
+ * i18n (2026-09-05 fix): computeOpenStatus is a plain helper, not a component, so it takes a
+ * translator argument instead of importing `useTranslations`. The caller is
+ * `lib/salon-detail.ts`'s `loadSalonDetailWithStatus`, which resolves it via
+ * `getTranslations({ locale, namespace: "salonDetail" })`. Keys used: hoursUnknown, closedToday,
+ * closedOpensAt, closedOpensOnDay (also calls `t(dayKey)` for the weekday name, reusing the
+ * same salonDetail.mon..sun keys SalonOpeningTimes already renders with), openUntil.
+ */
+type StatusKey =
+  | "hoursUnknown"
+  | "closedToday"
+  | "closedOpensAt"
+  | "closedOpensOnDay"
+  | "openUntil"
+  | DayKey;
+type StatusTranslator = (key: StatusKey, params?: Record<string, string | number>) => string;
+
 export function computeOpenStatus(
   hours: Record<string, { open: string; close: string }> | null,
-  now: Date = nowInTimezone()
+  now: Date = nowInTimezone(),
+  t: StatusTranslator,
 ): OpenStatus {
-  if (!hours) return { isOpen: false, label: "Öffnungszeiten unbekannt", nextOpen: null };
+  if (!hours) return { isOpen: false, label: t("hoursUnknown"), nextOpen: null };
   // `now` is a nowInTimezone()-shaped Date (UTC fields = target timezone's
   // wall clock), so it must be read with the UTC getters, not local ones.
   const dayIdx = now.getUTCDay();
@@ -350,11 +368,11 @@ export function computeOpenStatus(
     if (next) {
       return {
         isOpen: false,
-        label: `Geschlossen Öffnet ${DAY_LABEL[next.day]} um ${next.open}`,
+        label: t("closedOpensOnDay", { day: t(next.day), time: next.open }),
         nextOpen: next.open,
       };
     }
-    return { isOpen: false, label: "Heute geschlossen", nextOpen: null };
+    return { isOpen: false, label: t("closedToday"), nextOpen: null };
   }
 
   const [openH, openM] = today.open.split(":").map(Number);
@@ -363,7 +381,7 @@ export function computeOpenStatus(
   const minsOpen = openH * 60 + openM;
   const minsClose = closeH * 60 + closeM;
   if (minsNow < minsOpen) {
-    return { isOpen: false, label: `Geschlossen Öffnet ${today.open}`, nextOpen: today.open };
+    return { isOpen: false, label: t("closedOpensAt", { time: today.open }), nextOpen: today.open };
   }
   if (minsNow > minsClose) {
     // V3-D210: after today's close — look ahead instead of "Heute geschlossen".
@@ -371,13 +389,13 @@ export function computeOpenStatus(
     if (next) {
       return {
         isOpen: false,
-        label: `Geschlossen Öffnet ${DAY_LABEL[next.day]} um ${next.open}`,
+        label: t("closedOpensOnDay", { day: t(next.day), time: next.open }),
         nextOpen: next.open,
       };
     }
-    return { isOpen: false, label: "Heute geschlossen", nextOpen: null };
+    return { isOpen: false, label: t("closedToday"), nextOpen: null };
   }
-  return { isOpen: true, label: `Geöffnet bis ${today.close}`, nextOpen: null };
+  return { isOpen: true, label: t("openUntil", { time: today.close }), nextOpen: null };
 }
 
 /**

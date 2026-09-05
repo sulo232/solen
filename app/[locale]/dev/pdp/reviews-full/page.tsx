@@ -30,7 +30,7 @@ export default async function ReviewsFullPage({
 
   const { locale } = await params;
 
-  const result = await loadSalonDetailWithStatus(FIXTURE_SLUG);
+  const result = await loadSalonDetailWithStatus(FIXTURE_SLUG, locale);
   if (!result) notFound();
   const { salon } = result;
 

@@ -5,6 +5,7 @@ import ReactDOM from "react-dom";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { ChevronRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { withDateParam } from "./_shared";
 import { useCookieConsent } from "../primitives/CookieConsent";
 
@@ -53,6 +54,7 @@ export function SalonMobileBookBar({
    * doesn't paint over it. Defaults to false so every other/future caller is unaffected. */
   suppressed?: boolean;
 }) {
+  const t = useTranslations("salonDetail");
   // GAP #5: a searched date (?date=YYYY-MM-DD, forwarded from the search result the
   // user tapped) rides through to the booking picker instead of getting dropped.
   const searchParams = useSearchParams();
@@ -77,7 +79,7 @@ export function SalonMobileBookBar({
         href={bookingHref}
         className="font-body flex w-full items-center justify-center gap-2 rounded-full bg-s-ink py-3.5 text-[15px] font-semibold text-white transition-[colors,transform] hover:bg-black active:bg-black active:scale-[0.97] active:duration-[80ms] active:ease-glide"
       >
-        Termin buchen
+        {t("bookAppointment")}
         <ChevronRight size={16} strokeWidth={1.9} />
       </Link>
     </div>,

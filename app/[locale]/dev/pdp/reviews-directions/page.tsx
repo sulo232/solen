@@ -53,7 +53,7 @@ export default async function ReviewsDirectionsPage({
   const sp = await searchParams;
   const dir: "1" | "2" | "3" = sp.dir === "2" ? "2" : sp.dir === "3" ? "3" : "1";
 
-  const result = await loadSalonDetailWithStatus(FIXTURE_SLUG);
+  const result = await loadSalonDetailWithStatus(FIXTURE_SLUG, locale);
   if (!result) notFound();
   const { salon } = result;
 

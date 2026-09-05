@@ -7,6 +7,9 @@ import type { Service, SalonDetail } from "./_shared";
 import { capitalize } from "./_shared";
 import { TabPill } from "../primitives/TabPill";
 import { PriceFrom, SeeAllButton, ServiceDisclosureRow } from "../primitives";
+// FROM_LABEL reuse (rule 12, don't re-declare): the locale "ab"/"from"/"des"/"da" price-prefix
+// map SalonCard.tsx and MapSalonDetail.tsx already import from SalonResultCard.
+import { FROM_LABEL } from "../search/SalonResultCard";
 import { cn } from "@/lib/utils";
 
 /**
@@ -238,7 +241,7 @@ function ServiceRow({
         description={service.description_de}
         price={
           <div className="font-body mt-3 text-[14px] text-s-ink md:text-[15px]">
-            <PriceFrom amount={service.price} label="ab" emphasis />
+            <PriceFrom amount={service.price} label={FROM_LABEL[locale] ?? FROM_LABEL.de} emphasis />
           </div>
         }
       />

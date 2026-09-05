@@ -46,7 +46,7 @@ export async function generateMetadata({
 }) {
   const { locale, slug } = await params;
   const [result, t] = await Promise.all([
-    loadSalonDetailWithStatus(slug),
+    loadSalonDetailWithStatus(slug, locale),
     getTranslations({ locale, namespace: "staffPicker" }),
   ]);
   return {
@@ -61,7 +61,7 @@ export default async function SalonTeamPage({
 }) {
   const tBack = await getTranslations("common");
   const { locale, slug } = await params;
-  const result = await loadSalonDetailWithStatus(slug);
+  const result = await loadSalonDetailWithStatus(slug, locale);
   if (!result) notFound();
   const { salon } = result;
 

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { DAY_KEYS, DAY_LABEL, type DayKey } from "./_shared";
+import { DAY_KEYS, type DayKey } from "./_shared";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 
@@ -54,10 +54,10 @@ export function SalonOpeningTimes({
                   className={cn("h-2 w-2 shrink-0 rounded-full", isOpen ? "bg-s-open" : "bg-s-ink-2/40")}
                   aria-hidden
                 />
-                {DAY_LABEL[day]}
+                {t(day)}
               </span>
               <span className={cn(!isOpen && "text-s-ink-2")}>
-                {dayHours ? `${dayHours.open} bis ${dayHours.close}` : "Geschlossen"}
+                {dayHours ? t("hoursRange", { open: dayHours.open, close: dayHours.close }) : t("closed")}
               </span>
             </li>
           );

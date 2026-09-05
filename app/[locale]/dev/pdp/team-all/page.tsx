@@ -24,7 +24,7 @@ export default async function TeamAllPage({
   const rawSalonParam = Array.isArray(sp.salon) ? sp.salon[0] : sp.salon;
   const slug = rawSalonParam || FIXTURE_SLUG;
 
-  const result = await loadSalonDetailWithStatus(slug);
+  const result = await loadSalonDetailWithStatus(slug, locale);
   if (!result) notFound();
   const { salon } = result;
 

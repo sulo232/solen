@@ -47,12 +47,13 @@ export default async function ReviewsFilterPage({
 }) {
   if (process.env.NODE_ENV === "production") notFound();
 
+  const { locale } = await params;
   const sp = await searchParams;
   const dir: "1" | "2" | "3" = sp.dir === "2" ? "2" : sp.dir === "3" ? "3" : "1";
   const rawSalonParam = Array.isArray(sp.salon) ? sp.salon[0] : sp.salon;
   const slug = rawSalonParam || FIXTURE_SLUG;
 
-  const result = await loadSalonDetailWithStatus(slug);
+  const result = await loadSalonDetailWithStatus(slug, locale);
   if (!result) notFound();
   const { salon } = result;
 

@@ -19,12 +19,18 @@ import { loadSalonDetailWithStatus } from "@/lib/salon-detail";
 
 const H2 = "font-display text-[clamp(18px,2vw,20px)] font-semibold tracking-[-0.02em] text-s-ink";
 
-export default async function FlatnessPage() {
+export default async function FlatnessPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   if (process.env.NODE_ENV === "production") notFound();
+
+  const { locale } = await params;
 
   // Demo 3 (imagery) needs one REAL seeded salon photo, never a grey box , loaded the exact
   // same way the real PDP does (app/[locale]/salon/[slug]/page.tsx).
-  const result = await loadSalonDetailWithStatus("cuts-and-culture");
+  const result = await loadSalonDetailWithStatus("cuts-and-culture", locale);
   const photo = result?.salon.gallery_urls[0] ?? null;
 
   return (
