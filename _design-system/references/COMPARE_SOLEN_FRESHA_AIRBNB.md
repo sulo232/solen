@@ -186,6 +186,14 @@ being not-measured (section 7): the seed customer `kunde@solen.ch` has no bookin
   window didn't reach, or a measurement-script miss (e.g. the bar uses a CSS mechanism other than
   `position: fixed`/`sticky` that the detector didn't match) was not root-caused this pass. Flagged
   as the single highest-priority follow-up, not silently resolved either way.
+  **ROOT-CAUSED 2026-09-05, from the component, not the script.** `SalonMobileBookBar.tsx:69`
+  returns null while `!hasConsented`, a deliberate change dated 2026-07-25 (comment in the same
+  file): the bar sits at z-800 above the cookie banner and was eating the banner's taps, so it now
+  yields until the visitor answers the banner. A cold guest load has no consent cookie, so the
+  strip holds the banner, not the Book button. Not a regression and not a detector miss. The cost
+  it carries: a first-time visitor has no Book button until the banner is answered, which on this
+  route is every visitor's first view of the salon. Alternatives are the owner's call: stack the
+  bar above the banner (two bottom strips), or move the banner to a top sheet on this route.
 - **`booking-staff`'s reliability.** Early runs of this script (before a cookie-dismissal + explicit
   cart-verification fix landed) intermittently mis-measured this step as a re-render of the plain
   salon page instead of the real staff-selection screen, because a generic "click the first visible
