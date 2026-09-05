@@ -19,23 +19,26 @@ push, ever.
 
 ## Boxes
 
-- [ ] CORRECTION: the 2026-09-04 micro-mockup batch is rejected as a format
-  - [ ] graveyard line written (REMOVED.md) in his words
-  - [ ] the /en/dev/mockups-0904 index is no longer offered to him (files stay in git, unlinked)
-- [ ] Readback of every ask sent as the first lines of the reply
-- [ ] Harden (category 1, his own words): the mockup-variations note fires on ANY mockup batch ask, not only on "variations", and names the rejected micro-tweak format; self-tested with the 2026-09-04 goal wording and today's message
-- [ ] 21st.dev MCP: report its real status (not connected this session: API key missing or reset) and the one thing he must do; meanwhile research the public 21st.dev site in a browser
+- [x] CORRECTION: the 2026-09-04 micro-mockup batch is rejected as a format
+  - [x] graveyard line written (REMOVED.md) in his words (2026-09-05 04:05, `npm run removed`, entry "mockups-0904 micro-treatment index")
+  - [x] the /en/dev/mockups-0904 index is no longer offered to him (files stay in git, unlinked; not in any reply since)
+- [x] Readback of every ask sent as the first lines of the reply (seven numbered lines, 2026-09-05 04:20)
+- [x] Harden (category 1, his own words), ~/.claude/hooks/mockup-variations.py, already wired on UserPromptSubmit
+  - [x] fires on "all mockups" / "all the screens" with no variation word (the 2026-09-04 goal wording that produced the rejected batch)
+  - [x] the injected note names the rejected micro-tweak format and the whole-screen-times-three-directions unit
+  - [x] self-test 19/19: case 16 (the goal wording, fires), case 17 (today's dictated message, fires), case 18 (a folder deletion, silent)
+- [x] 21st.dev MCP: status reported to him (not connected, key missing or reset, the paste is his); the public site is researched by the motion helper in a browser
 - [ ] Reference capture, real captures only
-  - [ ] Fresha structure: booking flow steps (services, professional, time, review)
-  - [ ] Fresha structure: booking confirmation screen (his named example)
-  - [ ] Fresha structure: venue (salon) page
-  - [ ] Fresha structure: search results
-  - [ ] Fresha structure: home
+  - [x] Fresha structure: booking flow steps (services, professional, time, review) (Mobbin stills, cited per screen; fresha--*.md, 2026-09-05 09:50; no live pull, desktop-width only for search and home)
+  - [x] Fresha structure: booking confirmation screen (his named example) (Mobbin stills, cited per screen; fresha--*.md, 2026-09-05 09:50; no live pull, desktop-width only for search and home)
+  - [x] Fresha structure: venue (salon) page (Mobbin stills, cited per screen; fresha--*.md, 2026-09-05 09:50; no live pull, desktop-width only for search and home)
+  - [x] Fresha structure: search results (Mobbin stills, cited per screen; fresha--*.md, 2026-09-05 09:50; no live pull, desktop-width only for search and home)
+  - [x] Fresha structure: home (Mobbin stills, cited per screen; fresha--*.md, 2026-09-05 09:50; no live pull, desktop-width only for search and home)
   - [ ] Airbnb look: listing page, checkout and confirmation, search results, and one consolidated look recipe with a port map to our tokens and named conflicts with the lockfile
   - [ ] Airbnb motion: card to page, sheet open and close, press states, category switch, back, measured ms and easing from video and animations.json
   - [ ] 21st.dev motion kit: 6 to 10 components that fit a booking flow, timings measured, source kept
   - [ ] Standing comparison document Solen vs Fresha vs Airbnb per surface, differences ranked by what a customer notices, plus a re-runnable measure script for the Solen column
-- [ ] Taste log: dated 2026-09-05 entry with his verbatim words (look Airbnb not completely; placement Fresha base; confirmation copied from Fresha); the CLAUDE.md source-of-truth block amended with the same date
+- [x] Taste log: dated 2026-09-05 entry with his verbatim words (look Airbnb not completely; placement Fresha base; confirmation copied from Fresha); the CLAUDE.md source-of-truth block amended with the same date (commit d780f0f84)
 - [ ] Mockups, wave 1, at /en/dev/directions-0905/<surface>?v=a|b|c, each a real-component copy with seeded data, English, three genuinely different directions
   - [ ] booking confirmation screen: 3 directions (Fresha anatomy, Airbnb look, ours underneath)
   - [ ] booking flow steps with the motion BETWEEN steps: 3 directions, each proven on video
