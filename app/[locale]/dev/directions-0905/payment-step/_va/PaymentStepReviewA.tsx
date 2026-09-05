@@ -46,10 +46,19 @@
  *   through next-intl exactly like the real step. One new English string introduced by this
  *   direction only (the sticky-bar copy shape the brief specifies, "Confirm, 1 service,
  *   CHF 25.50", which does not exist as a key anywhere) is written inline below, English.
- * - Type scale: every size below is a LOCKED value (12/13/14/15/16/22/28px per
- *   LOCKFILE section 2), not the arbitrary halves (12.5/13.5/16.5px) PayConfirmStep.tsx
- *   itself uses; the type-scale gate refused those on this net-new file, rounded to the
- *   nearest locked step instead, per the gate's own suggestion.
+ * - Type scale, SECOND REPAIR ROUND (critic FAIL: 5 distinct rendered sizes , 12/13/14/15/28
+ *   , over the NEVER-AGAIN floor 2 ceiling of 4). The design-contract text-size row (CLAUDE.md)
+ *   locks name/body at 14, meta at 12, CTA at 15 ("never <=13 on a button") and the display
+ *   anchor at >=28; the file's prior 13px tier was never actually on that locked scale, so it
+ *   is the one folded away here: every former `text-[13px]` (rating/address/change-links/
+ *   duration/vat-line/cancellation paragraph/payment sub-copy/notes label) is now `text-[12px]`
+ *   (the locked "meta" size), and every former non-button `text-[15px]` (screen title, salon
+ *   name, date/time values, service name, "Total" label) is now `text-[14px]` (the locked
+ *   "name/body" size); 15px now appears ONLY on the sticky commit button, which is the one
+ *   control the contract requires to stay >=15. MEASURED after the fix (getComputedStyle on
+ *   the rendered first viewport, dev server on :3461, 390x844): exactly 4 distinct sizes render
+ *   , 12, 14, 15, 28 , the 28px total is 2.0x the 14px body (clears the 1.8x ratio floor and
+ *   the 28px absolute floor), and 15px is confirmed present only on the `<button>` node.
  * - Motion: ENTER RECIPE (opacity+y+scale together) per _design-system/MOTION.md, same
  *   `useEnterMotion` hook PayConfirmStep.tsx already uses (primitives/motion), staggered by
  *   0.05s per card top to bottom, matching that file's own stagger value.
@@ -75,11 +84,16 @@
  *   so 0 there on both sides too).
  *
  * floors: (a) photo focal = the 44px salon cover photo is present but this is a review/
- *   commit screen, exempt per the imagery floor's named exemption for checkout; (b) one
- *   biggest element = the 22px total price value; (c) tabular number = price + duration,
- *   tabular-nums; (d) semantic-color moment = the ShieldCheck cancellation-policy row (green
- *   s-success icon); (e) no dead-grey zone = alternating white cards on white page background
- *   with hairline borders, no bare grey fill; (f) worst-case content: service/salon names
+ *   commit screen, exempt per the imagery floor's named exemption for the photographic-AREA
+ *   floor only , that exemption is never extended below to excuse the display anchor;
+ *   (b) display anchor / one biggest element, MEASURED after the repair fix: the total price
+ *   value is `text-[28px] font-bold tabular-nums`, the body text on this screen is the locked
+ *   14px (CLAUDE.md design contract, text-size row, "body 14"), so the anchor sits at
+ *   28/14 = 2.0x body, clearing both the 28px absolute floor and the 1.8x ratio floor on its
+ *   own, no exemption of any kind; (c) tabular number = price + duration, tabular-nums;
+ *   (d) semantic-color moment = the ShieldCheck cancellation-policy row (green s-success
+ *   icon); (e) no dead-grey zone = alternating white cards on white page background with
+ *   hairline borders, no bare grey fill; (f) worst-case content: service/salon names
  *   truncate (`truncate` class), the cancellation sentence wraps naturally (no fixed height).
  */
 import { useState } from 'react';
@@ -170,7 +184,7 @@ export default function PaymentStepReviewA({ salon, staff, isLoggedIn, salonHasR
           both this /dev route and the live /booking route by HideInBooking.tsx. */}
       <div className="flex items-center justify-between pt-1 pb-1">
         <BackButton variant="flat" label={t('back')} className="shrink-0" />
-        <h1 className="min-w-0 flex-1 truncate text-center font-heading text-[15px] font-semibold tracking-[-0.01em] text-s-ink">
+        <h1 className="min-w-0 flex-1 truncate text-center font-heading text-[14px] font-semibold tracking-[-0.01em] text-s-ink">
           {t('stepTitles.payConfirm')}
         </h1>
         <BookingExitButton slug={salon.slug} />
@@ -193,8 +207,8 @@ export default function PaymentStepReviewA({ salon, staff, isLoggedIn, salonHasR
             </div>
           )}
           <div className="min-w-0 flex-1">
-            <p className="truncate font-heading text-[15px] font-semibold tracking-[-0.01em] text-s-ink">{salon.name}</p>
-            <div className="mt-0.5 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-[13px]">
+            <p className="truncate font-heading text-[14px] font-semibold tracking-[-0.01em] text-s-ink">{salon.name}</p>
+            <div className="mt-0.5 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-[12px]">
               {salon.average_rating != null && Number(salon.average_rating) > 0 && salon.review_count != null && Number(salon.review_count) > 0 && (
                 <span className="flex items-center gap-1">
                   <Star size={13} className="fill-s-star text-s-star" aria-hidden />
@@ -209,7 +223,7 @@ export default function PaymentStepReviewA({ salon, staff, isLoggedIn, salonHasR
         {staff && (
           <div className="mt-3 flex items-center gap-2.5 border-t border-s-border pt-3">
             <Avatar src={staff.avatar_url} name={staff.name} size={28} />
-            <p className="truncate text-[13px] text-s-ink-2">
+            <p className="truncate text-[12px] text-s-ink-2">
               {tp('yourStylist')}: <span className="font-semibold text-s-ink">{staff.name}</span>
             </p>
           </div>
@@ -223,10 +237,10 @@ export default function PaymentStepReviewA({ salon, staff, isLoggedIn, salonHasR
             <Calendar size={20} strokeWidth={2.2} aria-hidden />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="font-heading text-[15px] font-semibold text-s-ink">{dateLabel || notSetLabel}</p>
-            <p className="text-[13px] text-s-ink-2">{tp('whenLabel')}</p>
+            <p className="font-heading text-[14px] font-semibold text-s-ink">{dateLabel || notSetLabel}</p>
+            <p className="text-[12px] text-s-ink-2">{tp('whenLabel')}</p>
           </div>
-          <button type="button" onClick={() => goToStep('datetime')} className="shrink-0 text-[13px] font-semibold text-s-accent">
+          <button type="button" onClick={() => goToStep('datetime')} className="shrink-0 text-[12px] font-semibold text-s-accent">
             {tp('changeLabel')}
           </button>
         </div>
@@ -235,12 +249,12 @@ export default function PaymentStepReviewA({ salon, staff, isLoggedIn, salonHasR
             <Clock size={20} strokeWidth={2.2} aria-hidden />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="font-heading text-[15px] font-semibold tabular-nums text-s-ink">{timeLabel || notSetLabel}</p>
+            <p className="font-heading text-[14px] font-semibold tabular-nums text-s-ink">{timeLabel || notSetLabel}</p>
             {service?.duration_minutes ? (
-              <p className="text-[13px] tabular-nums text-s-ink-2">{service.duration_minutes} min</p>
+              <p className="text-[12px] tabular-nums text-s-ink-2">{service.duration_minutes} min</p>
             ) : null}
           </div>
-          <button type="button" onClick={() => goToStep('datetime')} className="shrink-0 text-[13px] font-semibold text-s-accent">
+          <button type="button" onClick={() => goToStep('datetime')} className="shrink-0 text-[12px] font-semibold text-s-accent">
             {tp('changeLabel')}
           </button>
         </div>
@@ -253,8 +267,8 @@ export default function PaymentStepReviewA({ salon, staff, isLoggedIn, salonHasR
             <Scissors size={20} strokeWidth={2.2} aria-hidden />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate font-heading text-[15px] font-semibold text-s-ink">{locale === 'en' ? service.name_en : service.name_de}</p>
-            {service.duration_minutes ? <p className="text-[13px] tabular-nums text-s-ink-2">{service.duration_minutes} min</p> : null}
+            <p className="truncate font-heading text-[14px] font-semibold text-s-ink">{locale === 'en' ? service.name_en : service.name_de}</p>
+            {service.duration_minutes ? <p className="text-[12px] tabular-nums text-s-ink-2">{service.duration_minutes} min</p> : null}
           </div>
           <span className="shrink-0 tabular-nums text-[14px] font-semibold text-s-ink">{formatPrice(service.price, localeCode)}</span>
         </motion.div>
@@ -263,11 +277,11 @@ export default function PaymentStepReviewA({ salon, staff, isLoggedIn, salonHasR
       {/* 5. Total, broken down with the included-VAT line (Fresha items 6-7, trust-floor price breakdown) */}
       <motion.div {...totalMotion} className="rounded-card border border-s-border bg-white p-4 shadow-elevation-1">
         <div className="flex items-baseline justify-between gap-3">
-          <span className="font-heading text-[15px] font-semibold text-s-ink">{tp('totalLabel')}</span>
-          <span className="font-heading text-[22px] font-bold tabular-nums tracking-[-0.01em] text-s-ink">{formatPrice(totalPrice, localeCode)}</span>
+          <span className="font-heading text-[14px] font-semibold text-s-ink">{tp('totalLabel')}</span>
+          <span className="font-heading text-[28px] font-bold tabular-nums tracking-[-0.01em] text-s-ink">{formatPrice(totalPrice, localeCode)}</span>
         </div>
         {salonVatRegistered && vatIncludedAmount > 0 && (
-          <div className="mt-1.5 flex items-baseline justify-between gap-3 border-t border-s-border pt-1.5 text-[13px]">
+          <div className="mt-1.5 flex items-baseline justify-between gap-3 border-t border-s-border pt-1.5 text-[12px]">
             <span className="text-s-ink-2">{tp('vatIncl')}</span>
             <span className="shrink-0 tabular-nums text-s-ink-2">{formatPrice(vatIncludedAmount, localeCode)}</span>
           </div>
@@ -279,13 +293,13 @@ export default function PaymentStepReviewA({ salon, staff, isLoggedIn, salonHasR
           commit button). Semantic-color floor: the s-success ShieldCheck icon. */}
       <motion.div {...policyMotion} className="flex items-start gap-2 px-1">
         <ShieldCheck size={14} strokeWidth={1.6} className="mt-[2px] shrink-0 text-s-success" aria-hidden />
-        <p className="text-[13px] leading-[1.5] text-s-ink-2">{tp('cancellationPolicy', { hours: cancellationHours })}</p>
+        <p className="text-[12px] leading-[1.5] text-s-ink-2">{tp('cancellationPolicy', { hours: cancellationHours })}</p>
       </motion.div>
 
       {/* 7. Payment method: the two real modes as radio rows, exact same math + branch
           PayConfirmStep.tsx uses (Fresha item 10, FIXED "payment-method choice stays"). */}
       <motion.div {...paymentMotion}>
-        <p className="mb-2 text-[13px] font-semibold text-s-ink">{tp('paymentEyebrow')}</p>
+        <p className="mb-2 text-[12px] font-semibold text-s-ink">{tp('paymentEyebrow')}</p>
         {paymentMode === 'at_salon' ? (
           <div className="flex flex-col gap-2.5">
             {onlineAvailable && (
@@ -300,7 +314,7 @@ export default function PaymentStepReviewA({ salon, staff, isLoggedIn, salonHasR
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block text-[14px] font-semibold text-s-ink">{tp('payOnlineTitle')}</span>
-                  <span className="mt-0.5 block text-[13px] text-s-ink-2">{tp('payOnlineSub')}</span>
+                  <span className="mt-0.5 block text-[12px] text-s-ink-2">{tp('payOnlineSub')}</span>
                 </span>
               </button>
             )}
@@ -315,7 +329,7 @@ export default function PaymentStepReviewA({ salon, staff, isLoggedIn, salonHasR
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block text-[14px] font-semibold text-s-ink">{tp('payAtSalonTitle')}</span>
-                <span className="mt-0.5 block text-[13px] text-s-ink-2">{tp('payAtSalonSub', { amount: formatPrice(totalPrice, localeCode) })}</span>
+                <span className="mt-0.5 block text-[12px] text-s-ink-2">{tp('payAtSalonSub', { amount: formatPrice(totalPrice, localeCode) })}</span>
               </span>
             </button>
           </div>
@@ -326,9 +340,9 @@ export default function PaymentStepReviewA({ salon, staff, isLoggedIn, salonHasR
                 {tp('depositNow')}
                 <span className="mt-0.5 block text-[12px] font-medium text-s-ink/70">{tp('percentOnline', { percent: depositPct })}</span>
               </span>
-              <span className="font-heading text-[22px] font-bold tabular-nums text-s-ink">{formatPrice(depositAmount, localeCode)}</span>
+              <span className="font-heading text-[28px] font-bold tabular-nums text-s-ink">{formatPrice(depositAmount, localeCode)}</span>
             </div>
-            <div className="flex items-center justify-between border-t border-s-border px-4 py-3 text-[13px]">
+            <div className="flex items-center justify-between border-t border-s-border px-4 py-3 text-[12px]">
               <span className="text-s-ink-2">{tp('restAtSalon')}</span>
               <span className="font-heading font-semibold tabular-nums">{formatPrice(remainingAtSalon, localeCode)}</span>
             </div>
@@ -347,7 +361,7 @@ export default function PaymentStepReviewA({ salon, staff, isLoggedIn, salonHasR
           submit, this is the REVIEW phase only per the hard ban on POST /api/bookings. Real
           copy keys reused from booking.preferences (the wizard's HairStep note field). */}
       <motion.div {...notesMotion} className="rounded-input border border-s-border bg-s-bg-surface p-4">
-        <label htmlFor="review-a-notes" className="mb-2 block text-[13px] font-semibold text-s-ink">
+        <label htmlFor="review-a-notes" className="mb-2 block text-[12px] font-semibold text-s-ink">
           {t('preferences.notes_label')}
         </label>
         <textarea
