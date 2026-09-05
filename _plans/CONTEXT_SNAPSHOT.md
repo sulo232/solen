@@ -2,22 +2,23 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-09-05T23:27:56 (trigger: auto)
+- taken: 2026-09-06T00:41:48 (trigger: auto)
 - branch: claude/cloud-code-codex-migration-86a820
 
 ## git
 ```
+d32fcd313 Plan: every in-flight box names the workflow it waits on, the density-floor report line written and closed
+b465321c3 Plan log: build fan-out launched with the orchestrator overrides named
+677181c5b Plan: research boxes closed with their commits, the two half-done boxes split into done and blocked halves
+2584338bb Round 2 research: what is missing on the front end (15 gaps, the value a builder types versus the value the law states), the base recipes and three look systems (LIFT, RULE, TRAY) with 11 conflicts for him, suggestions refreshed
 b0b9171f8 Round 2 research: Airbnb, Fresha and Treatwell look recipes captured live at 390 (identity, philosophy, measured, port map, conflicts); plan boxes 5a, 6c, 11a, 12a closed with their proof
-c37892888 Plan: button section boxes closed with their commit, the globals.css computed-value finding logged
-2051a8692 Round 2, salon page: the service-row Book button matched to the main Book button, three stacked variants on the real services rows plus the sticky bar button as reference
-88f3688ca Plan: box 3a carries its sha, box 3b split into five parts
-1b54eb66e checkpoint(auto): 1 uncommitted file(s) at turn end
 ```
 ```
-M _design-system/_type-scale-report.md
- M _plans/CONTEXT_SNAPSHOT.md
-?? _design-system/research/WHAT_IS_MISSING_2026-09-05.md
-?? _plans/R2_LOOK_SYSTEMS.md
+M _design-system/LOCKFILE.md
+ M _design-system/references/airbnb--look-recipe.md
+ M _design-system/references/airbnb--look-recipes.md
+ M _design-system/references/fresha--look-recipes.md
+?? app/[locale]/dev/directions-0905-r2/input-radius/
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)

@@ -304,7 +304,7 @@ Two rules travel with it, both measured off the reference the owner named as sou
 | **Body** (default paragraph) | 14px | 15px | 400 | 1.55 | normal | body |
 | **Body small** (meta rows, secondary) | 13px | 14px | 400 | 1.4 | normal | body |
 | **Caption** (tiny labels, badge text) | 11px | 12px | 500 | — | 0.06em (~~uppercase~~ sentence case) | body |
-| **CTA** (button label) | 14px | 15px | 500 | — | -0.005em | body |
+| **CTA** (button label) | ~~14px~~ **15px** | 15px | 500 | — | -0.005em | body |
 | **Service-row name** | 15px | 16px | 600 | — | — | body |
 | **Service-row duration** | 13px | 14px | 400 | — | — | body |
 | **Service-row price** | 14px | 15px | 600 | — | — | body |
@@ -312,6 +312,8 @@ Two rules travel with it, both measured off the reference the owner named as sou
 | **Team-card role** | 12px | 13px | 400 | snug | — | body |
 | **Star rating large** (sidebar 5.0) | 18px | 20px | 600 | 1.0 | — | body |
 | **Star rating small** (card 4.8) | 14px | 14px | 600 | — | — | body |
+
+**THE CTA PHONE COLUMN WAS WRONG UNTIL 2026-09-05 (C7, `_plans/R2_LOOK_SYSTEMS.md`; gap logged as G12 in `_design-system/research/WHAT_IS_MISSING_2026-09-05.md`).** This row read mobile 14 / desktop 15, while `CLAUDE.md:129`'s design contract says "CTA **15** (never <=13 on a button)" and this file's own §2.5 role registry (Primary CTA / Secondary CTA rows) says 15 flat with no phone column at all , three sources, two values. Round 1 rendered 15px/500 on every primary button measured (`ROUND1_LOOK_TABLE.md`), so the shipped answer already matches two of the three sources. **Verdict: DECIDE, per `TASTE_AUTHORITY.md` step 6** (every candidate is already legal and one adjacent step apart, the same test that closed the meta/eyebrow rows below): the phone column becomes 15, matching what ships and two of three sources. No code moved. Same shape as the Core ramp meta/eyebrow reconciliation further below in this file (2026-09-04), applied to a row that pass did not touch.
 
 **Common clamp() patterns (use these literal values for new code):**
 
@@ -678,7 +680,7 @@ border-s-border first:border-t-0`). NEVER separate bordered/shadowed cards per r
 | Token | Value |
 |---|---|
 | `elevation-1` (= `warm-sm` = `card`) | `0 1px 3px rgba(50,47,44,0.04), 0 1px 2px rgba(50,47,44,0.03)` |
-| `elevation-2` (= `warm-md` = `card-hover` = `surface`) | `0 4px 12px rgba(50,47,44,0.08), 0 2px 4px rgba(50,47,44,0.04)` |
+| `elevation-2` ~~(= `warm-md` = `card-hover` = `surface`)~~ | ~~`0 4px 12px rgba(50,47,44,0.08), 0 2px 4px rgba(50,47,44,0.04)`~~ **`0 2px 8px rgba(50,47,44,0.09)`, corrected 2026-09-05 (G4, `_design-system/research/WHAT_IS_MISSING_2026-09-05.md`): this is `tailwind.config.js:313`'s real, single-layer value. `tailwind.config.js:311-312`'s own comment records why it differs: the V3 2026-06-29 council decision moved `elevation-2` to single-layer on purpose ("the old two-layer read as a 'double line'"). The two-layer value struck at left belongs to `card-hover` (`tailwind.config.js:295`), `surface` (`:296`) and `warm-md` (`:301`), which equal each other but not `elevation-2`. The false `=` chain is dropped; no code moved.** |
 | `elevation-3` (= `warm-xl` = `surface-hover` = `warm-float`) | `0 8px 28px rgba(50,47,44,0.12), 0 4px 10px rgba(50,47,44,0.06)` |
 | `pressed` | `0 1px 1px rgba(50,47,44,.12), inset 0 1px 2px rgba(50,47,44,.06)` |
 
@@ -1662,7 +1664,7 @@ The booking flow indicator (Service → Zeit → Haare → Bezahlen) and the wal
 | **Selected** (picker) | ink disc + white check, `border-2 border-white` | `bg-s-ink` | 1 (chrome) | staff/barber pickers — `SelectedCheckBadge` |
 | **Done** (stepper node) | blue disc + white step-icon, 42px | `bg-s-accent` #276EF1 | 2 (progress) | completed step in §13.2 (unified blue, 2026-06-11) |
 | **Success focal** (confirm/paid) | green disc + white check, ~58px, spring-pop | `bg-s-success` #16A34A | 3 (semantic) | the ONE delight peak — `SuccessMark` (one per screen) |
-| **Status** (open/closed/pending) | pastel `.bg` + ink/semantic text pill | `StatusPill` | 3 (semantic) | inline live state |
+| **Status** (open/closed/pending) | pastel `.bg` + ink/semantic text pill | ~~`StatusPill`~~ **`StatusInline`, corrected 2026-09-05 (G7, `_design-system/research/WHAT_IS_MISSING_2026-09-05.md`): `StatusPill` was deleted 2026-06-30 (`REMOVED.md:46`, `components/StatusPill.md`), zero live imports left in the codebase. `StatusInline` (`app/[locale]/_components/salon/StatusInline.tsx`) has 2 live imports this pass (`SalonSidebar.tsx:13`, `SalonHeader.tsx:8`), both rendering it. Verified by grep this pass.** | 3 (semantic) | inline live state |
 | **Rating** | filled star | `fill-s-star` #FFC32B | 3 (semantic) | review counts, ratings |
 | **Saved** | filled heart | `--heart-active` #FF3366 | 3 (semantic) | save/favourite |
 | **Notification count** | small filled pill on a bell/tab, white numeral | **red `s-error` #DC2626** (recommended) | 3 (semantic) | unread count — see note |

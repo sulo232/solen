@@ -1,3 +1,13 @@
+Exists-check, per-section pointer to the deeper surface capture: home = `fresha--home.md`; search
+results = `fresha--search-results.md`; venue page = `fresha--venue-page.md`; confirmation =
+`fresha--confirmation.md`; bookings list = `fresha--bookings-list.md`; payment step =
+`fresha--payment-step.md`; profile = `fresha--profile.md`; empty states = `fresha--empty-states.md`.
+(A ninth sibling, `fresha--booking-flow.md`, covers the services/staff/date/time steps before the
+payment step and is not one of this file's eight sections, but is cited below wherever a look
+value overlaps it.) Each of those files owns page ANATOMY (section order, component shape, dropdown
+and tab behavior) for its surface; this file never repeats that narrative, it only adds the
+computed-style numbers (hex, px, radius, box-shadow, font-weight) those files defer.
+
 Exists-check: net-new vs `fresha--home.md`, `fresha--venue-page.md`, `fresha--profile.md`,
 `fresha--booking-flow.md` (all read in full before writing this file). Those four capture PAGE
 ANATOMY (section order, component shape, dropdown/tab behavior), mostly via Mobbin desktop-width
