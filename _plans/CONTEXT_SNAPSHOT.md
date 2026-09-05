@@ -2,38 +2,30 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-09-05T00:21:20 (trigger: auto)
+- taken: 2026-09-05T01:16:24 (trigger: auto)
 - branch: claude/cloud-code-codex-migration-86a820
 
 ## git
 ```
-e4a806726 Inventory: the 20 unclear items resolved, 12 became bugs or mockups, 7 closed with proof, 1 needs Docker
-a0ec222d9 Open-items inventory: 47 bugs, 16 screen changes, 21 his decisions, 20 unclear, each checked against the code tonight
-d02e7a478 Today's audit reports kept in the repo: open items, phantom columns, dead links, orphan routes, branches, design walk, geometry, security
-3bdad6018 Plan notes: Map button fix landed, index row carries tonight's commits and his four decisions
-101e7f276 The Map button on search results sits above the bottom bar, and it steps aside for the cookie banner and the search panel
+04544959b Plan log: 12 bug fixes saved, two refund migrations applied live, four follow-ups running
+cb269931d Five small customer-page fixes: translated buttons, coordinate directions, receipt ownership, map counts, layer tokens
+9903265bf The For-you cards on the home page carry the same price and city lines as their neighbours
+ac9ed936a On desktop the search results show one map button, not two
+f6f1636c6 Login, sign-up and phone checks rate-limit on the real client address
 ```
 ```
-M .github/workflows/cron-jobs.yml
- M _design-system/COMPONENT_REGISTRY.md
- M _design-system/_geometry-report.md
- M app/[locale]/[city]/[category]/page.tsx
- M app/[locale]/_components/homepage/ForYouAffinityRow.tsx
- M app/[locale]/_components/homepage/Nearby.tsx
+M _design-system/_geometry-report.md
  M app/[locale]/_components/homepage/NearbyMap.tsx
- M app/[locale]/_components/salon/SalonLocation.tsx
- M app/[locale]/_components/salon/SalonServices.tsx
  M app/[locale]/_components/search/SearchOverlay.tsx
- M app/[locale]/_components/search/SearchTemplate.tsx
- M app/[locale]/bookings/[id]/refund/page.tsx
- M app/[locale]/dashboard/calendar/page.tsx
- M app/[locale]/dashboard/settings/page.tsx
- M app/[locale]/page.tsx
- M app/api/ai/intake-recommendation/route.ts
- M app/api/ai/recommend/route.ts
- M app/api/auth/login/route.ts
- M app/api/auth/signup/route.ts
- M app/api/auth/verify-otp/route.ts
+ M app/api/auth/callback/route.ts
+ M app/api/auth/logout/route.ts
+ M app/api/profile/route.ts
+ M app/api/stripe/booking-pay-intent/route.ts
+ M lib/loyalty/perks.ts
+ M lib/validations.ts
+ M middleware.ts
+?? app/[locale]/dev/mockups-0904/
+?? public/_mockups/_assets/where-step-height/
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
