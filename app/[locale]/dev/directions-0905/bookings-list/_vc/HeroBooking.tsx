@@ -31,6 +31,13 @@
 // Depicts: focal date block, salon name, service line, place, price -> BookingCard.tsx anatomy, kept.
 // Depicts: entrance motion -> app/[locale]/_components/primitives/motion.ts's useEnterMotion (THE ENTER RECIPE).
 // Depicts: three-action row (Directions / Reschedule / Cancel) -> NET-NEW: grounded in fresha--bookings-list.md's "Get directions" pair and airbnb--trips.md item 5's "Get directions" button; Reschedule/Cancel are Solen's existing actions (BookingsList.tsx handleReschedule/handleCancel), rendered here as static, never wired to the real POST endpoints (mockup, never writes to the database).
+//
+// Repair 2026-09-05: critic flagged the hero card carrying BOTH a hairline border
+// AND shadow-elevation-1 (design contract shadow/depth row: a card carrying elevation
+// drops its border, never both). This direction is not LOOK-FULL and named no such
+// conflict, so it was a plain violation. Fix: removed `border border-s-border` from
+// the card wrapper below, kept shadow-elevation-1 alone; the edge-visibility floor is
+// still met on white by the shadow. Nothing else on the card changed.
 import Image from "next/image";
 import { MapPin } from "lucide-react";
 import { motion } from "motion/react";
@@ -71,7 +78,7 @@ export function HeroBooking({
   return (
     <motion.div
       {...enter}
-      className="mx-4 mt-4 overflow-hidden rounded-card border border-s-border bg-[--raised] shadow-elevation-1"
+      className="mx-4 mt-4 overflow-hidden rounded-card bg-[--raised] shadow-elevation-1"
     >
       {/* mockup-ok: real entity photo slot (booking.salon.cover_photo_url, a live seeded
           salon row); fallback is the spec'd anatomy (sunken bg + the salon's own initial),
