@@ -8,15 +8,17 @@
 //
 // Grounded-in: app/[locale]/page.tsx (the real home page this direction restructures around one
 // idea: the entry point), app/[locale]/_components/homepage/Hero.tsx (copied into
-// ./HeroQueryBuilder.tsx, see that file's own header for the exact diff), SearchBar.tsx (real,
-// imported unmodified via HeroQueryBuilder), CategoryPillRow.tsx (real, imported unmodified),
+// ./HeroQueryBuilder.tsx, see that file's own header for the exact diff), SearchBar.tsx (forked,
+// not imported, into ./FreshaQueryPill.tsx + ./FreshaQueryPillClient.tsx as of the REPAIR ROUND,
+// see those files' own headers for why), CategoryPillRow.tsx (real, imported unmodified),
 // _design-system/references/fresha--home.md (structure), _design-system/references/
 // airbnb--look-recipe.md + airbnb--home-mobile.md (read in full; NOT applied, see Conflicts below,
 // this direction is LOCK MODE).
 //
 // Depicts (every section below is the real, live component, unmodified, its real source):
-// Depicts: hero + 3-field query builder -> ./HeroQueryBuilder.tsx (own header has the full diff
-//   against the real Hero.tsx it is copied from).
+// Depicts: hero + 3-field query builder -> ./HeroQueryBuilder.tsx, which now mounts
+//   ./FreshaQueryPill.tsx (own headers carry the full REPAIR ROUND diff: forked off SearchBar.tsx
+//   into a one-continuous-pill anatomy, per fresha--home.md item 3).
 // Depicts: the category chip row -> app/[locale]/_components/layout/CategoryPillRow.tsx (live,
 //   the same component page.tsx mounts directly after its own search pill).
 // Depicts: Continue Card -> app/[locale]/_components/homepage/ContinueCard.tsx (live, self-hides).
@@ -42,29 +44,45 @@
 // continuous ... container, divided into ... segments ... a solid black ... Search button closing
 // the bar"). The live home's mobile entry point is HomeSearchPill, a single tap-to-open pill
 // (2026-08-01 owner decision, "it should be search bar instead of category bar"); this direction
-// deliberately replaces that pill's slot with the always-visible 3-stacked-field builder Fresha
-// uses, so the query is built in place before the first tap rather than behind one. The stacked
-// fields, the category chip row and the rail order below are the ONE idea; nothing else varies
-// (LOCK MODE: every colour/radius/shadow/type value stays a Solen token, none ported from Airbnb).
+// deliberately replaces that pill's slot with the always-visible query builder Fresha uses, so the
+// query is built in place before the first tap rather than behind one. The builder, the category
+// chip row and the rail order below are the ONE idea; nothing else varies (LOCK MODE: every
+// colour/radius/shadow/type value stays a Solen token, none ported from Airbnb).
 //
-// Sources: fresha--home.md item 3 (search-bar anatomy: one card, Treatment | Location | Time
-// segments, one solid Search button) -> SearchBar.tsx's real mobile layout already matches this
-// (three icon+placeholder rows stacked with a gap, one dark closing button below, values verified
-// live in SearchBar.tsx: rounded-[6px] rows, h-[46px], one solid-ink CTA labelled "Termine
-// finden"). fresha--home.md also names the section-list gap this file's brief fills directly
-// ("What was not captured this pass": the below-the-fold rail order), so the four Fresha-named
-// slots (recommended, new on Solen, trending, reviews) come from the brief itself, not re-derived
-// from the capture. airbnb--look-recipe.md / airbnb--home-mobile.md: read in full, not applied
-// (LOCK MODE), see Conflicts.
+// REPAIR ROUND (this pass): the query builder's ANATOMY changed from a 3-row stacked card
+// (SearchBar.tsx's real mobile layout, 250px tall) to a single continuous rounded pill (56px tall,
+// ./FreshaQueryPill.tsx), because a critic pass measured the stacked-card anatomy against
+// fresha--home.md item 3 and found the header's earlier claim of Fresha fidelity overstated (3
+// bordered rows + a separate button below is not "one continuous ... container ... a solid ...
+// button closing the bar"). Fixed by matching the anatomy, not just the claim, since the same
+// change also raises the first-viewport photo share (see floors note below): freeing ~190px of
+// non-photo height let real salon photography from the first two ForYouSalonRows rails rise from
+// a measured 20.3% of the first viewport to a measured 40.0% (re-measured after the fix,
+// Playwright 390x844, image-area/viewport-area, 4 images now partially or fully in view against 2
+// before).
+//
+// Sources: fresha--home.md item 3 (search-bar anatomy: one continuous pill, Treatment | Location |
+// Date | Time segments divided by whitespace only, one solid circular Search button closing the
+// bar) -> matched by ./FreshaQueryPill.tsx (own header has the exact anatomy diff and the one
+// honest deviation, 3 segments not 4, since Solen's real data model already merges date + time
+// into one field). fresha--home.md also names the section-list gap this file's brief fills
+// directly ("What was not captured this pass": the below-the-fold rail order), so the four
+// Fresha-named slots (recommended, new on Solen, trending, reviews) come from the brief itself,
+// not re-derived from the capture. airbnb--look-recipe.md / airbnb--home-mobile.md: read in full,
+// not applied (LOCK MODE), see Conflicts.
 //
 // Conflicts (LOCK MODE: Solen locks kept everywhere, listed per brief):
 // - COLLISION [chrome], named per the brief: the live mobile entry point at this exact position is
 //   HomeSearchPill, a single dated owner decision (2026-08-01 "why is homepage still that bro" /
 //   "it should be search bar instead of category bar") plus the 2026-06-20 multi-category chrome
-//   architecture it sits inside (TASTE_LOG). This direction replaces that pill with the real
-//   always-visible SearchBar builder for comparison purposes; it does not silently override either
-//   decision, it surfaces the collision so the owner can compare A against B (which keeps
-//   HomeSearchPill, per the shared page.tsx's own direction label).
+//   architecture it sits inside (TASTE_LOG). This direction replaces that pill with the Fresha-
+//   shaped query builder for comparison purposes; it does not silently override either decision,
+//   it surfaces the collision so the owner can compare A against B (which keeps HomeSearchPill,
+//   per the shared page.tsx's own direction label).
+// - The query builder here carries 3 segments (Service | City | Time), not Fresha's 4 (Treatment |
+//   Location | Date | Time): named in ./FreshaQueryPill.tsx's own header, not repeated in full
+//   here. The remaining anatomy (one continuous pill, whitespace-only segment separation, one
+//   solid closing button) matches.
 // - Airbnb's search-field dropdown anatomy (category list / place list / date quick-picks,
 //   fresha--home.md's own port-map note that Solen's morph is "gesture-linked rather than a binary
 //   focus threshold, close to but not identical to" Fresha's per-field dropdown): NOT rebuilt. The
@@ -85,7 +103,9 @@
 //
 // floors: (a) photo focal -> every rail below (ForYouSalonRows, SalonOfMonth, TopCategoryRails,
 //   RecentlyViewed, PopularLooksLazy) renders real salon-card photography, unchanged from the live
-//   components; (b) one biggest element -> the hero H1 inside HeroQueryBuilder.tsx (30-44px clamp,
+//   components; measured first-viewport photo share (390x844) is 40.0% post-repair, above the
+//   ~33% FLOORS LAW imagery floor (was 20.3% before the query-builder anatomy fix above);
+//   (b) one biggest element -> the hero H1 inside HeroQueryBuilder.tsx (30-44px clamp,
 //   the single largest text on the first viewport); (c) a real tabular number -> real prices and
 //   ratings on every salon card plus the real Nearby teaser count, all fetched the same way the
 //   live page fetches them; (d) a semantic-colour moment -> the real discount pill / rating star

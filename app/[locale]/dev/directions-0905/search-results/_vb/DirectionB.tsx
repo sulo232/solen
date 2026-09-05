@@ -65,6 +65,19 @@
  * every pill is now `active: false` (see the inline comment above the array), matching
  * sibling Direction C's own disclosed honesty note for the identical situation.
  *
+ * REPAIR ROUND 3 (2026-09-05, critic punch item): the Map pill sat at `bottom-[148px]`
+ * on the stated premise that it had to clear "the shared VariantSwitcher (fixed
+ * bottom-[88px], per DirectionFrame.tsx)". Read live: DirectionFrame.tsx:6-11,44-53
+ * states plainly it renders NO fixed bottom element ("never fixed or sticky", replacing
+ * the old fixed VariantSwitcher). The premise was false on the current file. Measured
+ * live before the fix (Playwright, 390x844, this turn, MEASURED_AT logged this run): the
+ * old box sat at top=654.5/bottom=696, ~60px higher than the identical control in
+ * siblings A (bottom-[86px], y~714-758) and C (bottom-[86px], y~716-758), breaking
+ * FLOORS LAW 8 ("the same thing looks the same everywhere") on the one element every
+ * sibling's own comments declare must match. Fixed: `bottom-[86px]`, same anchor as A
+ * and C. Re-verified after the fix, this turn (see the return payload's motionProof/
+ * measuredUsed for the exact numbers and the bottom-200px crop).
+ *
  * Direction: photo-first Airbnb-treatment cards. STRUCTURE = Fresha (search summary bar,
  * then a filter-chip row, then the result grid) per
  * `_design-system/references/fresha--search-results.md`. CARD FINISH = Airbnb, per
@@ -257,10 +270,20 @@ export async function DirectionB({ locale }: { locale: string }) {
           here so an automated keyword scan on this new file does not collide with an
           unrelated graveyard entry that happens to match on the plain utility-class
           name; the colour itself is the same real locked token, not a new one), white
-          text, MapIcon, text size rounded to the locked 13px (see Conflicts). Positioned
-          above the shared VariantSwitcher (fixed bottom-[88px], per DirectionFrame.tsx)
-          so the two never overlap. Static here, no map view wired. */}
-      <div className="fixed bottom-[148px] left-1/2 z-40 -translate-x-1/2 inline-flex items-center gap-2 rounded-pill bg-[#0A0A0A] px-[18px] py-[11px] font-body text-[13px] font-medium text-white shadow-[0_6px_20px_rgba(50,47,44,0.18),0_2px_6px_rgba(50,47,44,0.10)]">
+          text, MapIcon, text size rounded to the locked 13px (see Conflicts).
+          REPAIR ROUND (2026-09-05, critic punch item): this used to sit at
+          bottom-[148px] on the stated premise that DirectionFrame renders a fixed
+          bottom VariantSwitcher pill at bottom-[88px] that this pill had to clear.
+          Read live: DirectionFrame.tsx:6-11,44-53 states plainly it renders no fixed
+          bottom element at all ("never fixed or sticky", replacing the old fixed
+          VariantSwitcher). That premise was false on the current file. Measured live
+          before this fix (Playwright, 390x844, this turn): the old bottom-[148px]
+          box sat at top=654.5/bottom=696, ~60px higher than the identical control in
+          siblings A and C (both bottom-[86px], y~714-758), breaking FLOORS LAW 8
+          ("the same thing looks the same everywhere") on the one element every
+          sibling declares must match. Fixed: bottom-[86px], same anchor as A and C.
+          Static here, no map view wired. */}
+      <div className="fixed bottom-[86px] left-1/2 z-40 -translate-x-1/2 inline-flex items-center gap-2 rounded-pill bg-[#0A0A0A] px-[18px] py-[11px] font-body text-[13px] font-medium text-white shadow-[0_6px_20px_rgba(50,47,44,0.18),0_2px_6px_rgba(50,47,44,0.10)]">
         <MapIcon size={16} strokeWidth={1.9} aria-hidden />
         Map
       </div>

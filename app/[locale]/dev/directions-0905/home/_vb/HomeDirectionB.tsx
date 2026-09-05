@@ -52,8 +52,17 @@
 //   4. lock: ink #0A0A0A (LOCKFILE frozen literal) broken on purpose, on card name/price and
 //      section titles: reference value = Airbnb rgb(34,34,34)/#222222 (look-recipe #5).
 //      SalonCardAirbnb.tsx, SectionPrimitivesAirbnb.tsx.
-//   5. lock: section-H2 clamp(18px,2vw,20px)/600 broken on purpose: reference value = Airbnb
-//      22px/600, line-height 26px (look-recipe #2). SectionPrimitivesAirbnb.tsx.
+//   5. lock: section-H2 clamp(18px,2vw,20px) SIZE broken on purpose: reference value = Airbnb
+//      22px, line-height 26px (look-recipe #2). SectionPrimitivesAirbnb.tsx. WEIGHT CORRECTION
+//      (repair round, critic-measured): the class this direction sets is `font-semibold`, which
+//      Tailwind resolves to 600, but a sitewide rule at app/globals.css:269-271
+//      (`main :is(.font-semibold, .font-bold) { font-weight: 500; }`, exempting only
+//      `[data-surface="dashboard"]`) forces every non-dashboard `.font-semibold` in the app,
+//      including this one, down to 500 at render. Measured live 2026-09-05: the rendered title
+//      weight on this route is 500, not 600. This is an owner-locked sitewide rule (off-limits,
+//      not forked or edited here), so the delivered weight on this direction is 500; 22px/600 was
+//      never actually shippable through a `.font-semibold` class on a non-dashboard surface, and
+//      this file no longer claims 600 as delivered.
 //   6. lock: rail card-count-per-viewport about 1.6 broken on purpose: reference value = Airbnb's
 //      measured about 2.2 cards visible across 390 (home-mobile.md). RecentlyViewedAirbnb.tsx,
 //      TopCategoryRailsAirbnb.tsx.
@@ -67,17 +76,42 @@
 //   (Inter/Inter Tight), no dark mode, WCAG AA text contrast, real data only, no hardcoded image
 //   src.
 //
+// HARNESS ARTIFACT (repair round, disclosed, not patched): CategoryPillRow renders `null` on this
+// route. The real component's own `isHome` check (app/[locale]/_components/layout/
+// CategoryPillRow.tsx:122, `/^\/[a-z]{2}\/?$/`) only matches the bare `/en` root, never a
+// `/en/dev/...` path, and `showCategoryChrome` (:139) is false everywhere else this pathname isn't
+// a category route, so the row self-hides under this dev harness. It is imported unmodified above
+// ("Kept, not broken" line, same as the live page), and the same regex mismatch hides it
+// identically on directions a and c: it is a shared /dev/directions-0905 harness limitation, not a
+// defect this direction introduced, and is not forked or patched here per the off-limits rule.
+//
 // Floors (customer-screen finished-pass, per this surface's own brief): (a) photo focal, every
-// SalonCardAirbnb's near-square photo is the largest element per card and the widened-visible-rail
-// raises this screen's photographic share above the live page's own. (b) one biggest element, the
-// section title / see-all pairing is subordinate to the photo rail beneath it on every section.
-// (c) real number, salon ratings, review counts and CHF prices are all live salonCardData batch
-// data, never an invented value. (d) semantic colour, the pale-terracotta discount pill on
-// SalonCardAirbnb (unchanged from the real SalonCard) plus the yellow rating star. (e) no
-// dead-grey zone, every rendered section is either a real photo rail, a real editorial card, or a
-// real review/walk-in band. (f) worst-case content, SalonCardAirbnb's own truncate/line-clamp
-// rules are byte-identical to the real SalonCard's (untouched in this fork) and already hold the
-// longest real seeded name/address there.
+// SalonCardAirbnb's near-square photo is the largest element per card. (b) one biggest element,
+// the section title / see-all pairing is subordinate to the photo rail beneath it on every
+// section. (c) real number, salon ratings, review counts and CHF prices are all live
+// salonCardData batch data, never an invented value. (d) semantic colour, the pale-terracotta
+// discount pill on SalonCardAirbnb (unchanged from the real SalonCard) plus the yellow rating
+// star. (e) no dead-grey zone, every rendered section is either a real photo rail, a real
+// editorial card, or a real review/walk-in band. (f) worst-case content, SalonCardAirbnb's own
+// truncate/line-clamp rules are byte-identical to the real SalonCard's (untouched in this fork)
+// and already hold the longest real seeded name/address there.
+//
+// PHOTOGRAPHIC SHARE, CORRECTED (repair round, critic-measured, was falsely claimed "above the
+// live page's own"): measured live at 390x844 with Playwright (sum of <img> bounding-box area
+// clipped to the first viewport, divided by 390x844), signed out, 2026-09-05: this direction
+// (?v=b) = 25.9%, the live homepage (/en) = 27.9%. Both sit below the ~33% imagery floor; this
+// direction is LOWER than the live page, not higher, and this file no longer claims otherwise.
+// Checked whether the rail card width can be widened to close the gap: RecentlyViewedAirbnb.tsx
+// and TopCategoryRailsAirbnb.tsx already set the card width to `(100vw-36px)/2.2`, which
+// RecentlyViewedAirbnb.tsx's own header cites as 160.9px at 390, within 5px of the Airbnb
+// reference's own measured 165px card (airbnb--home-mobile.md, "cards visible across 390: about
+// 2.2"). Widening further would exceed the cited source measurement, so no additional lever exists
+// inside this direction's own declared LOOK-FULL values without inventing a number; the honest
+// number is reported instead of a corrected structure this direction cannot make without breaking
+// its own citations. The gap versus the live page is mostly upstream of this fork: a signed-out
+// visitor self-hides ContinueCard, ForYouAffinityRow and ForYouSalonRows (unmodified, real,
+// "Depicts" list above) on both this direction and the live page alike, and neither this comparison
+// route's harness nor this direction changes that.
 //
 // No em-dashes. English copy only (all rendered strings are the real i18n keys or CATEGORY_ROUTE
 // English labels the real components this forks already use).
