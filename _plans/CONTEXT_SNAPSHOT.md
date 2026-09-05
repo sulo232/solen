@@ -2,16 +2,22 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-09-05T21:29:38 (trigger: auto)
+- taken: 2026-09-05T23:27:56 (trigger: auto)
 - branch: claude/cloud-code-codex-migration-86a820
 
 ## git
 ```
-444303d28 Plan: verify and save boxes ticked, loop closed; context snapshot
-00ba11323 Plan: index and judge boxes ticked, verify box updated by the index coder's own link check
-dc8f5c595 Directions index: one scroll-only page over the ten surfaces, three directions each with a 390px screenshot, the judge's pick per surface with why, cost and the line that flips it; every one of the 30 links answered 200 on the dev server
-5906a83ab Plan log: final judge and index run launched
-db1173bb8 Plan log: last two repairs done, 27 of 30 directions PASS into the judge, judge argument builder bug fixed
+b0b9171f8 Round 2 research: Airbnb, Fresha and Treatwell look recipes captured live at 390 (identity, philosophy, measured, port map, conflicts); plan boxes 5a, 6c, 11a, 12a closed with their proof
+c37892888 Plan: button section boxes closed with their commit, the globals.css computed-value finding logged
+2051a8692 Round 2, salon page: the service-row Book button matched to the main Book button, three stacked variants on the real services rows plus the sticky bar button as reference
+88f3688ca Plan: box 3a carries its sha, box 3b split into five parts
+1b54eb66e checkpoint(auto): 1 uncommitted file(s) at turn end
+```
+```
+M _design-system/_type-scale-report.md
+ M _plans/CONTEXT_SNAPSHOT.md
+?? _design-system/research/WHAT_IS_MISSING_2026-09-05.md
+?? _plans/R2_LOOK_SYSTEMS.md
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
@@ -57,4 +63,4 @@ db1173bb8 Plan log: last two repairs done, 27 of 30 directions PASS into the jud
 110 | DESIGN RE-ENGINEER , improve the system we have, measured against live Airbnb | **ACTIVE** (2026-07-28)
 72 | REFUND PROCESS: does it exist, who decides, is it legal (owner 2026-08-19: "Is there even a refund process, and how does it even proceed? Who is gonna decide it? ... with the tax and fix if it's legal or not") | **ACTIVE** (2026-08-19)
 111 | GATE + HOOK STRESS TEST , all 305 hooks driven with real payloads, not read (owner 2026-08-17: "actually evaluate and stress test each one") | **ACTIVE** (2026-08-18)
-114 | Directions loop (owner 2026-09-05, dictated: "the mock up is completely ass ... let's ditch this whole thing"; new task: more motion on click and between screens, UI elements that look good, 21st.dev MCP or research live in Chrome, keep comparing with Fresha and Airbnb, look = Airbnb not completely, placement = Fresha base, "make me tons of mock ups ... multiple directions ... stop cheaping out", as a loop) | **ACTIVE** (2026-09-05 10:20: every capture and the comparison saved, its top finding root-caused, 18 builders running (six screens, three directions each) behind the motion captures)
+115 | Directions round 2 (owner 2026-09-05 22:08, dictated after reading the round-1 index: picks per screen, "the direction is good but itself it looks ass", one system for pill shades, contrast and typography, and again "search out what we're missing on the front end, principles, design files") | **ACTIVE** (2026-09-05 22:08: readback sent, 14 boxes atomized, research and measurement fan-out next)

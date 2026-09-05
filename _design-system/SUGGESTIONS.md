@@ -7,45 +7,198 @@
 > [code] = already covered by locked law, no taste question. LOCK flags mean approving also
 > unlocks a frozen row , called out explicitly.
 
-## S1. Motion modernization sweep , [code], the recipe is already law | effort L | TOP PICK
-94 of 135 animated sites still run single-property animations (opacity-only / slide-only) from
-two pre-recipe sources; only booking uses the locked blur+scale+opacity recipe. The booking
-CONFIRMATION (the peak-end moment) and every homepage row are legacy; route transitions are dead
-code. Plan + full file:line inventory: research/MOTION_MODERNIZATION_2026-07-10.md , demo of 3
-surfaces first (video), then 2 systemic fixes cover most of the 94.
+> **Refreshed 2026-09-05** by the round-2 judgment pass. The live seven below are the buildable-now
+> gaps from `research/WHAT_IS_MISSING_2026-09-05.md`, which was written against ten round-1 direction
+> folds and five live reference folds measured the same day. Every number in an entry was measured in
+> that run and names the file that produced it. The previous live set (S1, S3 to S7) went unanswered
+> for four consecutive weekly passes; it is carried below the new set rather than deleted, because
+> none of it was ever approved or rejected. Each entry was checked against `REMOVED.md` before it was
+> written; the two that touch a graveyarded area say so in their own row.
 
-## S3. Chrome subtraction bundle , [behavior][mockup] | effort M-L | LOCK flags
-(a) Header hides on scroll-down / reveals on scroll-up (unlocks LOCKFILE section 7 sticky row);
-(b) CityTopBar folds into the Header as an inline location pill (removes a 52px band, unlocks
-its section 7 row); (c) sticky book bar condenses to a pill past the hero, re-expands on
-scroll-up (no lock). Net effect: up to 131px of permanent chrome becomes content space , the
-single most "modern app" move available. One mockup shows all three together.
+## S8. Ink text and a saturated icon on every pale semantic pill , [code][mockup] | effort M | statutory floor
 
-## S4. Booking step-swap gains direction , [behavior] | effort S | LOCK flag (MOTION.md values)
-Forward slides content 24px left, back mirrors , wayfinding the graveyarded progress-stepper
-used to provide, done by motion instead of chrome.
+- **what:** the pale-tint-plus-same-hue-text recipe puts coloured text on its own tint. Replace it with
+  the recipe `CLAUDE.md` taste rule 6 already specifies: pastel `.bg` + ink text + saturated icon. This
+  is **not** the monochroming that taste rule 4 forbids: the hue stays on the screen, it moves from the
+  text to the icon, which is where the same rule says a semantic colour is legal.
+- **where:** `components-legacy/booking/BookingCard.tsx:84-90` (five states, rendered at `:137-139` as
+  `rounded-pill px-2.5 py-1 text-[12px] font-semibold`) and
+  `app/[locale]/_components/salon/SalonBundles.tsx:191` (the discount pill, live on the salon page
+  today). **The fix already exists in our own code:** `components-legacy/ui/SalonBadge.tsx:59` renders
+  `color: "#0A0A0A"` on the identical `#E8F5E9` fill, so this is one recipe winning over the other, not
+  a new invention.
+- **why:** computed this run by alpha blending each `/10` fill over white exactly as it renders
+  (`scratchpad/r2/judge/badge_contrast.py`): confirmed `#16A34A` on `#E8F6ED` = **2.96:1**, pending
+  `#F1AE27` on `#FEF7E9` = **1.82:1**, cancelled `#DC2626` on `#FCE9E9` = **4.13:1**, completed
+  `#6B6B6B` on `#F3F3F3` = 4.80:1. AA for 12px text is 4.5:1, so three of five fail and pending misses
+  even the 3:1 graphical floor. Measured live at 390x844 on `/en/salon/muse-beauty-studio`, the
+  discount pill renders fill `rgb(232,245,233)`, text `rgb(22,163,74)`, 13px, 58x28: **2.93:1**. Ink on
+  that same fill measures **17.76:1**. WCAG AA sits at precedence tier 2, above taste at tier 5.
+- **effort:** M. Two components now. The wider family (a `bg-s-{success,warning,error,urgency,open}`
+  fill with a `text-s-` of the same family in one className) is 89 matches across 52 files, 23 of which
+  also carry an explicit `text-[Npx]` so they are certainly text and not an icon disc.
+- **graveyard:** `REMOVED.md:90` killed the `-0%` discount badge, not the pill. Nothing here re-adds a
+  zero state, and no STOCK-style marker is involved (`REMOVED.md:101`).
+- **source:** `research/WHAT_IS_MISSING_2026-09-05.md` G5.
 
-## S5. Skeleton-to-content uses the enter recipe , [behavior] | effort S | no lock
-Loaded content mounts via blur+scale+opacity instead of the hard cut. Fills the one gap in the
-locked loading law (shimmer is specified, the handoff is not).
+## S9. `rounded-input` renders 16px on 37 sites while three documents and the owner say 12 , [code][mockup] | effort S | no lock
 
-## S6. Subtraction pair , [code][remove] | effort S | no lock
-(a) category chip off cards on single-category pages (the URL/H1 already says it, taste rule 4);
-(b) finish the border+shadow double-chrome sweep (ProgressiveFilter, DiscoveryEmptyState still
-pair hairline + elevation , the exact "dated tell" LOCKFILE names).
+- **what:** one token value. `input: "16px"` becomes `12px`.
+- **where:** `tailwind.config.js:289`. No document changes: the three that describe it already agree
+  with each other.
+- **why:** `LOCKFILE.md:580` records "input 12px ... Owner kept shipped 12 over 16, 2026-06-08",
+  `SOURCE.md`'s radius table says 12 ("corrected here 2026-07-12"), and `CLAUDE.md:140` says "Height
+  48, radius 12". **37** live uses of `rounded-input` counted this run, so a control the owner settled
+  personally renders at the value he turned down, on every one of them.
+- **effort:** S. One line, and the mockup is a formality: one input at both radii, stacked, since the
+  change is visible even though no taste question is open.
+- **source:** `research/WHAT_IS_MISSING_2026-09-05.md` G3. Not found by the 2026-09-04 pass or by
+  `DESIGN_FILES_AUDIT.md`.
 
-## S7. Homepage sections cascade on scroll-into-view , [mockup] | effort M | no lock
-The existing stagger recipe fires per-section via IntersectionObserver (once), not just on mount
-, sections below the fold currently appear inert.
+## S10. Count border-and-shadow doubles in the geometry pass , [code] | effort M | no lock
+
+- **what:** the FLOORS pass renders a fold already. Add two counts to it: elements carrying a visible
+  border AND a box-shadow at once, and total bordered elements. Fail above a ceiling recorded beside
+  the prose rule.
+- **where:** `scripts/check-geometry.mjs` (the FLOORS pass); the numeric ceiling goes in
+  `_design-system/LOCKFILE.md` §17.2, next to the sentence it enforces.
+- **why:** §17.2 already states the rule in its own words, *"a card carrying elevation drops its
+  border, never both"*, and nothing counts it at render time. Measured this run in the fold: 15
+  doubles across the ten round-1 direction pages (payment-step A 6, search-results A 3, empty-states C
+  3, confirmation C 1, press-motion A 1, profile C 1) against **1** across all five live reference
+  folds. Bordered elements: payment-step A 13, empty-states C 12, search-results A 11, against Airbnb
+  listing 3, Fresha venue 4, Fresha search 4.
+- **effort:** M.
+- **source:** `research/WHAT_IS_MISSING_2026-09-05.md` G10, numbers from `WHY_UNFINISHED.md` section 4.
+
+## S11. Render the real product chrome on `/dev` direction pages , [behavior][code] | effort S | no lock
+
+- **what:** an opt-in on the direction routes that keeps the Header, `BottomNav` and consent bar, so a
+  direction is composed and judged inside the viewport a customer actually gets.
+- **where:** `app/[locale]/_components/layout/HideInBooking.tsx:60`,
+  `if (/\/dev(\/|$)/.test(pathname)) return null;`. `BottomNav` is real and mounted at
+  `app/[locale]/layout.tsx:170` (`md:hidden fixed inset-x-0 bottom-0`); its own header comment records
+  the height as **125px total**.
+- **why:** fixed or sticky blocks intersecting the fold measured **0** on all ten round-1 direction
+  folds (payment-step A's own sticky bar is the single exception) against live `/en` 2, Airbnb home 3,
+  Fresha search 2. Round 1 therefore laid out eight screens for a phone 125px taller than the real one,
+  and the switcher strip put 44px of scaffolding back where the chrome should have been. The bottom nav
+  is approved and shipping (`REMOVED.md:124`, owner 2026-08-10, "easier ... for the web area"), so a
+  preview without it is a preview of a screen the product does not have.
+- **effort:** S. The instrument changes, no design law does.
+- **source:** `research/WHAT_IS_MISSING_2026-09-05.md` G11.
+
+## S12. Swap the greyscale seed photo and say one line about what is inside a frame , [code] | effort S | no lock
+
+- **what:** replace the seed photo `photo-1560066984`, and give `LOCKFILE.md` §11's existing sourcing
+  policy one line about photo CONTENT, which no file in the estate currently mentions.
+- **where:** the seed photo set, plus `_design-system/LOCKFILE.md` §11 Imagery Pattern Registry.
+- **why:** measured mean HSV saturation across the six seeded photos: 0.193, 0.248, 0.157, 0.221,
+  0.430 and **0.000**. The zero one is greyscale, its computed `filter` is `none`, and it renders in
+  the fold of **five of the ten** round-1 directions. bookings-list A is 57.0% photographic and
+  **0.0%** coloured; Airbnb listing is 44.4% and 32.5%. `CLAUDE.md` FLOORS LAW 2 and `LOCKFILE.md`
+  §17.1 both specify photographic AREA and the missing-photo fallback, and neither says anything about
+  what is in the picture, so a colourless photo passes the imagery floor and still reads dead.
+- **effort:** S. Seeding is the expected fix, named as such in taste rule 1.
+- **graveyard:** `REMOVED.md:101` killed the STOCK marker badge. This adds no marker; it changes an
+  asset.
+- **source:** `research/WHAT_IS_MISSING_2026-09-05.md` G9.
+
+## S13. LOCKFILE truth pair: a deleted component in the badge table, and `elevation-2` defined twice , [code] | effort S | no lock
+
+- **what (a):** `LOCKFILE.md:1663` (§13.3, dated 2026-06-10) points the "Status (open/closed/pending)"
+  row at `StatusPill`, deleted 2026-06-30 (`_design-system/components/StatusPill.md:1-8`,
+  `REMOVED.md:46`), zero live import sites. The live component is `StatusInline`, three import sites
+  (`SalonDetailV3.tsx`, `SalonSidebar.tsx`, `SalonHeader.tsx`). Repoint the row.
+- **what (b):** `LOCKFILE.md:678` asserts `elevation-2 (= warm-md = card-hover = surface)` as a
+  two-layer shadow. `tailwind.config.js:313` defines it single-layer, `0 2px 8px rgba(50,47,44,0.09)`,
+  while `:295` `card-hover` and `:296` `surface` keep the two-layer value, so the aliases the lock
+  calls identical are not. Same shape for elevation-3 at `:314`. Record the real values and drop the
+  false `=` chain.
+- **why:** §17.2's depth table sends every builder to `elevation-2` by name, so the token they reach
+  for is not the value the lock records. This is documentation drift on a token in daily use.
+- **do not "fix" the tint:** `LOCKFILE.md:685` says the warm `rgba(50,47,44, ...)` base is deliberate
+  and that cool-greying the shadows is wrong. The defect is the value mismatch, not the hue.
+- **effort:** S. Documentation only, no visual change.
+- **source:** `research/WHAT_IS_MISSING_2026-09-05.md` G7 and G4.
+
+## S14. Three type-ramp rows in LOCKFILE §2 and §2.5 , [code] | effort S each | LOCK flag (§2 Scale table)
+
+- **what (a), the ramp may not have a hole in it:** §2.5 counts sizes and caps them at 4. Nothing says
+  the sizes have to be spread. Measured: confirmation C renders 12px x14, 14 x4, 15 x2, 16 x1, 28 x1,
+  with **nothing between 16 and 28**; payment-step A and empty-states B carry the same 12px hole. The
+  references populate it: Airbnb listing 26 then 18 x3 then 16 x7 and 14 x13; Airbnb home 28 then 18 x2
+  then 14 x10; Fresha venue 28 then 19 x2 then 16 x12. Their anchor-to-second-tier drop is 8, 10 and
+  9px; ours on the three commit screens is 12px with a single text run beneath it.
+- **what (b), reconcile the CTA row:** `CLAUDE.md:129` says CTA 15 ("never <=13 on a button"),
+  `LOCKFILE.md` §2 Scale table says mobile 14 and desktop 15, `LOCKFILE.md` §2.5 role registry says 15
+  flat with no phone column. Round 1 shipped 15 on every primary button measured, matching two of the
+  three. Give the CTA row the phone-versus-desktop reconciliation the Core ramp got on 2026-09-04
+  (`LOCKFILE.md:393-397`).
+- **what (c), record what carries the anchor once weight cannot:** `app/globals.css:269` clamps
+  `main :is(.font-semibold, .font-bold)` to 500, with dashboard restored to 600 on the next selector.
+  That is his 2026-08-15 option C, a decision, not a defect. Measured: characters at weight >= 600 in
+  the fold are **0.0%** on eight of the ten directions and on the live salon page, against Airbnb home
+  9.4%, Airbnb listing 5.5%, Fresha venue 8.2%, Fresha search 17.5%. Six inline `fontWeight` bypasses
+  already exist in the directions folder, one of them commented *"inline style beats the sitewide
+  font-bold->500 clamp"*, because nothing states what to use instead of weight.
+- **explicitly NOT in this entry:** the 4-size ceiling itself. `TASTE_AUTHORITY.md:279-281` puts B37,
+  the size-count contradiction, on the "OPEN, AND NOT YOURS TO CLOSE" list, and four of the five
+  reference folds break our working default (Airbnb home 6 sizes, Airbnb listing 5, Fresha venue 5,
+  Treatwell 6). That one is his.
+- **effort:** S per row.
+- **source:** `research/WHAT_IS_MISSING_2026-09-05.md` G8, G12, G13, G14.
 
 ---
-Parked (not suggested , owner rejected the shape before or lock says no): eyebrow-drop-default
-(narrows a deliberate carve-out , resurface only if S3 lands), radius-token collapse (L effort,
-low visible payoff , resurface with the next tailwind.config touch).
+
+## Carried from the previous set, never approved and never rejected (2026-07-10 to 2026-08-01)
+
+Open for four consecutive weekly passes. Listed in one line each so nothing is lost, not restated in
+full a fifth time. They need an approve-or-drop, and until they get one they are not competing with the
+seven above for the max-7 slot count.
+
+- **S1. Motion modernization sweep** , [code] | L. 94 of 135 animated sites still run single-property
+  animations; plan at `research/MOTION_MODERNIZATION_2026-07-10.md`. Still the largest single piece of
+  design debt in the file.
+- **S3. Chrome subtraction bundle** , [behavior][mockup] | M-L | LOCK flags. Header hides on scroll,
+  CityTopBar folds into the header, sticky book bar condenses. **Read it against S11 before building:**
+  S11 says our previews are missing chrome that ships, S3 proposes removing chrome that ships, and the
+  two want the same viewport measured before either lands.
+- **S4. Booking step-swap gains direction** , [behavior] | S | LOCK flag (MOTION.md values).
+- **S5. Skeleton-to-content uses the enter recipe** , [behavior] | S.
+- **S6. Subtraction pair** , [code][remove] | S. Part (b), the border-plus-shadow double-chrome sweep,
+  is the same defect S10 proposes to start counting. Approving S10 without S6 measures the problem
+  without fixing it.
+- **S7. Homepage sections cascade on scroll-into-view** , [mockup] | M.
+- **7. De-uppercase the partner landing page** , [code] | S (2026-08-01). 9 of the estate's 18 live
+  tracked-uppercase eyebrows sit in `app/[locale]/partner/page.tsx`. Supersedes the 2026-07-11 item 1;
+  fold the two, never carry both.
+
+---
+Parked (not suggested , blocked on the owner, or the lock says no):
+
+- **The button and chip radius (16 versus capsule).** `CLAUDE.md:134` records the 2026-08-16 correction
+  to `rounded-[16px]`, and `tailwind.config.js:288` still ships `btn: "99px"` with four documents
+  agreeing with the config. It cannot be fixed in either direction yet: `TASTE_LOG.md:1266` is the only
+  mention in the repo of a "16px chip corner he rejected on sight 2026-09-02", it carries no verbatim,
+  no replacement value and no dated entry, and the sentence parses both ways. **The unblocking move is
+  one question to him, not a commit.** Live call sites, counted this run: `rounded-btn` 359,
+  `rounded-pill` 299, `rounded-[16px]` 212.
+- **A `.text` companion for `s-success` and `s-error`.** `s-warning` has had one since 2026-06-02
+  (`#B45309`, measured 4.71:1 on its pale fill); the other two families have `.DEFAULT` and `.bg` only.
+  It mints a value, so it is an ASK under `TASTE_AUTHORITY.md` §4 item 6. S8 fixes the same screens
+  today without minting anything, which is why S8 is live and this is parked.
+- **A generator for `public/solen-styleguide.html`.** 168 hand-authored lines, nothing generates it,
+  and it is stale on radius (`:34-36`, `:148` draw buttons at `border-radius:999px`). Either it gets a
+  generator or `CLAUDE.md` drops the claim that it is "the contract the whole app holds to". Effort
+  M-L, and the choice between those two is his.
+- eyebrow-drop-default (narrows a deliberate carve-out , resurface only if S3 lands), radius-token
+  collapse (superseded by the radius park above, which names the actual blocker).
 
 ## Log
 - 2026-07-10 scroll-pill (owner-confirmed element from the X ref) PARKED after seeing the checkout mockup: "meh idk abt putting ths in booking but maybe in store pages but acc think but park ths for now". Mockup stays at public/_mockups/checkout-scroll-pill.html for reference; candidate surface when revisited: salon/store pages. Nothing builds until the owner reopens it.
 - 2026-07-10 S2 (Go-with card adaptation) REJECTED by owner: 'not at all what i mentioned'. Mockup deleted + graveyarded. The reference interest is being re-scoped by direct owner question (which element of x-scrollpill-ref.mp4 they actually liked); nothing rebuilds until that answer exists (ask-first gate added same day).
+- 2026-09-05 refresh: S8 to S14 added from `research/WHAT_IS_MISSING_2026-09-05.md`. S1 and S3 to S7 moved to the carried block unanswered, not dropped. The radius question, the semantic `.text` companions and the styleguide generator were parked with their blockers named.
 (approvals/rejections land here with dates)
 
 ---
