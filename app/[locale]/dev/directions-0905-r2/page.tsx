@@ -676,7 +676,7 @@ export default function DirectionsR2IndexPage() {
                   className="block overflow-hidden rounded-card border border-s-border"
                 >
                   <Image
-                    src={`/_mockups/directions-0905-r2/home-${v.key}.png`}
+                    src={`/_mockups/directions-0905-r2/home-${v.key}-fold.png`}
                     alt={`Home ${v.label}`}
                     width={390}
                     height={844}
