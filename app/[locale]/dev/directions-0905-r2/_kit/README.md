@@ -62,7 +62,13 @@ it imports these.** If a screen needs a value this kit does not have, that is a 
 - `TextLink.tsx`: the small blue clickable text recipe (never a fill, never a button, never
   body text).
 - `Card.tsx`: the three A7 card treatments (`photo` / `grouped` / `entity`), border/shadow
-  toggled per active system.
+  toggled per active system. A `bordered` boolean prop overrides the system delta entirely,
+  rendering the locked hairline (1px solid `#E4E4E7`) with the shadow forced off, radius still
+  from `variant`. It exists for two documented, screen-level exceptions the per-system delta
+  cannot express on its own: RULE's one bordered identity block (Fresha profile hub) on a screen
+  that is not already forcing it through `systems.ts`'s `borderExceptionVariant`, and LOCKFILE
+  section 17.2 edge case c (a photo-less entity card on white keeps the hairline, drops the
+  shadow) under any of the three systems.
 - `SectionTitle.tsx`, `Meta.tsx`, `Price.tsx`: the type-ramp steps pinned to components so a
   mockup never re-types a font-size.
 - `index.ts`: the single import surface.

@@ -107,6 +107,12 @@
 //      cta step for the full correction), which this file inherits automatically: no edit needed
 //      here beyond re-verifying the render.
 //
+// REPAIR PASS (2026-09-06, critic round 2): one more open item fixed, see the JSX comment at the
+// salon identity Link itself for the full note. Short version: the Link measured 358x38, under
+// the 44px touch-target floor; fixed with py-4 on the Link, matching lift's and rule's own use of
+// the kit's 16px padding step on the identical row (in intent, not px-for-px: lift's version of
+// this row is 70px tall, rule's is 82px).
+//
 // measured (post-repair): type ramp sizes render at 28 (SectionTitle as="anchor"), 18
 // (SectionTitle as="heading", "What happens next"), 14 (TYPE_RAMP.body/cta, now shared: the local
 // RowTitle, Price's "row" and "total" sizes, the local Amount component, PrimaryButton and
@@ -421,7 +427,16 @@ export function ConfirmationTrayView({
               Nothing here carries a border or a shadow of its own; rows are separated by spacing
               alone, per tray's own hairlineCeiling:0. ── */}
           <div className="bg-white px-4 pb-6 pt-8">
-            <Link href={`/${locale}/salon/${booking.salonSlug}`} className="flex items-center gap-3">
+            {/* REPAIR PASS (2026-09-06, critic round): this Link measured 358x38, under the 44px
+                touch-target floor (CLAUDE.md design contract, "interactive controls >= 44px").
+                Fixed by giving the Link itself vertical padding (py-4, the same 16px value the
+                sibling lift and rule builders' own identity-row Links already use as p-4), the
+                same fix in intent, not px-for-px: lift's identical row now measures 70px tall,
+                rule's 82px, both from the same kit padding scale. Horizontal padding is left to
+                the band's own px-4 (unchanged), since doubling it with p-4 here would push the
+                row's horizontal inset past the locked 16px page margin (_kit/tokens.ts
+                SPACING.pageMargin). */}
+            <Link href={`/${locale}/salon/${booking.salonSlug}`} className="flex items-center gap-3 py-4">
               <div className="min-w-0 flex-1">
                 <RowTitle>{booking.salonName}</RowTitle>
                 {booking.salonAddress && (

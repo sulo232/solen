@@ -37,9 +37,39 @@
 // system: LIFT. Card variant="photo" reads its border/shadow delta from <KitProvider
 // system="lift"> in the parent (BookingsListLift.tsx); this component does not set system
 // itself.
+//
+// REPAIR measured (2026-09-06), Playwright, 390x844, dpr 3, live dev server, fresh load,
+// /en/dev/directions-0905-r2/bookings-list?s=lift: 0 console errors. Both Reschedule and
+// Cancel now render as the kit SecondaryButton: 334x50px, border-radius 99px, border 1px solid
+// rgb(228,228,231) (#E4E4E7, the locked hairline), box-shadow none, font 14px/500 ink
+// (rgb(10,10,10)) on white. Clicking either fires router.push to `/en/profile/bookings` and the
+// browser's URL genuinely changes (confirmed live), so neither is a dead click. Resting fold
+// (disclosure closed, unaffected by this repair): 3 distinct sizes {12, 14, 18}, 2 distinct
+// weights {400, 500}, within the 4-size/2-weight ceiling.
+//
+// REPAIR (2026-09-06), open item 1: the Manage disclosure's Reschedule/Cancel were bare
+// <button> elements with no onClick, a dead click inherited from round 1. Grepped the real
+// component for the destination: components-legacy/booking/BookingCard.tsx's own
+// Reschedule/Cancel (its overflow menu) are NOT links at all, they are onReschedule/onCancel
+// callback props; its caller, components-legacy/booking/BookingsList.tsx, wires both to
+// open an in-place sheet (RescheduleSheet / CancelBookingSheet) on the SAME page, never to a
+// per-booking URL, so no "bookings/<id>/manage"-shaped route exists to point at (confirmed:
+// `find app/[locale]/bookings/[id]` returns only upcharge/report/refund, no manage/reschedule
+// page; `grep useSearchParams components-legacy/booking/BookingsList.tsx` returns nothing, so
+// there is no booking-id query param either). The one real, live, booking-management
+// destination a signed-in customer reaches is `/${locale}/profile/bookings`
+// (app/[locale]/profile/bookings/page.tsx, which renders that exact BookingsList), the same
+// route the kit's own README.md models this action against ("<TextLink
+// href=\"/en/profile/bookings\">Manage booking</TextLink>"). Both buttons now navigate there
+// via the kit SecondaryButton's onClick + router.push, the exact pattern this same round
+// already uses for a SecondaryButton acting as a link with no href prop on the component
+// (app/[locale]/dev/directions-0905-r2/empty-states/_lift/EmptyUnit.tsx:126, `_rule/
+// EmptyStatesRule.tsx:213`, `_tray/EmptyStatesTrayView.tsx:301`), so no dead affordance
+// remains. Not booking-id-scoped, because nothing on the real destination reads one.
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { motion, useReducedMotion, AnimatePresence } from "motion/react";
 import { MapPin, Settings2, Scissors } from "lucide-react";
@@ -84,6 +114,10 @@ const STATUS_LABEL: Record<LoadedBooking["status"], string> = {
 export function NextAppointmentCard({ booking, locale, localeCode, coverUrl }: Props) {
   const [manageOpen, setManageOpen] = useState(false);
   const prefersReducedMotion = useReducedMotion();
+  const router = useRouter();
+  // The one real, live booking-management destination (see REPAIR note above): no
+  // per-booking route exists, so both actions land on the real /profile/bookings page.
+  const manageHref = `/${locale}/profile/bookings`;
 
   const start = new Date(booking.starts_at);
   const end = new Date(booking.ends_at);
@@ -195,18 +229,8 @@ export function NextAppointmentCard({ booking, locale, localeCode, coverUrl }: P
               transition={{ duration: 0.18, ease: [0.4, 0, 1, 1] as const }}
               className="flex flex-col gap-1 px-3 pb-3"
             >
-              <button
-                type="button"
-                className="w-full rounded-[12px] px-3 py-2.5 text-left text-[14px] font-normal text-s-ink hover:bg-s-bg-sunken"
-              >
-                Reschedule
-              </button>
-              <button
-                type="button"
-                className="w-full rounded-[12px] px-3 py-2.5 text-left text-[14px] font-normal text-s-error hover:bg-s-error/10"
-              >
-                Cancel
-              </button>
+              <SecondaryButton onClick={() => router.push(manageHref)}>Reschedule</SecondaryButton>
+              <SecondaryButton onClick={() => router.push(manageHref)}>Cancel</SecondaryButton>
             </motion.div>
           )}
         </AnimatePresence>

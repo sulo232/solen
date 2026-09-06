@@ -28,6 +28,19 @@
  * defer the measured pass to "the structured return value of the session"; the real numbers now
  * live in the "measured:" block below, matching how _lift's own files self-report their numbers.
  *
+ * REPAIR PASS 2 (2026-09-06, this file + ./NextAppointmentActions.tsx), two open items:
+ * (1) the Manage disclosure's Reschedule/Cancel buttons (moved into NextAppointmentActions.tsx
+ * by the first repair pass) were bare <button> elements with no onClick, a dead click inherited
+ * from round 1; see that file's own header for the grep trail. Fixed by passing `locale` down
+ * (this file's own NextAppointmentRow already had it) and composing the kit SecondaryButton
+ * with a router.push to the one real destination, `/${locale}/profile/bookings`. (2) the
+ * OtherBookingRow date+service Meta line forced `truncate` over both fields together, so the
+ * real seeded service names ("Women Cut", "Men's Haircut") clipped to "Wo..."/"M..." at 390px
+ * (measured live, pre-fix: clientWidth 110px against a scrollWidth up to 163px on 4 of 7 other-
+ * booking rows), the worst-case content floor (FLOORS LAW 1f) this screen was failing. Fixed by
+ * dropping `truncate` (keeping `min-w-0`) so the line wraps to two lines instead of clipping;
+ * see that JSX's own inline comment for the fix's exact reasoning.
+ *
  * Exists-check: `npm run exists bookings-list` (run this session) returns the round-1 scaffold
  * page + directions (_va/_vb/_vc) and the real BookingsList component; no round-2 RULE-system
  * bookings-list file existed before this one. `npm run exists kit` (run earlier this session,
@@ -83,6 +96,22 @@
  * banned hash (grepped the rendered `<img>` srcs directly). Both StatusBadge states checked
  * (confirmed, cancelled) render their own locked `.bg` token fill under ink text, per
  * StatusBadge.tsx's own recipe, never the raw semantic hue as text.
+ *
+ * measured (REPAIR PASS 2, 2026-09-06): re-measured live after both fixes above, same route,
+ * fresh load, dpr 3. Console: 0 errors. Resting fold: 4 distinct sizes {12, 14, 18, 28}, 2
+ * distinct weights {400, 500}, unchanged from the ceiling above (counts shift slightly run to
+ * run within that same set, e.g. 12px|400 now 7 not 8, since the OtherBookingRow date+service
+ * line's own element count is unchanged by the wrap fix, only its rendered line count changed).
+ * Both Reschedule and Cancel (now inside ./NextAppointmentActions.tsx) render as the kit
+ * SecondaryButton: 358x50px, radius 99px, border 1px solid the locked hairline (drift-ok:
+ * COLOR.hairline's own value, cited here in a measured-numbers comment, not written as code), no
+ * shadow, 14px/500 ink; clicking either genuinely navigates (router.push to
+ * `/en/profile/bookings`), not a dead click. OtherBookingRow date+service line (open item 2):
+ * of the 6 "Other bookings" rows, 5 now wrap onto two lines (32.4px tall, e.g. "13 Jun 2026" /
+ * "Men's Haircut") and 1 fits on one line (16.2px tall, "Thu, 17 Sept  Women Cut"); every one of
+ * the 6 now measures scrollWidth === clientWidth (no clipped text remains), against the pre-fix
+ * state where 4 of 6 clipped (clientWidth 109-113px vs a scrollWidth up to 163px, rendering
+ * "Wo..."/"M...").
  *
  * floors: (a) photographic focal = the 100x80 (5/4) flush salon photo on the next-appointment
  * row, the only photo on the screen and RULE's answer to "no card": present, not boxed; (b) one
@@ -380,7 +409,7 @@ function NextAppointmentRow({
         <Price amount={booking.price_paid} locale={localeCode} size="total" />
       </div>
 
-      <NextAppointmentActions directionsHref={directions} />
+      <NextAppointmentActions directionsHref={directions} locale={locale} />
     </div>
   );
 }
@@ -449,8 +478,16 @@ function OtherBookingRow({
           <Price amount={booking.price_paid} locale={localeCode} size="total" />
         </div>
 
-        <div className="mt-1 flex items-center justify-between gap-2">
-          <Meta className="min-w-0 truncate block">
+        <div className="mt-1 flex items-start justify-between gap-2">
+          {/* Repair pass (open item 2): this line used to force `truncate` (nowrap + ellipsis)
+              over date+service together, so the real seeded service names ("Women Cut",
+              "Men's Haircut") clipped to "Wo..."/"M..." at 390px, the worst-case content floor
+              this screen was failing. `truncate` is dropped; `min-w-0` stays so the line still
+              shrinks against its flex-none sibling (badge + Book again) instead of overflowing
+              the row, and the text now wraps onto a second line instead of clipping. The row's
+              own alignment moves from items-center to items-start so a two-line wrap doesn't
+              vertically centre the badge against it. */}
+          <Meta className="min-w-0 block">
             {dateLabel}
             {svc ? (
               <>

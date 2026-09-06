@@ -107,17 +107,14 @@
 // was one (Atelier Haarwerk's Top Coiffeur card). Photographic share: 20.3% -> 31.5%
 // (103,676/329,160px, live getBoundingClientRect on every <img> intersecting the viewport, the
 // same method that reproduced the critic's own 20.3% baseline before this pass) after
-// `widthClassName="w-full"` plus the anchor-block trims below. NOT fully at the brief's literal
-// ">=33%": the second row's own first image (TopCategoryRails, a real, unmodified component)
-// still sits 50px below the 844 cutoff after every legitimate treatment-level trim in this file's
-// own custom markup was exhausted (anchor to one line, its decorative subline dropped, its top
-// padding cut, the Nearby wrapper's redundant margin removed). Closing that 50px needs one of:
-// widening the near-you-now card past the page-margin-locked 358px content width (no precedent
-// for a value beyond the existing `w-full` / `(100vw-44)/1.25` recipes, so not done -- an
-// invented literal is worse than an honest shortfall), touching Nearby's own hardcoded h-[156px]
-// (a shared, unmodified production file), or TopCategoryRails' own heading chrome (same). None of
-// those are in scope for a one-mockup repair. 31.5% is named here rather than rounded up; FLOORS
-// LAW 2's own text hedges "roughly >= 1/3" (33.3%), and 31.5% sits close to but under that line.
+// `widthClassName="w-full"` plus the anchor-block trims below.
+//
+// SECOND REPAIR PASS (2026-09-06, fix 4 below): 31.5% was still under the brief's literal
+// ">=33.3%" (FLOORS LAW 2 itself hedges "roughly >= 1/3"), and reaching it by WIDENING the
+// near-you-now card or touching Nearby's/TopCategoryRails' own shared chrome was named above as
+// out of scope for a one-mockup repair. Cropping the same card TALLER instead (never widening,
+// never a new image) was not considered in that first pass and is in scope: see fix 4 below.
+// Re-measured live after the crop: 39.37% (129,596 / 329,160px), clearing >=33.3% with margin.
 //
 // Conflicts (named, not silently resolved):
 // - The map tile's own honest count (Nearby.tsx's `mapSalons.length`, the curated
@@ -133,7 +130,7 @@
 //   label is NOT a live-distance claim, it is the same curated NEARBY_SALON_IDS set the real
 //   production Nearby section already presents under the equivalent framing ("In der Nähe").
 //
-// REPAIR PASS (2026-09-06), three critic-measured open items, all fixed:
+// REPAIR PASS (2026-09-06), four critic-measured open items, all fixed:
 // 1. Five distinct sizes (28/18/14/13/12), self-disclosed above until this pass: StatusInline's
 //    own three sizes (13/15/16) never include the screen's 12px meta step, and COMPONENT_REGISTRY.md
 //    itself scopes StatusInline's "Use" to salon-detail header/sidebar only ("Don't: elsewhere:
@@ -164,10 +161,26 @@
 //    photoUrl for a real, non-banned photo of the SAME salon off salon_portfolio_images, applied
 //    to the shared salonData map before it reaches either TopCategoryRails or the near-you-now
 //    row, so both consumers see the fix.
+// 4. (Second repair pass, same date) First-viewport photographic share still measured 31.5%
+//    against the brief's literal >=33.3%, and the first pass's own fix-2 note named the two ways
+//    left to close that gap (widen the card, or touch a shared production file's own hardcoded
+//    height) as both out of scope. A third lever exists that fix 2 did not consider: crop the
+//    SAME near-you-now card TALLER instead of wider. FIX: the near-you-now row's own real,
+//    unmodified SalonCard photo container is wrapped (not forked) in `.home-c-nearyou-crop`, and
+//    a scoped attribute-selector override (`[class*="aspect-[5/4]"] { aspect-ratio: 1/1 }`, the
+//    same technique home/_va/HomeR2DirectionA.tsx's own repair pass and
+//    search-results/_tray/SearchResultsTray.tsx's REPAIR note already use) crops it to a 1:1
+//    square, object-cover already set so this crops rather than distorts. Re-measured: 39.37%
+//    (129,596 / 329,160px), clearing >=33.3% with room; see "measured" below for the full number.
+//    The map tile (Nearby.tsx) was NOT the lever used: it renders to a Mapbox GL `<canvas>`, not
+//    an `<img>` or a `background-image`, so per this project's own F2 IMAGERY measurement
+//    (scripts/check-geometry.mjs:1077-1110, `<img>` plus any `background-image: url(...)`
+//    element) growing the map tile would contribute zero to the metric regardless of its height.
 //
 // floors: (a) photographic focal -> every near-you-now card and every category-rail card is a
 //   real SalonCard with a real seeded photo, and the near-you-now row's cards now render at
-//   container width (repair pass fix 2), the largest photo area on the first viewport by far;
+//   container width and a 1:1 crop (repair pass fixes 2 and 4), the largest photo area on the
+//   first viewport by far;
 //   (b) one biggest element -> the 28px anchor sentence, the largest TEXT on the first viewport,
 //   clears FLOORS LAW 6; (c) a real tabular number -> the anchor sentence's own live Basel salon
 //   count (getBaselShopCount()), plus real prices/ratings on every card; (d) a semantic-colour
@@ -315,44 +328,63 @@ export default async function HomeDirectionC({ locale }: { locale: string }) {
         </div>
         <Nearby salonData={salonData} />
 
-        {/* Near you now: real salons, each with a real computed open/closed caption. */}
+        {/* Near you now: real salons, each with a real computed open/closed caption.
+            REPAIR PASS fix 4 (2026-09-06): wrapped in home-c-nearyou-crop, not forked, so this
+            row's own real, unmodified SalonCard photo container can be cropped taller by a
+            scoped selector (see the <style> block below) without touching the shared production
+            file. See that fix's own note for why (map tiles render to a <canvas>, not an <img>,
+            so growing Nearby's map contributes zero to the photographic-share metric; the
+            near-you-now photo tile is the only lever that actually moves it). */}
         {nearYouNow.length >= 2 && (
           <Section>
             <SectionFrame>
               <SectionTitle as="heading">Near you now</SectionTitle>
               <ScrollRow>
-                {nearYouNow.map((s) => {
-                  const status = openStatus[s.id];
-                  return (
-                    <div key={s.id} className="flex w-full shrink-0 flex-col gap-1">
-                      <SalonCard
-                        slug={s.slug}
-                        salonId={s.id}
-                        name={s.name}
-                        rating={s.rating}
-                        reviewCount={s.reviewCount}
-                        category={s.category}
-                        photoUrl={s.photoUrl}
-                        variant="service"
-                        priceFromCHF={s.priceFromCHF}
-                        priceFromService={s.priceFromService}
-                        citySelected={false}
-                        postalCode={s.postalCode}
-                        city={s.city}
-                        widthClassName="w-full"
-                      />
-                      {status ? (
-                        <div className="px-0.5">
-                          <NearYouStatus isOpen={status.isOpen} label={status.label} />
-                        </div>
-                      ) : null}
-                    </div>
-                  );
-                })}
+                <div className="home-c-nearyou-crop contents">
+                  {nearYouNow.map((s) => {
+                    const status = openStatus[s.id];
+                    return (
+                      <div key={s.id} className="flex w-full shrink-0 flex-col gap-1">
+                        <SalonCard
+                          slug={s.slug}
+                          salonId={s.id}
+                          name={s.name}
+                          rating={s.rating}
+                          reviewCount={s.reviewCount}
+                          category={s.category}
+                          photoUrl={s.photoUrl}
+                          variant="service"
+                          priceFromCHF={s.priceFromCHF}
+                          priceFromService={s.priceFromService}
+                          citySelected={false}
+                          postalCode={s.postalCode}
+                          city={s.city}
+                          widthClassName="w-full"
+                        />
+                        {status ? (
+                          <div className="px-0.5">
+                            <NearYouStatus isOpen={status.isOpen} label={status.label} />
+                          </div>
+                        ) : null}
+                      </div>
+                    );
+                  })}
+                </div>
               </ScrollRow>
             </SectionFrame>
           </Section>
         )}
+        {/* REPAIR PASS fix 4 (2026-09-06): scoped attribute-selector override on the near-you-now
+            row's own real, registered, off-limits-to-edit SalonCard (FLOORS LAW 9: composed,
+            never redrawn or forked), the same technique home/_va/HomeR2DirectionA.tsx's own
+            repair pass and search-results/_tray/SearchResultsTray.tsx's REPAIR note already use.
+            Matches only the exact literal Tailwind class string SalonCard already renders,
+            scoped to this file's own wrapper class so no other page composing SalonCard is
+            touched; object-cover is already set on the underlying <Image>, so this crops rather
+            than distorts. */}
+        <style>{`
+          .home-c-nearyou-crop [class*="aspect-[5/4]"] { aspect-ratio: 1 / 1 !important; } /* imagery-crop-ok: near-you-now's own real SalonCard photo container, cropped taller to clear the >=33.3% first-viewport imagery floor, see repair-pass fix 4 */
+        `}</style>
 
         {/* Category rails: the live page's own real per-category "Top X" rails, unmodified. */}
         <TopCategoryRails salonData={salonData} idsByCategory={topByCategory} />

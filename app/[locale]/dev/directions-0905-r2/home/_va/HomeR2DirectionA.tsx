@@ -43,6 +43,41 @@
 //    exact banned-photo case), never a different salon and never a hardcoded src. NEARBY_SALON_IDS
 //    and getTopSalonIds() themselves are untouched (shared production files, out of scope here).
 //
+// REPAIR PASS 2026-09-06, second pass (two more critic-found items, this file's own scope only):
+// 3. WalkInBand (real, unmodified, composed near the tail of the feed) renders its own
+//    wait-caption ("Free now" / the wait-range sentence) at `text-[20px]`
+//    (WalkInBand.tsx:129), a fifth whole-page font size next to the kit's closed four-size ramp
+//    (12/14/18/28, A5) this direction otherwise holds to. WalkInBand is a real, registered,
+//    off-limits-to-edit component (FLOORS LAW 9), so per this round's own established pattern
+//    (search-results/_tray/SearchResultsTray.tsx's own REPAIR note, same technique) the fold is
+//    folded into the ramp with a targeted, scoped `<style>` override, never a fork of the shared
+//    file: `.home-a-walkin-caption-fix [class*="text-[20px]"] { font-size: 18px !important; }`,
+//    an attribute-selector match on WalkInBand's own existing class string (no CSS-escaping of the
+//    bracket characters needed), scoped to a wrapper div around this file's own `<WalkInBand />`
+//    call only, so no other page composing WalkInBand is touched. 18px maps to
+//    TYPE_RAMP.sectionHeading, the nearest ramp step below the off-ramp 20px.
+// 4. First-viewport photographic share was self-reported above (see the (a) floors line, since
+//    corrected) as "already-measured 40.0%", carried forward from round 1 A's own number without
+//    re-measuring THIS direction's own actual fold (RecentlyViewed leads here, round 1 A's did
+//    not). Live re-measurement (Playwright, 390x844 dpr3, this pass): 39.92%, already over the
+//    >=33.3% floor, but the specific "40.0%" figure was stale/uncited for this file, not
+//    re-derived. Per the brief's explicit instruction, the first rail's (RecentlyViewed's) two
+//    in-fold photos are additionally cropped taller (their real, unmodified SalonCard photo
+//    container's own `aspect-[5/4]` -> a scoped `aspect-ratio: 1/1` override, same attribute-
+//    selector technique as fix 3, scoped to `.home-a-recent-crop`, object-cover already on the
+//    underlying <Image> so this crops rather than distorts) for headroom against future content
+//    changes, not because 39.92% itself was failing. RE-MEASURED after the crop: 39.92%
+//    (131,389.03 / 329,160px), unchanged to two decimals from before the crop -- the taller
+//    RecentlyViewed row-1 photos gained exactly as much clipped area as the second rail
+//    (ForYouSalonRows) lost by being pushed down 46px toward the 844px cutoff, since nothing
+//    else in the DOM flow between the two rails changed height. The photos ARE taller (row-1
+//    square crop, up from 184.5px to 230.7px tall, confirmed live), the fold total simply nets
+//    to the same figure by that geometry; still comfortably over the >=33.3% floor either way.
+//    Named honestly here rather than reporting an invented "raised" number: the stale claim this
+//    fix set out to correct was "40.0%" standing in for an unmeasured figure, not a low one, and
+//    the corrected figure below is 39.92%, not the brief's illustrative ">=33.3%" restated as if
+//    it were the new measurement.
+//
 // STRUCTURE DIFF FROM ROUND 1's DIRECTION A (required by the brief, one line): round 1's A
 // (app/[locale]/dev/directions-0905/home/_va/HomeVariantA.tsx) put the four "Fresha-named slots"
 // (Recommended, New on Solen, Trending, Reviews) at the TOP of the feed and RecentlyViewed near
@@ -84,10 +119,12 @@
 //   gradient, only the real Hero copy HeroQueryBuilder.tsx already ships).
 //
 // floors: (a) photo focal -> every rail below renders real salon-card photography via the live
-//   SalonCard component, unchanged; RecentlyViewed leading the feed (moved up from round 1 A's
-//   tail position) raises first-viewport photo share further than round 1 A's already-measured
-//   40.0%, since a real photo rail now sits immediately under the category row instead of another
-//   copy block, and no longer includes the banned greyscale photo after the repair pass above;
+//   SalonCard component; RecentlyViewed leads the feed (moved up from round 1 A's tail position),
+//   its own two in-fold photos cropped taller per repair-pass fix 4 above, and the banned
+//   greyscale photo no longer appears after the repair pass. Live-measured first-viewport
+//   photographic share: 39.92% (CORRECTED, was self-reported as an uncited "40.0%" carried
+//   forward from round 1 A's own number; see repair-pass fix 4 for the full re-measurement note),
+//   clearing the >=33.3% floor with room;
 //   (b) one biggest element -> the hero anchor inside HeroQueryBuilderR2.tsx, the kit's
 //   `SectionTitle as="anchor"` (28px, TYPE_RAMP.anchor), the single largest text on the first
 //   viewport, clearing FLOORS LAW 6 exactly at its 28px floor after the repair pass above; (c) a
@@ -114,6 +151,15 @@
 // because it is, of the three, the one whose one-sentence definition ("a soft shadow and the gap
 // between cards do all the work") is the literal, unmodified description of what SalonCard,
 // RecentlyViewed's thumbnails, and every other rail already do.
+//
+// measured (second repair pass, live, Playwright, 390x844 dpr3, /en, this run): 0 console
+// errors. Whole-page distinct font sizes [12, 14, 18, 28] (four, was five with WalkInBand's own
+// 20px caption before fix 3) and weights [400, 500] (two). WalkInBand's wait-caption
+// (".home-a-walkin-caption-fix [class*=\"text-[20px]\"]") now computes font-size 18px (all 4
+// instances, was 20px). RecentlyViewed's two in-fold SalonCard photo containers
+// (".home-a-recent-crop [class*=\"aspect-[5/4]\"]") now compute 230.66x230.66px (a 1:1 crop, was
+// 230.66x184.52 at aspect-ratio 5/4). First-viewport photographic share: 39.92% (131,389.03 /
+// 329,160px), see repair-pass fix 4 above for why this reads flat rather than higher.
 
 import HeroQueryBuilderR2 from "./HeroQueryBuilderR2";
 import { FeedZone } from "@/app/[locale]/dev/directions-0905/home/_va/_liveHomepageExports";
@@ -168,21 +214,42 @@ export default async function HomeR2DirectionA({ locale }: { locale: string }) {
 
         <FeedZone>
           {/* Fresha-literal order: RecentlyViewed leads (fresha--home.md's own measured finding,
-              see STRUCTURE DIFF above), then Recommended, Trending, New on Solen, Reviews. */}
-          <RecentlyViewed salonData={salonCardData} topSalonIds={topSalonIds} />
+              see STRUCTURE DIFF above), then Recommended, Trending, New on Solen, Reviews.
+              REPAIR PASS fix 4: wrapped, not forked, so ./RecentlyViewed's own real, unmodified
+              SalonCard photo container can be cropped taller by a scoped selector (see the
+              <style> block below FeedZone) without touching the shared production file. */}
+          <div className="home-a-recent-crop">
+            <RecentlyViewed salonData={salonCardData} topSalonIds={topSalonIds} />
+          </div>
           <ForYouSalonRows salonData={salonCardData} />
           <TopCategoryRails salonData={salonCardData} idsByCategory={topByCategory} />
           <SalonOfMonth locale={locale} />
           <Reviews />
 
-          {/* Remaining real sections, kept at the tail in the live page's own relative order. */}
+          {/* Remaining real sections, kept at the tail in the live page's own relative order.
+              REPAIR PASS fix 3: WalkInBand wrapped (not forked) so its own real, off-ramp 20px
+              wait-caption can be folded into the ramp by a scoped selector below. */}
           <Nearby salonData={salonCardData} nearbyCount={nearbyCount} />
           <PopularLooksLazy />
-          <WalkInBand />
+          <div className="home-a-walkin-caption-fix">
+            <WalkInBand />
+          </div>
           <div className="max-md:hidden">
             <BusinessTeaser />
           </div>
         </FeedZone>
+
+        {/* REPAIR PASS fixes 3 + 4 (2026-09-06): scoped, attribute-selector overrides on two
+            real, registered, off-limits-to-edit components (FLOORS LAW 9: composed, never
+            redrawn or forked), the same technique
+            search-results/_tray/SearchResultsTray.tsx's own REPAIR note already uses. Each
+            selector matches only the exact literal Tailwind class string the target component
+            already renders, scoped to this file's own wrapper class so no other page composing
+            WalkInBand or RecentlyViewed is touched. */}
+        <style>{`
+          .home-a-walkin-caption-fix [class*="text-[20px]"] { font-size: 18px !important; } /* type-scale-ok: WalkInBand's own off-ramp wait-caption, folded to TYPE_RAMP.sectionHeading (18px) */
+          .home-a-recent-crop [class*="aspect-[5/4]"] { aspect-ratio: 1 / 1 !important; } /* imagery-crop-ok: RecentlyViewed's own real SalonCard photo container, cropped taller (object-cover already set, so this crops rather than distorts) */
+        `}</style>
 
         {/* 125px spacer: HideInBooking.tsx strips the real bottom nav on every /dev route, so this
             measures the fold as it renders on the live product (BottomNav's own header comment

@@ -85,6 +85,20 @@
 //   direction already established it belongs here. Composed from real, unmodified primitives
 //   (BackButton, BookingExitButton), no hand-drawn substitute. The sibling "lift" system's own
 //   identical omission is a separate, out-of-scope finding for that system's own repair pass.
+//
+// REPAIR, second pass (final repair, this file): BackButton's "flat" variant className puts
+//   BOTH a `border-s-border` hairline AND `shadow-elevation-2` on the same element
+//   (BackButton.tsx:47), tripping the cross-system "nothing carries a border and a shadow at
+//   once" rule and leaving RULE's own "zero shadow on anything" note (see the "system:" block
+//   above) with one shadowed element it should not have. BackButton itself is the real,
+//   registered primitive (four other call sites still use it unmodified), so it is not edited;
+//   this call site alone gets a scoped `style={{ boxShadow: "none" }}` override, the identical
+//   fix the sibling "tray" system's own PaymentStepReviewTray.tsx already carries at its own
+//   BackButton call site. Border stays (RULE's own hairline vocabulary), only the shadow drops,
+//   which also brings the render in line with BackButton's OWN "flat" doc comment
+//   ("white + hairline ... no shadow", BackButton.tsx:13). Re-measured after the fix: 0
+//   box-shadow anywhere in the fold, RULE's discriminator ("count(box-shadow) = 0") now holds
+//   exactly, not approximately.
 import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
@@ -227,7 +241,12 @@ export default function PaymentStepRuleReview({ salon, staff }: PaymentStepRuleR
           both real, registered, unmodified primitives; t('back') / t('stepTitles.payConfirm')
           are the same real booking.* i18n keys round-1 reads, no new copy. */}
       <div className="flex items-center justify-between px-4 pt-3 pb-1">
-        <BackButton variant="flat" label={t("back")} className="shrink-0" />
+        <BackButton
+          variant="flat"
+          label={t("back")}
+          className="shrink-0"
+          style={{ boxShadow: "none" }}
+        />
         <h1 className="min-w-0 flex-1 truncate text-center font-heading text-[14px] font-semibold tracking-[-0.01em] text-s-ink">
           {t("stepTitles.payConfirm")}
         </h1>

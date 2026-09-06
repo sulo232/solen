@@ -69,6 +69,12 @@
  *   ProfileDirectionA.tsx's own flat Row list, same destinations as the live AccountHub.tsx.
  * Depicts: sign-out -> the same /api/auth/logout form POST every round-1 direction already uses.
  *
+ * REPAIR PASS (this session): the "Personal" group heading now reads "Personal details",
+ * matching AccountHub.tsx's real t("hubPersonal") copy (messages/en.json:69) instead of this
+ * file's own shortened label; the hero photo thumbnail's literal `rounded-[16px]` is now
+ * `style={{ borderRadius: RADIUS.photoCardPx }}`, so its value traces to the kit constant rather
+ * than a coincidentally-equal hand-typed number.
+ *
  * measured: TYPE_RAMP gives four sizes on this screen (28 anchor / 18 heading / 14 body / 12
  * meta), two weights (font-medium 500 for anchor/heading, font-normal 400 for body/meta;
  * StatusBadge's own font-semibold class also computes to 500 under the sitewide clamp, same
@@ -146,7 +152,7 @@ import { Meta } from "../../_kit/Meta";
 import { Price } from "../../_kit/Price";
 import { StatusBadge } from "../../_kit/StatusBadge";
 import { TextLink } from "../../_kit/TextLink";
-import { TYPE_RAMP, SPACING, COLOR, MOTION } from "../../_kit/tokens";
+import { TYPE_RAMP, SPACING, COLOR, RADIUS, MOTION } from "../../_kit/tokens";
 import type { RuleProfileData } from "./getRuleProfileData";
 
 const LOCALE_CODE: Record<string, string> = { de: "de-CH", en: "en-CH", fr: "fr-CH", it: "it-CH" };
@@ -255,9 +261,12 @@ export default function ProfileRule({ locale, data }: ProfileRuleProps) {
           <Hairline />
         </div>
 
-        {/* PERSONAL */}
+        {/* PERSONAL. Repair-pass finding: this heading read "Personal", this file's own
+            shortened label, not AccountHub.tsx's real t("hubPersonal") wording
+            (messages/en.json:69, "Personal details"), which every sibling round-2 build (LIFT,
+            TRAY) already renders. */}
         <div style={{ paddingLeft: SPACING.pageMargin, paddingRight: SPACING.pageMargin, marginTop: SPACING.group }}>
-          <SectionTitle as="heading">Personal</SectionTitle>
+          <SectionTitle as="heading">Personal details</SectionTitle>
         </div>
         <div style={{ marginTop: SPACING.sibling }}>
           <Row href={p("/profile/haarprofil")} icon={HairGlyph} label="Hair profile" />
@@ -352,7 +361,13 @@ function HeroAppointment({
             identity block is plain and only the footer "Manage" action is clickable. Photo and
             text render as siblings here (photo first), never a link wrapping the photo. */}
         <div className="flex items-start gap-3 p-4">
-          <div className="relative h-[68px] w-[68px] flex-none overflow-hidden rounded-[16px] bg-s-bg-sunken">
+          {/* Radius: RADIUS.photoCardPx (16), not a hand-typed rounded-[16px] literal (repair-pass
+              finding: matches the kit constant's own value, but must trace to the token, not a
+              coincidentally-equal literal). */}
+          <div
+            className="relative h-[68px] w-[68px] flex-none overflow-hidden bg-s-bg-sunken"
+            style={{ borderRadius: RADIUS.photoCardPx }}
+          >
             {hasRealPhoto ? (
               <Image src={appointment.salonCoverUrl as string} alt={appointment.salonName} fill sizes="68px" className="object-cover" />
             ) : (

@@ -21,7 +21,9 @@
 //      and Card.tsx use for values with no dedicated component).
 //   3. action: a raw `<a>` filled with the measured-not-invented Airbnb rausch pink #E41C5C
 //      (banned by name in round 2, "not this pink thing because that's not how we do it") ->
-//      kit <PrimaryButton> (bg-s-ink, the one ink commit action per real page).
+//      kit <PrimaryButton> for the one commit action on this comparison page, kit
+//      <SecondaryButton> for the other three (see REPAIR 4 below: this file used to render
+//      PrimaryButton unconditionally on all four states).
 //   4. icon size 56 is KEPT (round-1's own citation: not an Airbnb-measured number, chosen to
 //      read as an object-illustration rather than a 32px-in-a-64px-tile; this is a component
 //      prop, not a CSS token the kit governs, so it is not one of the "no pill/badge/button/
@@ -54,11 +56,24 @@
 // system: none directly (a base-recipe composition, not one of Part B's three systems'
 // deltas); the KitProvider wrapping this tree in EmptyStatesLift.tsx governs the sibling Card
 // rails, not this unit, which carries no card/border/shadow of its own.
+//
+// REPAIR 4 (final repair pass, this session): this file rendered the kit's one ink commit
+// button unconditionally on every call site, so EmptyStatesLift.tsx (four states, four EmptyUnit
+// instances) put four of them on one page, a direct violation of the cross-system rule ("one ink
+// commit button per screen") this task brief itself carries. The sibling TRAY system
+// (EmptyStatesTrayView.tsx's own EmptyUnit, `action.kind === "primary" ? <PrimaryButton> :
+// <SecondaryButton>`) already solves the identical four-states-one-page shape correctly: exactly
+// one commit button (its first-rendered state, Bookings), the neutral outline button on the
+// other three. Fixed the same way here: a required `ctaVariant` prop, no default, so every call
+// site in EmptyStatesLift.tsx states its choice explicitly rather than inheriting a silent one.
+// This file's own first-rendered state (Looks, reordered into that slot by REPAIR 2 above) is
+// the one `ctaVariant="primary"`; Bookings/Favorites/Vouchers are `"secondary"`, matching TRAY's
+// own first-state-primary, rest-secondary distribution.
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "motion/react";
-import { SectionTitle, PrimaryButton, TYPE_RAMP, COLOR } from "../../_kit";
+import { SectionTitle, PrimaryButton, SecondaryButton, TYPE_RAMP, COLOR } from "../../_kit";
 
 export interface EmptyUnitProps {
   /** A fully-rendered icon element (e.g. `<Calendar size={56} .../>`), built by the caller.
@@ -70,9 +85,13 @@ export interface EmptyUnitProps {
   ctaLabel: string;
   ctaHref: string;
   index: number;
+  /** "primary" = the kit's one ink commit button; "secondary" = the kit's neutral outline
+   * button (white fill, hairline border). No default: see REPAIR 4 above, exactly one of the
+   * four EmptyUnit instances on this page may pass "primary". */
+  ctaVariant: "primary" | "secondary";
 }
 
-export function EmptyUnit({ icon, headline, subline, ctaLabel, ctaHref, index }: EmptyUnitProps) {
+export function EmptyUnit({ icon, headline, subline, ctaLabel, ctaHref, index, ctaVariant }: EmptyUnitProps) {
   const router = useRouter();
   const prefersReducedMotion = useReducedMotion();
   const motionProps = prefersReducedMotion
@@ -101,7 +120,11 @@ export function EmptyUnit({ icon, headline, subline, ctaLabel, ctaHref, index }:
         {subline}
       </p>
       <div className="mt-6 w-full max-w-[280px]">
-        <PrimaryButton onClick={() => router.push(ctaHref)}>{ctaLabel}</PrimaryButton>
+        {ctaVariant === "primary" ? (
+          <PrimaryButton onClick={() => router.push(ctaHref)}>{ctaLabel}</PrimaryButton>
+        ) : (
+          <SecondaryButton onClick={() => router.push(ctaHref)}>{ctaLabel}</SecondaryButton>
+        )}
       </div>
     </motion.div>
   );

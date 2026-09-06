@@ -23,11 +23,13 @@
 //   hairline drawn ONLY between groups, never inside one. LIFT's own law forbids more than one
 //   hairline in the whole fold (systems.ts "lift".deltas.card.hairlineCeiling = 1), so the
 //   boundary device is translated to LIFT's own grouping primitive instead: each group becomes
-//   its OWN separately shadowed <Card variant="grouped">, and the gap between cards (plus the
-//   SectionTitle above each) is what visibly separates one group from the next, with zero
-//   hairlines anywhere on the screen. Settings keeps B's own asymmetry: it gets a boundary (its
-//   own card) but no title above it, exactly as B's own Hairline-with-no-GroupTitle pattern for
-//   that same row.
+//   its OWN separate <Card>, and the gap between cards (plus the SectionTitle above each) is
+//   what visibly separates one group from the next, with zero hairline dividers anywhere on the
+//   screen. Settings keeps B's own asymmetry: it gets a boundary (its own card) but no title
+//   above it, exactly as B's own Hairline-with-no-GroupTitle pattern for that same row. Originally
+//   shadow-only per LIFT's own delta; see the REPAIR PASS note further down for why every card's
+//   edge is now the `bordered` hairline instead (this render carries no photographic focal, so
+//   the shadow measured imperceptible).
 // - From A (ProfileDirectionA.tsx), WHAT IS DROPPED FROM C: A's row anatomy carries no subline
 //   and no count on any row, bare icon + label + chevron only. C's own rows carried a subline on
 //   every row (next-appointment date on Bookings, a card brand on Wallet, an active-voucher
@@ -45,7 +47,13 @@
 // searches their own saved list from the account hub").
 //
 // Depicts: identity block (avatar, name, edit link) -> app/[locale]/_components/profile/AccountHub.tsx
-// Depicts: Bookings/Payment methods/Vouchers/Hair profile/Settings rows and their real routes -> app/[locale]/_components/profile/AccountHub.tsx
+// Depicts: Bookings/Wallet/Vouchers/Hair profile/Settings rows and their real routes -> app/[locale]/_components/profile/AccountHub.tsx
+// Repair-pass finding: three row/group labels below (Wallet's own payment row, the Personal
+// group, the Stamps row) previously read "Payment methods" / "Personal" / "Loyalty stamps",
+// this file's own invented copy, not AccountHub.tsx's real i18n keys. Corrected to the exact
+// live wording: t("tileWallet") = "Wallet" (messages/en.json:50, used for both the group label
+// and the payment row), t("hubPersonal") = "Personal details" (messages/en.json:69), t("tileStamps")
+// = "Stamps" (messages/en.json:49).
 // Depicts: the favorites row (real surviving route, see note below) -> app/[locale]/profile/favorites/page.tsx (FavoritesList.tsx)
 // Depicts: the loyalty-stamps row -> app/[locale]/profile/stamps/page.tsx
 // Depicts: sign-out form -> app/[locale]/_components/profile/AccountHub.tsx (the same /api/auth/logout POST)
@@ -72,33 +80,55 @@
 // via inline style referencing the constant (TYPE_RAMP.body.size, TYPE_RAMP.anchor.size), never
 // a bare `text-[Npx]` class, so every number on this screen still traces to tokens.ts.
 //
+// REPAIR PASS (this session, arbiter pre-ship finding): this screen's actual live render (seed
+// customer kunde@solen.ch) reaches the missing-photo fallback on the hero, not a real photo, so
+// the fold carries zero photography; against a photo-less white card, LIFT's own shadow-whisper
+// (0 1px 2px rgba(10,10,10,.04)) measured 1.13:1 against white, under even the 3:1 graphical
+// floor (FLOORS LAW 4, edge-visibility). Per Card.tsx's own documented LOCKFILE section 17.2
+// edge case (c) ("a photo-less entity card on white keeps the hairline, drops the shadow"),
+// every <Card> on this screen now passes `bordered` (the hero keeps variant="photo", whose
+// radius already equals RADIUS.photoCardPx/16; the four grouped rows switch from variant=
+// "grouped" to variant="entity" so their radius also lands on 16, the value this repair's own
+// task brief names): 1px solid #E4E4E7, radius 16, shadow forced off. This is a documented,
+// screen-level override of LIFT's own uniform "shadow only, no border" delta, not a silent
+// departure from the system (see Card.tsx's own `bordered` prop doc for the two named
+// exceptions this repair falls under).
+//
 // measured (Playwright, 390x844, dpr 3, live dev server, this session): see this task's own
 // structured-output return for the exact getBoundingClientRect/getComputedStyle numbers; summary
 // recorded here so this file's own claim is checkable without re-running the tool: 4 distinct
 // font sizes (28 anchor / 18 heading / 14 body / 12 meta), 2 distinct weights (500/400, both
 // already clamped identically by app/globals.css's own main :is(.font-semibold,.font-bold)
-// {font-weight:500} rule), 0 elements with a border, every <Card> carrying box-shadow only, 0
-// hairline dividers anywhere on the page.
+// {font-weight:500} rule); post-repair, every <Card> on this screen computes border-width 1px
+// solid #E4E4E7 / box-shadow none / border-radius 16px (the REPAIR PASS note above), 0 hairline
+// dividers anywhere on the page (the border lives on each card's own edge, not as a separate
+// divider line).
 //
-// floors (all six): (a) photographic focal = the hero card's real salon cover photo; (b) one
-// clearly-biggest element = the hero card's own footprint (photo + date block + name/address),
-// visibly larger than any destination-group card below it; the date-block digit itself reuses
-// the identity name's own 28px anchor step rather than adding a fifth, budget-costing size, the
-// same deliberate consolidation AccountHubDirectionC.tsx's own header documents for this exact
+// floors (all six): (a) photographic focal = NOT MET on this render (see REPAIR PASS above):
+// the seed customer's next-appointment hero falls to the missing-photo fallback (sunken bg,
+// category icon), stated honestly rather than papered over; (b) one clearly-biggest element =
+// the hero card's own footprint (photo/fallback + date block + name/address), visibly larger
+// than any destination-group card below it; the date-block digit itself reuses the identity
+// name's own 28px anchor step rather than adding a fifth, budget-costing size, the same
+// deliberate consolidation AccountHubDirectionC.tsx's own header documents for this exact
 // element; (c) tabular real number = the hero's real seeded price (tabular-nums, kit Price) and
 // the date-block's real day-of-month; (d) semantic-colour moment = the hero's kit StatusBadge
 // icon (green check for a confirmed booking, amber clock for pending, never invented); (e) no
 // dead-grey zone = white page throughout (LIFT drops the tray entirely per its own delta), every
-// card's edge comes from its own shadow, never a flat grey fill; (f) worst-case content holds =
-// salon name and address both truncate on one line (`truncate`), every row label is a short
-// fixed noun with no unbounded string, and the identity display name truncates too, matching
-// AccountHub.tsx's own discipline.
+// card's edge now comes from its own 1px hairline border (the REPAIR PASS above), never a flat
+// grey fill; (f) worst-case content holds = salon name and address both truncate on one line
+// (`truncate`), every row label is a short fixed noun with no unbounded string, and the identity
+// display name truncates too, matching AccountHub.tsx's own discipline.
 //
 // system: LIFT. Verbatim, _plans/R2_LOOK_SYSTEMS.md Part B / _kit/systems.ts: "the lifted white
 // card is the only grouping device on the screen, so nothing carries a border and nothing
-// carries a hairline; a soft shadow and the gap between cards do all the work." Every group on
-// this screen (the hero, Bookings, Wallet, Personal, Settings) is its own <Card variant="photo"|
-// "grouped">, shadow-only via <KitProvider system="lift">, zero hairlines anywhere.
+// carries a hairline; a soft shadow and the gap between cards do all the work." This screen is
+// the one documented, screen-level exception to that uniform delta (see REPAIR PASS above): its
+// particular render has no photographic focal at all, so every group (the hero, Bookings,
+// Wallet, Personal details, Settings) renders through the kit Card's `bordered` override
+// (LOCKFILE section 17.2 edge case (c)) instead of the system's own shadow-only delta. The gap
+// between cards (plus the SectionTitle above each) still does the grouping work LIFT's
+// definition names; only the edge treatment of each individual card changed.
 //
 // MOTION: entrance is round-1's own ENTER RECIPE lineage (AccountHubDirectionC.tsx's hero used
 // useEnterMotion; this screen's sibling round-2 hero, bookings-list/_lift/NextAppointmentCard.tsx,
@@ -147,6 +177,7 @@ import {
   TextLink,
   TYPE_RAMP,
   SPACING,
+  RADIUS,
   MOTION,
   type BookingStatus,
 } from "../../_kit";
@@ -209,35 +240,44 @@ export function ProfileLiftView({ locale, data, coverUrl }: ProfileLiftViewProps
         </div>
 
         {/* BOOKINGS group. No subline (A's simplicity, and the fix for the once-not-twice
-            constraint: the date already lives in the hero above). */}
+            constraint: the date already lives in the hero above). Repair-pass edge case (see
+            file header, LOCKFILE section 17.2 edge case (c)): variant="entity" bordered, not
+            "grouped" shadow, matching every other card on this photo-less render. */}
         <Group title="Bookings">
-          <Card variant="grouped">
+          <Card variant="entity" bordered>
             <Row href={p("/profile/bookings")} icon={Calendar} label="Bookings" />
           </Card>
         </Group>
 
-        {/* WALLET group: saved card + vouchers. No sublines/counts (A's simplicity). */}
+        {/* WALLET group: payment card + vouchers. No sublines/counts (A's simplicity). Row
+            label matches the real AccountHub.tsx exactly: t("tileWallet") = "Wallet" is used
+            for BOTH the group label above AND this row's label (messages/en.json:50), never
+            "Payment methods", which was this file's own invented label, not a real key. */}
         <Group title="Wallet">
-          <Card variant="grouped">
-            <Row href={p("/profile/settings/payment")} icon={WalletIcon} label="Payment methods" />
+          <Card variant="entity" bordered>
+            <Row href={p("/profile/settings/payment")} icon={WalletIcon} label="Wallet" />
             <Row href={p("/profile/vouchers")} icon={TicketPercent} label="Vouchers" />
           </Card>
         </Group>
 
-        {/* PERSONAL group: hair profile, saved salons, loyalty stamps. */}
-        <Group title="Personal">
-          <Card variant="grouped">
+        {/* PERSONAL group: hair profile, favorites, loyalty stamps. Group title and the Stamps
+            row label now match the real AccountHub.tsx keys exactly: t("hubPersonal") =
+            "Personal details" (messages/en.json:69, not this file's own shortened "Personal"),
+            t("tileStamps") = "Stamps" (messages/en.json:49, not this file's own invented
+            "Loyalty stamps"). */}
+        <Group title="Personal details">
+          <Card variant="entity" bordered>
             <Row href={p("/profile/haarprofil")} icon={HairGlyph} label="Hair profile" />
             <Row href={p("/profile/favorites")} icon={Heart} label="Saved" />
-            <Row href={p("/profile/stamps")} icon={Stamp} label="Loyalty stamps" />
+            <Row href={p("/profile/stamps")} icon={Stamp} label="Stamps" />
           </Card>
         </Group>
 
         {/* SETTINGS: B's own asymmetry carried forward, a boundary (its own card) with no title
             above it, same as AccountHubAirbnb.tsx's own Hairline-with-no-GroupTitle for this
-            exact row. */}
+            exact row. Repair-pass edge case (see file header): variant="entity" bordered. */}
         <div style={{ marginTop: SPACING.section }}>
-          <Card variant="grouped">
+          <Card variant="entity" bordered>
             <Row href={p("/profile/settings")} icon={Settings} label="Settings" />
           </Card>
         </div>
@@ -323,11 +363,23 @@ function WhatsNextCard({
 
   return (
     <motion.div {...enter}>
-      <Card variant="photo" className="p-3">
+      {/* Repair-pass edge case (see file header, LOCKFILE section 17.2 edge case (c)): this
+          render carries no real photo (the seed customer's next appointment falls to the
+          missing-photo fallback below), so the "photo card" shadow measured 1.13:1 against
+          white, imperceptible (FLOORS LAW 4). `bordered` forces the locked hairline instead;
+          `variant="photo"` is kept (its own radius already equals RADIUS.photoCardPx, 16, the
+          same value the entity-card exception uses, so nothing shifts visually except the
+          border/shadow swap). */}
+      <Card variant="photo" bordered className="p-3">
         <div className="flex items-start gap-3">
           {/* Real seeded cover photo (banned greyscale swapped upstream in ProfileLift.tsx), or
-              the locked missing-photo fallback (sunken + category icon), never a bare grey box. */}
-          <div className="relative h-[72px] w-[72px] flex-none overflow-hidden rounded-[12px]">
+              the locked missing-photo fallback (sunken + category icon), never a bare grey box.
+              Radius: RADIUS.photoCardPx (16), not a hand-typed rounded-[12px] (repair-pass
+              finding: 12 matches no kit radius). */}
+          <div
+            className="relative h-[72px] w-[72px] flex-none overflow-hidden"
+            style={{ borderRadius: RADIUS.photoCardPx }}
+          >
             {coverUrl ? (
               <Image src={coverUrl} alt="" fill sizes="72px" className="object-cover" />
             ) : (
@@ -350,7 +402,10 @@ function WhatsNextCard({
               (measured after the fix: weights [400,500] only) and still matches
               AccountHubDirectionC.tsx's own source recipe, which used the `font-bold` CLASS for
               this exact digit, not a raw weight override either. */}
-          <div className="flex-none w-[56px] rounded-[12px] bg-s-bg-sunken py-2 text-center">
+          <div
+            className="flex-none w-[56px] bg-s-bg-sunken py-2 text-center"
+            style={{ borderRadius: RADIUS.photoCardPx }}
+          >
             <Meta className="block">{dow}</Meta>
             <div
               className="font-heading font-semibold tabular-nums text-s-ink"
@@ -397,9 +452,12 @@ function WhatsNextCard({
 }
 
 /**
- * A destination row: bare icon (22px, ink) + label (TYPE_RAMP.body, 14/400) + chevron, no
- * subline, no count (A's simplicity, dropped from C per the file header note). Press is the
- * kit's own MOTION recipe (round-1 direction A, his pick), not round-1's ad hoc
+ * A destination row: bare icon (22px, ink) + label (TYPE_RAMP.body, 14/500) + chevron, no
+ * subline, no count (A's simplicity, dropped from C per the file header note). Repair-pass
+ * finding: this label rendered font-normal (400) while the sibling RULE (Body className=
+ * "font-medium") and TRAY (font-heading font-medium) builds render the identical row-label
+ * anatomy at 500; font-medium added here so all three systems render the same bare-row weight.
+ * Press is the kit's own MOTION recipe (round-1 direction A, his pick), not round-1's ad hoc
  * `active:scale-[0.99]`.
  */
 function Row({
@@ -416,7 +474,10 @@ function Row({
       <span className="grid h-[22px] w-[22px] shrink-0 place-items-center text-s-ink">
         <Icon size={22} strokeWidth={2.2} aria-hidden />
       </span>
-      <span className="min-w-0 flex-1 truncate font-heading text-s-ink" style={{ fontSize: TYPE_RAMP.body.size }}>
+      <span
+        className="min-w-0 flex-1 truncate font-heading font-medium text-s-ink"
+        style={{ fontSize: TYPE_RAMP.body.size }}
+      >
         {label}
       </span>
       <ChevronRight size={18} strokeWidth={1.9} className="shrink-0 text-s-ink" aria-hidden />

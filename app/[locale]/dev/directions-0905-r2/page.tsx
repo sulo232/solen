@@ -42,10 +42,28 @@
  * page; (b) the arbiter's top-pick block at the very top is the single biggest, boldest unit on
  * the page (28px anchor); (c) the CHF price rendered inside the linked mockups themselves is
  * the real tabular number this page's job is to point at, not something this page invents; (d)
- * the PASS/FAIL verdict pills are the semantic-colour moment (green/red on a neutral row); (e)
+ * the PASS/FAIL verdict pills are the semantic-colour moment (green/red on a neutral row); the
+ * new "Recommended" pill uses the same calm gray fill LOCKFILE already spends on a picked
+ * option (bg-s-bg-sunken, text-s-ink, semibold), never a colour, so it adds no new hue; (e)
  * every section alternates real screenshot content with text, so no stretch reads as bare grey;
- * (f) the longest real strings in this data (the arbiter's why/cost/flip paragraphs) are
- * rendered as flowing body text, not fixed-width labels, so nothing truncates.
+ * (f) the longest real strings in this data (the per-screen arbiter notes and the decisions'
+ * recommendation/fresha/treatwell/airbnb paragraphs) are rendered as flowing body text, not
+ * fixed-width labels, so nothing truncates.
+ *
+ * measured (this pass, 2026-09-06, Playwright headless chromium, 390x844, deviceScaleFactor 3,
+ * networkidle, scoped to this file's own [data-index-scope="directions-0905-r2"] subtree so the
+ * root layout's sr-only skip-link never enters the count): distinct font sizes across the whole
+ * page collapsed from six [12,13,15,18,20,28] to exactly four [12,14,18,28]; first-viewport fold
+ * (0-844px) carries three of those four [14,18,28], two weights only [400,500] page-wide and in
+ * the fold. The arbiter's three picks render as one row each ("One look system: LIFT (cost:
+ * ...)", "Home structure: B (cost: ...)", "Service-row Book: matched in shape (cost: ...)"),
+ * 14px/400, above every per-screen section. Seven "Recommended" tags render (106.3x24px,
+ * rounded-full, bg rgb(244,244,245) / text rgb(10,10,10), 12px/500): one on the matching variant
+ * for confirmation (rule), search-results (tray), bookings-list (lift), payment-step (lift),
+ * profile (lift), empty-states (lift), plus one on home variant B, each keyed off the same
+ * ARBITER_NOTES data the section's own note already cited, so no new claim was introduced.
+ * Link/image census: 27 hrefs + 22 screenshot <img> sources = 49, all fetched 200 live. Zero
+ * console errors and zero page errors on a fresh headless load.
  *
  * ROUTE NOTE (surfaced, not silently corrected): the task brief asks every "three look systems"
  * link to point at /en/dev/directions-0905-r2/_kit/preview?s=<key>. That exact path 404s: Next's
@@ -77,34 +95,24 @@ const SYSTEM_LABEL: Record<SystemKey, string> = {
 };
 
 interface TopPick {
-  heading: string;
-  label: string;
-  why: string;
+  /** The one-row label, "<what it's about>: <the pick>". Plain English, no internal file names. */
+  row: string;
+  /** The one thing it costs, in plain English, no internal file names. */
   cost: string;
-  flip: string;
 }
 
 const TOP_PICKS: TopPick[] = [
   {
-    heading: "Look system",
-    label: "LIFT",
-    why: "It is the only one of the three whose own discriminator held on every screen it was graded on (6 of 6). RULE broke its zero-shadow rule twice through components nobody touched (payment's BackButton renders a border and a shadow, shadowCount 1 against a required 0; salon-book-button measures 9 shadowed elements from SalonServices' own unmodified list wrapper), and TRAY fell through to LIFT's shadow on all 7 bookings cards until a KitProvider wrapper was added. That is structural, not luck: LIFT's rule is what LOCKFILE section 17.2's depth table already says our SalonCard is, photo plus shadow-whisper plus no border, so LIFT is what our registered components produce by default, while RULE and TRAY need every shared component overridden on every screen forever. The reference count agrees: of the five reference folds in WHY_UNFINISHED.md, three are shadow-led (Airbnb home 12 shadows, Fresha venue 8, Fresha search 8), one is RULE, and TRAY exists on exactly the two Airbnb screens that have no photograph. And LIFT is the least empty: measured by me on the six shared folds, LIFT averages 11.9% coloured pixels and 68.5% pure white, RULE 7.0% and 78.4% (the emptiest on five of six screens, which is the exact thing he rejected), TRAY 9.1% coloured but 31.8% flat grey, peaking at 46.5% grey with 0.2% colour on profile.",
-    cost: "LIFT's entire boundary is a 2px run whose darkest pixel is grey 241 on white, a contrast of 1.13:1, measured off the rendered payment and profile folds. On the two screens with no photograph that is all there is: payment-step-lift is 84.0% pure white and profile-lift is 92.4% pure white, so those two folds read as a form rather than a designed screen. Before it ships, payment and profile take the flat hairline entity card (radius 16, 1px hairline border, no shadow), which is LOCKFILE section 17.2's own edge case (c) and stays inside LIFT because it drops the shadow rather than adding one.",
-    flip: "If the shadowed card still reads as nothing on his phone, the answer is not RULE (measured emptier still: payment 89.0% and profile 92.5% pure white) but the hairline on those two screens; and if he wants the tinted canvas everywhere instead, that is TRAY paying 46.5% flat grey on profile, which is the grey canvas he rejected by name on the merchant terminal on 2026-08-16.",
+    row: "One look system: LIFT",
+    cost: "its card edge is a 2px run at 1.13:1 on white, so payment and profile use the flat hairline card",
   },
   {
-    heading: "Home structure",
-    label: "B",
-    why: "B is the only structure that clears the density floor in the fold: it renders 4 complete salon cards plus 2 cropped, where A shows 2 complete plus 1 cropped and C shows a single map card plus one salon card. It is also the only one over the imagery floor, at 43.6% photo share against A's 32.6% and C's 31.5% (cited, home.md), both of which miss the one-third minimum. That density is the direct answer to round 1 reading unfinished, and it is what Airbnb's own home sells: their mobile home fits about 2.2 cards across 390 and its philosophy line is that photographs and how many of them fit get all the room.",
-    cost: "B drops Fresha's four-segment query builder (Treatment, Location, Date, Time in one continuous pill closed by a solid black round Search button, fresha--home.md measured element 3) for a single Search pill, which is Airbnb's shape. On his own rule that structure comes from Fresha, that is the one place B disobeys, and A is the variant that has it. B also renders its 4 See all controls in accent blue at 21px tall, against the lock that a see-all is ink and a target is 44px; both are the same one-line component swap.",
-    flip: "If he wants the whole query built on the home page before one tap, which is what Fresha's home actually does, that is A, and A's job then becomes raising its 32% photo share by cropping the first rail taller, never by adding an image.",
+    row: "Home structure: B",
+    cost: "drops Fresha's four-segment query builder for one Search pill",
   },
   {
-    heading: "Salon row Book button",
-    label: "Matched in shape, the white outline capsule at 44px, with its type corrected from the hand-written 15px/600 to the kit's cta step, 14px at weight 500",
-    why: "The button that ships today measures 73.5 x 37.5 at 13px/500, which misses the 44px touch floor by 6.5px and sits below the 14px body step. Matched-in-full is out because six ink-filled buttons on one services list breaks one commit button per screen. Matched-in-shape is right in geometry (86.7 x 44, capsule, neutral outline, ink text) and matches what the structure source already does: Fresha runs a 48px solid primary against a 36px outlined per-service button, two tiers split by fill and size rather than by colour. The one correction is that it was hand-written as a Tailwind string at 15px/600 with an inline weight override and no kit import, and the round's own rule is that a hand-written pill or button class is a failed round, so it becomes the kit recipe at 14/500, which also keeps the salon page at four sizes.",
-    cost: "Six outline capsules add six bordered objects to a screen whose system says the shadowed card is the only grouping device, so the row Book becomes the one place a border survives on a LIFT screen (System 1's own delta already sanctions this: a control needs an edge). Each service row also grows about 6px taller to clear 44px, which pushes the sixth row further down the fold on a salon with a long service list.",
-    flip: "If he wants the row button to read exactly as heavy as the sticky Book bar, it cannot: the bar is portaled outside main and keeps 600, while anything inside main computes to 500 under his own 2026-08-15 clamp. Matching it means lifting that clamp for this one element, which is his lock and his call.",
+    row: "Service-row Book: matched in shape",
+    cost: "six outline pills on a screen whose system has no borders, each row about 6px taller",
   },
 ];
 
@@ -515,16 +523,26 @@ function OpenList({ items }: { items: string[] }) {
   );
 }
 
+function RecommendedTag() {
+  return (
+    <span className="inline-flex h-6 items-center rounded-full bg-s-bg-sunken px-2.5 text-[12px] font-semibold text-s-ink">
+      Recommended
+    </span>
+  );
+}
+
 function SystemThumb({
   screenSlug,
   screenHref,
   variantKey,
   variantVerdict,
+  recommended,
 }: {
   screenSlug: string;
   screenHref: string;
   variantKey: SystemKey;
   variantVerdict?: VariantVerdict;
+  recommended?: boolean;
 }) {
   return (
     <div className="flex flex-1 flex-col gap-2">
@@ -538,8 +556,13 @@ function SystemThumb({
         />
       </Link>
       <div>
+        {recommended ? (
+          <div className="mb-1.5">
+            <RecommendedTag />
+          </div>
+        ) : null}
         <div className="flex items-center justify-between gap-2">
-          <span className="text-[13px] font-semibold text-s-ink">{SYSTEM_LABEL[variantKey]}</span>
+          <span className="text-[14px] font-semibold text-s-ink">{SYSTEM_LABEL[variantKey]}</span>
           {variantVerdict ? <VerdictPill verdict={variantVerdict.verdict} /> : null}
         </div>
         {variantVerdict ? <OpenList items={variantVerdict.open} /> : null}
@@ -553,7 +576,7 @@ function ScreenSection({ screen }: { screen: ScreenSpec }) {
   const note = findArbiterNote(screen.slug);
   return (
     <section className="border-t border-s-border px-4 py-8">
-      <h2 className="text-[20px] font-semibold text-s-ink">{screen.title}</h2>
+      <h2 className="text-[18px] font-medium text-s-ink">{screen.title}</h2>
       <div className="mt-4 flex gap-3">
         {(["lift", "rule", "tray"] as const).map((key) => (
           <SystemThumb
@@ -562,15 +585,16 @@ function ScreenSection({ screen }: { screen: ScreenSpec }) {
             screenHref={`/en/dev/directions-0905-r2/${screen.slug}?s=${key}`}
             variantKey={key}
             variantVerdict={verdict?.perVariant.find((v) => v.variant === key)}
+            recommended={note?.bestSystem === key}
           />
         ))}
       </div>
       {note ? (
         <div className="mt-4 rounded-card border border-s-border bg-s-bg-sunken p-4">
-          <p className="text-[13px] font-semibold text-s-ink">
+          <p className="text-[14px] font-semibold text-s-ink">
             Arbiter: best system = {SYSTEM_LABEL[note.bestSystem as SystemKey] ?? note.bestSystem}
           </p>
-          <p className="mt-2 text-[13px] font-normal leading-relaxed text-s-ink-2">{note.note}</p>
+          <p className="mt-2 text-[14px] font-normal leading-relaxed text-s-ink-2">{note.note}</p>
         </div>
       ) : null}
     </section>
@@ -585,7 +609,7 @@ export default function DirectionsR2IndexPage() {
     <div data-index-scope="directions-0905-r2" className="mx-auto max-w-[600px] bg-white pb-16">
       <div className="px-4 pt-8">
         <h1 className="text-[28px] font-semibold text-s-ink">Round 2, 2026-09-06</h1>
-        <p className="mt-2 text-[13px] font-normal text-s-ink-2">
+        <p className="mt-2 text-[14px] font-normal text-s-ink-2">
           Structure from round 1, look from three systems. Scroll to compare, no tabs, no switcher.
           Every screenshot links to the real route on your phone.
         </p>
@@ -593,39 +617,30 @@ export default function DirectionsR2IndexPage() {
 
       {/* 1. Arbiter's top picks */}
       <section className="border-t border-s-border px-4 py-8">
-        <h2 className="text-[20px] font-semibold text-s-ink">The arbiter&apos;s picks</h2>
-        <div className="mt-4 flex flex-col gap-5">
+        <h2 className="text-[18px] font-medium text-s-ink">The arbiter&apos;s picks</h2>
+        <div className="mt-4 flex flex-col divide-y divide-s-border">
           {TOP_PICKS.map((pick) => (
-            <div key={pick.heading} className="rounded-card border border-s-border p-4">
-              <p className="text-[13px] font-semibold text-s-ink-2">{pick.heading}</p>
-              <p className="mt-1 text-[18px] font-semibold text-s-ink">{pick.label}</p>
-              <p className="mt-3 text-[13px] font-normal leading-relaxed text-s-ink-2">
-                Why: {pick.why}
-              </p>
-              <p className="mt-3 text-[13px] font-normal leading-relaxed text-s-ink-2">
-                Cost: {pick.cost}
-              </p>
-              <p className="mt-3 text-[13px] font-normal leading-relaxed text-s-ink-2">
-                Flip: {pick.flip}
-              </p>
-            </div>
+            <p key={pick.row} className="py-3 text-[14px] font-normal leading-relaxed text-s-ink-2 first:pt-0">
+              <span className="font-semibold text-s-ink">{pick.row}</span>{" "}
+              <span>(cost: {pick.cost})</span>
+            </p>
           ))}
         </div>
       </section>
 
       {/* 2. The three look systems */}
       <section className="border-t border-s-border px-4 py-8">
-        <h2 className="text-[20px] font-semibold text-s-ink">The three look systems</h2>
+        <h2 className="text-[18px] font-medium text-s-ink">The three look systems</h2>
         <div className="mt-4 flex flex-col gap-4">
           {LOOK_SYSTEMS.map((sys) => (
             <div key={sys.key} className="rounded-card border border-s-border p-4">
-              <p className="text-[15px] font-semibold text-s-ink">{SYSTEM_LABEL[sys.key]}</p>
-              <p className="mt-1 text-[13px] font-normal leading-relaxed text-s-ink-2">
+              <p className="text-[14px] font-semibold text-s-ink">{SYSTEM_LABEL[sys.key]}</p>
+              <p className="mt-1 text-[14px] font-normal leading-relaxed text-s-ink-2">
                 {sys.sentence}
               </p>
               <Link
                 href={`/en/dev/directions-0905-r2/kit-preview?s=${sys.key}`}
-                className="mt-2 inline-flex h-11 items-center text-[13px] font-normal text-s-accent underline"
+                className="mt-2 inline-flex h-11 items-center text-[14px] font-normal text-s-accent underline"
               >
                 Open the {SYSTEM_LABEL[sys.key]} kit preview
               </Link>
@@ -641,8 +656,8 @@ export default function DirectionsR2IndexPage() {
 
       {/* 4. Home structures */}
       <section className="border-t border-s-border px-4 py-8">
-        <h2 className="text-[20px] font-semibold text-s-ink">Home feed</h2>
-        <p className="mt-1 text-[13px] font-normal text-s-ink-2">
+        <h2 className="text-[18px] font-medium text-s-ink">Home feed</h2>
+        <p className="mt-1 text-[14px] font-normal text-s-ink-2">
           Three new structures, none of them round 1&apos;s A, B or C. Copies{" "}
           <a href="/en" className="text-s-accent underline">
             app/[locale]/page.tsx
@@ -652,6 +667,7 @@ export default function DirectionsR2IndexPage() {
         <div className="mt-4 flex gap-3">
           {HOME_VARIANTS.map((v) => {
             const vv = findVerdict("home")?.perVariant.find((p) => p.variant === v.key);
+            const isRecommended = findArbiterNote("home")?.bestSystem === v.key;
             return (
               <div key={v.key} className="flex flex-1 flex-col gap-2">
                 <Link
@@ -667,8 +683,13 @@ export default function DirectionsR2IndexPage() {
                   />
                 </Link>
                 <div>
+                  {isRecommended ? (
+                    <div className="mb-1.5">
+                      <RecommendedTag />
+                    </div>
+                  ) : null}
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[13px] font-semibold text-s-ink">{v.label}</span>
+                    <span className="text-[14px] font-semibold text-s-ink">{v.label}</span>
                     {vv ? <VerdictPill verdict={vv.verdict} /> : null}
                   </div>
                   {vv ? <OpenList items={vv.open} /> : null}
@@ -679,10 +700,10 @@ export default function DirectionsR2IndexPage() {
         </div>
         {findArbiterNote("home") ? (
           <div className="mt-4 rounded-card border border-s-border bg-s-bg-sunken p-4">
-            <p className="text-[13px] font-semibold text-s-ink">
+            <p className="text-[14px] font-semibold text-s-ink">
               Arbiter: best structure = {findArbiterNote("home")!.bestSystem.toUpperCase()}
             </p>
-            <p className="mt-2 text-[13px] font-normal leading-relaxed text-s-ink-2">
+            <p className="mt-2 text-[14px] font-normal leading-relaxed text-s-ink-2">
               {findArbiterNote("home")!.note}
             </p>
           </div>
@@ -691,8 +712,8 @@ export default function DirectionsR2IndexPage() {
 
       {/* 5. Salon row Book button */}
       <section className="border-t border-s-border px-4 py-8">
-        <h2 className="text-[20px] font-semibold text-s-ink">Salon row Book button</h2>
-        <p className="mt-1 text-[13px] font-normal text-s-ink-2">
+        <h2 className="text-[18px] font-medium text-s-ink">Salon row Book button</h2>
+        <p className="mt-1 text-[14px] font-normal text-s-ink-2">
           One route, four internal sections: Current, Matched-in-shape, Matched-in-full, Reference.
         </p>
         <Link
@@ -709,7 +730,7 @@ export default function DirectionsR2IndexPage() {
         </Link>
         <Link
           href="/en/dev/directions-0905-r2/salon-book-button"
-          className="mt-2 inline-flex h-11 items-center text-[13px] font-normal text-s-accent underline"
+          className="mt-2 inline-flex h-11 items-center text-[14px] font-normal text-s-accent underline"
         >
           Open the salon-book-button route
         </Link>
@@ -721,10 +742,10 @@ export default function DirectionsR2IndexPage() {
         ) : null}
         {salonBookButtonNote ? (
           <div className="mt-4 rounded-card border border-s-border bg-s-bg-sunken p-4">
-            <p className="text-[13px] font-semibold text-s-ink">
+            <p className="text-[14px] font-semibold text-s-ink">
               Arbiter: best variant = {salonBookButtonNote.bestSystem}
             </p>
-            <p className="mt-2 text-[13px] font-normal leading-relaxed text-s-ink-2">
+            <p className="mt-2 text-[14px] font-normal leading-relaxed text-s-ink-2">
               {salonBookButtonNote.note}
             </p>
           </div>
@@ -733,21 +754,21 @@ export default function DirectionsR2IndexPage() {
 
       {/* 6. Decisions for him */}
       <section className="border-t border-s-border px-4 py-8">
-        <h2 className="text-[20px] font-semibold text-s-ink">Decisions for him</h2>
+        <h2 className="text-[18px] font-medium text-s-ink">Decisions for him</h2>
         <div className="mt-4 flex flex-col gap-5">
           {DECISIONS.map((d) => (
             <div key={d.question} className="rounded-card border border-s-border p-4">
-              <p className="text-[15px] font-semibold text-s-ink">{d.question}</p>
-              <p className="mt-3 text-[13px] font-normal leading-relaxed text-s-ink-2">
+              <p className="text-[14px] font-semibold text-s-ink">{d.question}</p>
+              <p className="mt-3 text-[14px] font-normal leading-relaxed text-s-ink-2">
                 Recommendation: {d.recommendation}
               </p>
-              <p className="mt-3 text-[13px] font-normal leading-relaxed text-s-ink-2">
+              <p className="mt-3 text-[14px] font-normal leading-relaxed text-s-ink-2">
                 Fresha: {d.fresha}
               </p>
-              <p className="mt-1 text-[13px] font-normal leading-relaxed text-s-ink-2">
+              <p className="mt-1 text-[14px] font-normal leading-relaxed text-s-ink-2">
                 Treatwell: {d.treatwell}
               </p>
-              <p className="mt-1 text-[13px] font-normal leading-relaxed text-s-ink-2">
+              <p className="mt-1 text-[14px] font-normal leading-relaxed text-s-ink-2">
                 Airbnb: {d.airbnb}
               </p>
               <span

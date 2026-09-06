@@ -42,11 +42,15 @@
 // plain class selector and source order is not something this wrapper controls; the scoped
 // class keeps the blast radius to these three boxes only.
 //
-// measured: per-service Book link is 74px wide x 38px tall via getBoundingClientRect (SalonServices.tsx:250) -- white fill, 1px hairline border, 13px font-weight 500, 9999px border-radius.
+// measured: per-service Book link (Current, unmodified) via getBoundingClientRect/getComputedStyle at 390x844 dpr 3 -- 73.53px wide x 37.5px tall, white fill rgb(255,255,255), 1px hairline border rgb(228,228,231), 13px font-weight 500, 9999px border-radius, box-shadow none. This 37.5px height is a genuine production touch-target gap (LOCKFILE's 44px floor), surfaced here rather than fixed here: SalonServices exposes no prop to reach this anchor (see Deviations), so raising Current's own height would mean forking the live component, out of this pass's scope.
 // measured: sticky-bar Book button via getComputedStyle (SalonMobileBookBar.tsx:80) -- full width, approx 50px tall (py-3.5 around a 15px line-height plus a 16px icon), ink FILL #1C1C1F / rgb(28,28,31) (`.bg-s-ink` resolves to the `s-ink-soft` token at runtime, not the #0A0A0A ink-TEXT hex; corrected 2026-09-05, was the stale reading that caused open item 1), white text, 15px font-weight 600, 9999px border-radius.
-// "Matched in shape"/"Matched in full" below raise the row button to a stated 44px height
-// (LOCKFILE touch-target floor, h-11), not the bar's 50px, since a row-sized control keeping
-// the a11y minimum is what "row-sized height" means here.
+// measured: "Matched in shape"/"Matched in full" Book anchors, re-measured after this pass's
+// kit-cta fix -- 83.95px wide x 44px tall (LOCKFILE touch-target floor, h-11, not the bar's
+// 50px, since a row-sized control keeping the a11y minimum is what "row-sized height" means
+// here), 14px font-weight 500 (TYPE_RAMP.cta; was 15px font-weight 600 before this pass),
+// 9999px border-radius, box-shadow none. Shape: white fill rgb(255,255,255), 1px border
+// rgb(228,228,231), text rgb(10,10,10). Full: fill rgb(28,28,31), border rgb(28,28,31), white
+// text.
 //
 // A fresh Playwright pass at /en/dev/directions-0905-r2/salon-book-button (390x844, dpr 3)
 // re-measures every Book button on THIS page; see the structured return value for that table.
@@ -61,6 +65,25 @@
 // round's required 125px bottom spacer (HideInBooking.tsx strips the real header + BottomNav on
 // every /dev path, and every round-2 mockup restores that exact space so the fold measures like
 // the real phone). All three fixed below, kit-only, structure and system unchanged.
+//
+// REPAIR 2026-09-06, second pass (open items 1-4): (1) "Matched in shape"/"Matched in full" had
+// hand-written the row Book anchor's override at 15px/font-weight:600 in the <style> block below,
+// a value that traced to nowhere in the kit (it was the STICKY-BAR's recipe, not a row-sized
+// control's); the kit is law, so both now read TYPE_RAMP.cta.size (imported from
+// "../_kit/tokens", interpolated into the CSS string below, currently 14) at font-weight 500,
+// the kit's own cta step (TYPE_RAMP.cta: 14px, weightClass "font-medium", which computes to 500
+// directly, no main-scoped clamp involved since the clamp only touches font-semibold/font-bold),
+// still inside the 44px capsule height (LOCKFILE touch-target floor), which this pass already
+// had right. (2) the Reference block below is deliberately
+// NOT touched by this fix and does not import from the kit at all: its whole job is to depict the
+// real, shipped SalonMobileBookBar recipe (15px/600) byte-for-byte, which is a different number
+// on purpose, so nothing here claims that block is kit-composed; only the two row overrides read
+// TYPE_RAMP. (3) the "system:" note below used to claim RULE; corrected to LIFT, see that block.
+// (4) the Current section's real 37.5px-tall Book button (measured live, getBoundingClientRect,
+// see the "measured" bullets below) is named explicitly as a genuine production touch-target gap
+// this harness surfaces, not something to "fix" on this page, since SalonServices exposes no
+// className/variant prop to reach it (see Deviations) and forking the live component is out of
+// this pass's scope.
 //
 // floors: this is a decision harness comparing one component's button recipe across four states
 //   (current / matched-in-shape / matched-in-full / the real reference), not a customer
@@ -81,29 +104,38 @@
 //   name already applies here unchanged -- not independently stress-tested with a fabricated
 //   longest-name row, per the no-fabrication rule.
 //
-// system: RULE, verbatim from _plans/R2_LOOK_SYSTEMS.md Part B, SYSTEM 2 / _kit/systems.ts:
-//   "there is no card anywhere on the screen; groups are separated by inset hairlines and gap
-//   size alone, and the hierarchy is carried entirely by a big anchor sentence over a populated
-//   middle type tier." This file's own four sections (Current / Matched in shape / Matched in
-//   full / Reference) are each a bare `<div>`, never a Card component of any variant this harness
-//   composes; the only separator this file itself draws between them is `border-t
-//   border-s-border` (the systems.ts "rule" hairline device). The 28px h1 is the page's one
-//   anchor per systems.ts "rule"'s "hierarchy carried entirely by a big anchor". CORRECTED against
-//   a live measurement taken while writing this line (getComputedStyle over every element,
-//   390x844): the page is NOT shadow-free -- 9 elements carry a box-shadow, all three copies of
-//   the real, unmodified SalonServices component's own internal `<ul class="... rounded-[24px]
-//   border border-s-border ... shadow-whisper">` list wrapper (that component's pre-existing
-//   grouped-list-card treatment, reused verbatim per the file's own Grounded-in note, not
-//   something this harness composes or could remove without forking the live component). Those 9
-//   elements also each carry both a border AND a shadow, which is the one cross-system rule this
-//   page cannot honour while showing the real component unforked. Departure from the full RULE
-//   spec, named rather than silently passed: the mandatory 18px section-heading tier (systems.ts
-//   "rule" notes, ">= 3 text runs") is not present -- this harness uses 13px labels for its four
-//   comparison captions instead, because the screen's job is a component-level A/B/C/D
-//   comparison, not a full-page RULE composition; the hairlines are also inset 16px (`mx-4`)
-//   rather than RULE's 24px, for the same reason. All three are pre-existing structural choices
-//   this repair pass leaves untouched (the brief scopes this pass to the three named open items
-//   only, not a system redesign or a fork of the live SalonServices component).
+// system: LIFT (RELABELED, second 2026-09-06 pass, open item 3; this block used to claim RULE).
+//   verbatim from _plans/R2_LOOK_SYSTEMS.md Part B, SYSTEM 1 / _kit/systems.ts: "the lifted white
+//   card is the only grouping device on the screen, so nothing carries a border and nothing
+//   carries a hairline; a soft shadow and the gap between cards do all the work." The prior label
+//   was RULE, whose own definition is "there is no card anywhere on the screen ... the hierarchy
+//   is carried entirely by a big anchor sentence over a populated middle type tier" and whose
+//   discriminator is "count(elements with a box-shadow) = 0" -- a claim this page could never
+//   pass, since the composed, unmodified SalonServices list wrapper
+//   (`<ul class="... rounded-[24px] border border-s-border ... shadow-whisper">`,
+//   SalonServices.tsx:165) has always carried shadow-whisper on all three copies. That mismatched
+//   discriminator claim is dropped here rather than repeated: LIFT is the closer label because a
+//   shadow-led grouped-list card is exactly LIFT's own signature device (systems.ts "lift" note:
+//   "card radius stays Solen's 16/24 ... shadow value stays shadow-whisper"), where RULE's
+//   grouping device is a hairline-only network under a mandatory >=3-run 18px section-heading
+//   tier, neither of which this harness has (no section headings; its four comparison captions
+//   are 13px labels, since the screen's job is a component-level A/B/C/D comparison, not a
+//   full-page composition in either system). Live-measured at 390x844 (getComputedStyle over
+//   every element): 9 elements carry a box-shadow (the three SalonServices `<ul>` wrappers' own
+//   shadow-whisper, pre-existing, reused verbatim per Grounded-in, not something this harness
+//   composes or could remove without forking the live component), and those same 9 elements each
+//   also carry a border. Departure from LIFT's own discriminator, named rather than silently
+//   passed: LIFT's discriminator also requires "count(elements carrying BOTH border and shadow)
+//   = 0" and a hairline ceiling of 1 per fold; this page fails both of those on the same
+//   pre-existing fact (SalonServices.tsx:165's border+shadow combination, and the three
+//   `border-t border-s-border` dividers this file draws between its own four sections at `mx-4`
+//   16px inset). This is the one cross-system rule ("nothing carries a border and a shadow at
+//   once") the page cannot honour while showing the real component unforked, same fact as before
+//   the relabel, now stated against the correct system. The 28px h1 stays the page's one display
+//   anchor per tokens.ts TYPE_RAMP.anchor / FLOORS LAW 6 -- that requirement is universal, not
+//   tied to whichever system is named. All of this is a pre-existing structural fact this repair
+//   pass leaves untouched (scoped to the four named open items only, not a system redesign or a
+//   fork of the live SalonServices component).
 //
 // emphasis-ok: the reference block's font-semibold class is a byte-for-byte reproduction of the
 // real sticky-bar button's class string (see Deviations above), not a styling choice; the inline
@@ -115,6 +147,7 @@
 import { ChevronRight } from "lucide-react";
 import { loadSalonDetailWithStatus } from "@/lib/salon-detail";
 import { SalonServices } from "@/app/[locale]/_components/salon/SalonServices";
+import { TYPE_RAMP } from "../_kit/tokens";
 
 const SALON_SLUG = "muse-beauty-studio";
 
@@ -149,8 +182,8 @@ export default async function SalonBookButtonDirections({
           justify-content: center !important;
           height: 44px !important;
           padding: 0 24px !important;
-          font-size: 15px !important;
-          font-weight: 600 !important;
+          font-size: ${TYPE_RAMP.cta.size}px !important;
+          font-weight: 500 !important;
         }
         /* #1C1C1F is .bg-s-ink's runtime computed background (the s-ink-soft token,
            app/globals.css "INK FILL vs INK TEXT" rule, owner 2026-08-15), not the #0A0A0A

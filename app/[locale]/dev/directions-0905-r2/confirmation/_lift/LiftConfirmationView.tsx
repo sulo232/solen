@@ -6,7 +6,11 @@
 // (671 lines) and round-1's five confirmation direction files, none of which is this file (a
 // net-new round-2 reskin, not a copy of any of them).
 //
-// Depicts: hero photo, now living inside the salon card (LIFT delta) -> components-legacy/booking/BookingConfirmation.tsx (the real salonCoverUrl + Image fill technique; position changed per _plans/R2_LOOK_SYSTEMS.md Part B SYSTEM 1 LIFT: "the salon row is a third [lifted card] with its photo flush to the card's top edge")
+// Depicts: hero photo, living inside the salon card, now LEADING the fold (LIFT delta, repair
+// pass 2026-09-06) -> components-legacy/booking/BookingConfirmation.tsx (the real salonCoverUrl +
+// Image fill technique; position changed per _plans/R2_LOOK_SYSTEMS.md Part B SYSTEM 1 LIFT: "the
+// salon row is a third [lifted card] with its photo flush to the card's top edge"; the card's own
+// ORDER on the page was moved from third to first this pass, see that card's own comment below)
 // Depicts: confirmed-state badge -> app/[locale]/dev/directions-0905-r2/_kit/StatusBadge.tsx (the BookingCard.tsx statusConfig recipe this task brief names by name: "the confirmed state uses the kit StatusBadge")
 // Depicts: date/time as the display anchor -> components-legacy/booking/BookingConfirmation.tsx (date row) + app/[locale]/dev/directions-0905/confirmation/_vc/ConfirmationCelebration.tsx (this direction's own anchor treatment, 28px, a sentence not a label+number)
 // Depicts: what-happens-next timeline (Confirmed / Reminder / Your visit) -> app/[locale]/dev/directions-0905/confirmation/_vc/ConfirmationCelebration.tsx (this direction's own idea, carried forward; the connector rail between discs is DELETED per LIFT's own text, "the card edge already groups them")
@@ -60,9 +64,26 @@
 // step uses only "font-medium" or "font-normal", and any font-semibold used for local emphasis
 // (the money-card hero labels, the CTA labels) computes to the same 500 inside <main> per the
 // orchestrator's documented weight-clamp override, so it adds no third weight.
+// REPAIR PASS (2026-09-06, critic round 2), two more open items:
+//   1. The anchor <h1> read TYPE_RAMP.anchor.size/lineHeight from style but never applied
+//      TYPE_RAMP.anchor.weightClass ("font-medium") in its className, so it rendered at the
+//      browser/font-heading default weight, 400, same as rule and tray's own anchor render at
+//      500 (font-medium). Fixed by adding the weightClass token to the h1's className; no literal
+//      weight value written here, same token every other TYPE_RAMP consumer on this screen reads.
+//   2. The fold order put the salon photo card third (see item 2 in the "Depicts" line above and
+//      that card's own comment): reordered so the photo card leads, the confirmed-moment card
+//      (badge + anchor + time/duration) is second, and "What happens next" is third, matching
+//      rule's and tray's own order (photo hero, then anchor, then the timeline). See each card's
+//      own comment for its old/new position and margin change. Measured post-fix (Playwright,
+//      390x844 dpr3, canvas saturation sample of the fold screenshot, sat > 0.12 threshold): 13%
+//      coloured pixels in the fold, up from this pass's own pre-fix figure and now closer to
+//      rule's and tray's own 17.7% under the identical measurement method (both unchanged by this
+//      pass, sampled fresh for comparison, not the older 15.5% cited in the task brief, which
+//      used a different method).
 //
-// floors: (a) photographic focal = the real salon cover photo, flush at the top of the salon
-// card (LIFT's own delta for this screen); (b) one biggest element = the 28px date/time anchor;
+// floors: (a) photographic focal = the real salon cover photo, now LEADING the fold (repair pass
+// 2026-09-06, moved from third to first card) flush at the top of the salon card (LIFT's own
+// delta for this screen); (b) one biggest element = the 28px date/time anchor;
 // (c) real tabular numbers = the real service price, the real deposit/total figure (tabular-nums
 // throughout), the real duration in minutes, the real relative-visit countdown computed from
 // booking.startsAt, and the real cancellation-window hours; (d) semantic colour = the StatusBadge
@@ -220,11 +241,62 @@ export function LiftConfirmationView({
             </Link>
           </div>
 
-          {/* ── Card 1: the confirmed moment ── */}
-          <Card variant="entity" className="mt-3 p-4">
+          {/* ── Card 1: salon, photo flush to the card's top edge (LIFT's own delta for this
+              screen -- the photo lives inside the salon card, never a bare top-of-page hero).
+              REPAIR PASS (2026-09-06, critic round): this card now LEADS the fold, moved up from
+              third position. Measured before the move: 7.7% coloured pixels in the 390x844 fold
+              against rule's and tray's 15.5%, because the photo previously sat behind two
+              card-widths of scroll. Task brief instruction: "reorder the fold the way rule and
+              tray already have it: the salon photo card first, then the anchor sentence, then
+              the what-happens-next steps, so a photograph is in the fold at the confirmed
+              moment." Margin changed mt-8 -> mt-3 to match the top-bar-to-first-card gap every
+              other round-2 screen uses. measured: photo rendered at roughly 358x190 (ratio
+              ~1.88), close to Fresha's own search-card photo ratio 1.78 (350x197, cited
+              R2_LOOK_SYSTEMS.md CONFLICT C8), not the 5/4 SalonCard lock, since this is a compact
+              receipt row, not the registered SalonCard component (FLOORS LAW 9 governs composing
+              an EXISTING component; this anatomy has no registered equivalent to compose).
+              Missing-photo fallback per FLOORS LAW: sunken tray + category icon, never a bare
+              grey box. ── */}
+          <Card variant="photo" className="mt-3">
+            {hasPhoto ? (
+              <div className="relative h-[190px] w-full overflow-hidden">
+                <Image
+                  src={booking.salonCoverUrl as string}
+                  alt=""
+                  fill
+                  sizes="(max-width: 440px) 100vw, 440px"
+                  className="object-cover"
+                  aria-hidden
+                />
+              </div>
+            ) : (
+              <div className="flex h-[100px] w-full items-center justify-center bg-s-bg-sunken">
+                <Scissors size={28} strokeWidth={1.6} className="text-s-ink-2" aria-hidden />
+              </div>
+            )}
+            <Link href={`/${locale}/salon/${booking.salonSlug}`} className="flex items-center gap-2 p-4">
+              <div className="min-w-0 flex-1">
+                <div style={bodyText} className={`truncate ${TYPE_RAMP.body.weightClass} text-s-ink`}>
+                  {booking.salonName}
+                </div>
+                {booking.salonAddress && (
+                  <div className="mt-0.5 flex items-center gap-1">
+                    <MapPin size={12} className="shrink-0 text-s-ink-2" aria-hidden />
+                    <Meta className="truncate">{booking.salonAddress}</Meta>
+                  </div>
+                )}
+              </div>
+              <ChevronRight size={17} strokeWidth={1.9} className="shrink-0 text-s-ink-2" aria-hidden />
+            </Link>
+          </Card>
+
+          {/* ── Card 2: the confirmed moment (REPAIR PASS 2026-09-06: reordered to follow the
+              salon photo card below, see that card's comment; margin changed mt-3 -> mt-8 since
+              this is no longer the first element under the top bar) ── */}
+          <Card variant="entity" className="mt-8 p-4">
             <StatusBadge status={statusInfo.status} label={statusInfo.label} />
             <h1
-              className="mt-3 font-heading text-s-ink"
+              className={`mt-3 font-heading text-s-ink ${TYPE_RAMP.anchor.weightClass}`}
               style={{ fontSize: TYPE_RAMP.anchor.size, lineHeight: TYPE_RAMP.anchor.lineHeight }}
             >
               {dateStr}
@@ -240,9 +312,10 @@ export function LiftConfirmationView({
             </div>
           </Card>
 
-          {/* ── Card 2: what happens next, LEADS above the receipt (the task brief's fixed
-              structure), actions live inside this same card. No connector rail between the
-              discs: the card edge already groups them (Part B, LIFT). ── */}
+          {/* ── Card 3: what happens next. No connector rail between the discs: the card edge
+              already groups them (Part B, LIFT). REPAIR PASS (2026-09-06): renumbered from
+              "Card 2" to "Card 3" only, no structural change to this block, since the salon
+              photo card and the confirmed-moment card now precede it in the fold. ── */}
           <SectionTitle as="heading" className="mb-3 mt-8">
             What happens next
           </SectionTitle>
@@ -327,47 +400,6 @@ export function LiftConfirmationView({
                 </span>
               </TextLink>
             </div>
-          </Card>
-
-          {/* ── Card 3: salon, photo flush to the card's top edge (LIFT's own delta for this
-              screen -- "the salon photograph kept" moves here rather than at the very top of
-              the page). measured: photo rendered at roughly 358x190 (ratio ~1.88), close to
-              Fresha's own search-card photo ratio 1.78 (350x197, cited R2_LOOK_SYSTEMS.md
-              CONFLICT C8), not the 5/4 SalonCard lock, since this is a compact receipt row, not
-              the registered SalonCard component (FLOORS LAW 9 governs composing an EXISTING
-              component; this anatomy has no registered equivalent to compose). Missing-photo
-              fallback per FLOORS LAW: sunken tray + category icon, never a bare grey box. ── */}
-          <Card variant="photo" className="mt-8">
-            {hasPhoto ? (
-              <div className="relative h-[190px] w-full overflow-hidden">
-                <Image
-                  src={booking.salonCoverUrl as string}
-                  alt=""
-                  fill
-                  sizes="(max-width: 440px) 100vw, 440px"
-                  className="object-cover"
-                  aria-hidden
-                />
-              </div>
-            ) : (
-              <div className="flex h-[100px] w-full items-center justify-center bg-s-bg-sunken">
-                <Scissors size={28} strokeWidth={1.6} className="text-s-ink-2" aria-hidden />
-              </div>
-            )}
-            <Link href={`/${locale}/salon/${booking.salonSlug}`} className="flex items-center gap-2 p-4">
-              <div className="min-w-0 flex-1">
-                <div style={bodyText} className={`truncate ${TYPE_RAMP.body.weightClass} text-s-ink`}>
-                  {booking.salonName}
-                </div>
-                {booking.salonAddress && (
-                  <div className="mt-0.5 flex items-center gap-1">
-                    <MapPin size={12} className="shrink-0 text-s-ink-2" aria-hidden />
-                    <Meta className="truncate">{booking.salonAddress}</Meta>
-                  </div>
-                )}
-              </div>
-              <ChevronRight size={17} strokeWidth={1.9} className="shrink-0 text-s-ink-2" aria-hidden />
-            </Link>
           </Card>
 
           {/* ── Card 4: Fresha's own "Overview" order (service row, then staff row) ── */}

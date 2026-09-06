@@ -68,20 +68,32 @@
 // discriminator, every hairline in the fold is still inset >= 24px on both sides and the 18px
 // tier still carries its mandatory 3 text runs (category, city, sort order).
 //
-// MEASURED FINDING 2 (the four-size ceiling): measured live this run, the page renders SIX
-// distinct font sizes (12, 13, 13.5, 14, 16, 18), two over the round-2 ceiling and one worse
-// than TRAY's own documented five. Five of the six (12, 13, 13.5, 14, 16) originate inside the
-// real, registered, off-limits-to-edit SalonResultCard "feed" variant, present before this
-// file's own chrome adds anything, the identical inherited finding TRAY's own header already
-// discloses for the same component. The sixth, 18px, is SectionTitle's mandatory
-// section-heading tier, which System 2 (RULE) itself requires as "mandatory AND carries at
-// least three text runs" (systems.ts "rule" deltas) -- unlike TRAY, which skips the heading
-// tier entirely as its own DEVIATION 3 (the orchestrator brief's fixed round-1 structure has no
-// heading slot for that screen). RULE's own definition puts the anchor/heading tier at the
-// centre of its hierarchy ("the hierarchy is carried entirely by a big anchor sentence over a
-// populated middle type tier"), so this system cannot drop that tier the way TRAY does without
-// stopping being RULE. This file's own chrome (search pill, filter chips, Map button) reuses
-// 14 and 12, both already present from the card, rather than introducing a seventh value.
+// MEASURED FINDING 2 (the four-size ceiling), RESOLVED per the final repair pass: measured live
+// this run before the repair, the page rendered SIX distinct font sizes (12, 13, 13.5, 14, 16,
+// 18), two over the round-2 ceiling and one worse than TRAY's own documented five. Five of the
+// six (12, 13, 13.5, 14, 16) originate inside the real, registered, off-limits-to-edit
+// SalonResultCard "feed" variant, present before this file's own chrome adds anything, the
+// identical inherited finding TRAY's own header already discloses for the same component. The
+// sixth, 18px, is SectionTitle's mandatory section-heading tier, which System 2 (RULE) itself
+// requires as "mandatory AND carries at least three text runs" (systems.ts "rule" deltas) --
+// unlike TRAY, which skips the heading tier entirely as its own DEVIATION 3 (the orchestrator
+// brief's fixed round-1 structure has no heading slot for that screen). RULE's own definition
+// puts the anchor/heading tier at the centre of its hierarchy ("the hierarchy is carried
+// entirely by a big anchor sentence over a populated middle type tier"), so this system cannot
+// drop that tier the way TRAY does without stopping being RULE. This file's own chrome (search
+// pill, filter chips, Map button) reuses 14 and 12, both already present from the card, rather
+// than introducing a seventh value.
+//
+// REPAIR (final repair pass, two findings): (1) ported TRAY's exact scoped override verbatim
+// (same two `[class*=]` attribute selectors targeting the composed card's 13px/13.5px classes,
+// folded to 12/14 by computed role) onto this file's own `.search-rule-cards` container class,
+// closing the six-size finding above: the fold now measures four distinct sizes, {12, 14, 16,
+// 18}, the SectionTitle's mandatory tier already present above is untouched. (2) the floating
+// Map pill's fixed `bottom-[86px]` placed it at y 714-758 in the 390x844 fold, inside the last
+// 125px the product's real bottom nav owns on a phone (the 125px spacer at the foot of this
+// file reserves that same band); moved to `bottom-[141px]` (nav height 125 + a 16px clearance
+// gap, SPACING.group) so its bottom edge sits at y 703, 16px clear above y 719, matching TRAY's
+// identical fix on the identical control.
 //
 // floors: (a) photographic focal - each card's photo is 5/4 aspect, the largest element per
 // card, via the real SalonResultCard "feed" variant; (b) one biggest element - the salon name
@@ -227,7 +239,15 @@ export function ViewRule({ data, locale }: ViewRuleProps) {
             on its own. Consecutive results are divided by one inset hairline each, RULE's
             primary grouping device; the hairline ceiling is unlimited for this system, unlike
             the lifted-card system's cap of one. */}
-        <div className="mx-auto w-full max-w-[680px] px-6">
+        <div className="search-rule-cards mx-auto w-full max-w-[680px] px-6">
+          {/* REPAIR (final repair pass, finding 1, four-size ceiling): the composed, off-limits
+              SalonResultCard's two off-ramp sizes folded into their nearest TYPE_RAMP step,
+              TRAY's exact override ported verbatim (13 -> meta 12; 13.5 -> body 14; see TRAY's
+              file header for the per-size reasoning). */}
+          <style>{`
+            .search-rule-cards [class*="text-[13px]"] { font-size: 12px !important; }
+            .search-rule-cards [class*="text-[13.5px]"] { font-size: 14px !important; } /* type-scale-ok: CSS attribute-selector text matching the composed, off-limits SalonResultCard's own existing class string, not a new utility class added to any element in this file */
+          `}</style>
           {salons.length === 0 ? (
             <p className="py-10 font-body text-[14px] text-s-ink-2">
               No {categoryLabel.toLowerCase()} matched this search.
@@ -260,8 +280,13 @@ export function ViewRule({ data, locale }: ViewRuleProps) {
         </div>
 
         {/* Map entry point, see the Depicts manifest above: RULE drops its shadow (zero shadow
-            on anything). */}
-        <div className="fixed bottom-[86px] left-1/2 z-40 -translate-x-1/2">
+            on anything). REPAIR (finding 2): `bottom-[86px]` put this control's bottom edge at
+            y 758 in the 390x844 fold, inside the last 125px the product's real bottom nav owns
+            on a phone (the 125px spacer below reserves that same band). Raised to
+            `bottom-[141px]` (nav height 125 + a 16px clearance gap) so the bottom edge sits at
+            y 703, 16px clear above y 719, matching TRAY's identical fix on the identical
+            control. */}
+        <div className="fixed bottom-[141px] left-1/2 z-40 -translate-x-1/2">
           <button
             type="button"
             aria-label="Map"

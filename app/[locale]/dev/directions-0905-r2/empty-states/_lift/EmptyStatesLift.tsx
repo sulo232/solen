@@ -72,17 +72,23 @@
 // rail's own 12px Meta caption satisfies the fix described above without introducing a
 // section-heading tier; the four sizes actually on this page (excluding the site-wide sr-only
 // "Skip to content" link, invisible chrome shared by every route, not this screen's own
-// content) are 28 (anchor)/15 (cta, inside PrimaryButton)/14 (body, subline)/12 (meta, the rail
-// caption + LookTile's own style-name caption), staying inside the ceiling. Logged as a
-// deviation, not silently dropped.
+// content) are 28 (anchor)/14 (body: subline AND the button label, same slot per tokens.ts's own
+// A5-vs-C7 reconciliation, distinguished by weight not size)/12 (meta, the rail caption +
+// LookTile's own style-name caption), three distinct sizes, staying inside the ceiling. Logged
+// as a deviation, not silently dropped.
 //
-// SCOPE NOTE on "one primary commit button per screen": the task brief's own literal structure
-// puts "one action... on EACH of the four states", i.e. four ink PrimaryButtons total across
-// this comparison document, one per independent real page. This is the brief's explicit,
-// dated resolution of the generic cross-system "one commit button per screen" rule for this
-// specific multi-state comparison surface (matching how BookingsListLift.tsx and the other
-// round-2 lift screens each carry exactly one on THEIR own single real screen); not a
-// deviation, since the brief states it directly.
+// SCOPE NOTE on "one primary commit button per screen" (CORRECTED, final repair pass, this
+// session, open item 1): this note used to read the task brief's "one action... on EACH of the
+// four states" as licensing four ink commit buttons total on one page, one per independent real
+// state. That reading was wrong: the cross-system rule ("one ink PrimaryButton per screen") is a
+// hard, exception-free rule for every round-2 screen per the task brief for this repair pass, and
+// the sibling TRAY system already resolves this exact four-states-one-page shape without
+// breaking it (EmptyStatesTrayView.tsx: one PrimaryButton on its first-rendered state, a neutral
+// outline SecondaryButton on the other three). This file now does the same (see EmptyUnit.tsx's
+// own REPAIR 4 and the four call sites below): the "one action per state" structure is kept
+// exactly as the brief describes it (every state still gets one action), only the FILL of three
+// of those four actions changed from ink to neutral outline, so the page carries exactly one ink
+// commit button, matching the round-2-wide rule instead of contradicting it.
 //
 // floors, per constituent state (this page depicts four independent real screens, not one):
 // (a) photographic focal -- the LookTile photos (looks state); (b) one clearly biggest element
@@ -145,6 +151,7 @@ export async function EmptyStatesLift({ locale }: { locale: string }) {
             subline="Collect inspiration from salon profiles and Inspo, and find it again here."
             ctaLabel="Open Inspo"
             ctaHref="/en/inspo"
+            ctaVariant="primary"
           />
           {data.looks.length > 0 && (
             <div>
@@ -176,6 +183,7 @@ export async function EmptyStatesLift({ locale }: { locale: string }) {
           subline="Book your next treatment now"
           ctaLabel="Find a salon"
           ctaHref="/en/search"
+          ctaVariant="secondary"
         />
 
         {/* ---- 3. Favorites (app/[locale]/profile/favorites/page.tsx empty slot) ---- */}
@@ -186,6 +194,7 @@ export async function EmptyStatesLift({ locale }: { locale: string }) {
           subline="Tap the heart on a salon and it lands here, your shortlist for next time."
           ctaLabel="Open Inspo"
           ctaHref="/en/inspo"
+          ctaVariant="secondary"
         />
 
         {/* ---- 4. Vouchers (app/[locale]/profile/vouchers/page.tsx empty slot) ---- */}
@@ -196,6 +205,7 @@ export async function EmptyStatesLift({ locale }: { locale: string }) {
           subline="You don't have any vouchers or credit yet."
           ctaLabel="Give a new voucher"
           ctaHref="/en/vouchers"
+          ctaVariant="secondary"
         />
 
         {/* HideInBooking strips the header + bottom nav on every /dev path; this reproduces the

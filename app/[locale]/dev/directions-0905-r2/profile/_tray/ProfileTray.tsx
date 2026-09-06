@@ -80,18 +80,32 @@
 // scoped to _tray/ only and the swap needs either a shared page.tsx change or a server-wrapper
 // split, both left as an open, named decision rather than picked silently.
 //
+// REPAIR PASS #2 (this session): (1) three literal `text-[14px]` classes had bypassed the kit
+// (the sign-out button, the hero's salon-name h3, the service-line p); all three now read their
+// size from `style={{ fontSize: TYPE_RAMP.body.size }}` instead, same rendered 14px, traceable
+// to the token. (2) the missing-photo fallback tile painted COLOR.tray (#F4F4F5) directly on
+// top of Band 2's own #F4F4F5 tray background: a measured 350.8x197.3 box with computed
+// background identical to its parent, i.e. no edge at all, exactly the "bare grey field" floor
+// (e) below claimed did not exist on this screen. It now renders `bg-white`, so the fallback
+// tile has a real boundary against the tray band precisely the way this system's own
+// discriminator already requires elsewhere ("every group whose computed background is white
+// while its parent is #F4F4F5 carries border-width: 0 and box-shadow: none", systems.ts tray
+// discriminator): white-on-tray IS this system's edge device, and the fallback tile is a group
+// like any other, not an exemption from it.
+//
 // floors (all six): (a) photographic focal = the hero's real salon cover photo WHEN one is
 // available; this seed customer's actual next booking happens to sit at the one salon carrying
 // the banned greyscale photo (see BANNED_GREYSCALE_PHOTO_ID below), so THIS render takes the
-// spec'd missing-photo fallback instead (tray-tinted icon + initial), which means floor (a) and
-// the ~1/3 imagery-presence floor are not met by this particular render, honestly, not silently.
-// CORRECTED this pass (critic finding): the sibling _lift/ProfileLift.tsx already resolves this
-// identical case with a swap, an alternate photo from the SAME salon's own `gallery_urls`, and
-// this file's own prior comment near BANNED_GREYSCALE_PHOTO_ID mischaracterized that swap as a
-// same-salon-identity risk, which was wrong; see the corrected reasoning there. TRAY keeps the
-// fallback here for a scope reason, not a correctness one: doing the swap would mean touching
-// the shared page.tsx router or splitting this file into a server-wrapper-plus-client-view pair
-// the way ProfileLift.tsx/ProfileLiftView.tsx already do, both outside this repair pass's scope
+// spec'd missing-photo fallback instead (a WHITE tile, since REPAIR PASS #2 above, holding the
+// category icon + initial), which means floor (a) and the ~1/3 imagery-presence floor are not
+// met by this particular render, honestly, not silently. CORRECTED this pass (critic finding):
+// the sibling _lift/ProfileLift.tsx already resolves this identical case with a swap, an
+// alternate photo from the SAME salon's own `gallery_urls`, and this file's own prior comment
+// near BANNED_GREYSCALE_PHOTO_ID mischaracterized that swap as a same-salon-identity risk, which
+// was wrong; see the corrected reasoning there. TRAY keeps the fallback here for a scope reason,
+// not a correctness one: doing the swap would mean touching the shared page.tsx router or
+// splitting this file into a server-wrapper-plus-client-view pair the way
+// ProfileLift.tsx/ProfileLiftView.tsx already do, both outside this repair pass's scope
 // (tray-only, kit-only, structure unchanged). Which of the two honest treatments becomes the
 // round-2 standard for this entity is an open decision, surfaced here rather than picked
 // silently; (b) one clearly biggest element = the hero card's own footprint (photo/fallback +
@@ -100,9 +114,14 @@
 // (d) semantic-colour moment = the StatusBadge's icon on the hero (confirmed=green check /
 // pending=amber clock) plus the sign-out link's error-red text, unchanged from the real hub;
 // (e) no dead-grey zone = every tray band carries a populated white group (never a bare grey
-// field); (f) worst-case content holds = salon name / service line / stylist name all
-// `truncate`, matching Row's own truncate label, so an arbitrarily long real name never breaks
-// the two-ink-anchor rule (name larger than price, both ink) or the row grammar.
+// field). CORRECTED this pass (repair-pass finding, not previously true): the missing-photo
+// fallback tile itself was exactly the bare-grey-field this floor forbids, a tray-tinted box
+// sitting directly on the tray band with zero computed contrast against its own parent (measured
+// live before the fix: both backgrounds rgb(244,244,245)). REPAIR PASS #2 above fixes it to a
+// white tile, which is what makes this floor actually true rather than merely claimed; (f)
+// worst-case content holds = salon name / service line / stylist name all `truncate`, matching
+// Row's own truncate label, so an arbitrarily long real name never breaks the two-ink-anchor rule
+// (name larger than price, both ink) or the row grammar.
 //
 // system: TRAY, verbatim from R2_LOOK_SYSTEMS.md Part B, SYSTEM 3: "the canvas does the
 // separating, so white groups sit on a #F4F4F5 band carrying neither a border nor a shadow, and
@@ -313,8 +332,8 @@ export function ProfileTray({ locale, data }: ProfileTrayProps) {
         <form action="/api/auth/logout" method="post" className="text-center" style={{ marginTop: SPACING.section }}>
           <button
             type="submit"
-            className="inline-flex items-center gap-[7px] text-[14px] font-medium transition-transform"
-            style={{ color: COLOR.error.DEFAULT }}
+            className="inline-flex items-center gap-[7px] font-medium transition-transform"
+            style={{ color: COLOR.error.DEFAULT, fontSize: TYPE_RAMP.body.size }}
           >
             <LogOut size={17} strokeWidth={1.9} aria-hidden />
             {t("signOut")}
@@ -406,10 +425,15 @@ function HeroAppointment({
               className="object-cover"
             />
           ) : (
-            <div
-              className="absolute inset-0 flex flex-col items-center justify-center gap-1.5"
-              style={{ backgroundColor: COLOR.tray }}
-            >
+            // Repair-pass finding: this tile previously painted COLOR.tray (#F4F4F5) directly
+            // on top of Band 2's own #F4F4F5 tray background, an invisible 350.8x197.3 box with
+            // no edge at all (measured live, see the corrected floor (a) note above). TRAY's own
+            // rule is that a white GROUP sitting on the tray band is what carries the boundary
+            // ("the canvas is its boundary": white-on-tray IS the edge, never a second tray-tinted
+            // fill on top of the tray itself), so this fallback now renders white, matching the
+            // locked missing-photo fallback's own "sunken bg" spec at the level that actually has
+            // contrast here: white against this screen's tray band, not tray against tray.
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 bg-white">
               <Scissors className="h-8 w-8" style={{ color: COLOR.meta }} strokeWidth={1.5} aria-hidden />
               {appointment.salonName?.trim()?.[0] ? (
                 <span aria-hidden>
@@ -443,13 +467,19 @@ function HeroAppointment({
 
             <div className="min-w-0 flex-1 pt-0.5">
               <div className="flex items-start justify-between gap-2">
-                <h3 className="min-w-0 truncate font-heading text-[14px] font-medium text-s-ink">
+                <h3
+                  className="min-w-0 truncate font-heading font-medium text-s-ink"
+                  style={{ fontSize: TYPE_RAMP.body.size }}
+                >
                   {appointment.salonName}
                 </h3>
                 <StatusBadge status={appointment.status as BookingStatus} label={statusLabel} className="flex-none" />
               </div>
               {appointment.serviceName ? (
-                <p className="mt-1 truncate text-[14px] font-normal text-s-ink">
+                <p
+                  className="mt-1 truncate font-normal text-s-ink"
+                  style={{ fontSize: TYPE_RAMP.body.size }}
+                >
                   {appointment.serviceName}
                   {appointment.staffName ? (
                     <>

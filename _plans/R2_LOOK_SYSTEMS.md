@@ -415,6 +415,7 @@ four-size ceiling as the working default until he closes it. **Owner call, alrea
 - **Fresha:** venue 5, search 3 (cited).
 - **Treatwell:** 6 across the site (cited).
 - **Verdict: ASK**, and the base does not wait on it: A5 ships four sizes, which is legal under either outcome.
+- The CTA label size (C7) rides on this decision: four sizes means CTA renders 14, five allowed means CTA can go back to 15.
 
 ### C7. CONFLICT [the CTA label size on a phone]
 
@@ -423,6 +424,11 @@ Scale table says mobile 14, desktop 15. `LOCKFILE` §2.5's role registry says 15
 15px on every primary button. **Verdict: DECIDE.** 15px, matching two of the three sources and what
 already ships; the `LOCKFILE` §2 row gets the same phone/desktop reconciliation the Core ramp got on
 2026-09-04. `TASTE_AUTHORITY` step 6: every candidate is already legal and one adjacent step apart.
+
+**UPDATE 2026-09-06:** round 2's kit renders every CTA at 14px on mobile, because 15 makes any
+button-bearing screen render a fifth distinct font size (28/18/15/14/12) against the NEVER-AGAIN
+floor-2 four-size ceiling. That is a second DECIDE colliding with this one, so the value is not
+decidable and goes to him under C6, with 14 standing as the working default. **Verdict: was DECIDE, now ASK under C6.**
 
 ### C8. CONFLICT [the salon photo ratio against the density floor]
 

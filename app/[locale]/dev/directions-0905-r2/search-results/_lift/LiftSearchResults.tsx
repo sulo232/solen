@@ -74,7 +74,8 @@
 //
 // floors: (a) photographic focal - every card's photo is 5/4, the largest single element on
 // screen; (b) one biggest element - the salon name is the clear per-card anchor by SIZE (16px vs
-// 12-13.5px meta), SalonResultCard's own locked hierarchy; (c) real tabular number - real CHF
+// 12-14px meta, post four-size-ceiling REPAIR below), SalonResultCard's own locked hierarchy;
+// (c) real tabular number - real CHF
 // prices on the (up to) 3 service rows plus a real rating value, nothing fabricated (this
 // route's loader mirrors the live salons-API visibility filters and renders zero cards, never
 // invented ones, if a city/category genuinely has none); (d) semantic colour - the star rating
@@ -88,11 +89,38 @@
 // between cards do all the work." Applied: each result sits inside the kit's shadowed,
 // borderless <Card variant="photo">; the search pill sheds its border and keeps only its shadow;
 // zero hairline dividers anywhere on the screen.
+//
+// REPAIR (final repair pass, three findings measured live at /en/dev/directions-0905-r2/search-
+// results?s=lift, 390x844 dpr3):
+// 1. Four-size ceiling: the composed, off-limits SalonResultCard "feed" variant carried five
+//    distinct sizes on its own (16/14/13/13.5/12), one over budget, same root cause TRAY's own
+//    header already named and fixed for that sibling. Ported TRAY's exact scoped override
+//    verbatim (same two `[class*=]` attribute selectors, same target sizes: 13 -> 12, 13.5 -> 14
+//    by computed role, see TRAY's file for the per-size reasoning), scoped to
+//    `.search-lift-cards` instead of `.search-tray-cards`. Combined with finding 2 below, the
+//    fold now measures four distinct sizes: {12, 14, 16, 18}.
+// 2. Missing mandatory 18px section heading (A5 row 2, "mandatory on every screen, not
+//    optional"): this file had no SectionTitle at all. Added the kit's SectionTitle
+//    (`as="heading"`, TYPE_RAMP.sectionHeading, 18/500) directly above the results column,
+//    reading "Popular in {cityName}", the identical real, non-fabricated copy and placement
+//    TRAY's own sibling file already uses for this same screen (messages/en.json
+//    "popularInBasel"/"railTitle" convention), so the same heading tier reads the same way on
+//    both directions rather than inventing a second phrasing.
+// 3. Filters icon button: previously the kit's Pill (TabPill) at size="md", which pads an
+//    icon-only child to 50x44 (px-4 both sides) in TabPill's own outline+inactive fill (white +
+//    `text-s-ink-2` grey icon, #6B6B6B) -- a visibly wider, greyer control than its RULE/TRAY
+//    siblings' 44x44 white-bg/hairline-border/ink-icon (#0A0A0A) circle on this identical
+//    control. TabPill has no square/icon-only size variant to ask for instead, so (matching
+//    DEVIATION 2's own precedent in the TRAY/RULE siblings, "built from kit tokens only" rather
+//    than forcing an icon through a text-pill primitive) this button is now a plain native
+//    control at RULE's exact classes (h-11 w-11 rounded-full border-s-border bg-white
+//    text-s-ink), dropping the Pill wrapper for this one control only; the Sort pill beside it
+//    is untouched and still composes the kit's real Pill.
 
 import { Search, SlidersHorizontal, ChevronDown, Map as MapIcon } from "lucide-react";
 import { SalonResultCard } from "@/app/[locale]/_components/search/SalonResultCard";
 import type { SearchResultsData } from "@/app/[locale]/dev/directions-0905/search-results/_va/data";
-import { KitProvider, Card, Pill, TYPE_RAMP } from "../../_kit";
+import { KitProvider, Card, Pill, SectionTitle, TYPE_RAMP } from "../../_kit";
 
 export interface LiftSearchResultsProps {
   data: SearchResultsData;
@@ -109,6 +137,10 @@ export function LiftSearchResults({ data, locale }: LiftSearchResultsProps) {
   const salons = [...data.salons].sort(
     (a, b) => Number(a.photoUrl?.includes("photo-1560066984")) - Number(b.photoUrl?.includes("photo-1560066984")),
   );
+  // REPAIR (mandatory 18px section heading, A5): same real, non-fabricated copy convention
+  // TRAY's sibling file already uses on this identical screen (messages/en.json "popularInBasel"
+  // / "railTitle": "Popular in Basel"). See header REPAIR note 2.
+  const sectionHeadingLabel = cityName ? `Popular in ${cityName}` : "Popular near you";
 
   return (
     <KitProvider system="lift">
@@ -124,16 +156,23 @@ export function LiftSearchResults({ data, locale }: LiftSearchResultsProps) {
           </div>
         </div>
 
-        {/* Filter row: the kit's Pill only (composes the real, registered TabPill), never a
-            hand-rolled button. Two pills (Filters, Sort) -- kept short so this row's border
-            count stays under the fold's shadow count (search pill + each lifted card + the Map
-            button); see the header note's measured section for the live tally. Static: no
-            filter/sort sheet wired this round (drift-ok, matches ViewA.tsx's own static row). */}
+        {/* Filter row. REPAIR (finding 3): the Filters icon button used to be the kit's Pill at
+            size="md", which pads an icon-only child to a 50x44 white/grey stadium -- wider and
+            greyer than RULE/TRAY's own 44x44 white/hairline/ink-icon circle on this identical
+            control (TabPill has no icon-only square size to ask for instead). Now a plain native
+            control at RULE's exact classes, matching both siblings; the Sort pill keeps composing
+            the kit's real Pill, untouched. Static: no filter/sort sheet wired this round
+            (drift-ok, matches ViewA.tsx's own static row). */}
         <div className="mx-auto w-full max-w-[680px] px-4 pt-5">
           <div className="flex items-center gap-2">
-            <Pill active={false} onClick={() => {}} ariaLabel="Filters" size="md"> {/* drift-ok: static mockup chrome, no filter sheet wired this round */}
+            <button
+              type="button"
+              aria-label="Filters"
+              onClick={() => {}} // drift-ok: static mockup chrome, no filter sheet wired this round
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border bg-white text-s-ink"
+            >
               <SlidersHorizontal size={16} strokeWidth={1.9} aria-hidden />
-            </Pill>
+            </button>
             <Pill active={false} onClick={() => {}} size="md"> {/* drift-ok: static mockup chrome, no sort sheet wired this round */}
               Sort
               <ChevronDown size={14} strokeWidth={1.8} className="opacity-50" aria-hidden />
@@ -150,8 +189,18 @@ export function LiftSearchResults({ data, locale }: LiftSearchResultsProps) {
             card's own overflow-hidden clip their corners. He overruled the density floor for
             this direction knowing it fits about one card in the fold; this maps every real
             result the loader returns rather than truncating the list, so the "one card" is what
-            the fold shows, not a hard cap on the page. */}
-        <div className="mx-auto flex w-full max-w-[680px] flex-col gap-6 px-4 pt-6 pb-[125px]">
+            the fold shows, not a hard cap on the page. Opens with the kit's SectionTitle (18/500,
+            A5's mandatory tier, REPAIR finding 2 above), same copy convention as TRAY's sibling. */}
+        <div className="search-lift-cards mx-auto flex w-full max-w-[680px] flex-col gap-6 px-4 pt-6 pb-[125px]">
+          <SectionTitle className="-mb-2">{sectionHeadingLabel}</SectionTitle>
+          {/* REPAIR (finding 1, four-size ceiling): the composed, off-limits SalonResultCard's
+              two off-ramp sizes folded into their nearest TYPE_RAMP step, TRAY's exact override
+              ported verbatim onto this file's own container class (13 -> meta 12; 13.5 -> body
+              14; see TRAY's file header for the per-size reasoning). */}
+          <style>{`
+            .search-lift-cards [class*="text-[13px]"] { font-size: 12px !important; }
+            .search-lift-cards [class*="text-[13.5px]"] { font-size: 14px !important; } /* type-scale-ok: CSS attribute-selector text matching the composed, off-limits SalonResultCard's own existing class string, not a new utility class added to any element in this file */
+          `}</style>
           {salons.map((s, i) => (
             <Card key={s.id} variant="photo">
               <div className="p-4">

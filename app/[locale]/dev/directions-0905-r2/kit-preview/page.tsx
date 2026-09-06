@@ -29,10 +29,18 @@
 // test (app/[locale]/dev/directions-0905-r2/_kit/*.tsx) around this real data rather than
 // citing a single source page.
 //
-// measured: see the structured return value of the session that built this file for the
-// Playwright pass at 390x844 (dpr 3) on
-// /en/dev/directions-0905-r2/kit-preview?s=lift|rule|tray -- pill height, badge
-// padding/font-size, button height/radius, and the four type-ramp sizes.
+// measured: Playwright, 390x844, dpr 3, /en/dev/directions-0905-r2/kit-preview?s=lift|rule|tray,
+// networkidle, re-run after the Pill size-prop confirmation and the Card bordered-prop addition.
+// 0 console errors on all three variants. Pill: 44px tall, 14px/500, matching A1's "md" default
+// (not TabPill's own 13px "sm" fallback). New bordered Card example (variant="entity"): 358x47px,
+// border 1px solid #E4E4E7, box-shadow none, radius 16px, identical on lift/rule/tray, unlike the
+// pre-existing system-driven entity card two sections above it, which correctly diverges per
+// system (lift = shadow only, rule = border only via borderExceptionVariant, tray = neither).
+// Fold type budget (0..844px, all three variants, unchanged by either fix): 5 distinct sizes
+// (12/13/14/18/28px) and 2 weights (400/500); the 13px is this preview route's own
+// lift/rule/tray switcher, explicitly named as this file's kit-harness scaffolding above, not a
+// product screen, so the cross-system "4 sizes" rule is answered by the composed components
+// (Pill/StatusBadge/Card/type ramp = 12/14/18/28px, 2 weights), not by this route's own chrome.
 //
 // floors: this is a component preview, not a product screen, so the six-item finished-screen
 // pass (photographic focal / one biggest element / a real tabular number / a semantic-colour
@@ -175,6 +183,19 @@ export default async function KitPreviewPage({
             </div>
           </Card>
         </div>
+
+        {/* ---- Card, bordered override ---- */}
+        {/* The two documented per-screen exceptions the system delta alone cannot express: RULE's
+            one bordered identity block, and LOCKFILE 17.2 edge case c (photo-less entity card on
+            white keeps the hairline, drops the shadow), under whichever system this page is
+            currently rendering. Same rendered result either way: hairline on, shadow off. */}
+        <SectionTitle as="heading" className="mb-3 mt-8">Card (bordered override, any system)</SectionTitle>
+        <Card variant="entity" bordered>
+          <div className="flex items-center justify-between p-3">
+            <span className="text-[14px] font-semibold text-s-ink">Muse Beauty Studio</span>
+            <Price amount={85} size="total" />
+          </div>
+        </Card>
 
         {/* ---- Type ramp ---- */}
         <SectionTitle as="heading" className="mb-3 mt-8">Type ramp</SectionTitle>

@@ -282,8 +282,13 @@ export function SearchResultsTray({ data, locale }: SearchResultsTrayProps) {
             ~line 2196), matching siblings B/C on this same surface's round-1 comparison and
             reused verbatim here. DEVIATION 2: no kit floating-action-pill recipe, built from A3's
             ink-fill class + A1's capsule radius, label at TYPE_RAMP.meta.size (12, already used
-            by the composed card's duration sub-line) rather than an unbudgeted new size. */}
-        <div className="fixed bottom-[86px] left-1/2 z-40 -translate-x-1/2">
+            by the composed card's duration sub-line) rather than an unbudgeted new size.
+            REPAIR (final repair pass): the bottom offset below used to put this control's
+            bottom edge at y 758 in the 390x844 fold, inside the last 125px the product's real
+            bottom nav owns on a phone (the 125px spacer above reserves that same band). Raised
+            so the bottom edge sits at y 703, 16px clear above y 719, matching RULE's identical
+            fix on the identical control. */}
+        <div className="fixed bottom-[141px] left-1/2 z-40 -translate-x-1/2">
           <button
             type="button"
             aria-label="Map"

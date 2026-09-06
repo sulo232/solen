@@ -76,12 +76,16 @@
 // not a claim that EmptyState.tsx is wrong or being replaced in production.
 //
 // measured: rendered via Playwright at 390x844 (dpr 3) on
-// /en/dev/directions-0905-r2/empty-states?s=rule this run. See the calling session's structured
-// return for the full getBoundingClientRect/getComputedStyle pass: the four font sizes on the
-// page (28/18/15/14), the two weights (400/500, both already post-clamp), every
-// pill/badge/button recipe byte-checked against the kit, touch targets, and the RULE
-// discriminator counts (box-shadow, hairline inset, 18px-tier run count) in the first 390x844
-// fold.
+// /en/dev/directions-0905-r2/empty-states?s=rule this run. CORRECTED (final repair pass, this
+// session, open item 2): this line used to read "the four font sizes on the page (28/18/15/14)",
+// stale on two counts once the kit's own cta step (tokens.ts) was fixed from its prior 15px
+// verdict to 14px (sharing body's slot, distinguished by weight): the CTA size dropped from 15
+// to 14, and re-measuring the whole rendered page (not just the fold) after that fix finds no
+// 12px meta text anywhere on this screen either, since every button/tab-pill/body/anchor run on
+// it resolves to 14, 18, or 28. Re-measured this run, whole page: three distinct sizes
+// (28/18/14), two weights (400/500, both already post-clamp), every pill/badge/button recipe
+// byte-checked against the kit, touch targets, and the RULE discriminator counts (box-shadow,
+// hairline inset, 18px-tier run count) in the first 390x844 fold.
 //
 // floors: (a) photographic focal = the Looks section's 4-tile photo rail (real published
 // discovery_items cover images through the same displayImage resolution _vc's loader already

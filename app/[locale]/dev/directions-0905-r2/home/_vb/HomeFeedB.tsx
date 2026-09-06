@@ -21,7 +21,22 @@
 // Depicts: category chip rail -> app/[locale]/_components/layout/CategoryPillRow.tsx (labels/routes transcribed below, rendered through the kit Pill instead, see the CATEGORY CHIP RAIL note below for why)
 // Depicts: salon grid -> app/[locale]/_components/homepage/SalonCard.tsx (real, unmodified, widthClassName="w-full" fills a grid cell, same override app/[locale]/dev/directions-0905/home/_vc/HomeDirectionC.tsx already uses)
 // Depicts: section data -> ./getHomeFeedBData.ts (real Supabase-backed sections, see that file's own header for sources and its disclosed REMOVED-hit boundary)
-// Depicts: display anchor, section headings, see-all link -> app/[locale]/dev/directions-0905-r2/_kit (SectionTitle, TextLink, no per-system delta, see the "system" note below)
+// Depicts: display anchor, section headings -> app/[locale]/dev/directions-0905-r2/_kit (SectionTitle, no per-system delta, see the "system" note below)
+// Depicts: see-all control -> app/[locale]/_components/primitives/SeeAllButton.tsx (real,
+//   registered "link" variant, composed not redrawn, see the REPAIR note below)
+//
+// REPAIR (2026-09-06, this file's own scope only): the kit's TextLink rendered "See all" in
+// accent blue (#276EF1) at a 21px-tall hit box, against the cross-system rule that a see-all is
+// ink, never accent blue, and every tappable control is >= 44px (CLAUDE.md design contract "link"
+// row: "See-all arrows = ink/black"; touch target floor). TextLink's own header names this
+// exactly: "never a see-all arrow (those stay ink)" -- this screen was the violation, not the
+// component. FIX: swap TextLink for the real, registered SeeAllButton (FLOORS LAW 9, composed not
+// redrawn), variant="link" (ink text + ChevronRight, the exact top-right-beside-an-H2 slot its own
+// docblock names, CONTROL_ELEVATION.md's rung-3 canonical see-all), with `className="min-h-11"`
+// added through its own exposed className prop (not a fork, not an inline redraw) so the 17px text
+// box sits inside a 44px-tall flex cell, the text vertically centred. The row's own
+// `items-baseline` became `items-center` so the now-taller control aligns naturally against the
+// section heading instead of the row stretching to a baseline offset.
 //
 // CATEGORY CHIP RAIL, why this is NOT the real CategoryPillRow composed directly: that
 // component self-gates on `isHome = /^\/[a-z]{2}\/?$/.test(pathname)`, which never matches a
@@ -49,7 +64,10 @@
 //
 // measured: see the structured return value handed back for this build (font sizes/weights,
 // pill/badge byte-match, touch targets, photographic share, all measured live via Playwright at
-// 390x844 dpr3 on ?v=b).
+// 390x844 dpr3 on ?v=b). REPAIR PASS (2026-09-06, live, 390x844 dpr3, this run): all 4 "See all"
+// controls now render color rgb(10,10,10) (#0A0A0A ink, was rgb(39,110,241) blue) and a 44px
+// box height (was 21px), via getBoundingClientRect + getComputedStyle on every element whose text
+// starts "See all". 0 console errors.
 //
 // system: BASE, no per-system delta. This surface's own axis is STRUCTURE (a feed-first home
 // versus round 1's hero-first or single-column directions), not a LIFT/RULE/TRAY look-system
@@ -70,7 +88,8 @@
 import * as React from "react";
 import HomeSearchPill from "@/app/[locale]/_components/homepage/HomeSearchPill";
 import { SalonCard } from "@/app/[locale]/_components/homepage/SalonCard";
-import { KitProvider, Pill, SectionTitle, TextLink } from "../../_kit";
+import { KitProvider, Pill, SectionTitle } from "../../_kit";
+import { SeeAllButton } from "@/app/[locale]/_components/primitives/SeeAllButton";
 import type { HomeFeedSection } from "./getHomeFeedBData";
 
 // reinvent-ok: this is a TRANSCRIPTION of CategoryPillRow.tsx's own HEADER_CATEGORIES (id/route/
@@ -130,9 +149,20 @@ export function HomeFeedB({ locale, sections }: { locale: string; sections: Home
             white/sunken bands for rhythm (FLOORS LAW 4). */}
         {sections.map((section, sectionIndex) => (
           <div key={section.key} className={sectionIndex % 2 === 0 ? "bg-white" : "bg-s-bg-sunken"}>
-            <div className="flex items-baseline justify-between gap-3 px-4 pb-2 pt-5">
+            <div className="flex items-center justify-between gap-3 px-4 pb-2 pt-5">
               <SectionTitle as="heading">{section.title}</SectionTitle>
-              <TextLink href={section.seeAllHref}>See all</TextLink>
+              {/* REPAIR (2026-09-06): real, registered SeeAllButton, variant="link" (ink text +
+                  chevron, the exact top-right-beside-an-H2 slot its own docblock names), not the
+                  kit's TextLink (blue, sparse-clickable-text only per its own header, never a
+                  see-all). min-h-11 via the component's own exposed className prop centres the
+                  17px-tall text inside a 44px hit cell, clearing the touch-target floor without
+                  forking SeeAllButton. */}
+              <SeeAllButton
+                href={section.seeAllHref}
+                label="See all"
+                variant="link"
+                className="min-h-11"
+              />
             </div>
             <div className="grid grid-cols-2 gap-3 px-4 pb-6">
               {section.salons.map((salon, cardIndex) => (

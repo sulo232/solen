@@ -84,10 +84,33 @@
 //   kit <Card variant="entity"> holds the payment-method chooser, and its own internal
 //   selectable rows use a FILL change (the system's own selected-pill convention, tray fill +
 //   weight shift) rather than a per-row border, so the fold-wide discriminator (shadow count >
-//   border count, zero elements with both, <=1 hairline) holds. UPDATED 2026-09-06 (critic open
-//   item 4, sticky-bar edge): the fold now carries 2 shadowed elements (the two cards) and 1
-//   bordered element (the sticky bar's own `border-t`, LIFT's hairlineCeiling budget, previously
-//   unused), 0 elements with both, exactly 1 hairline. 2 > 1 and <=1 hairline both still hold.
+//   border count, zero elements with both, <=1 hairline) held before this pass's own repair
+//   below. UPDATED 2026-09-06 (critic open item 4, sticky-bar edge): the fold carried 2 shadowed
+//   elements (the two cards) and 1 bordered element (the sticky bar's own `border-t`, LIFT's
+//   hairlineCeiling budget, previously unused), 0 elements with both, exactly 1 hairline. 2 > 1
+//   and <=1 hairline both held.
+//
+// REPAIR, final pass (LOCKFILE §17.2 edge case (c)): this screen carries no photograph as its
+//   fold-level focal element (the 44px salon photo sits flush inside the summary card, LOCKFILE
+//   17.2 case (b), not the screen's own focal shape), and the summary card's shadow-only edge
+//   measured 1.13:1 against white, well under the FLOORS LAW edge-visibility floor's own
+//   perceivable-boundary bar. Per the arbiter's pre-ship repair for exactly this case, the
+//   summary <Card> now passes the kit's new `bordered` prop: it renders the locked hairline
+//   (1px solid #E4E4E7) with the shadow forced off, radius unchanged (still 16, `variant="entity"`).
+//   This is a named, per-instance, screen-level override of LIFT's own uniform card delta,
+//   the same shape of exception RULE's `borderExceptionVariant` already is for its one identity
+//   block, just expressed through `bordered` instead (LIFT declares no `borderExceptionVariant`
+//   in systems.ts, and none is added by this fix: the exception lives on this one Card instance,
+//   not on the system). Honest consequence, stated plainly rather than silently reconciled: with
+//   the summary card now bordered instead of shadowed, the shadowed-elements count inside the
+//   390x844 fold (summary card + header + anchor, before any scroll) drops to 0, while the
+//   bordered-elements count rises to 2 (the summary card, the sticky bar), so LIFT's own
+//   discriminator inequality (shadow count > border count) does not hold WITHIN THE FOLD any
+//   more on this one screen; it still holds across the full scroll depth once the second,
+//   still-shadowed payment card enters the count. This is the documented trade the edge-
+//   visibility floor asks for on a photo-less card: LOCKFILE §17.2 edge case (c) outranks the
+//   system's own discriminator on the one card it names, the same way a statutory floor outranks
+//   a taste axis elsewhere in this project's precedence chain.
 //
 // Chrome: REPAIRED 2026-09-06 (critic open item 3). This screen now draws its own wizard
 //   header (back / title / exit), matching round-1 direction A's own PaymentStepReviewA.tsx
@@ -230,7 +253,7 @@ export default function PaymentStepLiftReview({ salon, staff }: PaymentStepLiftR
           internal hairline anywhere inside it -- gap alone separates each fact (LIFT, Part B
           SYSTEM 1's own line for this exact screen). */}
       <motion.div {...summaryMotion}>
-        <Card variant="entity" className="p-4">
+        <Card variant="entity" bordered className="p-4">
           <div className="flex items-center gap-3">
             {salon.cover_photo_url ? (
               <Image

@@ -58,6 +58,17 @@
 //    bands (white, tray, white) instead of four; three bands still alternate white/tray twice,
 //    satisfying the TRAY discriminator's "alternates ... at least twice."
 //
+// 6. (final repair pass) Two `border-t` hairlines drawn INSIDE a Card: the VAT-included line
+//    under the total (band 2's price Card) and the "rest at salon" row inside the deposit-mode
+//    breakdown (band 3's payment-method Card). Both are hand-written hairlines the TRAY system's
+//    `hairlineCeiling: 0` forbids, the identical class of bug item 3 above already fixed once
+//    for the stylist row; these two were missed in that pass. The deposit-mode branch is dormant
+//    for the seeded salon (its `payment_mode` resolves to `at_salon`, not `deposit`), so it never
+//    rendered live, but a rule break that only fires on data this seed does not carry is still a
+//    rule break the moment a salon with that mode loads this screen. Both fixed the same way as
+//    item 3: the border-t + compensating padding is replaced by a top margin alone (`mt-3`,
+//    SPACING.sibling's 12px), gap doing the separating instead of a line.
+//
 // measured: see the structured return value of the session that repaired this file for the
 // Playwright pass at 390x844 (dpr 3) on
 // /en/dev/directions-0905-r2/payment-step?s=tray, four rendered font sizes (28/18/14/12), two
@@ -304,7 +315,7 @@ export default function PaymentStepReviewTray({ salon, staff, isLoggedIn, salonH
             <Price amount={totalPrice} locale={localeCode} size="total" />
           </div>
           {salonVatRegistered && vatIncludedAmount > 0 && (
-            <div className="mt-1.5 flex items-baseline justify-between gap-3 border-t pt-1.5" style={{ borderColor: COLOR.hairline }}>
+            <div className="mt-3 flex items-baseline justify-between gap-3">
               <Meta>{tp("vatIncl")}</Meta>
               <Meta className="tabular-nums shrink-0">{formatCurrency(vatIncludedAmount, localeCode)}</Meta>
             </div>
@@ -355,7 +366,7 @@ export default function PaymentStepReviewTray({ salon, staff, isLoggedIn, salonH
                 </span>
                 <Price amount={depositAmount} locale={localeCode} size="total" />
               </div>
-              <div className="flex items-center justify-between border-t px-4 py-3" style={{ borderColor: COLOR.hairline }}>
+              <div className="mt-3 flex items-center justify-between px-4 py-3">
                 <Meta>{tp("restAtSalon")}</Meta>
                 <span className="font-heading font-semibold tabular-nums" style={{ fontSize: 12, color: COLOR.inkText }}>
                   {formatCurrency(remainingAtSalon, localeCode)}

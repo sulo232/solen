@@ -13,17 +13,29 @@
 // TabPill chip) and Card (a non-interactive container whose border/shadow are fixed per active
 // system). A payment-method choice needs an icon plus a title plus a subtitle in one row, so it
 // does not fit Pill's shape, and Card carries no chosen/not-chosen visual state at all. This
-// file is built from kit tokens only (RADIUS.entityCardPx, COLOR.hairline / COLOR.tray /
-// COLOR.inkText / COLOR.meta, TYPE_RAMP.body / TYPE_RAMP.meta), never a literal size or hex.
+// file is built from kit tokens only (RADIUS.entityCardPx, COLOR.tray / COLOR.inkText /
+// COLOR.meta, TYPE_RAMP.body / TYPE_RAMP.meta), never a literal size or hex. (COLOR.hairline
+// was the resting-border color this repair pass removed; see the REPAIR note below.)
 //
 // Grounded-in: R2_LOOK_SYSTEMS.md A1 (Pill and chip), whose recipe is explicitly system-invariant
 // (Part B lists no per-system override for A1, and Pill.tsx's own header says so: "the base pill
 // recipe (A1) carries no per-system delta ... Pill looks identical in all three systems"). This
-// row borrows that exact recipe (resting: fill #FFFFFF, border 1px #E4E4E7, text #6B6B6B, weight
-// 500; chosen: fill #F4F4F5, border #F4F4F5, text #0A0A0A, semibold, the calm-gray treatment,
-// never ink or blue) rather than TRAY's zero-hairline Card rule, because a selectable option is
-// the A1 pill grammar, not an A7 card: TRAY's `hairlineCeiling: 0` governs Card-composed
-// grouping, not this control family.
+// row borrows that recipe's fill/text behaviour (resting: fill #FFFFFF, text #6B6B6B, weight
+// 400; chosen: fill #F4F4F5, text #0A0A0A, semibold, the calm-gray treatment, never ink or blue)
+// rather than TRAY's zero-hairline Card rule, because a selectable option is the A1 pill
+// grammar, not an A7 card: TRAY's `hairlineCeiling: 0` governs Card-composed grouping, not this
+// control family.
+//
+// REPAIR (final repair pass): the resting state used to draw a 1px `COLOR.hairline` border
+// (A1's own bordered-pill recipe), while this same screen's sibling rows (the "lift" and "rule"
+// systems' own payment-method rows, both plain `backgroundColor` toggles with no border ever)
+// rest borderless. That made this one control the only bordered element anywhere in TRAY's fold,
+// which TRAY's own `hairlineCeiling: 0` forbids regardless of which base recipe a control
+// borrows its fill/text behaviour from. Fixed: the `border` style is dropped entirely (both
+// states), matching the siblings exactly (`getComputedStyle` border-width: 0px either way); the
+// chosen-state cue is unchanged (the COLOR.tray fill, plus the trailing check the caller already
+// renders), since the removed chosen-state border was always the same colour as the chosen fill
+// and painted no visible edge to begin with.
 // Press motion: A9's selectTick (150ms, 1 -> 1.06 -> 1, ease-snap), the same recipe as choosing
 // a Pill.
 import * as React from "react";
@@ -54,9 +66,13 @@ export function PaymentOptionRow({ chosen, onChoose, icon, title, subtitle }: Pa
       className="flex w-full items-center gap-3 p-4 text-left motion-reduce:!transform-none"
       style={{
         borderRadius: RADIUS.entityCardPx,
-        // The calm-gray fill (never ink, never blue) marks the chosen option.
+        // The calm-gray fill (never ink, never blue) is the chosen-state cue, unchanged. No
+        // border in either state now: the old chosen-state border color was always identical to
+        // the chosen-state fill (COLOR.tray on COLOR.tray), so it painted no visible edge to
+        // begin with, and dropping it (rather than just the resting one) matches the "lift" and
+        // "rule" siblings' own payment rows exactly, which never set a border property at all,
+        // getComputedStyle border-width: 0px in both states.
         backgroundColor: chosen ? COLOR.tray : "#FFFFFF",
-        border: `1px solid ${chosen ? COLOR.tray : COLOR.hairline}`,
         transform: ticking ? "scale(1.06)" : "scale(1)",
         transition: `transform ${MOTION.selectTick.durationMs}ms ${MOTION.selectTick.easing}`,
       }}

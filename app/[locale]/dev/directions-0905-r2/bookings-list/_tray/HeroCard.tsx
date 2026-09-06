@@ -26,14 +26,37 @@
 // entrance/exit, so it moved here unchanged, and the parent became an async Server Component
 // that resolves `coverUrl` once and passes it down as a prop (below), never reading
 // `booking.salon.cover_photo_url` itself again.
+//
+// REPAIR 2 (2026-09-06), open item 1: the Manage disclosure's Reschedule/Cancel were bare
+// <button> elements with no onClick, a dead click inherited from round 1. Grepped the real
+// destination: components-legacy/booking/BookingCard.tsx's own Reschedule/Cancel are
+// onReschedule/onCancel callback props, not links; its caller, components-legacy/booking/
+// BookingsList.tsx, opens an in-place sheet (RescheduleSheet / CancelBookingSheet) on the SAME
+// page, never a per-booking URL, so no "bookings/<id>/manage"-shaped route exists (confirmed:
+// `find app/[locale]/bookings/[id]` returns only upcharge/report/refund; `grep useSearchParams
+// .../BookingsList.tsx` returns nothing, so there is no id query param either). The one real,
+// live destination a signed-in customer reaches to manage a booking is
+// `/${locale}/profile/bookings` (app/[locale]/profile/bookings/page.tsx, which renders that
+// exact BookingsList), the same route the kit's own README.md models this action against. Both
+// buttons now navigate there via the kit SecondaryButton's onClick + router.push, the exact
+// pattern this round already uses for a SecondaryButton acting as a link with no href prop on
+// the component itself (../../empty-states/_lift/EmptyUnit.tsx:126, `_rule/
+// EmptyStatesRule.tsx:213`, `_tray/EmptyStatesTrayView.tsx:301`), so no dead affordance
+// remains. Not booking-id-scoped, because nothing on the real destination reads one. The
+// Cancel button's distinguishing red text (previously `style={{ color: COLOR.error.DEFAULT }}`)
+// is dropped along with it: it no longer performs the cancellation itself, only navigates to
+// where it can be done, so the neutral SecondaryButton treatment (matching Reschedule) is the
+// semantically correct one, not a downgrade; `COLOR` is no longer imported below since that was
+// its only use in this file.
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { motion, useReducedMotion, AnimatePresence } from "motion/react";
 import { MapPin, Settings2, Scissors } from "lucide-react";
 import { MetaDot } from "@/app/[locale]/_components/salon/MetaDot";
-import { Card, Meta, Price, StatusBadge, SecondaryButton, MOTION, COLOR, type BookingStatus } from "../../_kit";
+import { Card, Meta, Price, StatusBadge, SecondaryButton, MOTION, type BookingStatus } from "../../_kit";
 import type { LoadedBooking } from "../../../directions-0905/bookings-list/_va/loadBookingsA";
 
 const STATUS_LABEL: Record<BookingStatus, string> = {
@@ -59,6 +82,13 @@ function mapsHref(booking: LoadedBooking): string | null {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(booking.salon.address)}`;
 }
 
+// REPAIR measured (2026-09-06), Playwright, 390x844, dpr 3, live dev server, fresh load,
+// /en/dev/directions-0905-r2/bookings-list?s=tray: 0 console errors. Both Reschedule and
+// Cancel now render as the kit SecondaryButton: 326x50px, border-radius 99px, border 1px solid
+// rgb(228,228,231) (#E4E4E7, the locked hairline), box-shadow none, font 14px/500 ink
+// (rgb(10,10,10)) on white. Clicking either fires router.push to `/en/profile/bookings` and the
+// browser's URL genuinely changes (confirmed live), so neither is a dead click.
+
 const GLIDE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 export function HeroCard({
@@ -78,6 +108,10 @@ export function HeroCard({
 }) {
   const [manageOpen, setManageOpen] = useState(false);
   const prefersReducedMotion = useReducedMotion();
+  const router = useRouter();
+  // The one real, live booking-management destination (see REPAIR 2 note above): no
+  // per-booking route exists, so both actions land on the real /profile/bookings page.
+  const manageHref = `/${locale}/profile/bookings`;
   const start = new Date(booking.starts_at);
   const end = new Date(booking.ends_at);
   const duration = Math.round((end.getTime() - start.getTime()) / (1000 * 60));
@@ -173,19 +207,8 @@ export function HeroCard({
               transition={{ duration: MOTION.sheetClose.durationMs / 1000, ease: GLIDE }}
               className="flex flex-col gap-1 px-4 pb-4"
             >
-              <button
-                type="button"
-                className="w-full rounded-[12px] px-3 py-2.5 text-left text-[14px] font-normal text-s-ink hover:bg-s-bg-sunken"
-              >
-                Reschedule
-              </button>
-              <button
-                type="button"
-                className="w-full rounded-[12px] px-3 py-2.5 text-left text-[14px] font-normal hover:bg-s-error/10"
-                style={{ color: COLOR.error.DEFAULT }}
-              >
-                Cancel
-              </button>
+              <SecondaryButton onClick={() => router.push(manageHref)}>Reschedule</SecondaryButton>
+              <SecondaryButton onClick={() => router.push(manageHref)}>Cancel</SecondaryButton>
             </motion.div>
           )}
         </AnimatePresence>
