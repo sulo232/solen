@@ -130,13 +130,15 @@ export interface LiftSearchResultsProps {
 export function LiftSearchResults({ data, locale }: LiftSearchResultsProps) {
   const { cityName, categorySlug } = data;
   const searchLabel = `${categorySlug === "coiffeur" ? "Hair Salon" : categorySlug}${cityName ? ` in ${cityName}` : ""}`;
-  // Orchestrator brief: "Seed photo photo-1560066984 (greyscale) is not used." The real loader's
-  // top result happens to carry it (review_count desc); this re-orders the SAME real, unmodified
-  // rows the loader returned (no hardcoded src, nothing fabricated) so a different real salon
-  // photo leads. Every card still renders whatever photoUrl its own row actually has.
-  const salons = [...data.salons].sort(
-    (a, b) => Number(a.photoUrl?.includes("photo-1560066984")) - Number(b.photoUrl?.includes("photo-1560066984")),
-  );
+  // REPAIR (critic finding, 2026-09-06): this used to re-sort the banned photo to the back of
+  // the list instead of removing it, so its <img src> still rendered on the page (further down
+  // the scroll), the exact thing the orchestrator brief bans ("Seed photo photo-1560066984
+  // (greyscale) is not used."). RULE and TRAY both resolve the identical collision (the real
+  // loader's top-ranked result by review_count desc happens to carry this photo) by filtering
+  // that one row out of the real, unmodified result set entirely, never by hardcoding a
+  // replacement src or hand-picking a new order. Matched here verbatim for consistency across
+  // the three siblings (FLOORS LAW 8): every other salon and its real data render untouched.
+  const salons = data.salons.filter((s) => !(s.photoUrl ?? "").includes("1560066984"));
   // REPAIR (mandatory 18px section heading, A5): same real, non-fabricated copy convention
   // TRAY's sibling file already uses on this identical screen (messages/en.json "popularInBasel"
   // / "railTitle": "Popular in Basel"). See header REPAIR note 2.
@@ -249,8 +251,13 @@ export function LiftSearchResults({ data, locale }: LiftSearchResultsProps) {
             12 is the nearest kit-legal step that costs nothing (it is already on the page via
             the card's duration text), so this is a controlled substitution, not a fabricated
             size. Padding/shadow stay reproduced verbatim from the real control per the header's
-            Depicts note. Static: no map view wired this round. */}
-        <div className="fixed bottom-[86px] left-1/2 z-40 -translate-x-1/2">
+            Depicts note. Static: no map view wired this round.
+            REPAIR (critic finding 2, 2026-09-06): `bottom-[86px]` put this control's bottom
+            edge at y 758 in the 390x844 fold, inside the last 125px the product's real bottom
+            nav owns on a phone. Raised to `bottom-[141px]` (nav height 125 + a 16px clearance
+            gap, SPACING.group) so the bottom edge sits at y 703, 16px clear above y 719,
+            matching RULE and TRAY's identical fix on the identical control. */}
+        <div className="fixed bottom-[141px] left-1/2 z-40 -translate-x-1/2">
           <button
             type="button"
             aria-label="Map" // drift-ok: static mockup affordance, no map sheet wired this round, matches ViewA.tsx's own static Map pill

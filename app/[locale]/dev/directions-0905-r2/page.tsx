@@ -545,14 +545,15 @@ function SystemThumb({
   recommended?: boolean;
 }) {
   return (
-    <div className="flex flex-1 flex-col gap-2">
+    <div className="flex min-w-0 flex-1 flex-col gap-2">
       <Link href={screenHref} className="block overflow-hidden rounded-card border border-s-border">
         <Image
           src={`/_mockups/directions-0905-r2/${screenSlug}-${variantKey}.png`}
           alt={`${SYSTEM_LABEL[variantKey]} system, ${screenSlug}`}
           width={390}
           height={844}
-          className="w-full"
+          sizes="(max-width: 640px) 33vw, 220px"
+          className="h-auto w-full"
         />
       </Link>
       <div>
@@ -669,7 +670,7 @@ export default function DirectionsR2IndexPage() {
             const vv = findVerdict("home")?.perVariant.find((p) => p.variant === v.key);
             const isRecommended = findArbiterNote("home")?.bestSystem === v.key;
             return (
-              <div key={v.key} className="flex flex-1 flex-col gap-2">
+              <div key={v.key} className="flex min-w-0 flex-1 flex-col gap-2">
                 <Link
                   href={`/en/dev/directions-0905-r2/home?v=${v.key}`}
                   className="block overflow-hidden rounded-card border border-s-border"
@@ -679,7 +680,8 @@ export default function DirectionsR2IndexPage() {
                     alt={`Home ${v.label}`}
                     width={390}
                     height={844}
-                    className="w-full"
+                    sizes="(max-width: 640px) 33vw, 220px"
+                    className="h-auto w-full"
                   />
                 </Link>
                 <div>
