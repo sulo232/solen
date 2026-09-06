@@ -2,38 +2,16 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-09-06T02:45:28 (trigger: auto)
+- taken: 2026-09-06T07:14:08 (trigger: auto)
 - branch: claude/cloud-code-codex-migration-86a820
 
 ## git
 ```
-7882dc99f Plan: box 12c-2 closed with its four commits, S9 superseded noted
-03fc180cf Input corner section mockup plus the corrected record: native inputs already render 12, the 16px token never reaches one
-88dd22973 LOCKFILE input radius row: the rendered 12 comes from the globals.css base rule, the 16px rounded-input token never reaches an input (measured 2026-09-06)
-d7e188e22 Plan log: doc-truth pass reviewed and committed, what stays open under 12c-2
-e1e5b8fa4 Doc truth pass, reviewed: the 11 measured Airbnb values the merge had dropped are restored as rows 41 to 51, the pointer file names them, and the CTA row's claim names its one out-of-scope exception
-```
-```
-M _plans/CONTEXT_SNAPSHOT.md
- M app/[locale]/dev/directions-0905/profile/_vc/getProfileC.ts
-?? app/[locale]/dev/directions-0905-r2/_kit/
-?? app/[locale]/dev/directions-0905-r2/bookings-list/
-?? app/[locale]/dev/directions-0905-r2/confirmation/
-?? app/[locale]/dev/directions-0905-r2/empty-states/
-?? app/[locale]/dev/directions-0905-r2/home/
-?? app/[locale]/dev/directions-0905-r2/kit-preview/
-?? app/[locale]/dev/directions-0905-r2/payment-step/
-?? app/[locale]/dev/directions-0905-r2/profile/
-?? app/[locale]/dev/directions-0905-r2/search-results/
-?? app/[locale]/dev/directions-0905-r2/weight-probe/
-?? public/_mockups/directions-0905-r2/bookings-list-lift.png
-?? public/_mockups/directions-0905-r2/bookings-list-rule.png
-?? public/_mockups/directions-0905-r2/bookings-list-tray.png
-?? public/_mockups/directions-0905-r2/confirmation-lift.png
-?? public/_mockups/directions-0905-r2/confirmation-rule.png
-?? public/_mockups/directions-0905-r2/confirmation-tray.png
-?? public/_mockups/directions-0905-r2/empty-states-lift.png
-?? public/_mockups/directions-0905-r2/empty-states-rule.png
+da7fb75c0 Plan log: production build failed on a round-2 type error, fix in flight
+3ab82e711 Plan log: main fast-forwarded, production build running
+71400f493 Round 2 index: the three home thumbnails read a one-fold crop of their screenshot, so all 22 thumbnails load (the full-page home captures stalled the image optimizer)
+3902339e1 Plan: search and home boxes closed with the critic files and 3a82a1e65; the parent boxes that wait on his six answers say so
+3a82a1e65 Round 2 last fixes: the index no longer scrolls sideways (min-w-0 on the thumbnail columns, sized images, wrapped list items), search LIFT filters the greyscale seed photo and its Map pill sits above the nav band, home A re-measured clean on five fresh loads
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
