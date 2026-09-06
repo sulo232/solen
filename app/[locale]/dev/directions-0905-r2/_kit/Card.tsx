@@ -48,9 +48,14 @@
 
 import * as React from "react";
 import { useSystem } from "./KitProvider";
-import { RADIUS } from "./tokens";
+import { RADIUS, SHADOW_RAIL_C } from "./tokens";
 
 export type CardVariant = "photo" | "grouped" | "entity";
+
+/** shadow-whisper (LOCKFILE §3): a barely-there lift. Every non-candidate-C system that renders
+ * a shadow uses this value; candidate C's photo-less "rail" card uses SHADOW_RAIL_C instead
+ * (`_plans/R3_ONE_SYSTEM.md` CANDIDATE C row 37, ~2.5x the alpha and 8x the blur of this one). */
+const WHISPER_SHADOW = "0 1px 2px rgba(10,10,10,0.04), 0 1px 1px rgba(10,10,10,0.03)";
 
 const VARIANT_RADIUS: Record<CardVariant, number> = {
   photo: RADIUS.photoCardPx,
@@ -69,24 +74,52 @@ export interface CardProps {
    * keeps the hairline, drops the shadow) under any system. Radius still comes from `variant`.
    * Defaults to false (system-driven, unchanged behaviour). */
   bordered?: boolean;
+  /**
+   * ROUND 3 (`_plans/R3_ONE_SYSTEM.md`). Whether THIS card instance carries a photo. Only read
+   * when the active system's `photoAware` delta is true (candidates "b" and "c" today); ignored
+   * on every other system, so an existing lift/rule/tray/a caller that never passes this prop
+   * renders exactly as before. When photoAware fires:
+   *   - candidate "b": hasPhoto ? {shadow, no border} : {border, no shadow}, never both
+   *     (FLOORS LAW 4 cases b/c, the fix `profile-rule.md` severity 4 needed).
+   *   - candidate "c": hasPhoto ? {flat, no border, no shadow} : {no border, ambient rail shadow}
+   *     (row 10 vs row 37).
+   */
+  hasPhoto?: boolean;
 }
 
-export function Card({ variant, children, className, bordered = false }: CardProps) {
+export function Card({ variant, children, className, bordered = false, hasPhoto }: CardProps) {
   const system = useSystem();
-  const radius = VARIANT_RADIUS[variant];
-  const { border, shadow, borderExceptionVariant } = system.deltas.card;
+  const isCandidateC = system.key === "c";
+  const radius = isCandidateC ? RADIUS.c.cardPx : VARIANT_RADIUS[variant];
+  const { border, shadow, borderExceptionVariant, photoAware } = system.deltas.card;
 
-  // The one named per-system exception (Part B, SYSTEM 2 notes): a system can force a border on
-  // exactly one named variant even while its own uniform `border` delta is false for everything
-  // else. Today only RULE declares one ("entity"). No exception ever grants a shadow: the
-  // identity block stays flat, same as LOCKFILE §17.2's "a card carrying elevation drops its
-  // border, never both".
-  //
-  // `bordered` sits above both the system delta and the per-variant exception: it is a caller's
-  // explicit, per-instance override for the two screen-level cases in the header comment, so it
-  // wins outright rather than merging with either.
-  const resolvedBorder = bordered ? true : variant === borderExceptionVariant ? true : border;
-  const resolvedShadow = bordered ? false : shadow;
+  let resolvedBorder: boolean;
+  let resolvedShadow: boolean;
+  let shadowValue = WHISPER_SHADOW;
+
+  if (bordered) {
+    // `bordered` sits above everything else: a caller's explicit, per-instance override for the
+    // two screen-level cases in the header comment, so it wins outright rather than merging.
+    resolvedBorder = true;
+    resolvedShadow = false;
+  } else if (photoAware && hasPhoto !== undefined) {
+    // ROUND 3 photo-aware branch (see the `hasPhoto` doc above): resolved per candidate, since B
+    // and C disagree about what a photo-less card looks like.
+    if (isCandidateC) {
+      resolvedBorder = false;
+      resolvedShadow = !hasPhoto;
+      shadowValue = SHADOW_RAIL_C;
+    } else {
+      resolvedBorder = !hasPhoto;
+      resolvedShadow = hasPhoto;
+    }
+  } else {
+    // Round-2 behaviour, unchanged: the one named per-system exception (Part B, SYSTEM 2 notes)
+    // can force a border on exactly one named variant even while the system's own uniform
+    // `border` delta is false for everything else. No exception ever grants a shadow.
+    resolvedBorder = variant === borderExceptionVariant ? true : border;
+    resolvedShadow = shadow;
+  }
 
   return (
     <div
@@ -94,12 +127,12 @@ export function Card({ variant, children, className, bordered = false }: CardPro
       style={{
         borderRadius: radius,
         border: resolvedBorder ? "1px solid #E4E4E7" : "none", // drift-ok: locked s-border hairline hex, a runtime system-delta toggle so not expressible as a static className
-        // shadow-whisper (LOCKFILE §3): a barely-there lift, never Airbnb's own stronger value.
-        boxShadow: resolvedShadow ? "0 1px 2px rgba(10,10,10,0.04), 0 1px 1px rgba(10,10,10,0.03)" : "none",
+        boxShadow: resolvedShadow ? shadowValue : "none",
       }}
       data-kit-card-variant={variant}
       data-kit-system={system.key}
       data-kit-card-bordered={bordered || undefined}
+      data-kit-card-has-photo={hasPhoto === undefined ? undefined : String(hasPhoto)}
     >
       {children}
     </div>

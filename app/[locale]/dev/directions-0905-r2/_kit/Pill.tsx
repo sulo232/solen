@@ -35,6 +35,7 @@
 
 import * as React from "react";
 import { TabPill, type TabPillProps } from "@/app/[locale]/_components/primitives/TabPill";
+import { useSystem } from "./KitProvider";
 
 export interface PillProps {
   active: boolean;
@@ -53,8 +54,48 @@ export interface PillProps {
 
 /** The kit's Pill: TabPill's real selected/unselected/height recipe, capsule corner. 44px
  * (h-11) touch target either way. Use for filter chips, segment controls, category selectors:
- * anything the real TabPill is already the right primitive for. */
+ * anything the real TabPill is already the right primitive for.
+ *
+ * ROUND 3: reads `useSystem().candidate?.pill` and branches ONLY when a candidate's recipe
+ * differs from this default. Candidates A and B declare `selectionMode: "grey"` (this file's
+ * existing, unmodified recipe, per `_plans/R3_ONE_SYSTEM.md`'s own "identical to Candidate A"
+ * rows) so they render through the exact code path that already shipped. Candidate C declares
+ * `selectionMode: "borderOnly"` (`airbnb/CAPTURE.md` Part A: fill stays white in both states,
+ * text stays ink in both states, no bold, selecting a chip changes ONLY the border colour) and a
+ * 24px radius (RADIUS.c.pillPx), overridden the same `!important` way `!rounded-full` already is,
+ * for the reason documented above (bare clsx, no tailwind-merge dedup). lift/rule/tray have no
+ * `candidate` entry at all, so this branch never fires for them either. */
 export function Pill({ active, onClick, children, ariaLabel, variant, size = "md", className }: PillProps) {
+  const { candidate } = useSystem();
+  const pillSpec = candidate?.pill;
+
+  if (pillSpec?.selectionMode === "borderOnly") {
+    // Candidate C: white fill and ink text in BOTH states (never TabPill's grey-when-inactive),
+    // font-normal in both states (no bolding), and selection changes only the border colour.
+    // Tailwind classes below are STATIC LITERALS, not built from `pillSpec` at runtime: Tailwind's
+    // JIT scans source text for exact class strings, so a template-literal class compiles to
+    // nothing. `pillSpec` still owns the DECISION; these literals are RADIUS.c.pillPx (24) and
+    // COLOR.inkText (#0A0A0A, via the s-ink token) transcribed by hand.
+    return (
+      <TabPill
+        active={active}
+        onClick={onClick}
+        ariaLabel={ariaLabel}
+        variant={variant}
+        size="sm" // 13px, TabPill's own measured-live size (R3_ONE_SYSTEM.md "Ported: text 13px")
+        className={[
+          "!rounded-[24px] !bg-white !font-normal !text-s-ink",
+          active ? "!border-s-ink" : "!border-s-border", // selected-ok: Candidate C Airbnb-PORT (SHOW verdict, R3_ONE_SYSTEM.md Part 4 item 2) -- fill stays white, ONLY the border goes ink; not the graveyarded ink-fill/blue-border selection (V3-D421/V3-D450)
+          className,
+        ]
+          .filter(Boolean)
+          .join(" ")}
+      >
+        {children}
+      </TabPill>
+    );
+  }
+
   return (
     <TabPill
       active={active}

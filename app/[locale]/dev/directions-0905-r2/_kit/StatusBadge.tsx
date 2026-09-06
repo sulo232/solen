@@ -80,18 +80,30 @@ export interface StatusBadgeProps {
   status: BookingStatus;
   /** Real translated label (bookingCard.status.*). Never invent copy here; pass it in. */
   label: string;
+  /**
+   * ROUND 3 (`_plans/R3_ONE_SYSTEM.md` CANDIDATE C "Status treatment" row: "Neutral. Colour
+   * never encodes state."; Part 4 item 3, verdict SHOW). "pastel" (default, unchanged) is the
+   * shipped recipe below: pastel bg + ink text + a semantic-hue icon. "neutral" renders the same
+   * shape and the same icon (so the fact is still legible), but on the tray fill with an ink
+   * icon, so no colour anywhere on the badge encodes confirmed/pending/cancelled. Explicit prop,
+   * not auto-derived from `useSystem()`, since a caller building the candidate-C comparison
+   * screen decides this per usage, same as `hasPhoto` on Card.
+   */
+  treatment?: "pastel" | "neutral";
   className?: string;
 }
 
-export function StatusBadge({ status, label, className }: StatusBadgeProps) {
+export function StatusBadge({ status, label, treatment = "pastel", className }: StatusBadgeProps) {
   const v = VARIANTS[status];
+  const bg = treatment === "neutral" ? COLOR.tray : v.bg;
+  const iconColor = treatment === "neutral" ? COLOR.inkText : v.iconColor;
   return (
     <span
       className={["inline-flex items-center gap-1 rounded-full font-semibold", className]
         .filter(Boolean)
         .join(" ")}
       style={{
-        backgroundColor: v.bg,
+        backgroundColor: bg,
         color: COLOR.inkText,
         paddingLeft: STATUS_BADGE_BASE.paddingXPx,
         paddingRight: STATUS_BADGE_BASE.paddingXPx,
@@ -100,8 +112,9 @@ export function StatusBadge({ status, label, className }: StatusBadgeProps) {
         fontSize: STATUS_BADGE_BASE.fontSizePx,
         lineHeight: 1.2,
       }}
+      data-kit-status-treatment={treatment}
     >
-      <v.Icon size={STATUS_BADGE_BASE.iconSizePx} color={v.iconColor} strokeWidth={2.25} />
+      <v.Icon size={STATUS_BADGE_BASE.iconSizePx} color={iconColor} strokeWidth={2.25} />
       {label}
     </span>
   );

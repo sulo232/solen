@@ -21,3 +21,8 @@ export * from "./Card";
 export * from "./SectionTitle";
 export * from "./Meta";
 export * from "./Price";
+// ROUND 3 additions (_plans/R3_ONE_SYSTEM.md): candidates a/b/c live inside tokens.ts/systems.ts
+// above (no new files needed for the value sheets themselves); these two are the new primitives
+// Part 3 of ROOT_CAUSES.md names.
+export * from "./TimingPill";
+export * from "./DateLine";

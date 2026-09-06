@@ -155,6 +155,99 @@ export const RADIUS = {
   groupedListCardPx: 24,
   /** A7: individual entity card (one person, one salon). Flat, hairline, gap-separated. */
   entityCardPx: 16,
+  /**
+   * ROUND 3, candidate C only (`_plans/R3_ONE_SYSTEM.md` Candidate C rows "Radius, pill/chip",
+   * "Radius, primary CTA", "Radius, card and photo"). Orchestrator decision (1) for this build:
+   * the radius on pills/buttons is the candidate's OWN sheet value; C's sheet is the Airbnb port,
+   * a third radius family end to end, never used by lift/rule/tray/a/b (which keep pillPx 9999
+   * and photoCardPx/entityCardPx/groupedListCardPx above unchanged).
+   */
+  c: {
+    /** Airbnb row 21, ported: 24px chip radius (fill/border/text unchanged besides the border-
+     * only selected treatment, see systems.ts CANDIDATES.c.pill). Height stays the 44px touch
+     * floor (TabPill's own h-11), not row 21's measured 34px. */
+    pillPx: 24,
+    /** Airbnb row 14: 12px rounded rect, NOT a pill. */
+    ctaPx: 12,
+    /** Airbnb rows 9, 37, 38 (three independent measurements agree): 20px, replacing Solen's 16
+     * (entity/photo) and 24 (grouped) for the duration of this one candidate only. */
+    cardPx: 20,
+    /** Airbnb row 14 ported height: 40px is REFUSED (below the 44px statutory touch floor, Part
+     * 4 item 7), so 44px minimum, same floor override as the chip. */
+    ctaHeightPx: 44,
+  },
+} as const;
+
+// ---------------------------------------------------------------------------------------------
+// ROUND 3. Values every candidate's card/pill/badge needs that the round-2 ramp above has no
+// slot for. Read alongside systems.ts's CANDIDATES map, which is where each value is actually
+// wired to a component.
+// ---------------------------------------------------------------------------------------------
+
+/** Candidate C's on-photo timing pill (`_plans/R3_ONE_SYSTEM.md` "On-photo pill geometry";
+ * ROOT_CAUSES.md Part 3.3 item 2 and Part 1 Cause 3 "the same number on Airbnb"). Ratios, not raw
+ * px, are the load-bearing numbers (`airbnb/CAPTURE.md` Part B, measured off a 299px still); a
+ * 358px-wide photo (the kit's own card width, 390 viewport minus 2x16 margin) makes these ~30px
+ * tall, ~11px top inset, ~14px left inset, which is why TimingPill.tsx takes a photoWidthPx prop
+ * and scales from it rather than hardcoding those three numbers. */
+export const TIMING_PILL = {
+  heightRatio: 0.084, // 8.4% of photo width
+  topInsetRatio: 0.032, // 3.2% of photo width
+  leftInsetRatio: 0.04, // 4.0% of photo width
+  fill: "#FFFFFF", // opaque white ~99.5% lightness (CAPTURE.md Part B)
+} as const;
+
+/** Candidate C's chrome-edge hairline (`_plans/R3_ONE_SYSTEM.md` "Hairline rule", row 39,
+ * PICK: no Solen token exists for this role). Content dividers stay COLOR.hairline (#E4E4E7,
+ * ported from row 8's rgb(221,221,221)); this second value is for a CHROME boundary only (a tab
+ * bar edge), never a content divider, and only candidate C uses it. */
+export const CHROME_HAIRLINE_C = "#EBEBEB";
+
+/** Candidate C's rail-card ambient shadow (`_plans/R3_ONE_SYSTEM.md` row 37; ROOT_CAUSES.md
+ * Part 1 Cause 1 "the same number on Airbnb"), roughly 2.5x the alpha and 8x the blur radius of
+ * Solen's own shadow-whisper. Used only on a candidate-C card with no photo (a "rail" card); a
+ * candidate-C card WITH a photo stays flat (row 10: the photo edge is the boundary, no shadow at
+ * all), per Card.tsx's photoAware branch for system "c". */
+export const SHADOW_RAIL_C = "0 0 0 1px rgba(0,0,0,0.02), 0 8px 24px rgba(0,0,0,0.1)";
+
+/** Candidate C's secondary in-card button fill. `_plans/R3_ONE_SYSTEM.md` names this row
+ * explicitly as "exact fill hex not measured, the trips helper should have PIL-sampled it".
+ * PICK, no source: Solen's own locked neutral tray token (COLOR.tray, #F4F4F5) stands in rather
+ * than inventing an unsourced hex, and this constant exists so the substitution is named once
+ * instead of silently baked into SecondaryButton.tsx. */
+export const SECONDARY_BUTTON_FILL_C_PICK_NOTE =
+  "PICK: COLOR.tray (#F4F4F5), no measured Airbnb hex exists for this row per R3_ONE_SYSTEM.md Candidate C 'Secondary button'";
+
+/** Candidate C's over-photo controls (`_plans/R3_ONE_SYSTEM.md` Candidate C row "Over-photo
+ * control", rows 27/29/28). Back and share render as a 40x40 frosted circle using Solen's own
+ * over-photo recipe (`lib/frost-glass.ts` FROST_GLASS; CLAUDE.md shadow/depth row "over-photo =
+ * frost"); the save heart is a SEPARATE, darker treatment per the sheet, not frosted: 32x32, no
+ * pill behind it, icon fill `rgba(0,0,0,0.5)` with a white stroke. No equivalent row exists on
+ * Candidate A or B's tables, so this value is read only under system "c". */
+export const OVER_PHOTO_CONTROL_C = {
+  backShare: {
+    sizePx: 40,
+    treatment: "frost" as const, // lib/frost-glass.ts FROST_GLASS, not a new recipe
+  },
+  saveHeart: {
+    sizePx: 32,
+    fill: "rgba(0,0,0,0.5)",
+    stroke: "#FFFFFF",
+    strokeWidthPx: 1.5,
+  },
+} as const;
+
+/** Candidate C's map / mode toggle pill (`_plans/R3_ONE_SYSTEM.md` Candidate C row "Map / mode
+ * toggle pill", row 22 plus the touch-floor override). Solid ink fill (matches COLOR.inkFill
+ * below, `#1C1C1F`, hardcoded here since COLOR is declared later in this file), 93px wide, white
+ * text; height ported from Airbnb's measured 38px to Solen's 44px touch floor, the same override
+ * pattern as RADIUS.c.ctaHeightPx above. No equivalent row exists on Candidate A or B's tables. */
+export const MODE_TOGGLE_PILL_C = {
+  radiusPx: 24,
+  heightPx: 44, // ported from Airbnb's measured 38px; 44px touch-floor override
+  widthPx: 93,
+  fill: "#1C1C1F", // COLOR.inkFill
+  textColor: "#FFFFFF",
 } as const;
 
 // ---------------------------------------------------------------------------------------------

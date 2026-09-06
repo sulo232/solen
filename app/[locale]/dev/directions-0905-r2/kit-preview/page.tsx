@@ -67,7 +67,12 @@ import { Card } from "../_kit/Card";
 import { SectionTitle } from "../_kit/SectionTitle";
 import { Meta } from "../_kit/Meta";
 import { Price } from "../_kit/Price";
+import { TimingPill } from "../_kit/TimingPill";
+import { DateLine } from "../_kit/DateLine";
 import { PillDemo } from "./PillDemo";
+import { OVER_PHOTO_CONTROL_C, MODE_TOGGLE_PILL_C } from "../_kit/tokens";
+import { FROST_GLASS } from "@/lib/frost-glass";
+import { ArrowLeft, Heart, Map as MapIcon } from "lucide-react";
 
 const SALON_SLUG = "muse-beauty-studio";
 
@@ -80,7 +85,9 @@ const BOOKING_STATUSES: { status: BookingStatus; label: string }[] = [
 ];
 
 function isSystemKey(v: string | undefined): v is SystemKey {
-  return v === "lift" || v === "rule" || v === "tray";
+  // ROUND 3 (_plans/R3_ONE_SYSTEM.md): a/b/c added alongside the round-2 lift/rule/tray, per the
+  // kit-coder brief's self-test instruction ("extend the kit-preview route's accepted keys").
+  return v === "lift" || v === "rule" || v === "tray" || v === "a" || v === "b" || v === "c";
 }
 
 export default async function KitPreviewPage({
@@ -104,8 +111,8 @@ export default async function KitPreviewPage({
         {/* System switcher. This IS the kit's own test harness, not a product screen, so a
             switcher control here is not the "no scaffolding in the fold" violation Part B bans
             on a real mockup. */}
-        <div className="mb-6 flex items-center gap-2">
-          {(["lift", "rule", "tray"] as const).map((key) => (
+        <div className="mb-6 flex flex-wrap items-center gap-2">
+          {(["lift", "rule", "tray", "a", "b", "c"] as const).map((key) => (
             <a
               key={key}
               href={`?s=${key}`}
@@ -151,13 +158,50 @@ export default async function KitPreviewPage({
         <SectionTitle as="heading" className="mb-3 mt-8">Card ({system})</SectionTitle>
         <div className="flex flex-col gap-3">
           {salon && (
-            <Card variant="photo">
+            <Card variant="photo" hasPhoto>
               <div className="relative aspect-[5/4] w-full overflow-hidden">
                 {/* eslint-disable-next-line @next/next/no-img-element -- dev preview only */}
                 <img src={salon.cover_photo_url ?? undefined} alt={salon.name} className="h-full w-full object-cover" />
+                {/* ROUND 3: TimingPill, top-left on the photo, geometry from ROOT_CAUSES.md Part
+                    3.3 item 2 (a photo rendered at aspect-[5/4] inside a 358px-wide card is 358px
+                    wide, so photoWidthPx=358 here reproduces the item's own worked numbers). */}
+                <TimingPill label="In 4 days" photoWidthPx={358} />
+                {/* ROUND 3, candidate C only: OVER_PHOTO_CONTROL_C (tokens.ts) was consumed by
+                    systems.ts's candidate.overPhotoControl and by three round-3 screens but
+                    never rendered in this kit preview, the reviewer's open item. Rendered here,
+                    over the same photo card the TimingPill already uses, gated to system "c"
+                    since candidate A/B carry no equivalent row. */}
+                {system === "c" && (
+                  <>
+                    <div
+                      className="absolute left-3 top-3 flex items-center justify-center rounded-full"
+                      style={{
+                        width: OVER_PHOTO_CONTROL_C.backShare.sizePx,
+                        height: OVER_PHOTO_CONTROL_C.backShare.sizePx,
+                        ...FROST_GLASS,
+                      }}
+                      data-kit-over-photo-control="backShare"
+                    >
+                      <ArrowLeft size={18} color="#0A0A0A" />
+                    </div>
+                    <div
+                      className="absolute right-3 top-3 flex items-center justify-center rounded-full"
+                      style={{
+                        width: OVER_PHOTO_CONTROL_C.saveHeart.sizePx,
+                        height: OVER_PHOTO_CONTROL_C.saveHeart.sizePx,
+                        backgroundColor: OVER_PHOTO_CONTROL_C.saveHeart.fill,
+                        border: `${OVER_PHOTO_CONTROL_C.saveHeart.strokeWidthPx}px solid ${OVER_PHOTO_CONTROL_C.saveHeart.stroke}`,
+                      }}
+                      data-kit-over-photo-control="saveHeart"
+                    >
+                      <Heart size={16} color={OVER_PHOTO_CONTROL_C.saveHeart.stroke} strokeWidth={1.5} />
+                    </div>
+                  </>
+                )}
               </div>
               <div className="p-3">
                 <p className="text-[14px] font-semibold text-s-ink">{salon.name}</p>
+                <DateLine date="Thu, 17 Sep" time="11:00" />
                 <Meta>
                   {salon.average_rating != null ? `${salon.average_rating.toFixed(1)} (${salon.review_count})` : "New"}
                 </Meta>
@@ -176,7 +220,10 @@ export default async function KitPreviewPage({
               </div>
             </div>
           </Card>
-          <Card variant="entity">
+          {/* ROUND 3: hasPhoto={false} exercises the photoAware branch's no-photo case (candidate
+              b: hairline + no shadow; candidate c: SHADOW_RAIL_C ambient shadow, no border). On
+              lift/rule/tray/a, photoAware is unset, so this renders exactly as round 2 always did. */}
+          <Card variant="entity" hasPhoto={false}>
             <div className="flex items-center justify-between p-3">
               <span className="text-[14px] font-semibold text-s-ink">Muse Beauty Studio</span>
               <Price amount={85} size="total" />
@@ -196,6 +243,29 @@ export default async function KitPreviewPage({
             <Price amount={85} size="total" />
           </div>
         </Card>
+
+        {/* ROUND 3, candidate C only: MODE_TOGGLE_PILL_C (tokens.ts) was consumed by
+            systems.ts's candidate.modeTogglePill and by three round-3 screens but never
+            rendered in this kit preview, the reviewer's open item. */}
+        {system === "c" && (
+          <>
+            <SectionTitle as="heading" className="mb-3 mt-8">Map / mode toggle pill (candidate C)</SectionTitle>
+            <div
+              className="flex items-center justify-center gap-1.5"
+              style={{
+                width: MODE_TOGGLE_PILL_C.widthPx,
+                height: MODE_TOGGLE_PILL_C.heightPx,
+                borderRadius: MODE_TOGGLE_PILL_C.radiusPx,
+                backgroundColor: MODE_TOGGLE_PILL_C.fill,
+                color: MODE_TOGGLE_PILL_C.textColor,
+              }}
+              data-kit-mode-toggle-pill="c"
+            >
+              <MapIcon size={16} color={MODE_TOGGLE_PILL_C.textColor} />
+              <span className="text-[14px] font-medium">Map</span>
+            </div>
+          </>
+        )}
 
         {/* ---- Type ramp ---- */}
         <SectionTitle as="heading" className="mb-3 mt-8">Type ramp</SectionTitle>

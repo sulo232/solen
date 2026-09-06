@@ -27,6 +27,7 @@
 
 import * as React from "react";
 import { TYPE_RAMP } from "./tokens";
+import { useSystem } from "./KitProvider";
 
 export interface PrimaryButtonProps {
   children: React.ReactNode;
@@ -39,9 +40,18 @@ export interface PrimaryButtonProps {
 /** The one commit action per screen (A3). 52px tall, full content width, capsule corner via
  * `rounded-btn` (99px, clips to half the element's own height so it renders as a true capsule
  * at this height). Press motion is round-1 direction A: 0.97 scale / 4% darker at 100ms
- * ease-thud on press, 200ms ease-glide back on release, disabled under prefers-reduced-motion. */
+ * ease-thud on press, 200ms ease-glide back on release, disabled under prefers-reduced-motion.
+ *
+ * ROUND 3: candidate C (`_plans/R3_ONE_SYSTEM.md` "Primary button" row: "Radius 12px, ... height
+ * 40px is REFUSED [under the 44px touch floor], so 44px minimum") swaps the capsule for a 12px
+ * rounded rect at 44px tall, ink fill and white 14/500 text unchanged. Candidates A and B declare
+ * no `candidate.button` delta beyond this file's existing 52/capsule shape (their sheet rows read
+ * "identical to both the control and confirmation RULE"), so lift/rule/tray/a/b all render exactly
+ * as before; only "c" branches. */
 export function PrimaryButton({ children, onClick, type = "button", disabled, className }: PrimaryButtonProps) {
   const [pressed, setPressed] = React.useState(false);
+  const { candidate } = useSystem();
+  const isAirbnbPort = candidate?.button.secondaryFill === "neutralFill"; // candidate C only
   return (
     <button
       type={type}
@@ -51,7 +61,13 @@ export function PrimaryButton({ children, onClick, type = "button", disabled, cl
       onPointerUp={() => setPressed(false)}
       onPointerLeave={() => setPressed(false)}
       className={[
-        "flex h-[52px] w-full items-center justify-center gap-2 rounded-btn bg-s-ink font-body text-white",
+        "flex w-full items-center justify-center gap-2 bg-s-ink font-body text-white",
+        // Static literals (Tailwind JIT cannot compile a runtime-built arbitrary class): 44/12 is
+        // RADIUS.c.ctaPx + RADIUS.c.ctaHeightPx (row 14, height REFUSED under the 44px touch
+        // floor); 52px/rounded-btn is this file's original, unchanged A/B shape. bg-s-ink is the
+        // CLAUDE.md-named exception (the ONE commit button stays ink), unchanged from the shipped
+        // recipe this file already carried.
+        isAirbnbPort ? "h-[44px] rounded-[12px]" : "h-[52px] rounded-btn",
         TYPE_RAMP.cta.weightClass,
         "disabled:opacity-50 disabled:cursor-not-allowed",
         "motion-reduce:!transition-none motion-reduce:!transform-none motion-reduce:!filter-none",
