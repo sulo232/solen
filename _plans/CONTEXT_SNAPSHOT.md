@@ -2,23 +2,38 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-09-06T00:41:48 (trigger: auto)
+- taken: 2026-09-06T02:45:28 (trigger: auto)
 - branch: claude/cloud-code-codex-migration-86a820
 
 ## git
 ```
-d32fcd313 Plan: every in-flight box names the workflow it waits on, the density-floor report line written and closed
-b465321c3 Plan log: build fan-out launched with the orchestrator overrides named
-677181c5b Plan: research boxes closed with their commits, the two half-done boxes split into done and blocked halves
-2584338bb Round 2 research: what is missing on the front end (15 gaps, the value a builder types versus the value the law states), the base recipes and three look systems (LIFT, RULE, TRAY) with 11 conflicts for him, suggestions refreshed
-b0b9171f8 Round 2 research: Airbnb, Fresha and Treatwell look recipes captured live at 390 (identity, philosophy, measured, port map, conflicts); plan boxes 5a, 6c, 11a, 12a closed with their proof
+7882dc99f Plan: box 12c-2 closed with its four commits, S9 superseded noted
+03fc180cf Input corner section mockup plus the corrected record: native inputs already render 12, the 16px token never reaches one
+88dd22973 LOCKFILE input radius row: the rendered 12 comes from the globals.css base rule, the 16px rounded-input token never reaches an input (measured 2026-09-06)
+d7e188e22 Plan log: doc-truth pass reviewed and committed, what stays open under 12c-2
+e1e5b8fa4 Doc truth pass, reviewed: the 11 measured Airbnb values the merge had dropped are restored as rows 41 to 51, the pointer file names them, and the CTA row's claim names its one out-of-scope exception
 ```
 ```
-M _design-system/LOCKFILE.md
- M _design-system/references/airbnb--look-recipe.md
- M _design-system/references/airbnb--look-recipes.md
- M _design-system/references/fresha--look-recipes.md
-?? app/[locale]/dev/directions-0905-r2/input-radius/
+M _plans/CONTEXT_SNAPSHOT.md
+ M app/[locale]/dev/directions-0905/profile/_vc/getProfileC.ts
+?? app/[locale]/dev/directions-0905-r2/_kit/
+?? app/[locale]/dev/directions-0905-r2/bookings-list/
+?? app/[locale]/dev/directions-0905-r2/confirmation/
+?? app/[locale]/dev/directions-0905-r2/empty-states/
+?? app/[locale]/dev/directions-0905-r2/home/
+?? app/[locale]/dev/directions-0905-r2/kit-preview/
+?? app/[locale]/dev/directions-0905-r2/payment-step/
+?? app/[locale]/dev/directions-0905-r2/profile/
+?? app/[locale]/dev/directions-0905-r2/search-results/
+?? app/[locale]/dev/directions-0905-r2/weight-probe/
+?? public/_mockups/directions-0905-r2/bookings-list-lift.png
+?? public/_mockups/directions-0905-r2/bookings-list-rule.png
+?? public/_mockups/directions-0905-r2/bookings-list-tray.png
+?? public/_mockups/directions-0905-r2/confirmation-lift.png
+?? public/_mockups/directions-0905-r2/confirmation-rule.png
+?? public/_mockups/directions-0905-r2/confirmation-tray.png
+?? public/_mockups/directions-0905-r2/empty-states-lift.png
+?? public/_mockups/directions-0905-r2/empty-states-rule.png
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)

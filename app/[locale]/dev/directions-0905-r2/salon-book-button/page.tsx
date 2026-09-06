@@ -56,6 +56,55 @@
 // Depicts: the sticky-bar Book button (reference row) -> app/[locale]/_components/salon/SalonMobileBookBar.tsx (className string reproduced verbatim; not the live portaled/consent-gated component, see above)
 // Depicts: shape/fill overrides on the row's Book anchor -> NET-NEW: comparison-only CSS scoped to this dev route (.r2-match-shape / .r2-match-full), not present on any real surface
 //
+// REPAIR 2026-09-06 (open items 1-3): this file was missing the mockup-law floors/system lines
+// (zero grep hits for either) and its bottom spacer was pb-16 (64px computed) against this
+// round's required 125px bottom spacer (HideInBooking.tsx strips the real header + BottomNav on
+// every /dev path, and every round-2 mockup restores that exact space so the fold measures like
+// the real phone). All three fixed below, kit-only, structure and system unchanged.
+//
+// floors: this is a decision harness comparing one component's button recipe across four states
+//   (current / matched-in-shape / matched-in-full / the real reference), not a customer
+//   discovery/PDP/booking screen, so answered honestly rather than forced to pass: (a)
+//   photographic focal: NOT PRESENT and not applicable -- the imagery floor's own text scopes to
+//   "browse/discovery/PDP" viewports; this page shows service rows only, no salon photo, and
+//   none was added to force a pass (no-fabrication rule); (b) one biggest element: the 28px h1
+//   ("Service row Book button") is the only 28px run on the page against a 13-15px body/label
+//   range, clearing both the absolute floor and the 1.8x ratio floor on its own; (c) tabular
+//   number: every service price rendered (3x per section x4 sections) is real seeded CHF data
+//   from muse-beauty-studio via PriceFrom, which sets `tabular-nums` itself
+//   (primitives/PriceFrom.tsx:29); (d) semantic-colour moment: NOT PRESENT -- this harness has no
+//   status/availability/success element to carry one, and none was invented to satisfy this
+//   floor; (e) no dead-grey zone: the page is white end to end with real service content in every
+//   section, no washed-out placeholder block; (f) worst-case content: the real, unmodified
+//   SalonServices component and its real seeded data are reused verbatim in all three sections
+//   (no fork), so whatever truncate/wrap behaviour that live component has for a long service
+//   name already applies here unchanged -- not independently stress-tested with a fabricated
+//   longest-name row, per the no-fabrication rule.
+//
+// system: RULE, verbatim from _plans/R2_LOOK_SYSTEMS.md Part B, SYSTEM 2 / _kit/systems.ts:
+//   "there is no card anywhere on the screen; groups are separated by inset hairlines and gap
+//   size alone, and the hierarchy is carried entirely by a big anchor sentence over a populated
+//   middle type tier." This file's own four sections (Current / Matched in shape / Matched in
+//   full / Reference) are each a bare `<div>`, never a Card component of any variant this harness
+//   composes; the only separator this file itself draws between them is `border-t
+//   border-s-border` (the systems.ts "rule" hairline device). The 28px h1 is the page's one
+//   anchor per systems.ts "rule"'s "hierarchy carried entirely by a big anchor". CORRECTED against
+//   a live measurement taken while writing this line (getComputedStyle over every element,
+//   390x844): the page is NOT shadow-free -- 9 elements carry a box-shadow, all three copies of
+//   the real, unmodified SalonServices component's own internal `<ul class="... rounded-[24px]
+//   border border-s-border ... shadow-whisper">` list wrapper (that component's pre-existing
+//   grouped-list-card treatment, reused verbatim per the file's own Grounded-in note, not
+//   something this harness composes or could remove without forking the live component). Those 9
+//   elements also each carry both a border AND a shadow, which is the one cross-system rule this
+//   page cannot honour while showing the real component unforked. Departure from the full RULE
+//   spec, named rather than silently passed: the mandatory 18px section-heading tier (systems.ts
+//   "rule" notes, ">= 3 text runs") is not present -- this harness uses 13px labels for its four
+//   comparison captions instead, because the screen's job is a component-level A/B/C/D
+//   comparison, not a full-page RULE composition; the hairlines are also inset 16px (`mx-4`)
+//   rather than RULE's 24px, for the same reason. All three are pre-existing structural choices
+//   this repair pass leaves untouched (the brief scopes this pass to the three named open items
+//   only, not a system redesign or a fork of the live SalonServices component).
+//
 // emphasis-ok: the reference block's font-semibold class is a byte-for-byte reproduction of the
 // real sticky-bar button's class string (see Deviations above), not a styling choice; the inline
 // fontWeight:600 next to it is a compensation for this route's own main-scoped CSS (see REPAIR
@@ -89,7 +138,7 @@ export default async function SalonBookButtonDirections({
   const { salon } = result;
 
   return (
-    <div className="mx-auto min-h-screen w-full max-w-[402px] bg-white pb-16">
+    <div className="mx-auto min-h-screen w-full max-w-[402px] bg-white pb-[125px]">
       {/* Scoped overrides, see the "Deviations" comment above. Nothing outside
           .r2-match-shape / .r2-match-full is touched. */}
       <style>{`

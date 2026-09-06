@@ -44,6 +44,12 @@ const NEXT_BOOKING_SELECT = `id, starts_at, ends_at, status,
 
 export interface ProfileCNextAppointment {
   bookingId: string;
+  /** Real DB value, already fetched by NEXT_BOOKING_SELECT above ("status") but not previously
+   * exposed on this type (no consumer needed it before the round-2 kit StatusBadge, which must
+   * colour-code a real status, never a hardcoded "confirmed"; added by the directions-0905-r2
+   * profile/_lift builder, additive only, existing consumers of this type are unaffected). The
+   * NEXT_BOOKING_SELECT filter above already restricts this to "confirmed" | "pending". */
+  status: "confirmed" | "pending";
   startsAt: string;
   endsAt: string;
   salonName: string;
@@ -159,6 +165,10 @@ export async function getProfileDataC(locale: string): Promise<ProfileCData> {
 
     nextAppointment = {
       bookingId: bookingRow.id,
+      // NEXT_BOOKING_SELECT filters .in("status", ["confirmed", "pending"]), so this is always
+      // one of those two; the "as" narrows the raw `string | null` column type, it does not
+      // invent a value.
+      status: (bookingRow.status as "confirmed" | "pending" | null) ?? "confirmed",
       startsAt: bookingRow.starts_at,
       endsAt: bookingRow.ends_at,
       salonName: salon?.name || "",
