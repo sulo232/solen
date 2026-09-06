@@ -515,7 +515,7 @@ function OpenList({ items }: { items: string[] }) {
   return (
     <ul className="mt-1 flex flex-col gap-1.5">
       {items.map((item, i) => (
-        <li key={i} className="text-[12px] font-normal leading-snug text-s-ink-2">
+        <li key={i} className="break-words text-[12px] font-normal leading-snug text-s-ink-2">
           {item}
         </li>
       ))}
