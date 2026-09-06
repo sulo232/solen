@@ -12,20 +12,26 @@
 //
 // system: none. Meta text carries no per-system delta.
 
+// style?: React.CSSProperties added 2026-09-06 so a caller can override the resting
+// s-ink-2 color for a semantic state (e.g. COLOR.error.DEFAULT on a "Cancelled" line)
+// without hand-rolling a span. Merged after the base style so it can override color;
+// no rendered value changed for any existing caller that omits it.
+
 import * as React from "react";
 import { TYPE_RAMP, COLOR } from "./tokens";
 
 export interface MetaProps {
   children: React.ReactNode;
   className?: string;
+  style?: React.CSSProperties;
 }
 
 /** Meta, address, duration, timestamps, badge text: 12px, s-ink-2, never s-chart-2. */
-export function Meta({ children, className }: MetaProps) {
+export function Meta({ children, className, style }: MetaProps) {
   return (
     <span
       className={["font-body", TYPE_RAMP.meta.weightClass, className].filter(Boolean).join(" ")}
-      style={{ fontSize: TYPE_RAMP.meta.size, lineHeight: TYPE_RAMP.meta.lineHeight, color: COLOR.meta }}
+      style={{ fontSize: TYPE_RAMP.meta.size, lineHeight: TYPE_RAMP.meta.lineHeight, color: COLOR.meta, ...style }}
     >
       {children}
     </span>
