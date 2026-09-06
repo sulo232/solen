@@ -1275,3 +1275,45 @@ motion proven on video. The single-treatment micro-mockup index is graveyarded (
 `airbnb--look-recipe.md` and `airbnb--motion.md` (look and motion), `21st-dev--motion-kit.md`, and
 `COMPARE_SOLEN_FRESHA_AIRBNB.md`, the standing comparison he asked to keep running. Mockups:
 `/en/dev/directions-0905`. Plan: `_plans/DIRECTIONS_0905.md`.
+
+## 2026-09-06 , HIS VERDICT ON ROUND 2: THE LOOK READS AS A DRAFT, ONE SYSTEM FOR EVERY SCREEN, THE COUNT AND THE HEADING LINE ARE OUT
+
+**Owner, verbatim (dictated on the round-2 index, decoded from speech-to-text):** "the first one, the three
+left, I don't understand what the fuck that is" (the "three look systems" block and its kit previews). On
+the confirmation: "it looks ass. Like, I told you. What is this design? Not even talking about the
+structure. It's about the design itself. How does Airbnb do it ... ours looks like a draft, not premium at
+all. Why?" Search results: "I like the rule one because what is this grey thingy on the tray one, why is
+there a grey bar ... I like the filter pills in the rule, but I don't like at all how it says hair salons in
+Basel sorted by most reviewed. Too much text and unnecessary. And why do we have a count of how many people
+reviewed it? That's gonna make it cheap. We don't even need the counts, remove that literally." Bookings
+list: "none of them. The recommended one, I like it because there's a lot of spacing, it has some hierarchy,
+but the next one is too big, and it's not really visible when the next time is, there is no reminder or
+anything." Review and pay: "I like the lift. Lift is good." Profile hub: "there's a lot of inconsistency. We
+have to actually define how we're gonna do it: if we're gonna use the pill-shaped thingy, the box one, or
+let it be. If the design system changes per screen, it's gonna be so ass. But I like the rule more
+probably." Empty states: "ass, none of them, bro. What is that?" Home: "none of them. Keep how it is right
+now." Salon page: "no, not on them. What I meant is that the filter, like services, they're all on other
+colors when you select that one. That pill is completely different from what it is after when you click."
+
+**What it decides.** (1) The review count beside a star rating is OUT on cards, which supersedes the
+taste-rule-3 example of a blue "(54)" as small tappable metadata; the rating value stays. (2) A heading
+that restates the query and the sort ("Hair salons in Basel sorted by most reviewed") is OUT, the sister of
+his 2026-07-31 kill of the result-count heading. (3) The TRAY system's grey bands are OUT on customer
+screens, the same canvas he rejected on the merchant terminal 2026-08-16. (4) The three round-2 home
+structures and the three empty-state directions are OUT; the live home stays. (5) ONE SYSTEM, defined once
+(pill, box or bare), holds on every screen; a look per screen is a defect by his word. (6) The category
+pill on the salon page and the category pill on the booking services step must be ONE pill: his
+2026-07-19 ink-fill override for the booking pills and the calm-grey lock now collide, and he has asked
+for them to agree, so the pick is his, shown on both screens. (7) Round 2's box 3 (match the row Book to
+the bar Book) was a misread of this same pill complaint and its harness is graveyarded.
+
+**Picks that stand, loosely:** search RULE, pay LIFT ("Lift is good"), profile RULE, confirmation "probably
+the rule". Bookings: LIFT's spacing and hierarchy, with the next-appointment unit smaller and the date, time
+and reminder visible.
+
+**Format lesson, again.** A section explaining three abstract systems with isolated kit previews is the
+micro-mockup format he graveyarded on 2026-09-05 wearing a new name. The round-3 index leads with the
+recommendation and shows the same screen three times, stacked, one plain line of difference each.
+
+**Where it goes:** `_plans/DIRECTIONS_0905_R3.md` (boxes), `_design-system/REMOVED.md` (seven lines, same
+turn), `_plans/R3_ONE_SYSTEM.md` (the one system, once written).
