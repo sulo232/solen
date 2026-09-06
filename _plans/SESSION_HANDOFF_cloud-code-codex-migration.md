@@ -20,9 +20,9 @@ Copy this whole file, rename it `SESSION_HANDOFF_<your-worktree-name>.md`, and r
 
 ## Session
 
-Worktree: `/Users/sulo/Documents/solen/.claude/worktrees/cloud-code-codex-migration-86a820`, branch `claude/cloud-code-codex-migration-86a820`, at commit `085f25366` as of this writing (`git rev-parse HEAD`; moved forward from `70f6171dd` by this same handoff work, and a session in progress keeps committing, so re-run that command before trusting this number). Main checkout: `/Users/sulo/Documents/solen`, branch `main`, still at commit `70f6171dd` as of this writing (checked separately in both locations, they are no longer the same commit). This session owns two rows in `_plans/ACTIVE.md`: **row 113**, "EVERYTHING as a loop, then move it all to Codex," now `ACTIVE`, most recently touched by writing this handoff and `_plans/CODEX_HANDOFF.md`; and **row 116**, "Directions round 3," also `ACTIVE`, the design-mockup work described below.
+Worktree: `/Users/sulo/Documents/solen/.claude/worktrees/cloud-code-codex-migration-86a820`, branch `claude/cloud-code-codex-migration-86a820`, at the last commit of 2026-09-07 00:16 (run `git log -1`; the sha is not written here because the commit carrying this sentence is that commit). Main checkout: `/Users/sulo/Documents/solen`, branch `main`, fast-forwarded to the same commit at the end of the session; its production copy on port 3480 was built there from `ecbdcfb32` at 00:10. This session owns two rows in `_plans/ACTIVE.md`: **row 113**, "EVERYTHING as a loop, then move it all to Codex," now `ACTIVE`, most recently touched by writing this handoff and `_plans/CODEX_HANDOFF.md`; and **row 116**, "Directions round 3," also `ACTIVE`, the design-mockup work described below.
 
-**This file itself lives only on the branch named above, uncommitted, as of this writing** (`git status --short` shows it as `??`; it does not exist on `main`, and it does not exist at `/Users/sulo/Documents/solen/_plans/`). Copy it there before treating it as visible from the main checkout.
+**This file is committed on the branch above and, after the fast-forward, present in the main checkout at `/Users/sulo/Documents/solen/_plans/`.** If `ls` there does not show it, the fast-forward did not happen; copy it by hand and say so.
 
 ## What he asked, in his words
 
@@ -44,49 +44,30 @@ All on this worktree's branch, all local, none pushed:
 - `ae2d85be0` The round-3 diagnosis itself committed: `_design-system/research/DRAFT_DIAGNOSIS_2026-09-06.md` (five root causes with numbers, three candidate value sheets, a per-screen fix list, his six open decisions), value sheets also copied to `_plans/R3_ONE_SYSTEM.md`.
 - `a21c8c002` Diagnosis and harden boxes ticked; two more Airbnb look-recipe rows added (chip selected-state measured live on airbnb.ch; the trip timing-pill geometry measured by proportion).
 - `841b8ae29` Box 1c updated to cite the committed Airbnb rows; box 11c split into three.
+- `085f25366` Codex plan section 11: the handoff ask read back, his three answers, boxes 11a to 11i.
+- `a1af8c776` The round-3 kit: candidates a, b, c in the shared round-2 kit, DateLine and TimingPill, the kit preview.
+- `49507ce2b` The 21 round-3 routes and 42 screenshots (seven screens times three candidates, fold crop and full page).
+- `ca58836a5` The two handoff files, with the 22:19 import settled from Codex's own log.
+- `980741f00` Codex plan boxes 11a to 11g and 11i ticked.
+- `e3a457d82` Graveyard keyword narrowed: the round-2 empty-state entry no longer blocks every later empty-state mockup.
+- `ecbdcfb32` The round-3 index page, its screenshot, and the arbiter's report copied to `_design-system/research/R3_ARBITER_2026-09-06.md`.
+- `a37d3d648` Round-3 plan boxes 2 to 8, 10, 11a to 11c ticked.
+- The closing commit carrying this file's update: every remaining box ticked, ACTIVE rows 113 and 116 moved to WAITING ON HIM.
 
-Boxes 1, 1a, 1b, 1c, 9, 12, 13, 14 in `_plans/DIRECTIONS_0905_R3.md` are ticked. Boxes 2 through 8, 10, 11 (and its four sub-items), and 15 are still open, each marked blocked on the build fan-out below.
+Every box in `_plans/DIRECTIONS_0905_R3.md` is ticked with its evidence; every box in section 11 of `_plans/EVERYTHING_TO_CODEX_2026-09-04.md` too.
 
 ## Running right now
 
-**Every `scratchpad/...` path below is NOT a repo-relative path.** This repo has no `scratchpad/` directory at all (`ls scratchpad` from the worktree root returns "No such file or directory"); everything named `scratchpad/...` in this section and in "Files that matter" below lives only under this session's own ephemeral working directory: `/private/tmp/claude-501/-Users-sulo-Documents-solen--claude-worktrees-cloud-code-codex-migration-86a820/5ddef515-9723-4660-a8ed-13a03e90a1ef/scratchpad/`. A future reader following the bare `scratchpad/...` path against the repo will find nothing; prepend that full path, or ask this session (while it still exists) to move the two workflow scripts and the critique folder into the repo proper if they need to survive past this session.
-
-Two fan-outs ran back to back tonight; the first is finished in spirit but not in output, the second is still running.
-
-**`wf_5d276b75-61d`** (the original build fan-out, script `r3-build.workflow.js`): extended the shared mockup kit with candidates A, B, and C, built all 21 routes (7 screens times 3 candidates) under `app/[locale]/dev/directions-0905-r3/`, screenshotted them to `public/_mockups/directions-0905-r3/`, ran a first critic pass per screen, made some fixes. It did not reach its own final steps: a shared-file bug in `app/[locale]/dev/directions-0905-r3/_kit/index.ts` (a code comment containing a literal `<style>` string inside a `/** */` block, which closed the comment early) made most of the 21 routes return HTTP 500 for a stretch of the run, so most of that fan-out's critiques could not actually render or measure anything. Found and fixed at 20:36; a fresh `curl` this session confirmed HTTP 200 on `/en` and on `/en/dev/directions-0905-r3/confirmation/a`.
-
-**`wf_acd9e474-432`** (the repair fan-out, script `r3-repair.workflow.js`, launched 22:21, **still running as of this handoff**): re-grades all 21 routes now that they actually render, with a fresh critic pass per screen. It already found real defects reproducing the diagnosis's own root cause 1 inside the fix meant to solve it: candidate A has two divider insets on one screen (40px and 33px, neither the spec's 24px); candidate B's "Your appointment" card is tagged the wrong radius bucket (24px grouped instead of 16px entity); candidate C's headline includes the weekday name, breaking anatomy parity with A and B; and all three candidates share one floor failure, the salon name renders below both commit buttons, failing the trust-floor rule that who-you're-booking-with must be visible above the commit action. This workflow fixes each failing candidate with up to two fix-and-recheck rounds, but its own script only has three phases (kit, critique, fix) and its final return carries no arbiter or index output.
-
-**What has to happen after `wf_acd9e474-432` finishes, and has not been launched yet:** a short follow-up run that (a) runs an arbiter pass reading every file under `scratchpad/r3/critique/` plus every screenshot, writing `scratchpad/r3/critique/ARBITER_R3.md` (confirmed this does not exist yet), and (b) builds `app/[locale]/dev/directions-0905-r3/page.tsx`, the index route at `/en/dev/directions-0905-r3` (confirmed this route does not exist yet either). The `ARBITER` and `INDEX` prompt functions for exactly this purpose are already written, verbatim, near the bottom of `r3-build.workflow.js`, and just need to be re-run with the repair fan-out's summary in place of the original build summary.
+Nothing. The build fan-out (`wf_5d276b75-61d`), the repair fan-out (`wf_acd9e474-432`, 39 helpers, every candidate PASS after at most one fix round), the arbiter and index run (`wf_0a29ebea-09d`) and the index fix (`wf_a6653393-a88`, PASS) all finished before this file was closed. The two workflow scripts, the per-screen critique files and the arbiter's original live only under this session's scratch directory (`/private/tmp/claude-501/-Users-sulo-Documents-solen--claude-worktrees-cloud-code-codex-migration-86a820/5ddef515-9723-4660-a8ed-13a03e90a1ef/scratchpad/`, a per-session location, not a repo path); the arbiter's report is the one file from there that was copied into the repo.
 
 ## Uncommitted, file by file
 
 ```
- M _plans/ACTIVE.md
- M _plans/CONTEXT_SNAPSHOT.md
- M _plans/EVERYTHING_TO_CODEX_2026-09-04.md
- M app/[locale]/dev/directions-0905-r2/_kit/Card.tsx
- M app/[locale]/dev/directions-0905-r2/_kit/Pill.tsx
- M app/[locale]/dev/directions-0905-r2/_kit/PrimaryButton.tsx
- M app/[locale]/dev/directions-0905-r2/_kit/SecondaryButton.tsx
- M app/[locale]/dev/directions-0905-r2/_kit/StatusBadge.tsx
- M app/[locale]/dev/directions-0905-r2/_kit/index.ts
- M app/[locale]/dev/directions-0905-r2/_kit/systems.ts
- M app/[locale]/dev/directions-0905-r2/_kit/tokens.ts
- M app/[locale]/dev/directions-0905-r2/kit-preview/page.tsx
 ?? .codex/
 ?? AGENTS.md
-?? app/[locale]/dev/directions-0905-r2/_kit/DateLine.tsx
-?? app/[locale]/dev/directions-0905-r2/_kit/TimingPill.tsx
-?? app/[locale]/dev/directions-0905-r3/
-?? public/_mockups/directions-0905-r3/
 ```
 
-This paste predates writing `_plans/CODEX_HANDOFF.md` and this file itself, so a fresh `git status --short` run now will additionally show `?? _plans/CODEX_HANDOFF.md` and `?? _plans/SESSION_HANDOFF_cloud-code-codex-migration.md` (confirmed present as untracked, this run); nothing else in the working tree changed between the two checks.
-
-The `M` rows under `_kit/` are the round-2 mockup kit extended in place with the three round-3 candidate value sheets (`systems.ts` keys `a`, `b`, `c`) plus two new shared primitives (`DateLine.tsx`, `TimingPill.tsx`). The whole `app/[locale]/dev/directions-0905-r3/` tree (21 route folders plus its own `_kit/index.ts` re-export barrel) is untracked and new. None of the round-3 mockup code has been committed; the commits listed above only touched plan and research documents plus the measuring script, never the mockups themselves, on purpose: this project's mockup-first rule means round 3 is still a proposal for his approval, not something to land on `main`.
-
-`.codex/` and the root-level `AGENTS.md` are untracked and belong to the Codex-migration handoff, not to round 3; do not touch them while finishing round 3, and do not assume they are the whole picture either. A live check this session found that this worktree's own `.codex/` folder (38 hook files, a 14,493-byte `hooks.json`, one agent TOML) mirrors this project's `.claude/hooks/`, and that a SEPARATE, much larger set of files already exists outside this repo, at the real `~/.codex/` (312 hook files recursively, 261 at the top level; a 31,644-byte `hooks.json`; an `AGENTS.md`). He ran `/import` inside Codex at 22:19 (Codex Desktop's own log records the interactive import flow: 57 Claude Code items, 33 sessions, one failed plugin), and the same run wrote the same three things into the main checkout at `/Users/sulo/Documents/solen`, untracked there too. Full detail is in `_plans/CODEX_HANDOFF.md`'s "Codex on this Mac today, measured" section; this note exists here only so the next round-3 reader does not confuse the in-repo staging with the live state of the real Codex home directory.
+Only the two things Codex's own `/import` wrote into this worktree at 22:19 (and, in the same minute, into the main checkout). Left untracked on purpose: they are his tool's output, unreviewed, and `_plans/CODEX_HANDOFF.md` describes them (the project-level `.codex/hooks.json` still carries 14 `$CLAUDE_PROJECT_DIR` references that resolve to nothing under Codex). Everything else this session produced is committed, see the list above.
 
 ## His decisions, open
 
@@ -104,35 +85,21 @@ The `M` rows under `_kit/` are the round-2 mockup kit extended in place with the
 
 ## Next steps, in order
 
-1. Wait for `wf_acd9e474-432` (the repair fan-out) to finish. It is a background workflow; check it through this session's own workflow tooling, or by re-reading `r3/critique/*.md` (under this session's scratch directory named in "Files that matter" above, NOT a repo path) for fresh timestamps and pass or recheck lines per screen, and by confirming the `*-fold.png` screenshots under `public/_mockups/directions-0905-r3/` have fresh modification times.
-2. Launch a short follow-up run for the arbiter and index only: reuse the `ARBITER` and `INDEX` prompt functions, verbatim, from near the bottom of `r3-build.workflow.js` (same scratch directory), feeding them the repair fan-out's own summary instead of the original build summary. This produces `r3/critique/ARBITER_R3.md` (scratch directory) and `app/[locale]/dev/directions-0905-r3/page.tsx` (a real repo path, the index route). Do not re-run the kit or build phases; both are already done.
-3. Rebuild the production copy **in the main checkout, `/Users/sulo/Documents/solen`, never in this worktree while `next dev` is serving it on port 3461**:
-   ```
-   cd /Users/sulo/Documents/solen && SOLEN_DEV_PAGES=1 npx next build
-   ```
-   Main is already at `70f6171dd`, the same commit the last production copy was built from.
-4. Restart the production server on port 3480 and its tunnel, and restart the tunnel for the already-running dev server on port 3461, using this worktree's own `.claude/launch.json` entries:
-   - "Prod build (MAIN on 3480)": `cd /Users/sulo/Documents/solen && SOLEN_DEV_PAGES=1 npx next start -p 3480 -H 127.0.0.1`
-   - "Tunnel (prod MAIN 3480)": `cloudflared tunnel --url http://127.0.0.1:3480 --metrics localhost:20268 --no-autoupdate`
-   - "Tunnel (codex-migration 3461)": `cloudflared tunnel --url http://localhost:3461 --metrics localhost:20263 --no-autoupdate`
-   Poll each tunnel's own stdout for its `https://<random>.trycloudflare.com` URL before sending anything to him.
-5. **Cold-check every round-3 link through the fresh tunnels** in a genuinely new browser context, not a warm session, per this project's own measurement rule that a warmed-up session can hide a first-load bug. This includes the new index page from step 2 and all 21 individual screen routes.
-6. Tick boxes 2 through 8, 10, 11 (and its sub-items), and 15 in `_plans/DIRECTIONS_0905_R3.md` as each is verified, then write the closing report per box 15's own spec: a readback first, the index link, the five root causes from Part 1 of the diagnosis stated directly in the reply, and his five open decisions from this file's "His decisions, open" section, each with its comparison and its recommendation (a sixth item, the empty-state CTA fill, was found to already be answered by a dated lock and is reported as a fix, not asked as a decision, see that section).
-7. Only after he has seen and approved a direction on his phone does any of this move into the real `SalonResultCard`, `TabPill`, or other production components. Nothing here is meant to land on `main` unreviewed.
+1. He opens the index on his phone: `https://task-correction-congressional-licence.trycloudflare.com/en/dev/directions-0905-r3` (the production copy on port 3480; the tunnel is a quick tunnel and dies with the session, restart it with the launch entry named below and re-run the cold check). He picks one column for every screen, or says what flips it.
+2. After his word, and only then: the winning system goes into the real components (`SalonResultCard`, `TabPill`, the real confirmation, bookings, pay, profile and empty-state screens), mockup-first still binding on anything he could tell apart. The pill corner (16px versus capsule) needs his one word first; none of the 21 screens shows 16px.
+3. The Codex side, from `_plans/CODEX_HANDOFF.md` "Install order": step 2 is done (he ran `/import` at 22:19); steps 1, 3, 5, 6 and 9 are safe to do alone; steps 4, 7 and 8 wait for his word.
+4. If the production copy must be rebuilt: **in the main checkout, `/Users/sulo/Documents/solen`, never in this worktree while `next dev` serves it on 3461**: `cd /Users/sulo/Documents/solen && SOLEN_DEV_PAGES=1 npx next build`, then the launch entry "Prod build (MAIN on 3480)" and "Tunnel (prod MAIN 3480)", then `verify-r3-links.sh <tunnel>` from the scratch directory (22 pages, all must read HEALTHY).
 
 ## Servers and links
 
-Measured this session with `curl -o /dev/null -w '%{http_code}'`, not assumed:
+Measured at 2026-09-07 00:16 with `curl -o /dev/null -w '%{http_code}'` and the cold-load checker, not assumed:
 
 **Alive:**
-- `http://127.0.0.1:3461/en` -> **200**. This worktree's dev server, already running.
-- `http://127.0.0.1:3461/en/dev/directions-0905-r3/confirmation/a` -> **200**. Confirms the render-blocking kit-barrel bug is fixed; this exact route was one of the ones returning 500 before 20:36.
+- `http://127.0.0.1:3461/en` -> 200. This worktree's dev server, warm; no tunnel in front of it, on purpose (never hand him a `next dev` link).
+- `http://127.0.0.1:3480/en` -> 200. The production copy, built in the main checkout from `ecbdcfb32` at 00:10, started with the launch entry "Prod build (MAIN on 3480)".
+- `https://task-correction-congressional-licence.trycloudflare.com` -> the tunnel in front of 3480 (launch entry "Tunnel (prod MAIN 3480)"); the index and all 21 candidate pages loaded HEALTHY through it on a cold load at 00:13, 22 of 22.
 
-**Dead:**
-- `http://127.0.0.1:3480/en` -> **000** (connection failed). The production-copy server is not running at all right now; needs the rebuild and restart in step 3 and 4 above.
-- Both cloudflare tunnels this session needed (for 3461 and for 3480) died with a session or rate limit at 21:51 and have not been restarted; `ps aux` found no `cloudflared` process pointed at either port, only one unrelated stray tunnel pointed at port 3470, which is not named in `.claude/launch.json` and not one of round 3's own screens; leave it alone.
-
-Net effect right now: nobody can open a round-3 mockup on a phone. The dev server itself is warm and correct; it simply has no tunnel in front of it. The production copy needs both a rebuild and a fresh start before its own tunnel is worth opening.
+**Dead, and meant to stay so:** the tunnel for 3461 was not restarted; nothing he opens should point at a dev server.
 
 ## Ports, servers and files this session owns
 
@@ -147,7 +114,8 @@ Net effect right now: nobody can open a round-3 mockup on a phone. The dev serve
 - `_design-system/research/DRAFT_DIAGNOSIS_2026-09-06.md`, the five root causes and the three candidate value sheets.
 - `_plans/R3_ONE_SYSTEM.md`, the value sheets copied out for quick reference.
 - `r3-build.workflow.js` and `r3-repair.workflow.js`, the two fan-out scripts (the `ARBITER` and `INDEX` prompt functions needed for the next step live inside the first file). **Not in the repo:** both live under this session's own scratch directory, `/private/tmp/claude-501/-Users-sulo-Documents-solen--claude-worktrees-cloud-code-codex-migration-86a820/5ddef515-9723-4660-a8ed-13a03e90a1ef/scratchpad/`, confirmed there this run; see the warning at the top of "Running right now" above.
-- `r3/critique/` (same scratch directory as above), the per-screen critic verdicts and `look-diff-*.md` measurement files (no `ARBITER_R3.md` yet).
+- `r3/critique/` (same scratch directory as above), the per-screen critic verdicts and `look-diff-*.md` measurement files; its `ARBITER_R3.md` is also committed as `_design-system/research/R3_ARBITER_2026-09-06.md`.
+- `app/[locale]/dev/directions-0905-r3/page.tsx`, the index he opens.
 - `app/[locale]/dev/directions-0905-r3/`, all 21 untracked mockup routes plus the shared `_kit/index.ts` re-export barrel.
 - `public/_mockups/directions-0905-r3/`, the screenshots (full page and above-the-fold crop) for every candidate on every screen.
 - `scripts/design/look-diff.mjs`, this round's own measuring script.

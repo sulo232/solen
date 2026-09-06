@@ -2,19 +2,27 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-09-06T07:14:08 (trigger: auto)
+- taken: 2026-09-06T23:11:39 (trigger: auto)
 - branch: claude/cloud-code-codex-migration-86a820
 
 ## git
 ```
-da7fb75c0 Plan log: production build failed on a round-2 type error, fix in flight
-3ab82e711 Plan log: main fast-forwarded, production build running
-71400f493 Round 2 index: the three home thumbnails read a one-fold crop of their screenshot, so all 22 thumbnails load (the full-page home captures stalled the image optimizer)
-3902339e1 Plan: search and home boxes closed with the critic files and 3a82a1e65; the parent boxes that wait on his six answers say so
-3a82a1e65 Round 2 last fixes: the index no longer scrolls sideways (min-w-0 on the thumbnail columns, sized images, wrapped list items), search LIFT filters the greyscale seed photo and its Map pill sits above the nav band, home A re-measured clean on five fresh loads
+49507ce2b Round 3 candidates: seven screens built three times (A rule refined, B lift refined, C the Airbnb port) on the production data, every one passed by a read-only critic after the repair pass, 42 screenshots at 390x844 (full page and fold)
+a1af8c776 Round 3 kit: the three candidate systems a, b, c in the shared kit (value sheets from R3_ONE_SYSTEM.md), TimingPill and DateLine, the card-edge rule for b, the StatusBadge check at #16A34A, the over-photo control and mode pill rendered in the kit preview under c
+085f25366 Codex plan: section 11, the handoff ask of 2026-09-06 with its nine boxes and his three answers; row 113 active again
+841b8ae29 Round 3 plan: box 1c cites the committed Airbnb rows, box 11c split into three
+a21c8c002 Round 3 plan: diagnosis and harden boxes ticked, the rest blocked on the build fan-out; Airbnb look table rows 52 and 53 (the chip selected state measured live, the trip timing pill by proportion)
+```
+```
+M _plans/CONTEXT_SNAPSHOT.md
+?? .codex/
+?? AGENTS.md
+?? _plans/CODEX_HANDOFF.md
+?? _plans/SESSION_HANDOFF_cloud-code-codex-migration.md
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
+113 | EVERYTHING as a loop, then move it all to Codex (owner 2026-09-04: "research every single corner ... keep fixing it except for design make mockup ... merge everything ... transfer everything on Cloud Code to Codex", plus "mainly design, what principle is actually missing") | **ACTIVE** (2026-09-06 22:15: the Codex handoff, section 11 of the plan: two files, research first, harness counted, careful list)
 81 | DESIGN CONSISTENCY, the one that closes design work instead of opening more (owner 2026-08-27: "a lot of inconsistencies... the search bar moves... weird back button... typography too", then "acc plan what happened to the planning harness") | **PAUSED** (paused 2026-08-31 on his word: "can you park whatever we're doing right now?")
 74 | OVERNIGHT LOOP: how I work + efficiency (speed/money) + harness + skills (owner 2026-08-24, going to sleep: "finish evrth as a. loop") | **ACTIVE** (2026-08-24)
 75 | HIS OPEN ASKS, the ones I measured instead of doing (owner 2026-08-24: "are you sure you finished everything? What about the one... like, the number three and also about the context and about the price and also the skills") | **ACTIVE** (2026-08-24)
@@ -57,4 +65,16 @@ da7fb75c0 Plan log: production build failed on a round-2 type error, fix in flig
 110 | DESIGN RE-ENGINEER , improve the system we have, measured against live Airbnb | **ACTIVE** (2026-07-28)
 72 | REFUND PROCESS: does it exist, who decides, is it legal (owner 2026-08-19: "Is there even a refund process, and how does it even proceed? Who is gonna decide it? ... with the tax and fix if it's legal or not") | **ACTIVE** (2026-08-19)
 111 | GATE + HOOK STRESS TEST , all 305 hooks driven with real payloads, not read (owner 2026-08-17: "actually evaluate and stress test each one") | **ACTIVE** (2026-08-18)
-115 | Directions round 2 (owner 2026-09-05 22:08, dictated after reading the round-1 index: picks per screen, "the direction is good but itself it looks ass", one system for pill shades, contrast and typography, and again "search out what we're missing on the front end, principles, design files") | **ACTIVE** (2026-09-05 22:08: readback sent, 14 boxes atomized, research and measurement fan-out next)
+116 | Directions round 3 (owner 2026-09-06 ~18:00, dictated on the round-2 index: "it looks ass, not premium, like a draft, how does Airbnb do it", one system defined once for every screen, search RULE minus the heading line and the review counts, bookings next card smaller with the time visible, pay LIFT kept, empty states and home rejected, the salon and booking category pills must be one pill) | **ACTIVE** (2026-09-06 18:15: readback and 15 boxes atomized, graveyard fed, measured diagnosis fan-out launched)
+
+## EVERYTHING_TO_CODEX_2026-09-04.md
+Open boxes:
+- [ ] 11a. Research, live: the official manual refreshed, every 09-04 claim re-checked (HOLDS / CHANGED / GONE), the installed version against the newest release, the model in his config.
+- [ ] 11b. Research, live: how working in Codex differs from Claude Code, with sources (approval and sandbox, context, subagents, tools, worktrees, exec, memories, hooks approval, skills paths).
+- [ ] 11c. The harness today, counted by command (hooks per event, self-tests, skills, agents, commands, workflows, style, memories, rulebook bytes, MCP names, launch entries), diffed against the 09-04 inventory.
+- [ ] 11d. The careful list: ranked, each rule with its incident, its default failure in Codex, and the check that catches it here.
+- [ ] 11e. FILE 1 written: _plans/CODEX_HANDOFF.md (read-first, Codex today, what moves, install order with /import first, careful list, differences, proof, his decisions, path index, sources).
+- [ ] 11f. FILE 2 written: _plans/SESSION_HANDOFF_cloud-code-codex-migration.md (template block on top, then this session: asked, done, running, uncommitted, his decisions, next steps, servers, files).
+- [ ] 11g. Verified by three read-only lenses (paths and counts run; every Codex claim found in the manual or a fetched page; completeness and register judged), punch list applied, rechecked.
+- [ ] 11h. Both files committed; ACTIVE row 113 updated; closing message carries the readback, the two file paths, the three or four things Codex must be most careful about, and his open decisions with a recommendation each.
+- [ ] 11i. Harden decision for the repeat flag this turn: the flag was a false positive ("I'm gonna do the same thing with the other session" is him planning, not a complaint); the pattern narrowed in ~/.claude/hooks/harden-now-not-later.py with two new self-test cases (option 2 of four: fix the thing that looks).
