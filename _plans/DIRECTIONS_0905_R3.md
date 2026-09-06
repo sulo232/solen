@@ -17,31 +17,31 @@ Parent: [DIRECTIONS_0905_R2.md](DIRECTIONS_0905_R2.md) (round 2, closed for revi
 
 ## Boxes
 
-- [ ] 1. Diagnosis, measured, of why the built look reads as a draft next to Airbnb: per rejected screen (confirmation RULE and LIFT, search RULE, bookings LIFT, profile RULE, empty states LIFT and RULE, the salon and booking category pills), the taste walk (squint, size and weight counts, hairline and icon counts, spacing ladder, colour provenance, contrast) against the Airbnb measured rows and the Fresha placement, root causes named with numbers, one arbiter across the set
-  - [ ] 1a. per-screen diagnosis files in scratchpad r3/diagnosis/<slug>.md
-  - [ ] 1b. the arbiter's root causes (3 to 5, each with the number that proves it and the fix it implies) in scratchpad r3/diagnosis/ROOT_CAUSES.md
-  - [ ] 1c. Airbnb's filter-chip selected state and Airbnb's trip-card timing pill captured live or from Mobbin, numbers, not memory
-- [ ] 2. One system, defined once: pill, box or bare, with every value (fill, border, radius, text, selected state, card treatment, hairline rule), written in `_plans/R3_ONE_SYSTEM.md` and applied identically to every round-3 screen; the three round-3 directions are three candidate single systems, never a system per screen
-- [ ] 3. Confirmation, round 3: three directions, one per candidate system, Fresha placement kept, the root causes from box 1 fixed in each
-- [ ] 4. Search results, round 3: RULE placement as the base under each candidate system
-  - [ ] 4a. the "category in city sorted by X" heading line removed
-  - [ ] 4b. the review count beside the rating removed from every result card in the mockups (the live `SalonResultCard` keeps it until he has seen the card without it)
-  - [ ] 4c. the RULE filter pills kept
-  - [ ] 4d. no grey band anywhere
-- [ ] 5. Bookings list, round 3: LIFT spacing and hierarchy kept
-  - [ ] 5a. the next-appointment unit measurably smaller than round 2's 440px
-  - [ ] 5b. when it is visible at a glance: Airbnb's own trip-card anatomy (a timing pill on the photo, "In 11 days", plus a date and time subline)
-  - [ ] 5c. a reminder line (when the reminder goes out) on the next appointment
-- [ ] 6. Review and pay: LIFT carried into round 3 unchanged apart from the shared system's values; verified that the one system did not move its anatomy
-- [ ] 7. Profile hub, round 3: RULE placement under each candidate system
-- [ ] 8. Empty states, round 3: rebuilt from the Airbnb and Fresha empty-state captures, three directions that differ in structure
-- [ ] 9. Home: out of the round, the live home stays; graveyard line for directions A, B, C
-- [ ] 10. Salon category pill = booking-step category pill: a mockup showing BOTH screens (salon services section, booking services step) with one pill, three directions (the calm grey fill of the lock, the ink fill of his 2026-07-19 override, Airbnb's measured selected chip), recommendation first
-- [ ] 11. Round-3 index: recommendation first, no kit previews, no systems block; per screen the stacked variants with one plain line of difference each; every link cold-checked through the production tunnel
-- [ ] 12. Graveyard lines the same turn: TRAY, home A/B/C, the three empty-state directions, the search heading line, review counts on cards, the kit-preview index block, the salon-book-button harness (misread)
-- [ ] 13. TASTE_LOG entry 2026-09-06 with his verbatim picks and rejections
-- [ ] 14. Harden (option 2, measure instead of scold): a look-diff script that renders a route and prints our computed values beside the Airbnb measured rows, used by the round-3 critics; lands this turn
-- [ ] 15. Closing report: readback first, the index link, the root causes in the reply itself, his decisions each with Fresha, Treatwell and Airbnb looked up and the verdict word
+- [ ] 1. Diagnosis, measured, of why the built look reads as a draft next to Airbnb: per rejected screen (confirmation RULE and LIFT, search RULE, bookings LIFT, profile RULE, empty states LIFT and RULE, the salon and booking category pills), the taste walk (squint, size and weight counts, hairline and icon counts, spacing ladder, colour provenance, contrast) against the Airbnb measured rows and the Fresha placement, root causes named with numbers, one arbiter across the set BLOCKED on wf_6be1cb63-045 (the diagnosis fan-out, running: six taste walks on the production copy, the pills measurement, the Airbnb capture, the look-diff coder plus reviewer, one Opus arbiter)
+  - [ ] 1a. per-screen diagnosis files in scratchpad r3/diagnosis/<slug>.md BLOCKED on wf_6be1cb63-045 (the diagnosis fan-out, running: six taste walks on the production copy, the pills measurement, the Airbnb capture, the look-diff coder plus reviewer, one Opus arbiter)
+  - [ ] 1b. the arbiter's root causes (3 to 5, each with the number that proves it and the fix it implies) in scratchpad r3/diagnosis/ROOT_CAUSES.md BLOCKED on wf_6be1cb63-045 (the diagnosis fan-out, running: six taste walks on the production copy, the pills measurement, the Airbnb capture, the look-diff coder plus reviewer, one Opus arbiter)
+  - [ ] 1c. Airbnb's filter-chip selected state and Airbnb's trip-card timing pill captured live or from Mobbin, numbers, not memory BLOCKED on wf_6be1cb63-045 (the diagnosis fan-out, running: six taste walks on the production copy, the pills measurement, the Airbnb capture, the look-diff coder plus reviewer, one Opus arbiter)
+- [ ] 2. One system, defined once: pill, box or bare, with every value (fill, border, radius, text, selected state, card treatment, hairline rule), written in `_plans/R3_ONE_SYSTEM.md` and applied identically to every round-3 screen; the three round-3 directions are three candidate single systems, never a system per screen BLOCKED on wf_6be1cb63-045 (the build fan-out is written and launches when the arbiter returns the value sheets and the per-screen fix list)
+- [ ] 3. Confirmation, round 3: three directions, one per candidate system, Fresha placement kept, the root causes from box 1 fixed in each BLOCKED on wf_6be1cb63-045 (the build fan-out is written and launches when the arbiter returns the value sheets and the per-screen fix list)
+- [ ] 4. Search results, round 3: RULE placement as the base under each candidate system BLOCKED on wf_6be1cb63-045 (the build fan-out is written and launches when the arbiter returns the value sheets and the per-screen fix list)
+  - [ ] 4a. the "category in city sorted by X" heading line removed BLOCKED on wf_6be1cb63-045 (the build fan-out is written and launches when the arbiter returns the value sheets and the per-screen fix list)
+  - [ ] 4b. the review count beside the rating removed from every result card in the mockups (the live `SalonResultCard` keeps it until he has seen the card without it) BLOCKED on wf_6be1cb63-045 (the build fan-out is written and launches when the arbiter returns the value sheets and the per-screen fix list)
+  - [ ] 4c. the RULE filter pills kept BLOCKED on wf_6be1cb63-045 (the build fan-out is written and launches when the arbiter returns the value sheets and the per-screen fix list)
+  - [ ] 4d. no grey band anywhere BLOCKED on wf_6be1cb63-045 (the build fan-out is written and launches when the arbiter returns the value sheets and the per-screen fix list)
+- [ ] 5. Bookings list, round 3: LIFT spacing and hierarchy kept BLOCKED on wf_6be1cb63-045 (the build fan-out is written and launches when the arbiter returns the value sheets and the per-screen fix list)
+  - [ ] 5a. the next-appointment unit measurably smaller than round 2's 440px BLOCKED on wf_6be1cb63-045 (the build fan-out is written and launches when the arbiter returns the value sheets and the per-screen fix list)
+  - [ ] 5b. when it is visible at a glance: Airbnb's own trip-card anatomy (a timing pill on the photo, "In 11 days", plus a date and time subline) BLOCKED on wf_6be1cb63-045 (the build fan-out is written and launches when the arbiter returns the value sheets and the per-screen fix list)
+  - [ ] 5c. a reminder line (when the reminder goes out) on the next appointment BLOCKED on wf_6be1cb63-045 (the build fan-out is written and launches when the arbiter returns the value sheets and the per-screen fix list)
+- [ ] 6. Review and pay: LIFT carried into round 3 unchanged apart from the shared system's values; verified that the one system did not move its anatomy BLOCKED on wf_6be1cb63-045 (the build fan-out is written and launches when the arbiter returns the value sheets and the per-screen fix list)
+- [ ] 7. Profile hub, round 3: RULE placement under each candidate system BLOCKED on wf_6be1cb63-045 (the build fan-out is written and launches when the arbiter returns the value sheets and the per-screen fix list)
+- [ ] 8. Empty states, round 3: rebuilt from the Airbnb and Fresha empty-state captures, three directions that differ in structure BLOCKED on wf_6be1cb63-045 (the build fan-out is written and launches when the arbiter returns the value sheets and the per-screen fix list)
+- [x] 9. verified: home is not in the round-3 build list; graveyard line "home direction a b c" in _design-system/REMOVED.md; 25655f2a5 (Home: out of the round, the live home stays; graveyard line for directions A, B, C)
+- [ ] 10. Salon category pill = booking-step category pill: a mockup showing BOTH screens (salon services section, booking services step) with one pill, three directions (the calm grey fill of the lock, the ink fill of his 2026-07-19 override, Airbnb's measured selected chip), recommendation first BLOCKED on wf_6be1cb63-045 (the build fan-out is written and launches when the arbiter returns the value sheets and the per-screen fix list)
+- [ ] 11. Round-3 index: recommendation first, no kit previews, no systems block; per screen the stacked variants with one plain line of difference each; every link cold-checked through the production tunnel BLOCKED on wf_6be1cb63-045 (the build fan-out is written and launches when the arbiter returns the value sheets and the per-screen fix list)
+- [x] 12. verified: seven lines at the tail of _design-system/REMOVED.md (tray, home a b c, empty states, search heading, review count, kit preview block, salon-book-button); 25655f2a5 (Graveyard lines the same turn: TRAY, home A/B/C, the three empty-state directions, the search heading line, review counts on cards, the kit-preview index block, the salon-book-button harness (misread))
+- [x] 13. verified: _design-system/TASTE_LOG.md, entry "2026-09-06 , HIS VERDICT ON ROUND 2", his words verbatim and the seven decisions; 25655f2a5 (TASTE_LOG entry 2026-09-06 with his verbatim picks and rejections)
+- [ ] 14. Harden (option 2, measure instead of scold): a look-diff script that renders a route and prints our computed values beside the Airbnb measured rows, used by the round-3 critics; lands this turn BLOCKED on wf_6be1cb63-045 (the diagnosis fan-out, running: six taste walks on the production copy, the pills measurement, the Airbnb capture, the look-diff coder plus reviewer, one Opus arbiter)
+- [ ] 15. Closing report: readback first, the index link, the root causes in the reply itself, his decisions each with Fresha, Treatwell and Airbnb looked up and the verdict word BLOCKED on wf_6be1cb63-045 (the build fan-out is written and launches when the arbiter returns the value sheets and the per-screen fix list)
 
 ## Harden
 
@@ -49,3 +49,4 @@ Pick: option 2. Round 2's critics graded compliance with the kit and the floors,
 
 ## Log
 - 18:15 (2026-09-06): readback written, 15 boxes atomized, ACTIVE row 116 added, TASTE_LOG entry appended, seven graveyard lines fed. Diagnosis fan-out next.
+- 18:21: diagnosis fan-out launched, wf_6be1cb63-045: five screen walks plus the payment LIFT control, the category-pills measurement, the Airbnb live capture, the look-diff coder and reviewer, then one Opus arbiter writing scratchpad r3/diagnosis/ROOT_CAUSES.md. The build script for the next wave is written at scratchpad r3-build.workflow.js and waits on that file.
