@@ -1,9 +1,8 @@
-# Solen.ch — Lessons Learned & Common Pitfalls
+# Solen.ch: Lessons Learned and Common Pitfalls
 
-> LEDGER STATUS (updated 2026-07-11, supersedes the 2026-07-03 note): this file is the ONLY ledger the `~/.claude/hooks/lessons-ledger-inject.py` PreToolUse hook reads (hardcoded path, see `~/.claude/REGRESSION_SYSTEM.md`). The 2026-07-03 banner told agents to also check CLAUDE.md pinned blocks and memory feedback files "since newer lessons live there" , that left a month+ of lessons (entries stopped at 2026-06-05) invisible to the edit-time injector, which is the whole point of this file. Current law: feed EVERY new non-obvious bug/footgun here, in the same turn as the fix, not just backend/DB. CLAUDE.md pinned blocks and memory feedback files are still useful reading, but the injector does not see them , if a lesson only lives there, it will not resurface at edit time.
+This is the project ledger for non-obvious bugs and footguns. Its entries preserve observed cases; current project instructions and verified code or data govern what to do now. Historical migration or TypeScript advice does not establish the current database schema. Use the current schema-verification rule and treat cached inventory as subject to staleness.
 
-> **MANDATORY**: Every AI agent MUST read this file before making changes.
-> **MANDATORY**: Every AI agent MUST append new entries here whenever they discover a new bug, footgun, or non-obvious pattern — whether they caused it or fixed it.
+Before a change, search the ledger by affected paths, component or feature and symptom, then read relevant entries in full. Reuse unchanged applicable entries already read in the task. A non-obvious bug discovered or fixed requires an update here in the same turn: extend its existing entry or add the missing case, keep file bindings current on renames, and distinguish a measured cause from an unproved explanation. Do not duplicate routine typos or compiler errors whose existing check already explains the whole failure.
 
 ---
 
@@ -13,8 +12,8 @@
 ### [Short title of the bug/lesson]
 - **Date**: YYYY-MM-DD
 - **File(s)**: path/to/file.tsx[:line]
-- **What happened**: One sentence — what went wrong or what was surprising
-- **Why it happened**: Root cause
+- **What happened**: One sentence describing the observed failure
+- **Why it happened**: Supported root cause, or the exact missing evidence when unproved
 - **Fix / What to do instead**: Concrete rule to follow
 ```
 

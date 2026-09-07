@@ -106,9 +106,10 @@ Any live version with no matching local file is missing and should be backfilled
    (date + "applied live via MCP apply_migration; file restored for fresh-env reproducibility") followed
    by the SQL body verbatim, unmodified. Never edit the body to "clean it up": the file must match what
    was actually applied.
-3. The pre-build exists-check hook can block a brand-new migration filename; run `npm run exists <name>`
-   once per file, and if still blocked, `touch .claude/exists-skip.flag` (consumed per write, re-touch as
-   needed).
+3. Before adding a missing local migration file, run `npm run exists <name>` and inspect any matching
+   inventory so existing history is reused. Respect an actual tool denial and resolve its cause;
+   do not create a skip flag or change settings to bypass it. Backfilling local history does not
+   authorize another live migration.
 4. After backfilling, regenerate `lib/database.types.ts` via the MCP `generate_typescript_types` tool
    and overwrite the file. The backfilled `.sql` files do not change the live schema (it was already
    applied), so `npx tsc --noEmit` error count should be unchanged before/after; confirm with a count,

@@ -212,7 +212,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: "check-retired-sync (LOCKFILE.md RETIRED bullets vs check.py RETIRED_TOKENS, hard zero)"
-        run: python3 .claude/skills/solen-drift-check/scripts/check-retired-sync.py
+        run: python3 .agents/skills/solen-drift-check/scripts/check-retired-sync.py
 
   # secrets-webhooks-10: a repo-wide grep-pattern check that a NEW !==/=== compare
   # against a secret/token/signature/hmac-shaped variable never lands again. The

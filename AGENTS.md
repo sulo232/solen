@@ -238,6 +238,7 @@ When the user says an image is in their screenshot folder, look first in `/Users
 ## Workflow rules
 
 - Functional rules live in `_rules/*`. Read the relevant current rule before code safety, structure, i18n, security, database, or known-pitfall work.
+- Before changing a surface, search `_rules/LESSONS_LEARNED.md` by the affected paths, component or feature and symptom. Read the matching entries in full and follow current governing rules when historical advice conflicts. Reuse relevant entries already read when their source and task conditions are unchanged. In the same turn as fixing a non-obvious bug or footgun, update its existing entry or add the missing lesson with file bindings, the observed failure, supported cause and a concrete prevention step. Keep bindings current when files move. Routine typos and failures already fully explained by an existing compiler check do not need duplicate lessons.
 - Append incomplete features to `_tasks/INCOMPLETE_FEATURES.md` with file, line, blocker, and next step. Never delete an entry without a separately authorized resolution.
 - Never use an empty `.catch(() => {})`. Log errors with component and action context. Auth failures log and redirect to login. Payment failures log, show a user-visible error, and offer retry.
 
