@@ -13,8 +13,8 @@ this file has to avoid:
 
 1. **It hardcoded a worktree path that no longer exists** (`vigorous-spence-0e9aa7`), so every agent
    briefed from it started by being told to work in a deleted directory.
-2. **It told the verifier that blue is "functional-only: focus rings"** , and a focus ring is
-   exactly what an armed gate now refuses, three separate times over (2026-07-01, 07-02, 07-17).
+2. **It told the verifier that blue is "functional-only: focus rings"** , and a focus ring conflicts
+   with the current focus rule recorded in the design owners (2026-07-01, 07-02, 07-17).
    A brief that instructs the grader to bless a banned thing is worse than no brief.
 
 **The rule that comes out of both: a brief carries no literal values and no environment.** It points
@@ -29,7 +29,7 @@ ROLE: [builder | verifier]
 ROUTE: [/de/salon/[slug]]
 SCOPE: [the sections this agent owns, listed]
 PROJECT ROOT: [run `pwd`. Never paste a path from any doc.]
-DEV SERVER: [run `preview_list`. Never assume a port.]
+DEV SERVER: [inspect the current local server or browser state with the documented available tools. Never assume a port.]
 
 READ FIRST, in this order, before any other tool call:
   1. _design-system/COMPONENT_REGISTRY.md      what already exists
@@ -57,13 +57,14 @@ lives in the file that owns it, so it cannot drift out of sync the way the old o
 **1. Ground.** Read the four files above. If the surface has a `TASTE_LOG` entry, it is settled and
 is not reopened. If `npm run exists <keyword>` finds it, extend it rather than building beside it.
 
-**2. Build.** One section at a time. Values from LOCKFILE. Anything not locked is a question for the
-owner, never a guess (global rule 1).
+**2. Build.** One section at a time. Values come from LOCKFILE. For an unlocked value, first apply
+`TASTE_AUTHORITY.md` and current authorization; ask only when a material owner decision remains,
+otherwise park the dependency and finish independent work.
 
 **3. Grade.** The writer is never the grader. The verifier renders the real route at 390x844,
-measures against the floors in the project `CLAUDE.md`, and returns PASS or a punch list with
-`file:line`. Loop to PASS, with a hard stop at round three: three failing rounds means the spec or
-the reference is the problem, and that goes to the owner instead of a fourth round.
+measures against the current project floors, and returns a verdict or punch list with `file:line`.
+After a third failing round, diagnose the method, specification, or missing evidence before another
+repair. Ask the owner only when that diagnosis identifies a material owner decision.
 
 ## What a verifier is told to ignore
 
@@ -74,6 +75,7 @@ Deliberate departures from any reference, so they are not re-flagged every round
 - The interactive accent is sparse and small: links, small chips, review counts. Not big CTAs, not
   prices, not headings.
 - **Focus rings and halos are BANNED, not "functional-only".** Input focus is one ink edge, set
-  globally. If a brief or a doc says otherwise, the gate is right and the doc is stale.
+  globally. If a brief or a doc says otherwise, reconcile it to the current focus owner before
+  grading the surface.
 
 Everything else in the reference is fair game to flag.

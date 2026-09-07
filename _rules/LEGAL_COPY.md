@@ -107,11 +107,13 @@ it is the owner's call, not mine:
 - **(b) Drop the price from the card** and let the price live on the PDP service list,
   where it is a fixed per-service figure.
 
-### Enforcement
+### Verification
 
-`~/.claude/hooks/legal-price-gate.py` blocks a new "ab"/"from"/"dès"/"da" price prefix on a
-service-offer surface. Escape token `pbv-ok` on the line, for an advertising surface that
-does name its concrete offer.
+There is no bypass marker or automatic price-law blocker. For a changed customer-facing price
+surface or localized price string, run the explicitly targeted, report-only `security-static`
+check: its `S16_LEGAL_PRICE` finding identifies from-price syntax for review. Then verify the
+rendered offer against the rules above, including the named concrete offer where advertising is
+claimed. The report does not determine whether a surface is an offer or advertising.
 
 ---
 

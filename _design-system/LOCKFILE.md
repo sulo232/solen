@@ -418,7 +418,7 @@ The 11 roles above are the full set; **day-to-day, ~90% of text is just these 6.
 0.08em    — Eyebrow / Tag/Status default
 ```
 
-Everything else (`.04em`, `.07em`, `.10em`, `.12em`, `.14em`, `.15em`, `.16em`, `.18em`, `.1em`, `.20em`, `.22em` — currently 20 distinct values in use) → drift rule A8 logs to `_pending-migration.md`. Phase 2 sweep collapses callsites onto canonical set.
+Everything else (`.04em`, `.07em`, `.10em`, `.12em`, `.14em`, `.15em`, `.16em`, `.18em`, `.1em`, `.20em`, `.22em` — currently 20 distinct values in use) is an A8 candidate for an explicit targeted scan and source review. A future sweep collapses applicable callsites onto the canonical set.
 
 ### Canonical line-height values (rule A23 enforces this set)
 
@@ -439,10 +439,9 @@ unlike tracking, no pulled-out canonical-values list and no drift rule — a
 2026-07-26 sweep found 21 distinct `leading-[*]` values live (`leading-[1.35]`,
 `leading-[1.42]`, `leading-[1.45]`, `leading-[1.08]`, `leading-[1.18]`,
 `leading-[1.04]`, `leading-[1.02]`, `leading-[0.95]` map to no named role at
-all). Rule **A23** (`.claude/skills/solen-drift-check/scripts/check.py`) now
-flags any `leading-[*]` value outside this set, INFO to start (mirrors A7/A8's
-phase-in) logging to `_pending-migration.md`; flip to STRICT once the sweep
-clears the queue. `leading-none` / `leading-tight` / `leading-snug` /
+all). The explicitly targeted, report-only `solen-drift-check` skill reports an A23 candidate
+for any `leading-[*]` value outside this set. Review the candidate against the named role and
+record any authorized migration work in the current task. `leading-none` / `leading-tight` / `leading-snug` /
 `leading-normal` / `leading-relaxed` / `leading-loose` (Tailwind's named
 classes) are unaffected by this rule; only the bracketed arbitrary-value form
 is checked, since the named classes map to fixed values already.
@@ -481,12 +480,9 @@ during the dashboard max-width sweep (LOCKFILE.md Dashboard content row), same t
 **Current law (owner, 2026-06-18, emphatic, verbatim): "stop using caps... use them fucking text.
 Never fucking caps lock."** ZERO roles allow uppercase in product UI — not the Eyebrow, not
 Tag/Status. Sentence case everywhere ("Dein Haar", never "DEIN HAAR"). This **supersedes** the
-two-role carve-out preserved below, and it is not advice: `~/.claude/hooks/copy-lint-gate.py`
-(NO-CAPS, merged from `no-caps-gate.py` 2026-07-07) is a wired PreToolUse gate that BLOCKS a
-Tailwind `uppercase` class or `text-transform:uppercase` in any UI/style file. `COPY_LAW.md` §4.4
-states the same rule for copy. A small label stays small, tracked and muted (`s-ink-3`) — it just
-is not uppercased. Recorded here 2026-08-03 by the weekly law pass, because this table was still
-handing new work a recipe a live gate refuses.
+two-role carve-out preserved below. `COPY_LAW.md` §4.4 states the same rule for copy. A small
+label stays small, tracked and muted (`s-ink-3`) — it just is not uppercased. Review changed
+rendered UI and current targeted scan candidates; no edit-time hook is claimed here.
 
 *Superseded text, kept so the reversal is legible:* ~~Only TWO roles allow `uppercase`: (1) Eyebrow,
 max 1 per surface, drift rule A7 counts eyebrows per file, >1 = log violation; (2) Tag/Status,
@@ -565,7 +561,7 @@ not law debt, listed in the 2026-08-03 law-pass report.
 
 ### Escape hatch
 
-One-off campaign-style decorative type → use `style={{}}` inline + `// V3-D{n}: justification` comment + put **`drift-ok: <reason>` on the same line**. (Pointer corrected 2026-08-03: `_design-system/_drift-acks.json` does not exist and no tool has ever read it , the real acknowledgement mechanism is the inline `drift-ok` marker, honoured by `.claude/skills/solen-drift-check/scripts/check.py:775`, `.claude/hooks/pre-edit-drift-gate.sh` and `.claude/hooks/card-radius-gate.py`. For a hex specifically, the second mechanism is the `ALLOWED_HEX` set in that same `check.py`.)
+One-off campaign-style decorative type requires an approved visual exception, a `// V3-D{n}: justification` comment, and review against the relevant locked rule. Do not use an inline acknowledgement marker or treat a static scan as authorization for the exception.
 
 ---
 
@@ -586,8 +582,8 @@ One-off campaign-style decorative type → use `style={{}}` inline + `// V3-D{n}
 | `rounded-full` | 9999px | Avatars, icon buttons |
 | `rounded-2xl` | 16px | Sidebar card, info cards |
 | `rounded-3xl` | 24px | Bento cards, larger surfaces |
-| grouped list-card | 24px (`rounded-[24px]`) | The **grouped LIST-card grammar for CATEGORY MEMBERS**: `overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper`, rows hairline-divided (`border-t first:border-t-0`). Salon services / Produkte / Pakete / staff / dashboard (owner-confirmed 2026-07-19, "pick whichever the services use"). ONE radius, gate-enforced (`.claude/hooks/card-radius-gate.py`, whisper-only). For a list of DISTINCT ENTITIES (a stylist, a salon) use the individual entity-card below, NOT this. Do NOT confuse with `rounded-card` (16) = FORM/summary card (`shadow-elevation-1`). |
-| individual entity-card | 16px (`rounded-card`) | ONE card per DISTINCT ENTITY (a person/stylist, a salon): `rounded-card border border-s-border bg-white`, FLAT, gap-separated (`SalonResultCard` grammar). Selected = `bg-s-bg-sunken`. Use for the stylist picker, salon result lists , anything where each item is its own entity, NOT a category member. GROUP card = category members in one card; INDIVIDUAL card = one card per entity. Owner 2026-07-19: "stylists are individual not groups." Enforced by `.claude/hooks/entity-card-gate.py`. |
+| grouped list-card | 24px (`rounded-[24px]`) | The **grouped LIST-card grammar for CATEGORY MEMBERS**: `overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper`, rows hairline-divided (`border-t first:border-t-0`). Salon services / Produkte / Pakete / staff / dashboard (owner-confirmed 2026-07-19, "pick whichever the services use"). For a list of DISTINCT ENTITIES (a stylist, a salon) use the individual entity-card below, NOT this. Do NOT confuse with `rounded-card` (16) = FORM/summary card (`shadow-elevation-1`). |
+| individual entity-card | 16px (`rounded-card`) | ONE card per DISTINCT ENTITY (a person/stylist, a salon): `rounded-card border border-s-border bg-white`, FLAT, gap-separated (`SalonResultCard` grammar). Selected = `bg-s-bg-sunken`. Use for the stylist picker, salon result lists , anything where each item is its own entity, NOT a category member. GROUP card = category members in one card; INDIVIDUAL card = one card per entity. Owner 2026-07-19: "stylists are individual not groups." |
 
 ### THE CONTAINER TEST , when a group gets a box at all (owner 2026-07-28)
 
@@ -731,9 +727,8 @@ Alternate gray ↔ white down a page for rhythm. **Never** the whole app gray; n
 >
 > - **`focus` column — DEAD, all rows.** Every cell says `ring-2 s-accent`. The owner killed focus
 >   rings three times (2026-07-01, 2026-07-02, and finally 2026-07-17, verbatim on the input-fill
->   decision: *"for input decision both a and b2 was the problem i hated that sh"*), and
->   `~/.claude/hooks/no-focus-ring-gate.py` is wired PreToolUse and BLOCKS any `ring-*` utility in a
->   UI file. **Current law, which supersedes this column:** inputs get ONE ink edge,
+>   decision: *"for input decision both a and b2 was the problem i hated that sh"*). **Current law,
+>   which supersedes this column:** inputs get ONE ink edge,
 >   `border-s-ink` (#0A0A0A) + white fill, no halo, set globally in `globals.css`
 >   (`input:focus-visible`, unlayered on purpose) and primitives add no extra `outline`; buttons and
 >   links get the global 2px **ink** `outline`. Same wording as the CLAUDE.md `focus` contract row.
@@ -1396,8 +1391,8 @@ This is the operational layer of the dual-axis rule. The rule above says WHAT. T
 
 | When | Tool | Output path | Notes |
 |---|---|---|---|
-| Before any non-trivial edit | Read `_design-system/LOCKFILE.md` §1.5 / §2.5 / §11 / §6 | (read-only) | Token + type role + imagery + copy rules. Never stale. |
-| After any sweep | `/solen-drift-check` skill | `_design-system/_drift-report.md` + `_design-system/_pending-migration.md` | Python scanner. Validates aesthetic gates A1-A12. |
+| At task start, when the relevant design contract has changed, or when the evidence is missing or contradicted | Read `_design-system/LOCKFILE.md` §1.5 / §2.5 / §11 / §6 | (read-only) | Token + type role + imagery + copy rules. |
+| After any sweep | `solen-drift-check` skill | stdout or a new explicit report path | Report-only candidates for explicitly named targets; review the ones that apply. |
 | Pattern reference (Uber-measured) | Read `_design-system/UBER_TYPE_SPEC.md`, plus the measured values inline in §1.5 / §2.5 / §11 / §6 above | (read-only) | The `public/_pixel-refs/uber/*` capture folder is archival and not present in-repo; the measured Uber patterns now live in `UBER_TYPE_SPEC.md` and inline in the cited LOCKFILE sections. |
 | Per-wave gates | Read `_design-system/WORK_TYPES.md` | (read-only) | Lighthouse a11y ≥95, LCP ≤2.5s, contrast 0 failures. |
 
@@ -1405,9 +1400,9 @@ This is the operational layer of the dual-axis rule. The rule above says WHAT. T
 
 | When | Tool | Output | Notes |
 |---|---|---|---|
-| End of every wave | Compare BOTH SPEC.md + drift-report → screenshot | `_audits/screenshots/<wave>/` | Visual diff catches what neither axis-1 nor axis-2 check alone would catch. |
-| Multi-model second opinion on ambiguous calls | `llm-council` skill | console | Per Ambiguity-Resolution Ladder Rung 4 in WAVE_PLAN F9. |
-| Read-only investigation of consumer impact | `Agent` tool with `Explore` subagent type | Subagent return message | Use when "which routes import X" / "does Y exist anywhere" type questions arise. |
+| End of every wave | Compare BOTH SPEC.md + targeted-drift findings that apply → screenshot | `_audits/screenshots/<wave>/` | Visual diff catches what neither axis alone catches. |
+| Ambiguous call with a material unresolved acceptance question | Current `fable-reasoning` procedure plus the risk-appropriate native perspective | Recorded evidence | State the competing explanations and the measurement that distinguishes them before adding a review. |
+| Read-only investigation of consumer impact | Current documented search and read tools | Search result or inspection note | Use when "which routes import X" / "does Y exist anywhere" type questions arise. |
 
 #### §10.8b — Drift signals (concrete tells you're conflating axes)
 
@@ -1421,26 +1416,25 @@ If ANY of these fires, STOP the edit. Re-anchor via §10.0 decision tree.
 | **Building variants for a visual decision** without first checking Fresha or LOCKFILE | You're framing as a user-choice when the source-of-truth already answers it. | STOP. Read SPEC.md (structure) or LOCKFILE (aesthetic) first. Only build variants if BOTH sources are silent OR conflict requires user pick. |
 | **Asking user for a design choice** that Fresha already answered | You're shifting cognitive cost to user instead of doing the homework. | STOP. Fire capture / read LOCKFILE. Surface to user only if both sources are silent. |
 | **Applying a LOCKFILE §11 pattern as if it were structural** | You're using AESTHETIC rules to make a STRUCTURE decision. T4 of overnight run made this exact mistake. | STOP. Re-read §10.0 decision tree. Identify the right axis. Hit the right source. |
-| **Skipping the drift-check after a sweep** because "it's just a small fix" | Surgical fixes still need axis-2 verification. The "just small" frame is how drift sneaks in. | STOP. Run drift-check. Confirm 0 hard breakages on touched files. |
+| **Skipping an applicable targeted drift report after a sweep** because "it's just a small fix" | A static candidate scan can expose a missed source pattern. | Run the current report-only skill on explicit touched targets only when it accepts those targets, then review applicable findings. |
 | **Marking a route done without screenshot diff** | You're claiming completion without visual evidence. Both axes need visual verification. | STOP. Screenshot before-AND-after. Eyeball diff. Only then mark done. |
 
-#### §10.8c — Self-auto-verification triggers (when to run each check)
+#### §10.8c — Source and verification triggers (when to run each check)
 
 | Trigger | Action | Skill / tool |
 |---|---|---|
-| **Before every non-trivial edit** | 60-second pre-edit check (§10.8d below) | Mental script |
-| **After every route sweep** | (a) drift-check on touched files (b) confirm Fresha SPEC.md exists & is current | `/solen-drift-check` + ls check |
-| **After every component sweep** | (a) drift-check (b) screenshot each consumer route | `/solen-drift-check` + Playwright |
-| **After every ground-up rebuild** | (a) Fresha SPEC.md re-read (b) drift-check = 0 hard (c) screenshot mobile + desktop (d) verifier subagent PASS | Multi-tool |
-| **Every 60 min in autonomous runs** | Re-anchor by re-reading LOCKFILE §10 + the active wave's task description | Read |
+| **Starting a non-trivial work item, or materially changing its scope** | Identify the applicable axis, current owner, and post-edit evidence (§10.8d below) | Current task evidence + read |
+| **Closing a route sweep** | (a) run `solen-drift-check` on explicit touched targets only when the current skill accepts them and review applicable candidates (b) confirm the Fresha SPEC when the change is structural | Current skill + file inspection |
+| **Closing a component sweep** | (a) run `solen-drift-check` on explicit component and consumer targets only when the current skill accepts them (b) screenshot each affected consumer route when visual behavior changed | Current skill + documented browser tools |
+| **Closing a ground-up rebuild** | (a) re-read the Fresha SPEC when structural evidence is in scope (b) review applicable targeted drift candidates (c) screenshot relevant viewports (d) obtain the required independent verification | Current tools |
 | **When pivoting a mockup variant** | Stop. Ask: "am I pivoting on axis (data tells me to) or eyeballing (taste tells me to)?" If eyeballing → re-anchor before pivoting | Mental script |
-| **When a sweep > 30 min** | Re-anchor mid-sweep: re-read the relevant §X.Y rule for the pattern being swept | Read |
-| **When console errors appear** | (a) Read the error (b) trace to last edit (c) if root cause unclear after 15 min, fire `llm-council` | Bash + Playwright + (optional) llm-council |
+| **When source evidence changes, is missing, or a failure calls the premise into doubt** | Re-read the relevant owner and active task evidence | Read |
+| **When console errors appear** | (a) Read the error (b) trace to the last edit (c) if the root cause remains uncertain, use `fable-reasoning` and the needed native perspective | Current documented tools |
 | **When tempted to invent a token / pattern** | STOP. Check if existing fits. If not, file as design-system recommendation in summary doc | Read LOCKFILE first |
 
-#### §10.8d — The 60-second pre-edit check (mental script)
+#### §10.8d — Source and verification questions
 
-Before any edit that's NOT a 1-3 line surgical fix, run this script in order. Write the answers in the summary doc (or mentally for trivial cases). Skipping this = the failure mode that bit T4.
+At the start of a non-trivial work item, or when its scope or evidence materially changes, answer these questions from current task evidence. Write them in the summary doc when a durable record is needed. This is not a timer, an automatic reread, or a requirement to hand work back solely because an hour elapsed.
 
 ```
 Q1: WHAT AXIS is this change on?
@@ -1454,21 +1448,21 @@ Q2: WHERE'S THE SOURCE OF TRUTH?
    - For AESTHETIC: LOCKFILE §1.5/§2.5/§11/§6
      → cite the section number explicitly
 
-Q3: HAVE I READ THE SOURCE IN THE LAST HOUR?
-   - If no → re-read NOW before editing
-   - If yes → cite the rule/spec line in the V3-D{n} comment
+Q3: IS THE RELEVANT SOURCE AND TASK EVIDENCE STILL CURRENT FOR THIS CHANGE?
+   - If it changed, is missing, or the premise is contradicted → re-read the relevant owner now
+   - If it remains current → cite the applicable rule/spec where a durable record is needed
 
 Q4: DOES MY PROPOSED EDIT MATCH IT?
    - If yes → proceed
    - If no → either revise to match OR surface as conflict per §10.5
 
 Q5: WHAT'S THE POST-EDIT VERIFICATION?
-   - Drift-check on touched files (always)
-   - Screenshot diff if visual change
-   - Fresha-diff if structural change
-   - Lighthouse a11y if a11y could regress
+   - Explicit-target drift candidates when the current skill accepts the touched files
+   - Screenshot diff if visual behavior changed
+   - Fresha comparison if structural change
+   - Accessibility validation if the changed behavior could regress it
 
-If Q1-Q5 takes >2 min, the work is bigger than you scoped. Reclassify per WORK_TYPES.md.
+If Q1-Q5 reveals a broader concern, reclassify or split the work per WORK_TYPES.md.
 ```
 
 #### §10.8e — Cache invalidation: when is a Fresha SPEC.md stale?
@@ -1627,7 +1621,7 @@ Owner 2026-06-10: _"will they research how apple does it by using grey and black
 
 1. **State / meaning (semantic, Layer 3)** — the icon IS the message. Green check = done/paid/confirmed (`s-success` #16A34A). Red = error/destructive (`s-error`, e.g. a "Logout"/"Löschen" glyph). Yellow star = rating (`s-star` #FFC32B). Pink heart = saved (`#FF3366`). Amber triangle = warning (`s-warning`). Never invent a hue (§0.4).
 2. **The tap target IS an icon-only control** — blue (`text-s-accent` #276EF1). A standalone icon-button or inline action icon whose whole job is to be tapped (a bare directions pin-button, a "copy" icon-button). NOT a decorative icon that merely sits inside a larger tappable row — that stays monochrome (this is the drift-A9 boundary; getting it wrong is the #1 icon mistake).
-3. **Selection (avatar check-badge ONLY)** — ink (`bg-s-ink` disc + white check), Solen's `SelectedCheckBadge`, for staff/barber pickers where the marker sits on a photo and needs contrast (parked at ink, owner 2026-06-29). EVERY OTHER selected state (filter pill, chip, menu/list option, segmented control) = calm GRAY fill `bg-s-bg-sunken` (#F4F4F5) + `text-s-ink` + semibold over a white unselected, the TabPill treatment, NEVER black/ink (owner 2026-06-29, gate `no-black-selected`; supersedes the prior ink-fill selection). **FOURTH NAMED EXCEPTION, owner override 2026-07-19 (TASTE_LOG "booking category pills: BLACK selected + scroll-spy"): the BOOKING services-step category pills are `bg-s-ink text-white` when selected. The owner picked black after being told the lock and the gate both block it; the line carries a `selected-ok:` escape. Scoped to those custom pills only , they are not the shared TabPill, so nothing else's selected state moves, and this does NOT reopen ink-fill anywhere else.** The exception list is now: the ONE commit button, the booking date/slot blue, this avatar check-badge, and the booking category pill.
+3. **Selection (avatar check-badge ONLY)** — ink (`bg-s-ink` disc + white check), Solen's `SelectedCheckBadge`, for staff/barber pickers where the marker sits on a photo and needs contrast (parked at ink, owner 2026-06-29). EVERY OTHER selected state (filter pill, chip, menu/list option, segmented control) = calm GRAY fill `bg-s-bg-sunken` (#F4F4F5) + `text-s-ink` + semibold over a white unselected, the TabPill treatment, NEVER black/ink (owner 2026-06-29; supersedes the prior ink-fill selection). **FOURTH NAMED EXCEPTION, owner override 2026-07-19 (TASTE_LOG "booking category pills: BLACK selected + scroll-spy"): the BOOKING services-step category pills are `bg-s-ink text-white` when selected. The dated decision is scoped to those custom pills only; they are not the shared TabPill, so nothing else's selected state moves, and this does not reopen ink-fill elsewhere.** The exception list is now: the ONE commit button, the booking date/slot blue, this avatar check-badge, and the booking category pill.
 4. **On a photo** — frosted white glass (`FROST_GLASS`), per CONTROL_ELEVATION (A). A glyph over imagery is never bare-tinted.
 
 **Hard "never":** never tint a decorative/inline icon blue "to add life" (that is the §1.5 dead-grey trap inverted — life comes from imagery/motion/semantic, not from painting chevrons blue), never give a row three colored icons, never color an icon a hue it doesn't earn from the table above. Stroke width: Lucide default `1.9` for inline glyphs, `2.8–3` only on a check inside a filled disc (so the white check reads against the fill).
@@ -1679,7 +1673,7 @@ Owner 2026-06-10 rejected the code font hard: _"the font is not correct about �
 
 **Rule generalizes beyond codes (typography-08, 2026-07-27).** The `.num` recipe's `tabular-nums` piece is not a codes-only rule, it is the fix for a general behavior: any numeral that updates live, ticks down, or sits in a repeating column where digits must stay aligned across sibling rows (a countdown timer, a queue-position counter, a dashboard KPI/stat tile, a calendar day grid, a star-rating value) needs `font-variant-numeric: tabular-nums` for the identical physical reason, proportional digits are variable-width per glyph, so an un-tabular live number re-flows its own width on every tick. Codes and prices are the worked examples that motivated the rule, not its full scope; a new numeral-displaying component (a countdown, a queue counter, a KPI tile) applies the same test.
 
-**Scope explicitly includes `lib/email.ts` + `lib/email-templates/**/*.ts` (typography-02, 2026-07-27).** These files render raw HTML strings for transactional and lifecycle emails outside the app/components tree; a live `font-family:monospace` violation shipped in the gift-card email's voucher-code span (all 4 locales) because this scope statement never named them and the static drift-checker's scan globs never reached them. Fixed: the gift-card code span now uses the shared `EMAIL_FONT_STACK` (a system-font stack, since email clients cannot load next/font) + `font-weight:700` + `tabular-nums`, matching the `.num` recipe as closely as email HTML allows. `.claude/skills/solen-drift-check/scripts/check.py` now scans `lib/email.ts` + `lib/email-templates/**/*.ts` and hard-flags `font-family:monospace`/Geist/JetBrains Mono anywhere (rule A24).
+**Scope explicitly includes `lib/email.ts` + `lib/email-templates/**/*.ts` (typography-02, 2026-07-27).** These files render raw HTML strings for transactional and lifecycle emails outside the app/components tree; a live `font-family:monospace` violation shipped in the gift-card email's voucher-code span (all 4 locales) because this scope statement never named them. Fixed: the gift-card code span now uses the shared `EMAIL_FONT_STACK` (a system-font stack, since email clients cannot load next/font) + `font-weight:700` + `tabular-nums`, matching the `.num` recipe as closely as email HTML allows. The explicit-target `solen-drift-check` skill can report `A24` candidates for those `.ts` files; review the email output because the report does not establish client rendering.
 
 ### §13.5 — Drift signals (you are violating §13 if…)
 - a chevron / disclosure glyph is anything other than `text-s-ink-3` grey;
@@ -2116,12 +2110,11 @@ must be the screen's largest single element and must show the THING being bought
 These are FLOORS, not targets. Nothing here licenses decoration, fake data, or a second ink CTA; the
 existing ceilings (4 sizes, 2 weights, sparse blue, no decorative artifacts) all still bind.
 
-**Enforced by (hierarchy-density-01):** `npm run check:floors` (`scripts/check-geometry.mjs
---floors-only`) measures every literal in this table on the RENDERED page (imagery share, weight
-share, anchor ratio, elevation steps); report-only today (exit 0), same as the geometry pass it
-extends. `~/.claude/hooks/mockup-floors-gate.py` only checks that a mockup's PR note MENTIONS a
-`floors:` answer, it does not itself measure any of these five numbers , the two are complementary,
-not duplicates.
+**Measured by (hierarchy-density-01):** `npm run check:floors` (`scripts/check-geometry.mjs
+--floors-only`) measures every literal in this table on the rendered page (imagery share, weight
+share, anchor ratio, elevation steps); it is report-only today (exit 0), as is the geometry pass it
+extends. A mockup still needs its required `floors:` answer and measured visual review; no automatic
+hook is claimed to prove either one.
 
 **VIEWPORT SCOPE (responsive-desktop-01, 2026-07-27): this table is MOBILE-ONLY, named explicitly.** Every
 number above was measured at 390x844 and `scripts/check-geometry.mjs --floors-only` (the enforcing script)

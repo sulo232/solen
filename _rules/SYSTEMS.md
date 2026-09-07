@@ -22,7 +22,7 @@
 
 Design in the existing system, get approval on a mockup, then code. For any new or redesigned customer-facing UI.
 
-**Pipeline:** `fable-frontend` skill (`~/.claude/skills/fable-frontend/SKILL.md`) is the ordered pass: exists-check (`npm run exists <keyword>`) → ground every element in a source → dual-axis spec (structure = Fresha capture, aesthetic = LOCKFILE) → mockup-first approval → build the whole design → measured verification → tunnel-link delivery.
+**Pipeline:** the current `fable-frontend` skill is the ordered pass: exists-check (`npm run exists <keyword>`) → ground every element in a source → dual-axis spec (structure = Fresha capture, aesthetic = LOCKFILE) → mockup-first approval → build the whole design → measured verification → tunnel-link delivery.
 
 **Canonical docs:** `_design-system/SOURCE.md` (22-section canonical: tokens, motion, spacing, components, voice, a11y). On conflict, `_design-system/LOCKFILE.md` wins (frozen literal values).
 

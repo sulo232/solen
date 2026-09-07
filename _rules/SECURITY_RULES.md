@@ -10,7 +10,7 @@
 
 ### Rule S1: EVERY NEW API ROUTE MUST HAVE THESE LAYERS
 
-> **UPDATED 2026-07-10**: `getSession()` is BANNED for any server-side identity/authz decision , it reads the client-supplied cookie WITHOUT verifying the JWT signature, so a forged cookie can set any `user.id`. The whole backend was migrated to `getUser()` on 2026-07-10 (commit `9783e5711`), and the live `.claude/hooks/no-getsession-authz-gate.py` PreToolUse gate now BLOCKS new `auth.getSession()` calls in `app/**` and `lib/**`. Use the shared helpers: `requireAuth()` / `requireAdmin()` / `requireSalonOwner()` / `requireRole()` in `lib/auth/require.ts`, or `getSessionUser()` in `lib/supabase.ts`. Both call `supabase.auth.getUser()` under the hood (verifies the JWT against the Supabase Auth server, fails CLOSED with `user: null` on any failure).
+> **UPDATED 2026-07-10**: `getSession()` is BANNED for any server-side identity/authz decision , it reads the client-supplied cookie WITHOUT verifying the JWT signature, so a forged cookie can set any `user.id`. Use the shared helpers: `requireAuth()` / `requireAdmin()` / `requireSalonOwner()` / `requireRole()` in `lib/auth/require.ts`, or `getSessionUser()` in `lib/supabase.ts`. Both call `supabase.auth.getUser()` under the hood (verifies the JWT against the Supabase Auth server, fails CLOSED with `user: null` on any failure). There is no edit-time hook that proves this rule. For a changed backend source, use `fable-backend`, run the explicitly targeted report-only `security-static` check, and verify the real authorization path; its `S4_SERVER_SESSION` finding is a candidate for review, not proof of authorization safety.
 
 When creating or modifying ANY API route in `app/api/`, you MUST include these checks **in this exact order**:
 
@@ -51,8 +51,7 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ data });
 }
 
-// ❌ ALSO WRONG, getSession() for an authz decision (forgeable cookie, BLOCKED by
-// no-getsession-authz-gate.py). Never do this server-side:
+// ❌ ALSO WRONG, getSession() for an authz decision (forgeable cookie). Never do this server-side:
 const { data: { session } } = await supabase.auth.getSession();
 const user = session?.user ?? null; // an attacker can forge this
 ```
@@ -95,6 +94,7 @@ When creating new Supabase tables or modifying migrations:
 - **NEVER** use `USING (true)` for write operations (INSERT/UPDATE/DELETE)
 - **NEVER** grant `DELETE` or `TRUNCATE` to the `anon` role
 - `USING (true)` for SELECT is acceptable ONLY for genuinely public read data (salons, reviews)
+- For an API-exposed view over RLS-protected data, use `security_invoker = true` unless a written, reviewed exception establishes a different safe access model. Views otherwise run with the owner's permissions and can bypass the base-table policy.
 
 ```sql
 -- ✅ CORRECT — Scoped policies
@@ -195,4 +195,3 @@ is the same trust-and-safety shape Discovery content already solved
 row cannot render even if application code forgets to filter it) plus extending the
 Discovery moderation admin page to cover both tables. Full writeup:
 `_design-system/PHOTO_STRATEGY.md` section 6.
-

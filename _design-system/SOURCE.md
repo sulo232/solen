@@ -839,7 +839,7 @@ For mutations (save heart, post review):
 The drift-checker catches LITERAL patterns. It cannot catch:
 - `salonId={salon?.id}` that's syntactically present but `salon` is null at runtime (false negative — passes static, fails real)
 - `onClick={handleClick}` where `handleClick` is defined but is a no-op function
-- **A computed/templated href whose static prefix points at a route that was never built** (ia-navigation-07, 2026-07-27). `_docs/FRONTEND.md:778` and `:2051` document a live instance found by hand: `RefundCaseView` + `UpchargeApproveView` both receive `receiptHref = /[locale]/bookings/[id]`, but there is no `app/[locale]/bookings/[id]/page.tsx`, so the link falls through to the home shell. The drift-checker only greps literal `href="/x"` JSX strings; a prop built from a template literal (`` `/${locale}/bookings/${id}` ``) never matches that pattern even though its static prefix (`/bookings/`) is checkable against the route manifest. Extend `solen-drift-check` to build a route manifest from `app/**/page.tsx` and flag any string-template `href`/`receiptHref`/`redirectTo` prop whose static prefix does not match a manifest entry.
+- **A computed/templated href whose static prefix points at a route that was never built** (ia-navigation-07, 2026-07-27). `_docs/FRONTEND.md:778` and `:2051` document a live instance found by hand: `RefundCaseView` + `UpchargeApproveView` both receive `receiptHref = /[locale]/bookings/[id]`, but there is no `app/[locale]/bookings/[id]/page.tsx`, so the link falls through to the home shell. The current drift skill only detects selected literal patterns, so a template-built route needs direct route-manifest inspection and an exercised navigation path. Do not add a new checker without the current enforcement procedure's incident, coverage, reject/pass, and runtime evidence.
 
 Runtime probes via Playwright catch these. The static checker is one layer; visual/functional verification is another.
 
@@ -1216,7 +1216,7 @@ t("results", { count: salons.length })
 // messages/de.json: "results": "{count, plural, one {# Salon} other {# Salons}}"
 ```
 
-**Never a hardcoded ternary** (`count === 1 ? "Salon" : "Salons"`) as a substitute for the pattern above: it freezes the text in whatever language the author typed and drops the locale's real plural grammar (French treats 0 as singular; German/French/Italian all differ at higher counts). copy-i18n-04 (2026-07-27) found and fixed 7 live instances of this exact anti-pattern (brand/[slug]/page.tsx, FavoritesList.tsx, SalonReviews.tsx, SalonResultCard.tsx, MapSalonDetail.tsx, queue/[token]/page.tsx, behandlungen/[...slug]/*.tsx). **Enforced**: `~/.claude/hooks/copy-lint-gate.py`'s 6th check (`NO-HARDCODED-PLURAL-TERNARY`) blocks any new `.tsx`/`.jsx` edit introducing `=== 1 ? "..."` / `== 1 ? "..."`.
+**Never a hardcoded ternary** (`count === 1 ? "Salon" : "Salons"`) as a substitute for the pattern above: it freezes the text in whatever language the author typed and drops the locale's real plural grammar (French treats 0 as singular; German/French/Italian all differ at higher counts). copy-i18n-04 (2026-07-27) found and fixed 7 live instances of this exact anti-pattern (brand/[slug]/page.tsx, FavoritesList.tsx, SalonReviews.tsx, SalonResultCard.tsx, MapSalonDetail.tsx, queue/[token]/page.tsx, behandlungen/[...slug]/*.tsx). Review changed plural render sites through the current i18n path; no automatic blocker is claimed here.
 
 ### §17.5 · Date / time / currency
 
@@ -1255,7 +1255,7 @@ Rule: any such fixed-width single-line atom sets `overflow-wrap: break-word` on 
 ### Voice register
 
 - **Direct** — say what the user can do, not how they should feel
-- **Conversational** — German `du` not `Sie` (per audience research), everywhere in `messages/de.json` EXCEPT the `legal.*` and `discovery_tos.*` namespaces, where formal register is the conventional (and here, deliberately kept) register for legal/contract text. **Enforced (copy-i18n-02, 2026-07-27)**: `~/.claude/hooks/copy-lint-gate.py`'s 5th check (`NO-FORMAL-REGISTER-IN-DE`) blocks any Write/Edit to `messages/de.json` that introduces a formal token (`Ihre`/`Ihren`/`Ihrer`/`Ihnen`/`Ihr`/`Sie`) outside those two namespaces. A full sweep on 2026-07-27 found and fixed 17 pre-existing drift instances (dashboard.settings, dashboard.disputes, dashboard.verificationPage, dashboard.messagesPage, discovery.admin, report.\*, common.\*) that had crept in exactly where a formal template read easiest to copy-paste.
+- **Formal register** — German `Sie`, Italian `Lei`, and French `vous` across product copy, as owned by `_design-system/COPY_LAW.md`. Apply the register through the translation review and rendered locale path; no automatic register blocker is claimed here.
 - **Owner-facing chrome vs. owner-to-customer templates (copy-i18n-10, 2026-07-27):** a dashboard translation key is one of two different audiences, and nothing structural told them apart before this note. Most `dashboard.*` keys are Solen UI CHROME speaking TO the salon owner (`dashboard.settings.vatNumberHint`, "Deine Schweizer..."). A small set are TEMPLATES the owner sends onward TO their own customer (`dashboard.settings.quickReplyDefault1/2`, `dashboard.messagesPage.quickReplyThanks`/`quickReplyConfirmed`, the pre-filled quick-reply message text) — a genuinely different audience that could, in principle, carry its own register decision. The 2026-07-27 register sweep (copy-i18n-02) resolved the immediate collision by converting those 4 keys to `du` too, matching every other Solen-to-owner string in the same namespace, so today there is no register split to get wrong. The naming convention that marks a key as "sent onward to the owner's own customer" going forward: a `quickReply*` (or, for a net-new feature, an explicit `*Template`) key name. If a future key needs a genuinely different register from the rest of its namespace, name it with that suffix so the register-gate's allowlist (copy-i18n-02) and any translator editing the file can tell the audience apart at a glance, instead of guessing from surrounding keys.
 - ~~**Conversational** — German `du` not `Sie` (per audience research)~~ **DEAD 2026-07-29** — the
   owner chose formal `Sie` (de), `Lei` (it), `vous` (fr). See `COPY_LAW.md` §1. Warmth inside the
@@ -1272,7 +1272,7 @@ Rule: any such fixed-width single-line atom sets `overflow-wrap: break-word` on 
 - Buttons: "Termine finden", "Anmelden"
 - Eyebrows: sentence case like everything else. ~~"FÜR SALONS" — the ONE place UPPERCASE is allowed
   (BusinessTeaser eyebrow)~~ **DEAD 2026-06-18** — the owner banned caps outright ("Never fucking
-  caps lock"); `copy-lint-gate.py` blocks the class. **Supersedes** this carve-out. See
+  caps lock"). **Supersedes** this carve-out. See
   `LOCKFILE.md` "Uppercase application policy (rule A7)" and `COPY_LAW.md` §4.4.
 
 ### Specific patterns
@@ -1516,7 +1516,7 @@ When tackling a new route class, raise these (extracted from SOLEN_PATTERNS Part
 - **QUESTIONS.md** — open decisions accumulating during builds
 - **components/<Name>.md** — per-component specifics
 - **`_rules/SOLEN_UI.md`** — universal UI/UX principles (orthogonal — tokens here, thinking there)
-- **`.claude/skills/solen-drift-check/`** — automated checker for token drift + dead clicks
+- **`solen-drift-check` skill** — explicitly targeted, report-only candidates for token drift and clickable surfaces
 
 ---
 

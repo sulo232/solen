@@ -29,7 +29,7 @@ Then in your first reply, print:
 - The current accent token: `#276EF1`
 - The universal-components rule (V3-D205, no category branches)
 
-If you skip this step you will rebuild things that exist. Drift-checker will flag duplicates.
+If you skip this step you will rebuild things that exist. The explicit-target drift report may surface related source candidates, but the registry check is the actual reuse evidence.
 
 ═══════════════════════════════════════════════════════════════
 STEP 2 — RESEARCH (per section)
@@ -121,12 +121,12 @@ Per section:
 Per route (after all sections):
 1. Run pre-finish checklist:
    - `tsc --noEmit` clean on all touched files
-   - `python3 .claude/skills/solen-drift-check/scripts/check.py --strict-only` clean (zero strict findings)
+   - Run `solen-drift-check` with explicit changed `.ts`, `.tsx`, or `.css` targets; review applicable candidates. The report is not a clean verdict.
    - All new components in COMPONENT_REGISTRY.md (move from Proposed to Locked)
    - All new components have per-component `.md` with Layer: declaration
    - All section .md files have `Reference:` line pointing at a Fresha screenshot
    - No emoji anywhere (`grep -r '[⭐✨🎉👏✅❌🚀💡🔥]' app/` clean)
-2. Add route file globs to `_design-system/_rebuilt_routes.json` `strict_globs` so future drift catches regressions.
+2. Do not add scanner globs or exclusions as part of this brief. Future checks select their actual changed targets explicitly.
 
 ═══════════════════════════════════════════════════════════════
 STEP 5 — RETURN
@@ -233,7 +233,7 @@ NO CODE EDITS. Only diagnosis.
 ## When NOT to use this template
 
 - Single-component edits (StatusPill color tweak) — direct edit, not an agent
-- Token swaps across files (e.g. retired-token sweep) — drift-checker + main agent
+- Token swaps across files (e.g. retired-token sweep) — explicit-target `solen-drift-check` report + main agent
 - Bug fixes that don't affect visual design — direct edit
 - Pure refactors (no visual change) — direct edit
 

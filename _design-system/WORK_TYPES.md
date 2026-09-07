@@ -37,7 +37,7 @@ User flag 2026-05-28: "we also got waves or system for example like amazing rebu
 **Verification:**
 - Read the file → make edit → confirm no other unintended change in `git diff`
 - For pure-CSS edits: visual eyeball in browser (no need for screenshot comparison)
-- For string changes (copy / hex / class): no visual check needed if drift-check passes
+- For a string change (copy / hex / class), use the verification that proves the affected behavior; a static drift report alone is not visual proof
 
 **Commit granularity:** 1 commit per fix is fine for single-concern fixes. Batch multiple surgical fixes into one commit ONLY if they share a V3-D{n} marker (same intent).
 
@@ -122,7 +122,7 @@ User flag 2026-05-28: "we also got waves or system for example like amazing rebu
 
 **Commit granularity:** 1 commit per page-rebuild. Often followed by 1-3 iteration commits as user gives feedback.
 
-**Drift-check expectation:** 0 hard findings on the new file (greenfield — no excuse for drift on day 1).
+**Targeted drift expectation:** review all applicable candidates on the new file; the report does not establish rendered fidelity or broad cleanliness.
 
 **Anti-pattern:** Calling a "ground-up rebuild" what is actually a heavy route sweep with imports unchanged. If you're using all the same primitives in the same order as an existing page, it's a sweep, not a rebuild.
 
@@ -227,21 +227,21 @@ When building a wave plan:
 
 ---
 
-## Pre-task self-auto-verification (V3-D338-ops — the 60-second pre-edit check)
+## Context-sensitive source and verification check
 
-**Run this script in order BEFORE any non-trivial edit (Type 2 sweep, Type 3 component change, Type 4 rebuild, Type 5 primitive, Type 6 IA shift).** Write answers in the active summary doc. Skipping = the failure mode that bit T4 of the overnight run.
+At the start of a Type 2 sweep, Type 3 component change, Type 4 rebuild, Type 5 primitive, or Type 6 IA shift, identify the relevant axis, current owner, and post-edit evidence. Revisit that context when the governing source or task evidence changes, is missing, or a failure calls the premise into doubt. Record the answers in the active summary when the work requires a durable evidence trail.
 
 See LOCKFILE §10.8d for the full script. Short version:
 
 ```
 Q1: AXIS?              (structure / aesthetic / both)
 Q2: SOURCE OF TRUTH?   (Fresha SPEC.md for structure, LOCKFILE §X.Y for aesthetic)
-Q3: READ IN LAST HOUR? (if no → re-read NOW)
+Q3: IS THE SOURCE EVIDENCE CHANGED OR MISSING? (if yes → re-read the relevant owner now)
 Q4: EDIT MATCH SOURCE? (if no → revise OR surface conflict per §10.5)
-Q5: POST-EDIT VERIFY?  (drift-check / screenshot / Fresha-diff / Lighthouse)
+Q5: POST-EDIT VERIFY?  (targeted drift candidates / screenshot / Fresha comparison / Lighthouse as applicable)
 ```
 
-If Q1-Q5 takes >2 min, rescope the work to a bigger work-type. Per LOCKFILE §10.8d.
+If Q1-Q5 exposes a broader concern, reclassify or split the work under the decision tree above. Per LOCKFILE §10.8d.
 
 **Drift signals — STOP the edit if any of these fire** (full list in LOCKFILE §10.8b):
 - Eyeballing a Fresha screenshot to "rebuild" instead of firing `fresha-section-capture`
@@ -250,13 +250,13 @@ If Q1-Q5 takes >2 min, rescope the work to a bigger work-type. Per LOCKFILE §10
 - Applying a LOCKFILE §11 aesthetic pattern as if it were structural
 - Marking a route done without screenshot diff
 
-**Self-auto-verification triggers — run the action when the trigger fires** (full list in LOCKFILE §10.8c):
-- Before every non-trivial edit → 60-second pre-edit check
-- After every route sweep → drift-check + Fresha SPEC.md existence check
-- Every 60 min in autonomous runs → re-anchor by re-reading LOCKFILE §10
+**Source and verification triggers — act when the evidence calls for it** (full list in LOCKFILE §10.8c):
+- At the start of a non-trivial work item, or when its scope materially changes → identify the applicable current owner and planned evidence
+- At the close of a route sweep, when the current drift skill accepts the explicit touched targets → review its report-only candidates; check the Fresha SPEC when the change is structural
+- When source evidence changes, is missing, or a failure calls the premise into doubt → re-anchor on the relevant owner
 - When pivoting a mockup variant → ask "am I pivoting on data or on taste"
 - When sweep > 30 min → re-anchor mid-sweep
-- When console errors appear → trace to last edit, fire `llm-council` if unclear after 15 min
+- When console errors appear → trace to the last edit; if the cause remains uncertain, use the current reasoning procedure and the risk-appropriate native perspective
 
 ---
 
@@ -277,7 +277,7 @@ Every wave / route sweep / component sweep / ground-up rebuild must pass BOTH ax
 | Gate | Threshold | Tool |
 |---|---|---|
 | **Senior Scorecard** (customer-facing screens) | **6/6 Pass** on Copy / Emphasis / Color / Type / Structure / Floors (Floors dim added 2026-07-27, hierarchy-density-02) | `_design-system/SENIOR_SCORECARD.md` — drift + `npm run check:floors` for the countable dims + a verifier-agent pass (with screenshot) for the judgment dims |
-| **Drift A1-A12** | 0 hard breakages on touched files (A4 retired easings, A5 retired tokens, A6 emoji, A7 uppercase outside role, A8 non-canonical tracking, A9 accent outside allowed, A10 rounded image, A11 non-canonical aspect, A12 eyebrow dot, B1-B5) | `python3 .claude/skills/solen-drift-check/scripts/check.py` |
+| **Targeted drift candidates** | Review A/B candidates that apply to the touched files; a report does not prove rendered fidelity or broad cleanliness | `solen-drift-check` skill with explicit targets |
 | **Lighthouse accessibility** | ≥95 | Lighthouse CLI or Chrome DevTools |
 | **LCP (Largest Contentful Paint)** | ≤2.5s on mobile | Lighthouse / Web Vitals |
 | **Contrast failures** | 0 | Lighthouse / axe DevTools |
@@ -286,7 +286,7 @@ Every wave / route sweep / component sweep / ground-up rebuild must pass BOTH ax
 
 **Rationale (per user feedback 2026-05-28):** the dual-axis rule prevents the failure mode where a "drift sweep" silently restructures (because the agent eyeballed an aesthetic pattern as if it were structural), and where a "structure rebuild" ignores aesthetic rules (because the agent followed Fresha verbatim including Fresha's RoobertPRO + purple accent). Both axes verified before ship = no silent drift either direction.
 
-**Both gates fail-stop:** if EITHER axis fails, don't ship the wave. Document in `_overnight-run-summary.md` (or per-wave equivalent) which gate failed + which axis. Surface as PENDING DECISION for user.
+**Both axes must be resolved before shipping the wave.** Record the failed criterion and its evidence in the current work record. Repair authorized defects, diagnose failed methods, and ask the owner only for a material decision that remains after applying the current authority.
 
 ---
 

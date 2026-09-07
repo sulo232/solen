@@ -1,6 +1,6 @@
 # Multi-Agent Coordination & Task Tracking
 
-> ARCHIVED (2026-07-07): the dead multi-agent file-lock / branch / role protocol (`.agent-lock.json`, `.agent-comms.md`, Dev 1/2/3 roles) moved to `_rules/archive/AGENT_COORDINATION_locks.md`. It described an earlier multi-agent working model, superseded by the orchestrator/coder/reviewer layered loop (project CLAUDE.md rule 13, `~/.claude/LOOP_SYSTEM.md`). This file now only carries the live task-tracking protocol below.
+> The archived file-lock / branch / role protocol moved to `_rules/archive/AGENT_COORDINATION_locks.md`. Current coordination uses the active orchestrator/coder/reviewer layered loop, explicit file ownership, and the project instructions. This file only carries the incomplete-feature record below.
 
 ---
 
@@ -18,8 +18,8 @@ _tasks/
 ### Task Lifecycle
 
 ```
-START → Note intent in .agent-comms.md
-DONE  → Move task file to _tasks/completed/ + note in .agent-comms.md
+START → Record only the active task state required by the current plan or loop.
+DONE  → Close that state with its verification evidence; do not create a parallel communications file.
 ```
 
 ### Incomplete Features Protocol (MANDATORY)
