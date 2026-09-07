@@ -76,7 +76,11 @@ describe("webhook signature verification", () => {
     const res = await POST(makeRequest("{}"));
     expect(res.status).toBe(400);
     expect(dbStub.from).not.toHaveBeenCalled();
-    expect(reportErrorMock).toHaveBeenCalledWith("stripe-webhook-signature", expect.any(Error));
+    expect(reportErrorMock).toHaveBeenCalledWith(
+      "stripe-webhook-signature",
+      expect.any(Error),
+      expect.objectContaining({ requestId: expect.any(String) }),
+    );
   });
 });
 

@@ -32,7 +32,7 @@ function setAdminSequence(results: StubResult[]) {
   adminStub = { from: makeFromSequence(results) };
 }
 
-const fakeReq = {} as any;
+const fakeReq = { headers: { get: () => null } } as any;
 const BOOKING_ID = "bk-1";
 
 function bookingRow(overrides: Record<string, unknown> = {}) {
