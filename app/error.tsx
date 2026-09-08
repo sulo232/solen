@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { detectLocaleFromPathname } from "@/lib/detect-locale";
-import { ui, errors } from "@/messages/de.json";
+import deMessages from "@/messages/de.json";
+
+const { ui, errors } = deMessages;
 
 // Outside the locale provider, resolve the existing message keys after hydration.
 const DE_STRINGS = {
