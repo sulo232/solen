@@ -1,3 +1,4 @@
+model = "gpt-5.6-sol"
 name = "design-verifier"
 description = "Read-only verifier for Solen UI against the current project design system and approved screen decisions."
 developer_instructions = """
