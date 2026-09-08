@@ -2261,7 +2261,10 @@
       "categorySpa": "Spa",
       "loadErrorTitle": "Impossible de charger le calendrier",
       "loadErrorMessage": "Une erreur est survenue lors du chargement du planning.",
-      "retry": "Réessayer"
+      "retry": "Réessayer",
+      "add": "Ajouter",
+      "unassigned": "Non attribué",
+      "manageBookings": "Gérer les réservations"
     },
     "clientsPage": {
       "title": "Clients",

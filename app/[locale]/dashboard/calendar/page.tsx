@@ -1,17 +1,18 @@
 "use client";
 
-import { useEffect, useState, useCallback, useMemo, useRef } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { ChevronLeft, ChevronRight, Plus, X, Lock, ArrowRight, Clock, UserPlus, CalendarX } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, X, Lock, ArrowRight, Clock, CalendarX } from "lucide-react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "@/app/[locale]/_components/primitives/Modal";
 import Spinner from "@/components-legacy/ui/Spinner";
 import ErrorState from "@/components-legacy/ui/ErrorState";
 import WalkInModal from "@/components-legacy/dashboard/WalkInModal";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import type { AvailabilitySlot } from "@/lib/types";
 import { resolveSwissLocale } from "@/lib/format";
-import { zurichYmd } from "@/lib/time/zurich";
+import { zurichYmd, zurichCalendarRange, zurichWallClockToUtc } from "@/lib/time/zurich";
 import { localizedField } from "@/lib/i18n/localized-field";
 
 // ─────────────────────────────────────────
@@ -20,40 +21,28 @@ import { localizedField } from "@/lib/i18n/localized-field";
 
 type ViewMode = "day" | "week" | "month";
 
-const HOURS = Array.from({ length: 25 }, (_, i) => i + 8); // 08:00–20:00 (24 half-hour rows = 12h)
-const DAYS_LABEL = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
-
-// Service category → left border color
-// V3-D347: vibrant service palette (LOCKFILE §12 calendar set).
-const SERVICE_CATEGORY_COLORS: Record<string, string> = {
-  hair: "border-l-4 border-l-s-cal-hair",
-  nails: "border-l-4 border-l-s-cal-nails",
-  spa: "border-l-4 border-l-s-cal-spa",
-  barber: "border-l-4 border-l-s-cal-barber",
-};
-
 function startOfWeek(date: Date) {
   const d = new Date(date);
-  const day = d.getDay(); // 0=Sun
+  const day = d.getUTCDay(); // 0=Sun
   const diff = day === 0 ? -6 : 1 - day;
-  d.setDate(d.getDate() + diff);
-  d.setHours(0, 0, 0, 0);
+  d.setUTCDate(d.getUTCDate() + diff);
+  d.setUTCHours(12, 0, 0, 0);
   return d;
 }
 
 function addDays(date: Date, n: number) {
   const d = new Date(date);
-  d.setDate(d.getDate() + n);
+  d.setUTCDate(d.getUTCDate() + n);
   return d;
 }
 
 function startOfMonth(date: Date) {
-  return new Date(date.getFullYear(), date.getMonth(), 1);
+  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1, 12));
 }
 
 function getMonthCalendarDays(date: Date): Date[] {
   const first = startOfMonth(date);
-  const startDay = first.getDay() === 0 ? 6 : first.getDay() - 1; // Mon=0
+  const startDay = first.getUTCDay() === 0 ? 6 : first.getUTCDay() - 1; // Mon=0
   const start = addDays(first, -startDay);
   const days: Date[] = [];
   for (let i = 0; i < 42; i++) days.push(addDays(start, i));
@@ -93,43 +82,51 @@ function serviceName(s: RawServiceRow, locale: string): string {
 interface SlotModalProps {
   date: string;
   startTime: string;
+  initialStaffId?: string;
   services: { id: string; name: string }[];
   staff: { id: string; name: string }[];
   onClose: () => void;
   onCreated: () => void;
 }
 
-function SlotCreateModal({ date, startTime, services, staff, onClose, onCreated }: SlotModalProps) {
+function SlotCreateModal({ date, startTime, initialStaffId, services, staff, onClose, onCreated }: SlotModalProps) {
   const t = useTranslations("dashboard.calendarPage");
+  const common = useTranslations("common");
   const [serviceId, setServiceId] = useState("");
-  const [staffId, setStaffId] = useState("");
+  const [staffId, setStaffId] = useState(initialStaffId ?? "");
   const [loading, setLoading] = useState(false);
+  const [createError, setCreateError] = useState(false);
 
   const handleCreate = async () => {
     if (!serviceId) return;
     setLoading(true);
     try {
-      await fetch("/api/slots", {
+      const response = await fetch("/api/slots", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ date, start_time: startTime, service_id: serviceId, staff_member_id: staffId || null }),
       });
+      if (!response.ok) throw new Error(`Slot creation failed (${response.status})`);
       onCreated();
       onClose();
       // V3-D334 (overnight T2): error handling per CLAUDE.md (was silent catch).
-    } catch (err) { console.error("[Calendar] single slot create failed:", err); } finally {
+    } catch (err) { setCreateError(true); console.error("[Calendar] single slot create failed:", err); } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-sm p-6">
+    <Modal isOpen onOpenChange={(open) => { if (!open) onClose(); }} size="sm"
+      aria-label={t("createSlotTitle")}
+      className="w-full max-w-sm rounded-input shadow-warm-lg"
+      overlayClassName="bg-s-ink/40 backdrop-blur-sm">
+      <div className="overflow-y-auto p-6">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading text-base">{t("createSlotTitle")}</h3>
-          <button onClick={onClose}><X size={18} strokeWidth={1.9} className="text-s-ink/30" /></button>
+          <button onClick={onClose} aria-label={t("cancel")} className={`grid h-11 w-11 place-items-center ${CALENDAR_FOCUS}`}><X size={18} strokeWidth={1.9} className="text-s-ink/30" /></button>
         </div>
         <p className="text-sm text-s-ink-2 mb-4">{t("dateAtTime", { date, time: startTime })}</p>
+        {createError ? <ErrorState title={common("errorSaving")} retryLabel={t("retry")} onRetry={() => { onCreated(); onClose(); }} /> : <>
         <div className="space-y-3 mb-5">
           <div>
             <label className="block text-xs text-s-ink-2 mb-1">{t("serviceRequired")}</label>
@@ -149,14 +146,15 @@ function SlotCreateModal({ date, startTime, services, staff, onClose, onCreated 
           </div>
         </div>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2">{t("cancel")}</button>
+          <button onClick={onClose} className={`flex-1 min-h-11 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 ${CALENDAR_FOCUS}`} >{t("cancel")}</button>
           <button onClick={handleCreate} disabled={!serviceId || loading}
-            className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+            className={`flex-1 min-h-11 py-2.5 rounded-btn bg-s-ink text-white text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${CALENDAR_FOCUS}`} >
             {loading && <Spinner size="sm" invert />}{t("create")}
           </button>
         </div>
+        </>}
       </div>
-    </div>
+    </Modal>
   );
 }
 
@@ -165,7 +163,6 @@ function SlotCreateModal({ date, startTime, services, staff, onClose, onCreated 
 // ─────────────────────────────────────────
 
 const DAY_KEYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
-const DAY_LABELS = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
 // 24h-only select options: a native <input type="time"> takes its AM/PM vs 24h display
 // format from the browser's own locale, not the page language or an element lang attribute
 // (measured, see removed lang="de-CH" below), so hour/minute are plain selects instead.
@@ -180,6 +177,7 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
   onCreated: () => void;
 }) {
   const t = useTranslations("dashboard.calendarPage");
+  const common = useTranslations("common");
   const locale = useLocale();
   const [template, setTemplate] = useState<Record<string, { start: string; end: string } | null>>(
     Object.fromEntries(DAY_KEYS.map((k, i) => [k, i < 5 ? { start: "09:00", end: "18:00" } : null]))
@@ -188,20 +186,22 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
   const [staffId, setStaffId] = useState("");
   const [weeks, setWeeks] = useState<1 | 2 | 4>(2);
   const [loading, setLoading] = useState(false);
+  const [createError, setCreateError] = useState(false);
 
   const handleCreate = async () => {
     if (!serviceId) return;
     setLoading(true);
     try {
-      await fetch("/api/slots/bulk", {
+      const response = await fetch("/api/slots/bulk", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ salon_id: salonId, template, service_id: serviceId, staff_member_id: staffId || null, weeks }),
       });
+      if (!response.ok) throw new Error(`Slot creation failed (${response.status})`);
       onCreated();
       onClose();
       // V3-D334 (overnight T2): error handling per CLAUDE.md (was silent catch).
-    } catch (err) { console.error("[Calendar] bulk slot create failed:", err); } finally {
+    } catch (err) { setCreateError(true); console.error("[Calendar] bulk slot create failed:", err); } finally {
       setLoading(false);
     }
   };
@@ -211,12 +211,16 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-md p-6 overflow-y-auto max-h-[90vh]">
+    <Modal isOpen onOpenChange={(open) => { if (!open) onClose(); }} size="md"
+      aria-label={t("createWeekScheduleTitle")}
+      className="w-full max-w-md rounded-input shadow-warm-lg"
+      overlayClassName="bg-s-ink/40 backdrop-blur-sm">
+      <div className="max-h-[90vh] overflow-y-auto p-6">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading text-base">{t("createWeekScheduleTitle")}</h3>
-          <button onClick={onClose}><X size={18} strokeWidth={1.9} className="text-s-ink/30" /></button>
+          <button onClick={onClose} aria-label={t("cancel")} className={`grid h-11 w-11 place-items-center ${CALENDAR_FOCUS}`}><X size={18} strokeWidth={1.9} className="text-s-ink/30" /></button>
         </div>
+        {createError ? <ErrorState title={common("errorSaving")} retryLabel={t("retry")} onRetry={() => { onCreated(); onClose(); }} /> : <>
         <div className="space-y-4 mb-5">
           <div>
             <label className="block text-xs text-s-ink-2 mb-1">{t("serviceRequired")}</label>
@@ -245,9 +249,9 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
                 return (
                   <div key={key} className="flex items-center gap-3 flex-wrap">
                     <button type="button" onClick={() => toggleDay(key)}
-                      className={["w-9 text-center text-xs py-1.5 rounded-btn transition-colors", // mockup-ok: C2 fix, locked TabPill treatment (approved public/_mockups/fixes-refined)
+                      className={["min-h-11 min-w-11 text-center text-xs py-1.5 rounded-btn transition-colors", // mockup-ok: C2 fix, locked TabPill treatment (approved public/_mockups/fixes-refined)
                         slot ? "bg-s-bg-sunken text-s-ink font-semibold" : "bg-s-bg-sunken text-s-ink/40"].join(" ")}>
-                      {DAY_LABELS[i]}
+                      {new Date(Date.UTC(2024, 0, 1 + i, 12)).toLocaleDateString(resolveSwissLocale(locale), { weekday: "short", timeZone: "UTC" })}
                     </button>
                     {slot ? (
                       <div className="flex w-full items-center gap-2">
@@ -285,14 +289,15 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
           </div>
         </div>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2">{t("cancel")}</button>
+          <button onClick={onClose} className={`flex-1 min-h-11 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 ${CALENDAR_FOCUS}`} >{t("cancel")}</button>
           <button onClick={handleCreate} disabled={!serviceId || loading}
-            className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+            className={`flex-1 min-h-11 py-2.5 rounded-btn bg-s-ink text-white text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${CALENDAR_FOCUS}`} >
             {loading && <Spinner size="sm" invert />}{t("create")}
           </button>
         </div>
+        </>}
       </div>
-    </div>
+    </Modal>
   );
 }
 
@@ -304,7 +309,7 @@ interface SlotDetailModalProps {
   slot: AvailabilitySlot;
   staff: { id: string; name: string }[];
   onClose: () => void;
-  onReschedule: (slotId: string, newDate: string, newTime: string) => void;
+  onReschedule: (slotId: string, newDate: string, newTime: string, staffId: string | null) => void;
   onDelete: (slotId: string) => void;
 }
 
@@ -312,18 +317,19 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
   const t = useTranslations("dashboard.calendarPage");
   const locale = useLocale();
   const [rescheduleMode, setRescheduleMode] = useState(false);
-  const [newDate, setNewDate] = useState(slot.starts_at.split("T")[0]);
-  const [newTime, setNewTime] = useState(new Date(slot.starts_at).toTimeString().slice(0, 5));
+  const [newDate, setNewDate] = useState(zurichYmd(new Date(slot.starts_at)));
+  const [newTime, setNewTime] = useState(calendarWallFormat.format(new Date(slot.starts_at)));
+  const [newStaffId, setNewStaffId] = useState(slot.staff_member_id ?? "");
   const [loading, setLoading] = useState(false);
 
   const staffName = staff.find((s) => s.id === slot.staff_member_id)?.name || t("anyStaff");
-  const startTime = new Date(slot.starts_at).toLocaleTimeString(resolveSwissLocale(locale), { hour: "2-digit", minute: "2-digit" });
-  const endTime = new Date(slot.ends_at).toLocaleTimeString(resolveSwissLocale(locale), { hour: "2-digit", minute: "2-digit" });
+  const startTime = calendarTime(new Date(slot.starts_at), locale);
+  const endTime = calendarTime(new Date(slot.ends_at), locale);
 
   const handleReschedule = async () => {
     setLoading(true);
     try {
-      onReschedule(slot.id, newDate, newTime);
+      onReschedule(slot.id, newDate, newTime, newStaffId || null);
       onClose();
     } finally {
       setLoading(false);
@@ -331,13 +337,15 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-sm p-6">
+    <Modal isOpen onOpenChange={(open) => { if (!open) onClose(); }} size="sm"
+      aria-label={rescheduleMode ? t("rescheduleTitle") : t("detailsTitle")}
+      className="w-full max-w-sm rounded-input p-6 shadow-warm-lg"
+      overlayClassName="bg-s-ink/40 backdrop-blur-sm">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading text-base">
             {rescheduleMode ? t("rescheduleTitle") : t("detailsTitle")}
           </h3>
-          <button onClick={onClose}><X size={18} strokeWidth={1.9} className="text-s-ink/30" /></button>
+          <button onClick={onClose} aria-label={t("cancel")} className={`grid h-11 w-11 place-items-center ${CALENDAR_FOCUS}`}><X size={18} strokeWidth={1.9} className="text-s-ink/30" /></button>
         </div>
 
         {rescheduleMode ? (
@@ -352,11 +360,12 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
               <input type="time" value={newTime} onChange={(e) => setNewTime(e.target.value)}
                 className="w-full px-3 py-2 text-sm" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
             </div>
+            <div><label className="block text-xs text-s-ink-2 mb-1">{t("staffLabel")}</label><select aria-label={t("staffLabel")} value={newStaffId} onChange={(event) => setNewStaffId(event.target.value)} className="w-full px-3 py-2 text-sm"><option value="">{t("unassigned")}</option>{staff.map((member) => <option key={member.id} value={member.id}>{member.name}</option>)}</select></div>
             <div className="flex gap-2 mt-4">
               <button onClick={() => setRescheduleMode(false)}
-                className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2">{t("back")}</button>
+                className="flex-1 min-h-11 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2">{t("back")}</button>
               <button onClick={handleReschedule} disabled={loading}
-                className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1">
+                className={`flex-1 min-h-11 py-2.5 rounded-btn bg-s-ink text-white text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1 ${CALENDAR_FOCUS}`} >
                 {loading && <Spinner size="sm" invert />}
                 <ArrowRight size={14} strokeWidth={1.6} /> {t("reschedule")}
               </button>
@@ -367,858 +376,1331 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
             <div className="space-y-2 mb-5 text-sm text-s-ink/70">
               <p><span className="text-s-ink/40">{t("statusLabel")}</span> <span>{slot.status === "booked" ? t("statusBooked") : slot.status === "blocked" ? t("statusBlocked") : t("statusFree")}</span></p>
               <p><span className="text-s-ink/40">{t("timeLabel")}</span> {startTime} - {endTime}</p>
-              <p><span className="text-s-ink/40">{t("dateLabel")}</span> {new Date(slot.starts_at).toLocaleDateString(resolveSwissLocale(locale))}</p>
+              <p><span className="text-s-ink/40">{t("dateLabel")}</span> {new Date(slot.starts_at).toLocaleDateString(resolveSwissLocale(locale), { timeZone: "Europe/Zurich" })}</p>
               <p><span className="text-s-ink/40">{t("staffDetailLabel")}</span> {staffName}</p>
             </div>
             <div className="flex gap-2">
               {slot.status !== "blocked" && (
                 <button onClick={() => setRescheduleMode(true)}
-                  className="flex-1 py-2.5 rounded-btn border border-s-accent-bright text-s-accent-bright text-sm font-medium flex items-center justify-center gap-1 hover:bg-s-accent-bright/5 transition-colors">
+                  className="flex-1 min-h-11 py-2.5 rounded-btn border border-s-accent-bright text-s-accent-bright text-sm font-medium flex items-center justify-center gap-1 hover:bg-s-accent-bright/5 transition-colors">
                   <Clock size={14} strokeWidth={1.6} /> {t("reschedule")}
                 </button>
               )}
               <button onClick={() => { onDelete(slot.id); onClose(); }}
-                className="flex-1 py-2.5 rounded-btn border border-s-accent-bright text-s-accent-bright text-sm font-medium hover:bg-s-accent-bright/5 transition-colors">
+                className="flex-1 min-h-11 py-2.5 rounded-btn border border-s-accent-bright text-s-accent-bright text-sm font-medium hover:bg-s-accent-bright/5 transition-colors">
                 {t("delete")}
               </button>
             </div>
           </>
         )}
-      </div>
-    </div>
+    </Modal>
   );
 }
 
-// Staff color palette. Solid fills (mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15
-// fixes-refined). The old low-opacity tints measured 1.13-1.9:1 against #F4F4F5,
-// near-invisible in the legend swatch, and two entries ("coral"/"plum") were B&W
-// aliases (V3-D332) so no opacity bump could ever fix them. Every entry below clears
-// 3:1 (measured 4.57-6.46:1 vs #F4F4F5, 5.02-7.10:1 vs #FFFFFF). Raw Tailwind hues are
-// intentional here: an 8-way staff-identity palette, not a semantic status/brand color,
-// so s-error/s-success/s-warning/s-accent/s-ink do not have enough distinct hues for 8 staff.
-const STAFF_COLORS = [
-  "bg-rose-700 border-rose-800 text-white", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, staff-identity hue
-  "bg-blue-700 border-blue-800 text-white", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, staff-identity hue
-  "bg-violet-700 border-violet-800 text-white", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, staff-identity hue
-  "bg-amber-700 border-amber-800 text-white", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, staff-identity hue
-  "bg-pink-700 border-pink-800 text-white", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, mockup literal #BE185D
-  "bg-emerald-700 border-emerald-800 text-white", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, mockup literal #047857
-  "bg-orange-700 border-orange-800 text-white", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, mockup literal #C2410C
-  "bg-cyan-700 border-cyan-800 text-white", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, staff-identity hue
-];
+// Operator screen: the approved staff-column day calendar is the primary work surface.
+// Phone retains a chronological agenda so short appointments never share a hit area.
+type CalendarSlot = AvailabilitySlot & {
+  services?: Record<string, unknown> | null;
+  staff_members?: { name?: string } | null;
+};
+type CalendarBooking = {
+  id: string;
+  slot_id: string | null;
+  service_id: string | null;
+  staff_member_id: string | null;
+  starts_at: string;
+  ends_at: string;
+  status: string;
+  customer_name: string;
+  service_name: string;
+  staff_name: string | null;
+  services?: Record<string, unknown> | null;
+};
+type CalendarItem = {
+  id: string;
+  starts_at: string;
+  ends_at: string;
+  staff_member_id: string | null;
+  label: string;
+  service: string;
+  staffName?: string;
+  status: string;
+  slot?: AvailabilitySlot;
+  booking?: CalendarBooking;
+};
+const CALENDAR_FOCUS =
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2";
+const CALENDAR_CONTROL = `h-11 rounded-btn border border-s-border bg-white px-4 text-sm font-semibold text-s-ink ${CALENDAR_FOCUS}`;
+const calendarDate = (date: Date) => new Date(`${zurichYmd(date)}T12:00:00Z`);
+const calendarWallFormat = new Intl.DateTimeFormat("en-GB", {
+  timeZone: "Europe/Zurich",
+  hour: "2-digit",
+  minute: "2-digit",
+  hourCycle: "h23",
+});
+const calendarTimeFormats = new Map<string, Intl.DateTimeFormat>();
+const calendarTime = (date: Date, locale: string) => {
+  const base: Intl.DateTimeFormatOptions = {
+    timeZone: "Europe/Zurich",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  };
+  const wall = (instant: Date) => calendarWallFormat.format(instant);
+  const repeated = [-1, 1].some((direction) => {
+    const neighbor = new Date(date.getTime() + direction * 3600000);
+    return (
+      zurichYmd(neighbor) === zurichYmd(date) && wall(neighbor) === wall(date)
+    );
+  });
+  const key = `${locale}:${Boolean(date.getUTCSeconds())}:${Boolean(date.getUTCMilliseconds())}:${repeated}`;
+  let formatter = calendarTimeFormats.get(key);
+  if (!formatter) {
+    formatter = new Intl.DateTimeFormat(resolveSwissLocale(locale), {
+      ...base,
+      ...(date.getUTCSeconds() || date.getUTCMilliseconds()
+        ? { second: "2-digit" as const }
+        : {}),
+      ...(date.getUTCMilliseconds()
+        ? { fractionalSecondDigits: 3 as const }
+        : {}),
+      ...(repeated ? { timeZoneName: "shortOffset" as const } : {}),
+    });
+    calendarTimeFormats.set(key, formatter);
+  }
+  return formatter.format(date);
+};
 
-// C1 punch fix: parallel LITERAL text-color array, same order/hues as STAFF_COLORS above, for the
-// day-view staff header (text-on-white, not the solid swatch fill). Tailwind's scanner only
-// generates CSS for class strings that appear verbatim in source; deriving "text-{hue}-700" at
-// runtime via string replace never matches a literal, so the header rendered unstyled. Indexed
-// directly instead.
-const STAFF_TEXT_COLORS = [
-  "text-rose-700", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, staff-identity hue
-  "text-blue-700", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, staff-identity hue
-  "text-violet-700", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, staff-identity hue
-  "text-amber-700", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, staff-identity hue
-  "text-pink-700", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, mockup literal #BE185D
-  "text-emerald-700", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, mockup literal #047857
-  "text-orange-700", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, mockup literal #C2410C
-  "text-cyan-700", // mockup-ok drift-ok muted-ok: owner-approved C1 2026-07-15 fixes-refined, staff-identity hue
-];
-
-// ─────────────────────────────────────────
-// Main Calendar
-// ─────────────────────────────────────────
+async function readCalendarPopulation<
+  T extends { id: string; starts_at: string; ends_at: string },
+>(url: string, key: "slots" | "bookings", signal: AbortSignal): Promise<T[]> {
+  const rows: T[] = [];
+  const seen = new Set<string>();
+  let expected: number | null = null;
+  do {
+    const response = await fetch(`${url}&offset=${rows.length}`, { signal });
+    if (!response.ok)
+      throw new Error(`${key} request failed (${response.status})`);
+    const data = await response.json();
+    const page = data[key] as T[];
+    if (
+      !Array.isArray(page) ||
+      !Number.isSafeInteger(data.total) ||
+      data.total < 0 ||
+      (expected !== null && expected !== data.total)
+    )
+      throw new Error(`${key} population changed or unavailable`);
+    expected = Number(data.total);
+    if (!page.length && rows.length < expected)
+      throw new Error(`${key} population incomplete`);
+    for (const row of page) {
+      if (
+        !Number.isFinite(Date.parse(row.starts_at)) ||
+        !Number.isFinite(Date.parse(row.ends_at)) ||
+        Date.parse(row.ends_at) <= Date.parse(row.starts_at)
+      )
+        throw new Error(`${key} has an invalid time interval`);
+      if (!row.id || seen.has(row.id))
+        throw new Error(`${key} identity repeated or missing`);
+      seen.add(row.id);
+      rows.push(row);
+    }
+    if (rows.length > expected)
+      throw new Error(`${key} population exceeded count`);
+  } while (rows.length < expected!);
+  return rows;
+}
 
 export default function CalendarPage() {
   const locale = useLocale();
   const t = useTranslations("dashboard.calendarPage");
-  const [viewMode, setViewMode] = useState<ViewMode>("week");
-  // Mobile-only view switch (Tag / Woche / Monat). Independent of the desktop `viewMode`.
-  const [mobileView, setMobileView] = useState<"tag" | "woche" | "monat">("tag");
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
-  const [slots, setSlots] = useState<AvailabilitySlot[]>([]);
+  const [viewMode, setViewMode] = useState<ViewMode>("day");
+  const [mobileView, setMobileView] = useState<"tag" | "woche" | "monat">(
+    "tag",
+  );
+  const [currentDate, setCurrentDate] = useState(() =>
+    calendarDate(new Date()),
+  );
+  const [staffFilter, setStaffFilter] = useState("all");
+  const [selectedStaffName, setSelectedStaffName] = useState("");
+  const [slots, setSlots] = useState<CalendarSlot[]>([]);
+  const [bookings, setBookings] = useState<CalendarBooking[]>([]);
   const [loading, setLoading] = useState(true);
-  // H2: a slot-fetch failure (vs. genuinely-empty) so we can render an error state w/ retry
-  // instead of an indefinite spinner. null = no error.
   const [error, setError] = useState(false);
-  // Tracks whether the /api/profile salon-resolution has SETTLED (success OR failure).
-  // Until it has, we keep showing the spinner; once settled with no salonId, the views
-  // render an error state (couldn't resolve this salon) rather than spinning forever.
+  const [actionError, setActionError] = useState(false);
+  const common = useTranslations("common");
   const [salonReady, setSalonReady] = useState(false);
   const [salonId, setSalonId] = useState<string | null>(null);
-  const [services, setServices] = useState<{ id: string; name: string; category?: string }[]>([]);
+  const [services, setServices] = useState<
+    { id: string; name: string; category?: string }[]
+  >([]);
   const [staff, setStaff] = useState<{ id: string; name: string }[]>([]);
-  const [createModal, setCreateModal] = useState<{ date: string; time: string } | null>(null);
+  const [createModal, setCreateModal] = useState<{
+    date: string;
+    time: string;
+    staffId?: string;
+  } | null>(null);
   const [bulkModal, setBulkModal] = useState(false);
   const [detailSlot, setDetailSlot] = useState<AvailabilitySlot | null>(null);
+  const [detailBooking, setDetailBooking] = useState<CalendarBooking | null>(
+    null,
+  );
+  const [detailGroup, setDetailGroup] = useState<CalendarItem[] | null>(null);
   const [walkInModal, setWalkInModal] = useState(false);
-  const contextTarget = useRef<string | null>(null);
-
+  const [retry, setRetry] = useState(0);
+  const [refresh, setRefresh] = useState(0);
+  const loadSlots = useCallback(() => setRefresh((value) => value + 1), []);
+  const weekStart = startOfWeek(currentDate);
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
-  const weekStr = ymdLocal(weekStart);
-
-  // Build service category map for color-coded borders
-  const serviceCategoryMap = new Map<string, string>();
-  services.forEach((s) => { if (s.category) serviceCategoryMap.set(s.id, s.category); });
-
-  // B1 perf fix: derive each slot's Zurich calendar day ONCE per `slots` change instead of
-  // re-deriving it inside every cell's filter/some (was month grid = 42 days x slots.length
-  // Intl.format calls per render; week grid = 13 hours x staff.length x slots.length). Every
-  // per-day lookup below reads this map instead of re-scanning `slots`.
-  const slotsByDay = useMemo(() => {
-    const m = new Map<string, AvailabilitySlot[]>();
-    for (const s of slots) {
-      const day = zurichYmd(new Date(s.starts_at));
-      const list = m.get(day);
-      if (list) list.push(s); else m.set(day, [s]);
-    }
-    return m;
-  }, [slots]);
-
-  const loadSlots = useCallback(async () => {
-    // H2 fix: when there is no salon to load, STOP loading (don't early-return while
-    // loading stays true, which was the day/week/month "spins forever" hang). The view
-    // then renders an error state via the `salonReady && !salonId` branch.
-    if (!salonId) { setLoading(false); return; }
-    setLoading(true);
-    setError(false);
-    try {
-      // Round 3: the month grid no longer reads from `slots` at all (see `monthSummary`
-      // below), so this stays the plain week=weekStr fetch for the day/week views only.
-      const res = await fetch(`/api/slots?salon_id=${salonId}&week=${weekStr}`);
-      if (!res.ok) throw new Error(`slots ${res.status}`);
-      const data = await res.json();
-      setSlots(data.slots ?? []);
-      // V3-D334 (overnight T2): error handling per CLAUDE.md.
-    } catch (err) {
-      console.error("[Calendar] loadSlots fetch failed:", err);
-      setError(true);
-      setSlots([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [salonId, weekStr]);
+  const monthActive = viewMode === "month" || mobileView === "monat";
+  const rangeDays = monthActive ? getMonthCalendarDays(currentDate) : weekDays;
+  const from = ymdLocal(rangeDays[0]);
+  const to = ymdLocal(rangeDays[rangeDays.length - 1]);
 
   useEffect(() => {
-    fetch("/api/profile")
-      .then((r) => r.json())
-      .then((p) => {
-        // A staff member has no salon_id (owners only); fall back to staff_salon_id, the
-        // same pattern DashboardLayout.tsx uses to resolve the working salon for staff.
-        const sid = p?.salon_id ?? p?.staff_salon_id ?? null;
-        setSalonId(sid);
-        return Promise.all([
-          fetch(`/api/services?salon_id=${sid}`).then((r) => r.json()),
-          fetch(`/api/staff?salon_id=${sid}`).then((r) => r.json()),
+    const controller = new AbortController();
+    let current = true;
+    setSalonReady(false);
+    setSalonId(null);
+    setError(false);
+    setActionError(false);
+    setStaffFilter("all");
+    setSelectedStaffName("");
+    setStaff([]);
+    setServices([]);
+    setSlots([]);
+    setBookings([]);
+    setDetailSlot(null);
+    setDetailBooking(null);
+    setDetailGroup(null);
+    async function loadContext() {
+      try {
+        const profileResponse = await fetch("/api/profile", {
+          signal: controller.signal,
+        });
+        if (!profileResponse.ok)
+          throw new Error(`profile ${profileResponse.status}`);
+        const profile = await profileResponse.json();
+        const id = profile?.salon_id ?? profile?.staff_salon_id;
+        if (!profile?.id || !id) throw new Error("Active Store unavailable");
+        const responses = await Promise.all([
+          fetch(`/api/services?salon_id=${encodeURIComponent(id)}`, {
+            signal: controller.signal,
+          }),
+          fetch(`/api/staff?salon_id=${encodeURIComponent(id)}`, {
+            signal: controller.signal,
+          }),
         ]);
-      })
-      .then(([svcData, staffData]: [{ services?: RawServiceRow[] }, { staff?: { id: string; name: string }[] }]) => {
-        const rawServices = svcData?.services ?? [];
-        setServices(rawServices.map((s) => ({ id: s.id, name: serviceName(s, locale), category: s.category })));
-        setStaff(staffData?.staff ?? []);
-      })
-      .catch((err) => console.error("[DashboardCalendar] failed to fetch profile/services/staff:", err))
-      // Mark resolution settled either way so the views can leave the spinner state.
-      .finally(() => setSalonReady(true));
-  }, [locale]);
+        if (responses.some((response) => !response.ok))
+          throw new Error("Calendar services or staff unavailable");
+        const [serviceData, staffData] = await Promise.all(
+          responses.map((response) => response.json()),
+        );
+        if (
+          !Array.isArray(serviceData.services) ||
+          !Array.isArray(staffData.staff)
+        )
+          throw new Error("Calendar context incomplete");
+        if (!current) return;
+        setServices(
+          serviceData.services.map((service: RawServiceRow) => ({
+            id: service.id,
+            name: serviceName(service, locale),
+            category: service.category,
+          })),
+        );
+        setStaff(staffData.staff);
+        setSalonId(id);
+      } catch (err) {
+        if (current) {
+          console.error("[Calendar] context load failed:", err);
+          setError(true);
+        }
+      } finally {
+        if (current) setSalonReady(true);
+      }
+    }
+    void loadContext();
+    return () => {
+      current = false;
+      controller.abort();
+    };
+  }, [locale, retry]);
 
-  useEffect(() => { loadSlots(); }, [loadSlots]);
+  useEffect(() => {
+    if (!salonId) return;
+    const controller = new AbortController();
+    let current = true;
+    setLoading(true);
+    setError(false);
+    const params = `salon_id=${encodeURIComponent(salonId)}&calendar=1&from=${from}&to=${to}`;
+    Promise.all([
+      readCalendarPopulation<CalendarSlot>(
+        `/api/slots?${params}`,
+        "slots",
+        controller.signal,
+      ),
+      readCalendarPopulation<CalendarBooking>(
+        `/api/bookings?${params}&limit=100`,
+        "bookings",
+        controller.signal,
+      ),
+    ])
+      .then(([nextSlots, nextBookings]) => {
+        if (!current) return;
+        setSlots(nextSlots);
+        setBookings(nextBookings);
+      })
+      .catch((err) => {
+        if (current) {
+          console.error("[Calendar] interval load failed:", err);
+          setError(true);
+          setSlots([]);
+          setBookings([]);
+        }
+      })
+      .finally(() => {
+        if (current) setLoading(false);
+      });
+    return () => {
+      current = false;
+      controller.abort();
+    };
+  }, [salonId, from, to, refresh]);
 
-  // Realtime slot updates
   useEffect(() => {
     if (!salonId) return;
     const supabase = createBrowserSupabaseClient();
-    // Per-mount-UNIQUE topic: realtime-js channel() dedupes by topic and removeChannel() clears it
-    // only after an async unsubscribe, so React Strict Mode's synchronous mount->cleanup->remount
-    // hands a fixed topic back its still-subscribed channel, and .on(...) then throws "cannot add
-    // postgres_changes callbacks ... after subscribe()". (The old "salon-slots" topic was also
-    // salon-agnostic, so two tabs/salons collided too.) The salon_id filter carries the real scope.
     const channel = supabase
-      .channel(`salon-slots-${salonId}-${Math.random().toString(36).slice(2)}`)
-      .on("postgres_changes", { event: "*", schema: "public", table: "availability_slots", filter: `salon_id=eq.${salonId}` },
-        () => loadSlots())
+      .channel(
+        `salon-calendar-${salonId}-${Math.random().toString(36).slice(2)}`,
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "availability_slots",
+          filter: `salon_id=eq.${salonId}`,
+        },
+        loadSlots,
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "bookings",
+          filter: `salon_id=eq.${salonId}`,
+        },
+        loadSlots,
+      )
       .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      void supabase.removeChannel(channel);
+    };
   }, [salonId, loadSlots]);
 
-  // Month-grid per-day counts, round 3 fix: BOTH the desktop month grid (viewMode==="month")
-  // and the mobile Monat grid (mobileView==="monat") used to fetch ROWS for the visible 42-day
-  // range, which PostgREST silently caps at 1000, so a busy salon's grid only ever covered ~7
-  // of the 42 days (the mobile path made it worse, firing 6 separate week= requests, one per
-  // Monday, each itself row-capped). Neither view ever needed rows, only a per-day count, so both
-  // now share ONE request against slot_day_status_summary (summary=1, counts only, never
-  // truncates the grid) instead. Named `monthSummary` (not `monthDays`, which is already a local
-  // array of Date objects inside the desktop month-view render block below).
-  //
-  // Round 4: carries booked/blocked too (not just total/available) so the desktop month cell can
-  // render its ORIGINAL three-status-dot look unchanged (a rendering change there needs the
-  // owner's approval, which round 3's plain total/available swap did not have).
-  const [monthSummary, setMonthSummary] = useState<Map<string, { total: number; available: number; booked: number; blocked: number }>>(new Map());
-
-  useEffect(() => {
-    const monthActive = viewMode === "month" || mobileView === "monat";
-    if (!monthActive || !salonId) return;
-    let cancelled = false;
-    const gridDays = getMonthCalendarDays(currentDate); // 42 days (6 weeks)
-    const from = ymdLocal(gridDays[0]);
-    const to = ymdLocal(gridDays[gridDays.length - 1]);
-    fetch(`/api/slots?salon_id=${salonId}&from=${from}&to=${to}&summary=1`)
-      .then((r) => r.json())
-      .then((data) => {
-        if (cancelled) return;
-        const m = new Map<string, { total: number; available: number; booked: number; blocked: number }>();
-        for (const row of (data.days ?? []) as { day: string; total: number; available: number; booked: number; blocked: number }[]) {
-          m.set(row.day, { total: row.total, available: row.available, booked: row.booked, blocked: row.blocked });
-        }
-        setMonthSummary(m);
-      })
-      .catch((err) => {
-        console.error("[Calendar] month summary load failed:", err);
-        if (!cancelled) setMonthSummary(new Map());
+  const items = useMemo(() => {
+    const activeBookings = bookings.filter(
+      (booking) => booking.status !== "cancelled",
+    );
+    const backedSlots = new Set(
+      activeBookings.map((booking) => booking.slot_id).filter(Boolean),
+    );
+    return [
+      ...activeBookings.map((booking): CalendarItem => ({
+        ...booking,
+        id: `booking:${booking.id}`,
+        label: booking.customer_name,
+        service:
+          localizedField(booking.services, "name", locale) ||
+          booking.service_name,
+        staffName: booking.staff_name ?? undefined,
+        booking,
+      })),
+      ...slots
+        .filter((slot) => !backedSlots.has(slot.id))
+        .map((slot): CalendarItem => ({
+          ...slot,
+          id: `slot:${slot.id}`,
+          label:
+            slot.status === "blocked"
+              ? t("statusBlocked")
+              : slot.status === "booked"
+                ? t("statusBooked")
+                : t("statusFree"),
+          service:
+            localizedField(slot.services, "name", locale) ||
+            services.find((service) => service.id === slot.service_id)?.name ||
+            "",
+          staffName: slot.staff_members?.name,
+          slot,
+        })),
+    ].sort(
+      (a, b) =>
+        Date.parse(a.starts_at) - Date.parse(b.starts_at) ||
+        a.id.localeCompare(b.id),
+    );
+  }, [bookings, slots, services, locale, t]);
+  const staffOptions = [...staff];
+  for (const item of items)
+    if (
+      item.staff_member_id &&
+      !staffOptions.some((member) => member.id === item.staff_member_id)
+    )
+      staffOptions.push({
+        id: item.staff_member_id,
+        name: item.staffName || t("staffLabel"),
       });
-    return () => { cancelled = true; };
-  }, [viewMode, mobileView, salonId, currentDate]);
-
+  if (
+    staffFilter !== "all" &&
+    staffFilter !== "unassigned" &&
+    !staffOptions.some((member) => member.id === staffFilter)
+  )
+    staffOptions.push({
+      id: staffFilter,
+      name: selectedStaffName || t("staffLabel"),
+    });
+  const filteredItems = items.filter(
+    (item) =>
+      staffFilter === "all" ||
+      (item.staff_member_id ?? "unassigned") === staffFilter,
+  );
+  const itemsForDay = (date: Date) => {
+    const range = zurichCalendarRange(ymdLocal(date), ymdLocal(date))!;
+    return filteredItems.filter(
+      (item) =>
+        Date.parse(item.starts_at) < Date.parse(range.end) &&
+        Date.parse(item.ends_at) > Date.parse(range.start),
+    );
+  };
+  const openItem = (item: CalendarItem) => {
+    setDetailGroup(null);
+    if (item.booking) setDetailBooking(item.booking);
+    else if (item.slot) setDetailSlot(item.slot);
+  };
+  const itemName = (item: CalendarItem) =>
+    `${calendarTime(new Date(item.starts_at), locale)} - ${calendarTime(new Date(item.ends_at), locale)} ${item.label} ${item.service}`;
+  const today = () => setCurrentDate(calendarDate(new Date()));
+  const navigate = (mode: ViewMode, direction: number) => {
+    setCurrentDate((date) =>
+      mode === "month"
+        ? new Date(
+            Date.UTC(
+              date.getUTCFullYear(),
+              date.getUTCMonth() + direction,
+              1,
+              12,
+            ),
+          )
+        : addDays(date, direction * (mode === "week" ? 7 : 1)),
+    );
+  };
+  const mutate = async (url: string, init: RequestInit) => {
+    const response = await fetch(url, init);
+    if (!response.ok)
+      throw new Error(`Calendar action failed (${response.status})`);
+    loadSlots();
+  };
   const deleteSlot = async (id: string) => {
-    await fetch(`/api/slots/${id}`, { method: "DELETE" });
-    setSlots((prev) => prev.filter((s) => s.id !== id));
-    loadSlots();
+    try {
+      await mutate(`/api/slots/${id}`, { method: "DELETE" });
+    } catch (err) {
+      console.error("[Calendar] delete failed:", err);
+      setActionError(true);
+      setError(true);
+    }
   };
-
-  const rescheduleSlot = async (slotId: string, newDate: string, newTime: string) => {
-    await fetch(`/api/slots/${slotId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ date: newDate, start_time: newTime }),
-    });
-    loadSlots();
+  const rescheduleSlot = async (
+    id: string,
+    date: string,
+    startTime: string,
+    staffId: string | null,
+  ) => {
+    try {
+      const slot = slots.find((candidate) => candidate.id === id);
+      if (!slot) throw new Error("Slot unavailable for rescheduling");
+      const [hour, minute] = startTime.split(":").map(Number);
+      const original = new Date(slot.starts_at);
+      // Reassigning without changing the clock preserves its exact instant,
+      // including seconds and the first occurrence of a repeated DST hour.
+      const start =
+        date === zurichYmd(original) &&
+        startTime === calendarWallFormat.format(original)
+          ? original
+          : zurichWallClockToUtc(date, hour, minute);
+      if (
+        zurichYmd(start) !== date ||
+        calendarWallFormat.format(start) !== startTime
+      )
+        throw new Error("Selected local time does not exist");
+      const end = new Date(
+        start.getTime() + Date.parse(slot.ends_at) - Date.parse(slot.starts_at),
+      );
+      await mutate(`/api/slots/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          starts_at: start.toISOString(),
+          ends_at: end.toISOString(),
+          staff_member_id: staffId,
+        }),
+      });
+    } catch (err) {
+      console.error("[Calendar] reschedule failed:", err);
+      setActionError(true);
+      setError(true);
+    }
   };
-
-  // Map staff IDs to colors
-  const staffColorMap = new Map<string, string>();
-  staff.forEach((s, i) => staffColorMap.set(s.id, STAFF_COLORS[i % STAFF_COLORS.length]));
-
-  const blockDay = async (dateStr: string) => {
-    await fetch("/api/slots/bulk", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ salon_id: salonId, block_date: dateStr }),
-    });
-    loadSlots();
+  const blockDay = async (date: string) => {
+    try {
+      await mutate("/api/slots/bulk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ salon_id: salonId, block_date: date }),
+      });
+    } catch (err) {
+      console.error("[Calendar] block day failed:", err);
+      setActionError(true);
+      setError(true);
+    }
   };
-
-  const slotForCell = (dayIso: string, hour: number) =>
-    (slotsByDay.get(dayIso) ?? []).filter((s) => new Date(s.starts_at).getHours() === hour);
-
-  const prevWeek = () => setWeekStart((w) => addDays(w, -7));
-  const nextWeek = () => setWeekStart((w) => addDays(w, 7));
-  const goToday = () => setWeekStart(startOfWeek(new Date()));
-  const goDay = (delta: number) => { const d = addDays(currentDate, delta); setCurrentDate(d); setWeekStart(startOfWeek(d)); };
-
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) return;
-    const slotId = result.draggableId;
-    const destId = result.destination.droppableId; // format: "YYYY-MM-DD:08:staffId"
-    
-    // Parse the dropzone ID
-    const parts = destId.split(":");
-    if (parts.length < 2) return;
-    const dateStr = parts[0];
-    const hourStr = parts[1];
-    const newStaffId = parts[2];
-    
-    const newDate = new Date(`${dateStr}T${hourStr}:00:00`);
-    const slotToMove = slots.find(s => s.id === slotId);
-    if (!slotToMove) return;
-
-    const startObj = new Date(slotToMove.starts_at);
-    const endObj = new Date(slotToMove.ends_at);
-    const durationMs = endObj.getTime() - startObj.getTime();
-    
-    const targetStart = newDate;
-    const targetEnd = new Date(targetStart.getTime() + durationMs);
-    const assignedStaff = newStaffId === "unassigned" ? null : (newStaffId || slotToMove.staff_member_id);
-
-    // Optimistic UI update
-    setSlots(prev => prev.map(s => {
-      if (s.id === slotId) {
-        return {
-          ...s,
-          starts_at: targetStart.toISOString(),
-          ends_at: targetEnd.toISOString(),
-          staff_member_id: assignedStaff,
-        };
-      }
-      return s;
-    }));
-
-    // Trigger API execution
-    fetch(`/api/slots/${slotId}`, {
+    const [, id] = result.draggableId.split(":");
+    const slot = slots.find((candidate) => candidate.id === id);
+    if (!slot || slot.status !== "available") return;
+    const [, stamp, member] = result.destination.droppableId.split("|");
+    const start = new Date(stamp);
+    if (!Number.isFinite(start.getTime())) return;
+    const end = new Date(
+      start.getTime() +
+        new Date(slot.ends_at).getTime() -
+        new Date(slot.starts_at).getTime(),
+    );
+    void mutate(`/api/slots/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ 
-        starts_at: targetStart.toISOString(), 
-        ends_at: targetEnd.toISOString(), 
-        staff_member_id: assignedStaff 
+      body: JSON.stringify({
+        starts_at: start.toISOString(),
+        ends_at: end.toISOString(),
+        staff_member_id: member === "unassigned" ? null : member,
       }),
-    }).catch(() => loadSlots());
+    }).catch((err) => {
+      console.error("[Calendar] drag failed:", err);
+      setActionError(true);
+      setError(true);
+    });
   };
-
-  const slotBg = (s: AvailabilitySlot) => {
-    // Service category left border
-    const catBorder = s.service_id && serviceCategoryMap.has(s.service_id)
-      ? SERVICE_CATEGORY_COLORS[serviceCategoryMap.get(s.service_id)!] ?? ""
-      : "";
-
-    if (s.status === "blocked") return `bg-s-bg-sunken border border-dashed border-s-border ${catBorder}`;
-    if (s.status === "booked") return `bg-s-ink text-white ${catBorder}`;
-    if (s.price_override !== null) return `bg-s-urgency-bg text-s-urgency border-2 border-s-urgency ${catBorder}`; // last-minute
-    // Color by staff member
-    if (s.staff_member_id && staffColorMap.has(s.staff_member_id)) {
-      return staffColorMap.get(s.staff_member_id)! + ` border ${catBorder}`;
-    }
-    return `bg-s-accent-bright/15 border border-s-accent-bright/30 text-s-accent-bright ${catBorder}`;
-  };
-
-  // Mobile agenda block fill by service category (approved skin: pastel, no bars / no last-minute).
-  const CAT_AGENDA_BG: Record<string, string> = {
-    coiffeur: "bg-[#EAEFFE]", barbershop: "bg-[#FFEDD5]", nails: "bg-[#F3E8FF]", spa: "bg-[#E8F5E9]",
-  };
-
-  // H2 render decision (shared by mobile + every desktop view):
-  //   1. show the spinner only while salon resolution is pending OR a slot fetch is in
-  //      flight (both are bounded now: loadSlots always clears loading).
-  //   2. show an error state with Retry when the slot fetch failed OR the salon couldn't
-  //      be resolved (settled with no salonId). Never an indefinite spinner.
-  // When there's simply no data, the grid itself is the empty affordance (clickable
-  // cells), so no full-screen empty state replaces it.
-  const showSpinner = !salonReady || loading;
   const showError = salonReady && (error || !salonId);
-  // Retry covers both failure modes: if the salon is already resolved (slot fetch failed),
-  // loadSlots() refetches directly; we also re-resolve the profile in case salonId was null,
-  // which re-fires the loadSlots effect when the id changes.
-  const retryCalendar = () => {
-    setError(false);
-    if (salonId) loadSlots();
-    setSalonReady(false);
-    fetch("/api/profile")
-      .then((r) => r.json())
-      .then((p) => setSalonId(p?.salon_id ?? p?.staff_salon_id ?? null))
-      .catch((e) => console.error("[Calendar] retry profile failed:", e))
-      .finally(() => setSalonReady(true));
-  };
+  const showSpinner = !salonReady || (loading && !showError);
   const errorState = (
     <ErrorState
       icon={CalendarX}
-      title={t("loadErrorTitle")}
-      message={t("loadErrorMessage")}
+      title={actionError ? common("errorSaving") : t("loadErrorTitle")}
+      message={actionError ? undefined : t("loadErrorMessage")}
       retryLabel={t("retry")}
-      onRetry={retryCalendar}
+      onRetry={() => setRetry((value) => value + 1)}
     />
   );
+  const formatDate = (date: Date, options: Intl.DateTimeFormatOptions) =>
+    date.toLocaleDateString(resolveSwissLocale(locale), {
+      ...options,
+      timeZone: "Europe/Zurich",
+    });
+  const dateLabel = (mode: ViewMode) =>
+    mode === "month"
+      ? formatDate(currentDate, { month: "long", year: "numeric" })
+      : mode === "week"
+        ? `${formatDate(weekStart, { day: "numeric", month: "long" })} - ${formatDate(addDays(weekStart, 6), { day: "numeric", month: "long", year: "numeric" })}`
+        : formatDate(currentDate, {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          });
+  const staffSelect = (
+    <select
+      aria-label={t("staffLabel")}
+      value={staffFilter}
+      onChange={(event) => {
+        setStaffFilter(event.target.value);
+        setSelectedStaffName(
+          staffOptions.find((member) => member.id === event.target.value)
+            ?.name ?? "",
+        );
+      }}
+      className={`${CALENDAR_CONTROL} max-w-full`}
+    >
+      <option value="all">{t("allStaff")}</option>
+      {staffOptions.map((member) => (
+        <option key={member.id} value={member.id}>
+          {member.name}
+        </option>
+      ))}
+      <option value="unassigned">{t("unassigned")}</option>
+    </select>
+  );
+
+  const renderItemRows = (dayItems: CalendarItem[]) => (
+    <div className="space-y-2" data-calendar-agenda>
+      {dayItems.map((item) => (
+        <button
+          key={item.id}
+          data-calendar-event={item.id}
+          aria-label={itemName(item)}
+          onClick={() => openItem(item)}
+          className={`flex min-h-11 w-full items-start gap-4 rounded-btn py-3 text-left ${CALENDAR_FOCUS}`}
+        >
+          <span className="w-24 shrink-0 text-xs tabular-nums text-s-ink-2">
+            {calendarTime(new Date(item.starts_at), locale)} -{" "}
+            {calendarTime(new Date(item.ends_at), locale)}
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm font-semibold text-s-ink">
+              {item.label}
+            </span>
+            <span className="block text-sm text-s-ink-2">{item.service}</span>
+            <span className="block text-xs text-s-ink-2">
+              {staffOptions.find((member) => member.id === item.staff_member_id)
+                ?.name ?? t("unassigned")}
+            </span>
+          </span>
+        </button>
+      ))}
+    </div>
+  );
+
+  const renderAgenda = () => {
+    const dayItems = itemsForDay(currentDate);
+    return dayItems.length ? (
+      renderItemRows(dayItems)
+    ) : (
+      <p className="py-12 text-center text-sm text-s-ink-2">
+        {t("noSlotsThisDay")}
+      </p>
+    );
+  };
+
+  const renderMonth = (mobile: boolean) => (
+    <div
+      className="overflow-hidden rounded-card border border-s-border bg-white"
+      data-calendar-month={mobile ? "mobile" : "desktop"}
+    >
+      <div className="grid grid-cols-7">
+        {weekDays.map((day) => (
+          <div
+            key={ymdLocal(day)}
+            className="py-3 text-center text-xs text-s-ink-2"
+          >
+            {formatDate(day, { weekday: "short" })}
+          </div>
+        ))}
+      </div>
+      <div className="grid grid-cols-7">
+        {getMonthCalendarDays(currentDate).map((day) => {
+          const dayItems = itemsForDay(day);
+          const counts = {
+            booked: dayItems.filter(
+              (item) => item.booking || item.status === "booked",
+            ).length,
+            available: dayItems.filter(
+              (item) => item.slot?.status === "available",
+            ).length,
+            blocked: dayItems.filter((item) => item.slot?.status === "blocked")
+              .length,
+          };
+          return (
+            <button
+              key={ymdLocal(day)}
+              data-calendar-date={ymdLocal(day)}
+              aria-label={formatDate(day, {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+              })}
+              onClick={() => {
+                setCurrentDate(day);
+                if (mobile) setMobileView("tag");
+                else setViewMode("day");
+              }}
+              className={`min-h-11 border-t border-r border-s-border p-2 text-left text-xs tabular-nums ${mobile ? "aspect-square" : "min-h-20"} ${day.getUTCMonth() !== currentDate.getUTCMonth() ? "text-s-ink-2" : "text-s-ink"} ${CALENDAR_FOCUS}`}
+            >
+              <span
+                className={
+                  ymdLocal(day) === zurichYmd(new Date()) ? "font-semibold" : ""
+                }
+              >
+                {day.getUTCDate()}
+              </span>
+              <span className="mt-2 flex flex-wrap gap-1">
+                {counts.booked > 0 && (
+                  <span
+                    className="h-2 w-2 rounded-full bg-s-ink"
+                    title={t("bookedCount", { count: counts.booked })}
+                  />
+                )}
+                {counts.available > 0 && (
+                  <span
+                    className="h-2 w-2 rounded-full bg-s-ink-2"
+                    title={t("availableCount", { count: counts.available })}
+                  />
+                )}
+                {counts.blocked > 0 && (
+                  <span
+                    className="h-2 w-2 rounded-full border border-s-border"
+                    title={t("blockedCount", { count: counts.blocked })}
+                  />
+                )}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+
+  const renderTimeline = () => {
+    const dayItems = itemsForDay(currentDate);
+    const members = staffOptions.filter(
+      (member) => staffFilter === "all" || member.id === staffFilter,
+    );
+    if (
+      (!members.length || dayItems.some((item) => !item.staff_member_id)) &&
+      (staffFilter === "all" || staffFilter === "unassigned")
+    )
+      members.push({ id: "unassigned", name: t("unassigned") });
+    const columns =
+      viewMode === "week"
+        ? weekDays.map((date) => ({
+            id: ymdLocal(date),
+            name: formatDate(date, { weekday: "short", day: "numeric" }),
+            date,
+            member: staffFilter,
+          }))
+        : members.map((member) => ({
+            ...member,
+            date: currentDate,
+            member: member.id,
+          }));
+    const positioned = columns.map((column) => {
+      const day = ymdLocal(column.date);
+      const range = zurichCalendarRange(day, day)!;
+      const dayStart = new Date(range.start).getTime();
+      const dayEnd = new Date(range.end).getTime();
+      const entries = itemsForDay(column.date)
+        .filter(
+          (item) =>
+            viewMode === "week" ||
+            (item.staff_member_id ?? "unassigned") === column.member,
+        )
+        .map((item) => ({
+          item,
+          start:
+            (Math.max(dayStart, new Date(item.starts_at).getTime()) -
+              dayStart) /
+            60000,
+          end:
+            (Math.min(dayEnd, new Date(item.ends_at).getTime()) - dayStart) /
+            60000,
+        }));
+      const groups: {
+        entries: typeof entries;
+        start: number;
+        end: number;
+        hitStart: number;
+        hitEnd: number;
+      }[] = [];
+      for (const entry of entries) {
+        const last = groups[groups.length - 1];
+        const hitStart = Math.min(
+          entry.start,
+          (dayEnd - dayStart) / 60000 - 44 / (88 / 60),
+        );
+        const hitEnd = Math.max(entry.end, hitStart + 44 / (88 / 60));
+        if (last && hitStart < last.hitEnd) {
+          last.entries.push(entry);
+          last.hitStart = Math.min(last.hitStart, hitStart);
+          last.end = Math.max(last.end, entry.end);
+          last.hitEnd = Math.max(last.hitEnd, hitEnd);
+        } else
+          groups.push({
+            entries: [entry],
+            start: entry.start,
+            end: entry.end,
+            hitStart,
+            hitEnd,
+          });
+      }
+      return { column, entries, groups, dayStart, dayEnd };
+    });
+    const allEntries = positioned.flatMap((column) => column.entries);
+    const startMinute =
+      Math.floor(
+        Math.min(8 * 60, ...allEntries.map((entry) => entry.start)) / 60,
+      ) * 60;
+    const endMinute =
+      Math.ceil(
+        Math.max(20 * 60, ...allEntries.map((entry) => entry.end)) / 60,
+      ) * 60;
+    // Use a bounded 88px/hour overview (30 minutes is 44px). Separate 44px targets are clustered
+    // when their hit ranges intersect; the true time spans remain proportional.
+    // Every appointment is individually selectable in the existing modal rows.
+    const pixelsPerMinute = 88 / 60;
+    const height = (endMinute - startMinute) * pixelsPerMinute;
+    const ticks = Array.from(
+      { length: (endMinute - startMinute) / 60 + 1 },
+      (_, index) => startMinute + index * 60,
+    );
+    return (
+      <div
+        className="overflow-x-auto rounded-card border border-s-border bg-white"
+        data-calendar-timeline={viewMode}
+      >
+        <div style={{ minWidth: 56 + columns.length * 160 }}>
+          <div className="flex border-b border-s-border">
+            <div className="w-14 shrink-0" />
+            {columns.map((column) => (
+              <div
+                key={column.id}
+                className="min-w-0 flex-1 border-l border-s-border px-2 py-4 text-center"
+              >
+                {viewMode === "day" && (
+                  <span className="mx-auto flex h-8 w-8 items-center justify-center rounded-full bg-s-bg-sunken text-xs font-semibold text-s-ink">
+                    {column.name.charAt(0)}
+                  </span>
+                )}
+                <span className="mt-1 block truncate text-sm font-semibold text-s-ink">
+                  {column.name}
+                </span>
+                {viewMode === "week" && (
+                  <button
+                    onClick={() => void blockDay(ymdLocal(column.date))}
+                    aria-label={`${t("blockDay")} ${column.name}`}
+                    className={`mx-auto flex h-11 w-11 items-center justify-center text-s-ink-2 ${CALENDAR_FOCUS}`}
+                  >
+                    <Lock size={14} />
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+          <div className="flex" style={{ height }}>
+            <div className="relative w-14 shrink-0" aria-hidden>
+              {viewMode === "day" &&
+                ticks.map((minute) => (
+                  <span
+                    key={minute}
+                    className="absolute right-2 text-xs tabular-nums text-s-ink-2"
+                    style={{ top: (minute - startMinute) * pixelsPerMinute }}
+                  >
+                    {calendarTime(
+                      new Date((positioned[0]?.dayStart ?? 0) + minute * 60000),
+                      locale,
+                    )}
+                  </span>
+                ))}
+            </div>
+            {positioned.map(({ column, entries, groups, dayStart }) => (
+              <div
+                key={column.id}
+                className="relative min-w-0 flex-1 border-l border-s-border"
+                data-calendar-column={column.id}
+              >
+                {ticks.slice(0, -1).map((minute) => {
+                  const instant = new Date(dayStart + minute * 60000);
+                  const wall = calendarTime(instant, "en");
+                  const localParts = calendarWallFormat.format(instant);
+                  const [hour, minutes] = localParts.split(":").map(Number);
+                  const createSupported =
+                    zurichYmd(instant) === ymdLocal(column.date) &&
+                    zurichWallClockToUtc(
+                      ymdLocal(column.date),
+                      hour,
+                      minutes,
+                    ).getTime() === instant.getTime();
+                  const member =
+                    column.member === "all" ? "unassigned" : column.member;
+                  const dropId = `${ymdLocal(column.date)}|${instant.toISOString()}|${member}`;
+                  return (
+                    <Droppable key={minute} droppableId={dropId}>
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.droppableProps}
+                          className="absolute inset-x-0 border-t border-s-border"
+                          style={{
+                            top: (minute - startMinute) * pixelsPerMinute,
+                            height: 60 * pixelsPerMinute,
+                          }}
+                        >
+                          <button
+                            aria-label={`${t("createSlotTitle")} ${column.name} ${wall}`}
+                            disabled={!createSupported}
+                            onClick={() =>
+                              setCreateModal({
+                                date: ymdLocal(column.date),
+                                time: localParts,
+                                staffId: member === "unassigned" ? "" : member,
+                              })
+                            }
+                            className={`h-full w-full hover:bg-s-bg-sunken disabled:cursor-not-allowed ${CALENDAR_FOCUS}`}
+                          />
+                          {viewMode === "week" && (
+                            <span
+                              aria-hidden
+                              className="pointer-events-none absolute left-1 top-0 text-xs tabular-nums text-s-ink-2"
+                            >
+                              {wall}
+                            </span>
+                          )}
+                          {groups
+                            .filter(
+                              (group) =>
+                                Math.floor(group.hitStart / 60) * 60 === minute,
+                            )
+                            .map((group, index) => {
+                              const item = group.entries[0].item;
+                              const grouped =
+                                group.entries.length > 1 ||
+                                (group.end - group.start) * pixelsPerMinute <
+                                  44;
+                              if (grouped)
+                                return (
+                                  <button
+                                    key={item.id}
+                                    data-calendar-group={group.entries
+                                      .map((entry) => entry.item.id)
+                                      .join(" ")}
+                                    aria-label={group.entries
+                                      .map((entry) => itemName(entry.item))
+                                      .join("; ")}
+                                    onClick={() =>
+                                      setDetailGroup(
+                                        group.entries.map(
+                                          (entry) => entry.item,
+                                        ),
+                                      )
+                                    }
+                                    className={`absolute inset-x-0 z-10 overflow-hidden rounded-input px-2 text-left text-s-ink ${CALENDAR_FOCUS}`}
+                                    style={{
+                                      top:
+                                        (group.hitStart - minute) *
+                                        pixelsPerMinute,
+                                      height:
+                                        (group.hitEnd - group.hitStart) *
+                                        pixelsPerMinute,
+                                    }}
+                                  >
+                                    {group.entries.map((entry) => (
+                                      <span
+                                        key={entry.item.id}
+                                        data-calendar-time-span={entry.item.id}
+                                        aria-hidden
+                                        className="pointer-events-none absolute inset-x-0 bg-s-bg-sunken"
+                                        style={{
+                                          top:
+                                            (entry.start - group.hitStart) *
+                                            pixelsPerMinute,
+                                          height:
+                                            (entry.end - entry.start) *
+                                            pixelsPerMinute,
+                                        }}
+                                      />
+                                    ))}
+                                    <span className="relative block text-xs tabular-nums">
+                                      {calendarTime(
+                                        new Date(
+                                          dayStart + group.start * 60000,
+                                        ),
+                                        locale,
+                                      )}{" "}
+                                      -{" "}
+                                      {calendarTime(
+                                        new Date(dayStart + group.end * 60000),
+                                        locale,
+                                      )}
+                                    </span>
+                                    <span className="relative block truncate text-sm font-semibold">
+                                      {group.entries.length === 1
+                                        ? item.label
+                                        : t("detailsTitle")}
+                                    </span>
+                                  </button>
+                                );
+                              const { start, end } = group.entries[0];
+                              return (
+                                <Draggable
+                                  key={item.id}
+                                  draggableId={`${item.id}:${column.id}`}
+                                  disableInteractiveElementBlocking
+                                  index={index}
+                                  isDragDisabled={
+                                    !item.slot ||
+                                    item.slot.status !== "available"
+                                  }
+                                >
+                                  {(drag) => (
+                                    <button
+                                      ref={drag.innerRef}
+                                      {...drag.draggableProps}
+                                      {...drag.dragHandleProps}
+                                      data-calendar-event={item.id}
+                                      aria-label={itemName(item)}
+                                      title={itemName(item)}
+                                      onClick={() => openItem(item)}
+                                      className={`absolute inset-x-0 z-10 overflow-hidden rounded-input bg-s-bg-sunken px-2 text-left text-s-ink ${item.status === "blocked" ? "border border-dashed border-s-border" : ""} ${CALENDAR_FOCUS}`}
+                                      style={{
+                                        top: (start - minute) * pixelsPerMinute,
+                                        height: (end - start) * pixelsPerMinute,
+                                        ...drag.draggableProps.style,
+                                      }}
+                                    >
+                                      <span className="block truncate text-xs tabular-nums">
+                                        {calendarTime(
+                                          new Date(item.starts_at),
+                                          locale,
+                                        )}{" "}
+                                        -{" "}
+                                        {calendarTime(
+                                          new Date(item.ends_at),
+                                          locale,
+                                        )}
+                                      </span>
+                                      <span className="block truncate text-sm font-semibold">
+                                        {item.label}
+                                      </span>
+                                      {(end - start) * pixelsPerMinute >=
+                                        64 && (
+                                        <span className="block truncate text-sm text-s-ink-2">
+                                          {item.service}
+                                        </span>
+                                      )}
+                                    </button>
+                                  )}
+                                </Draggable>
+                              );
+                            })}
+                          <div className="hidden">{provided.placeholder}</div>
+                        </div>
+                      )}
+                    </Droppable>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <DashboardLayout>
       <DragDropContext onDragEnd={onDragEnd}>
-      {createModal && salonId && (
-        <SlotCreateModal
-          date={createModal.date}
-          startTime={createModal.time}
-          services={services}
-          staff={staff}
-          onClose={() => setCreateModal(null)}
-          onCreated={loadSlots}
-        />
-      )}
-      {bulkModal && salonId && (
-        <BulkCreateModal
-          services={services}
-          staff={staff}
-          salonId={salonId}
-          onClose={() => setBulkModal(false)}
-          onCreated={loadSlots}
-        />
-      )}
-      {detailSlot && (
-        <SlotDetailModal
-          slot={detailSlot}
-          staff={staff}
-          onClose={() => setDetailSlot(null)}
-          onReschedule={rescheduleSlot}
-          onDelete={deleteSlot}
-        />
-      )}
-
-      {/* Walk-in modal */}
-      {walkInModal && salonId && (
-        <WalkInModal
-          salonId={salonId}
-          services={services}
-          staff={staff}
-          onClose={() => setWalkInModal(false)}
-          onCreated={loadSlots}
-        />
-      )}
-
-      {/* ═══ MOBILE (lg:hidden) — Tag / Woche / Monat in the approved skin ═══ */}
-      <div className="lg:hidden">
-        {(() => {
-          // ── Agenda render (reused by Tag + Woche-selected-day). ──
-          const renderAgenda = (forDate: Date) => {
-            const dayIso = ymdLocal(forDate);
-            const daySlots = [...(slotsByDay.get(dayIso) ?? [])].sort((a, b) => a.starts_at.localeCompare(b.starts_at));
-            if (daySlots.length === 0) return <div className="text-center py-12 text-s-ink-2 text-sm">{t("noSlotsThisDay")}</div>;
-            return (
-              <div className="rounded-[16px] border border-s-border bg-white p-3 space-y-2">
-                {daySlots.map((s) => {
-                  const time = new Date(s.starts_at).toLocaleTimeString(resolveSwissLocale(locale), { hour: "2-digit", minute: "2-digit" });
-                  const svc = services.find((sv) => sv.id === s.service_id)?.name;
-                  const stf = staff.find((st) => st.id === s.staff_member_id)?.name?.split(" ")[0];
-                  const cat = s.service_id ? serviceCategoryMap.get(s.service_id) : undefined;
-                  let bg = "bg-[#EAEFFE]", lab = svc ?? t("statusBooked"), labCls = "text-s-ink";
-                  let det: string | undefined = stf;
-                  if (s.status === "blocked") { bg = "bg-s-bg-sunken"; lab = t("statusBlocked"); labCls = "text-s-ink-2"; det = undefined; }
-                  else if (s.status === "available") { bg = "bg-s-success-bg"; lab = t("statusFree"); labCls = "text-s-success"; det = undefined; }
-                  else { bg = (cat && CAT_AGENDA_BG[cat]) || "bg-[#EAEFFE]"; }
-                  return (
-                    <button key={s.id} onClick={() => setDetailSlot(s)} className="w-full flex items-stretch gap-3 text-left">
-                      <span className="font-heading font-semibold text-[12px] text-s-ink-2 w-[40px] shrink-0 pt-3 tabular-nums">{time}</span>
-                      <span className={`flex-1 rounded-[12px] px-3 py-2.5 min-h-[44px] flex flex-col justify-center ${bg}`}>
-                        <span className={`font-heading font-semibold text-[13.5px] ${labCls}`}>{lab}</span>
-                        {det && <span className="text-[12px] text-s-ink-2 mt-0.5">{det}</span>}
-                      </span>
-                    </button>
-                  );
+        {createModal && salonId && (
+          <SlotCreateModal
+            date={createModal.date}
+            startTime={createModal.time}
+            initialStaffId={createModal.staffId}
+            services={services}
+            staff={staff}
+            onClose={() => setCreateModal(null)}
+            onCreated={loadSlots}
+          />
+        )}
+        {bulkModal && salonId && (
+          <BulkCreateModal
+            services={services}
+            staff={staff}
+            salonId={salonId}
+            onClose={() => setBulkModal(false)}
+            onCreated={loadSlots}
+          />
+        )}
+        {detailSlot && (
+          <SlotDetailModal
+            slot={detailSlot}
+            staff={staffOptions}
+            onClose={() => setDetailSlot(null)}
+            onReschedule={rescheduleSlot}
+            onDelete={deleteSlot}
+          />
+        )}
+        {walkInModal && salonId && (
+          <WalkInModal
+            salonId={salonId}
+            services={services}
+            staff={staff}
+            onClose={() => setWalkInModal(false)}
+            onCreated={loadSlots}
+          />
+        )}
+        {detailGroup && (
+          <Modal
+            isOpen
+            onOpenChange={(open) => {
+              if (!open) setDetailGroup(null);
+            }}
+            size="md"
+          >
+            <ModalHeader title={t("detailsTitle")} onClose={() => setDetailGroup(null)} closeAriaLabel={t("cancel")} />
+            <ModalBody>{renderItemRows(detailGroup)}</ModalBody>
+          </Modal>
+        )}
+        {detailBooking && (
+          <Modal
+            isOpen
+            onOpenChange={(open) => {
+              if (!open) setDetailBooking(null);
+            }}
+            size="sm"
+          >
+            <ModalHeader title={t("detailsTitle")} onClose={() => setDetailBooking(null)} closeAriaLabel={t("cancel")} />
+            <ModalBody>
+              <p className="text-sm font-semibold text-s-ink">
+                {detailBooking.customer_name}
+              </p>
+              <p className="text-sm text-s-ink-2">
+                {localizedField(detailBooking.services, "name", locale) ||
+                  detailBooking.service_name}
+              </p>
+              <p className="text-sm text-s-ink-2">{detailBooking.staff_name}</p>
+              <p className="mt-4 text-sm tabular-nums">
+                {formatDate(new Date(detailBooking.starts_at), {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
                 })}
-              </div>
-            );
-          };
-
-          const isTodayDate = (d: Date) => d.toDateString() === new Date().toDateString();
-          const goPrev = () => mobileView === "monat" ? (() => { const d = new Date(currentDate); d.setMonth(d.getMonth() - 1); setCurrentDate(d); })() : goDay(-1);
-          const goNext = () => mobileView === "monat" ? (() => { const d = new Date(currentDate); d.setMonth(d.getMonth() + 1); setCurrentDate(d); })() : goDay(1);
-          const goTodayMobile = () => { const t = new Date(); setCurrentDate(t); setWeekStart(startOfWeek(t)); };
-          const headerLabel = mobileView === "monat"
-            ? currentDate.toLocaleDateString(resolveSwissLocale(locale), { month: "long", year: "numeric" })
-            : currentDate.toLocaleDateString(resolveSwissLocale(locale), { weekday: "long", day: "numeric", month: "long" });
-
-          // Week strip days (Mon–Sun of the selected week).
-          const stripDays = Array.from({ length: 7 }, (_, i) => addDays(startOfWeek(currentDate), i));
-
-          return (
-            <>
-              {/* Header: chevrons + label + Heute */}
-              <div className="flex items-center gap-2 mb-3">
-                <button onClick={goPrev} aria-label={t("previous")} className="w-9 h-9 grid place-items-center text-s-ink"><ChevronLeft size={18} strokeWidth={1.9} /></button>
-                <span className="flex-1 font-heading font-bold text-[17px] tracking-[-0.01em] text-s-ink">{headerLabel}</span>
-                <button onClick={goTodayMobile} className="text-[12px] font-semibold text-s-accent">{t("today")}</button>
-                <button onClick={goNext} aria-label={t("next")} className="w-9 h-9 grid place-items-center text-s-ink"><ChevronRight size={18} strokeWidth={1.9} /></button>
-              </div>
-
-              {/* Segmented control (Tag / Woche / Monat) */}
-              <div className="flex bg-s-bg-sunken rounded-full p-[3px] gap-[2px] mb-3.5">
-                {([["tag", t("viewDay")], ["woche", t("viewWeek")], ["monat", t("viewMonth")]] as const).map(([key, lab]) => (
-                  <button key={key} onClick={() => setMobileView(key)}
-                    className={["flex-1 font-heading font-semibold text-[12.5px] py-[7px] rounded-full transition-colors",
-                      mobileView === key ? "bg-white text-s-ink shadow-[0_1px_3px_rgba(0,0,0,0.09)]" : "text-s-ink-2"].join(" ")}>
-                    {lab}
-                  </button>
-                ))}
-              </div>
-
-              {/* Week date-strip (Tag shows it for context; Woche uses it to pick a day) */}
-              {mobileView !== "monat" && (
-                <div className="flex gap-1.5 overflow-x-auto scrollbar-hide mb-3.5">
-                  {stripDays.map((d, i) => {
-                    const dIso = ymdLocal(d);
-                    const on = d.toDateString() === currentDate.toDateString();
-                    const has = slotsByDay.has(dIso);
-                    return (
-                      <button key={i} onClick={() => { setCurrentDate(d); setWeekStart(startOfWeek(d)); }}
-                        className={["w-[46px] shrink-0 rounded-[13px] py-2 text-center border transition-colors",
-                          on ? "bg-s-ink border-s-ink" : "bg-white border-s-border"].join(" ")}>
-                        <div className={`text-[12px] font-semibold ${on ? "text-white/60" : "text-s-ink-2"}`}>{DAYS_LABEL[i].toUpperCase()}</div>
-                        <div className={`font-heading font-semibold text-[16px] mt-0.5 ${on ? "text-white" : "text-s-ink"}`}>{d.getDate()}</div>
-                        {has
-                          ? <div className={`w-[5px] h-[5px] rounded-full mx-auto mt-1 ${on ? "bg-white" : "bg-s-accent"}`} />
-                          : <div className="h-[5px] mt-1" />}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-
-              {/* Body by view */}
-              {showSpinner ? (
-                <div className="flex justify-center py-12"><Spinner size="lg" /></div>
-              ) : showError ? (
-                errorState
-              ) : mobileView === "monat" ? (
-                <div className="rounded-[16px] border border-s-border bg-white p-3.5">
-                  <div className="grid grid-cols-7 gap-1">
-                    {["M", "D", "M", "D", "F", "S", "S"].map((h, i) => (
-                      <div key={i} className="text-[12px] text-s-ink-2 text-center font-semibold pb-1">{h}</div>
-                    ))}
-                    {getMonthCalendarDays(currentDate).map((d, i) => {
-                      const dIso = ymdLocal(d);
-                      const out = d.getMonth() !== currentDate.getMonth();
-                      const today = isTodayDate(d);
-                      const count = monthSummary.get(dIso)?.total ?? 0;
-                      const dots = Math.min(count, 3);
-                      return (
-                        <button key={i}
-                          onClick={() => { setCurrentDate(d); setWeekStart(startOfWeek(d)); setMobileView("tag"); }}
-                          className={["aspect-square rounded-[10px] flex flex-col items-center justify-center gap-[3px] font-heading font-semibold text-[12.5px] transition-colors",
-                            today ? "bg-s-ink text-white" : out ? "bg-transparent text-s-ink-2" : "bg-s-bg-sunken text-s-ink"].join(" ")}>
-                          {d.getDate()}
-                          <span className="flex gap-[2px] h-1">
-                            {Array.from({ length: dots }).map((_, k) => (
-                              <i key={k} className={`w-1 h-1 rounded-full ${today ? "bg-white" : "bg-s-accent"}`} />
-                            ))}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              ) : (
-                renderAgenda(currentDate)
-              )}
-
-              {/* Slot / Walk-in / Plan — unchanged, kept under the views */}
-              <div className="flex gap-2 mt-3">
-                <button onClick={() => setCreateModal({ date: ymdLocal(currentDate), time: "09:00" })} className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-[12px] bg-s-ink text-white font-heading font-semibold text-[13.5px] py-2.5"><Plus size={15} strokeWidth={1.9} /> {t("slot")}</button>
-                <button onClick={() => setWalkInModal(true)} className="inline-flex items-center justify-center rounded-[12px] bg-white border border-s-border text-s-ink font-heading font-semibold text-[13.5px] px-4 py-2.5">{t("walkIn")}</button>
-                <button onClick={() => setBulkModal(true)} className="inline-flex items-center justify-center rounded-[12px] bg-white border border-s-border text-s-ink font-heading font-semibold text-[13.5px] px-4 py-2.5">{t("plan")}</button>
-              </div>
-            </>
-          );
-        })()}
-      </div>
-
-      {/* ═══ DESKTOP (toolbar + grids + legend) — unchanged, lg+ only ═══ */}
-      <div className="hidden lg:block">
-      {/* Header */}
-      <div className="mb-5 flex items-center justify-between gap-3 flex-wrap">
-        <div className="flex items-center gap-2">
-          <button onClick={() => {
-            if (viewMode === "week") setWeekStart((w) => addDays(w, -7));
-            else if (viewMode === "day") { setCurrentDate((d) => addDays(d, -1)); setWeekStart(startOfWeek(addDays(currentDate, -1))); }
-            else { const d = new Date(currentDate); d.setMonth(d.getMonth() - 1); setCurrentDate(d); setWeekStart(startOfWeek(d)); }
-          }} className="p-2 rounded-btn border border-s-border hover:border-s-accent-bright transition-colors">
-            <ChevronLeft size={16} strokeWidth={1.9} className="text-s-ink" />
-          </button>
-          <button onClick={() => { const today = new Date(); setCurrentDate(today); setWeekStart(startOfWeek(today)); }}
-            className="px-3 py-1.5 rounded-btn border border-s-border text-sm text-s-ink hover:border-s-accent-bright transition-colors">
-            {t("today")}
-          </button>
-          <button onClick={() => {
-            if (viewMode === "week") setWeekStart((w) => addDays(w, 7));
-            else if (viewMode === "day") { setCurrentDate((d) => addDays(d, 1)); setWeekStart(startOfWeek(addDays(currentDate, 1))); }
-            else { const d = new Date(currentDate); d.setMonth(d.getMonth() + 1); setCurrentDate(d); setWeekStart(startOfWeek(d)); }
-          }} className="p-2 rounded-btn border border-s-border hover:border-s-accent-bright transition-colors">
-            <ChevronRight size={16} strokeWidth={1.9} className="text-s-ink" />
-          </button>
-          <span className="text-sm font-medium text-s-ink ml-2">
-            {viewMode === "day"
-              ? currentDate.toLocaleDateString(resolveSwissLocale(locale), { weekday: "long", day: "numeric", month: "long", year: "numeric" })
-              : viewMode === "month"
-              ? currentDate.toLocaleDateString(resolveSwissLocale(locale), { month: "long", year: "numeric" })
-              : `${weekStart.toLocaleDateString(resolveSwissLocale(locale), { day: "numeric", month: "long" })} bis ${addDays(weekStart, 6).toLocaleDateString(resolveSwissLocale(locale), { day: "numeric", month: "long", year: "numeric" })}`
-            }
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          {/* View toggle */}
-          <div className="flex rounded-btn border border-s-border overflow-hidden">
-            {(["day", "week", "month"] as ViewMode[]).map((mode) => (
-              <button key={mode} onClick={() => setViewMode(mode)} // mockup-ok: C2 fix, locked TabPill treatment (approved public/_mockups/fixes-refined)
-                className={`px-3 py-1.5 text-xs font-medium transition-colors ${viewMode === mode ? "bg-s-bg-sunken text-s-ink font-semibold" : "text-s-ink-2 hover:bg-s-accent-bright/5"}`}>
-                {mode === "day" ? t("viewDay") : mode === "week" ? t("viewWeek") : t("viewMonth")}
+              </p>
+              <p className="text-sm tabular-nums">
+                {calendarTime(new Date(detailBooking.starts_at), locale)} -{" "}
+                {calendarTime(new Date(detailBooking.ends_at), locale)}
+              </p>
+            </ModalBody>
+            <ModalFooter>
+              <a
+                href={`/${locale}/dashboard/bookings`}
+                className={`inline-flex min-h-11 items-center rounded-btn bg-s-ink px-4 text-sm font-semibold text-white ${CALENDAR_FOCUS}`}
+              >
+                {t("manageBookings")}
+              </a>
+            </ModalFooter>
+          </Modal>
+        )}
+        <div className="lg:hidden" data-calendar-mobile>
+          <div className="mb-4 flex items-center gap-2">
+            <button
+              onClick={() =>
+                navigate(
+                  mobileView === "monat"
+                    ? "month"
+                    : mobileView === "woche"
+                      ? "week"
+                      : "day",
+                  -1,
+                )
+              }
+              aria-label={t("previous")}
+              className={`h-11 w-11 shrink-0 text-s-ink ${CALENDAR_FOCUS}`}
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <span className="min-w-0 flex-1 text-sm font-semibold text-s-ink">
+              {dateLabel(mobileView === "monat" ? "month" : "day")}
+            </span>
+            <button
+              onClick={today}
+              className={`h-11 px-2 text-sm font-semibold text-s-ink ${CALENDAR_FOCUS}`}
+            >
+              {t("today")}
+            </button>
+            <button
+              onClick={() =>
+                navigate(
+                  mobileView === "monat"
+                    ? "month"
+                    : mobileView === "woche"
+                      ? "week"
+                      : "day",
+                  1,
+                )
+              }
+              aria-label={t("next")}
+              className={`h-11 w-11 shrink-0 text-s-ink ${CALENDAR_FOCUS}`}
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
+          <div className="mb-4 flex overflow-hidden rounded-btn border border-s-border">
+            {(
+              [
+                ["tag", "viewDay"],
+                ["woche", "viewWeek"],
+                ["monat", "viewMonth"],
+              ] as const
+            ).map(([mode, key]) => (
+              <button
+                key={mode}
+                aria-pressed={mobileView === mode}
+                onClick={() => setMobileView(mode)}
+                className={`h-11 flex-1 text-sm ${mobileView === mode ? "bg-s-bg-sunken font-semibold text-s-ink" : "text-s-ink-2"} ${CALENDAR_FOCUS}`}
+              >
+                {t(key)}
               </button>
             ))}
           </div>
-          <button onClick={() => setWalkInModal(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-border text-sm text-s-ink-2 hover:border-s-accent-bright hover:text-s-accent-bright transition-colors">
-            <UserPlus size={14} strokeWidth={1.6} /> {t("walkIn")}
-          </button>
-          <button onClick={() => setBulkModal(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-border text-sm text-s-ink-2 hover:border-s-accent-bright hover:text-s-accent-bright transition-colors">
-            {t("weekSchedule")}
-          </button>
-          <button onClick={() => setCreateModal({ date: ymdLocal(new Date()), time: "09:00" })}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-btn bg-s-ink text-white text-sm font-medium">
-            <Plus size={14} strokeWidth={1.6} /> {t("slot")}
-          </button>
-        </div>
-      </div>
-
-      {/* H2: couldn't resolve the salon or the slot fetch failed → one error state for the
-          whole desktop view area (instead of an indefinite spinner inside each view). */}
-      {showError && errorState}
-
-      {/* ═══ WEEK VIEW ═══ */}
-      {!showError && viewMode === "week" && (
-        <div className="overflow-x-auto rounded-[12px] border border-s-ink/5 bg-white shadow-warm-md">
-          <div className="min-w-[600px]">
-            <div className="grid grid-cols-8 border-b border-s-ink/5">
-              <div className="py-3 px-2 text-xs text-s-ink/30" />
-              {weekDays.map((d, i) => {
-                const isToday = d.toDateString() === new Date().toDateString();
-                const dateStr = ymdLocal(d);
-                return (
-                  <div key={i} className="py-3 px-2 text-center border-l border-s-ink/5">
-                    <p className={`text-xs font-medium ${isToday ? "text-s-accent-bright" : "text-s-ink-2"}`}>{DAYS_LABEL[i]}</p>
-                    <button onClick={() => { setCurrentDate(d); setViewMode("day"); }}
-                      className={`text-sm font-bold mt-0.5 hover:text-s-accent-bright transition-colors ${isToday ? "text-s-accent-bright" : "text-s-ink"}`}>
-                      {d.getDate()}
-                    </button>
-                    <button onClick={() => blockDay(dateStr)} title={t("blockDay")}
-                      className="mt-1 w-4 h-4 flex items-center justify-center mx-auto text-s-ink/20 hover:text-s-accent-bright transition-colors">
-                      <Lock size={10} />
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
-            {showSpinner ? (
-              <div className="flex justify-center py-10"><Spinner size="sm" /></div>
-            ) : (
-              Array.from({ length: 13 }, (_, rowIdx) => {
-                const hour = rowIdx + 8;
-                return (
-                  <div key={hour} className="grid grid-cols-8 border-b border-s-ink/5 min-h-[40px]">
-                    <div className="py-1 px-2 text-[12px] text-s-ink/30 text-right pr-3 pt-2">
-                      {`${String(hour).padStart(2, "0")}:00`}
-                    </div>
-                    {weekDays.map((d, dayIdx) => {
-                      const dateStr = ymdLocal(d);
-                      const dropId = `${dateStr}:${String(hour).padStart(2, "0")}:unassigned`;
-                      const cellSlots = slotForCell(dateStr, hour);
-                      return (
-                        <Droppable key={dayIdx} droppableId={dropId}>
-                          {(provided, snapshot) => (
-                            <div 
-                              ref={provided.innerRef}
-                              {...provided.droppableProps}
-                              className={`border-l border-s-ink/5 p-0.5 cursor-pointer transition-colors group relative ${snapshot.isDraggingOver ? "bg-s-accent-bright/10" : "hover:bg-s-accent-bright/5"}`}
-                              onClick={() => setCreateModal({ date: dateStr, time: `${String(hour).padStart(2, "0")}:00` })}>
-                              {cellSlots.map((s, idx) => {
-                                const staffMember = staff.find((st) => st.id === s.staff_member_id);
-                                return (
-                                  <Draggable key={s.id} draggableId={s.id} index={idx} isDragDisabled={s.status !== "available"}>
-                                    {(dragProvided, dragSnapshot) => (
-                                      <div
-                                        ref={dragProvided.innerRef}
-                                        {...dragProvided.draggableProps}
-                                        {...dragProvided.dragHandleProps}
-                                        onClick={(e) => { e.stopPropagation(); setDetailSlot(s); }}
-                                        className={`relative rounded text-[12px] px-1 py-0.5 mb-0.5 cursor-pointer group/slot ${slotBg(s)} ${dragSnapshot.isDragging ? "shadow-2xl z-50 scale-105" : ""}`}
-                                        style={{ ...dragProvided.draggableProps.style }}
-                                        title={staffMember ? staffMember.name : undefined}>
-                                        {staffMember ? staffMember.name.split(" ")[0] : s.status === "booked" ? t("statusBooked") : s.status === "blocked" ? t("statusBlocked") : t("statusFree")}
-                                        <button onClick={(e) => { e.stopPropagation(); deleteSlot(s.id); }}
-                                          className="absolute top-0 right-0 opacity-100 md:opacity-0 group-hover/slot:md:opacity-100 p-0.5 text-current"><X size={8} /></button>
-                                      </div>
-                                    )}
-                                  </Draggable>
-                                );
-                              })}
-                              {provided.placeholder}
-                              {cellSlots.length === 0 && !snapshot.isDraggingOver && (
-                                <div className="opacity-100 md:opacity-0 group-hover:md:opacity-100 text-[12px] text-s-accent-bright absolute inset-0 flex items-center justify-center"><Plus size={10} /></div>
-                              )}
-                            </div>
-                          )}
-                        </Droppable>
-                      );
-                    })}
-                  </div>
-                );
-              })
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* ═══ DAY VIEW ═══ */}
-      {!showError && viewMode === "day" && (
-        <div className="rounded-[12px] border border-s-ink/5 bg-white shadow-warm-md">
-          {/* Staff column headers */}
-          <div className="grid border-b border-s-ink/5" style={{ gridTemplateColumns: `60px repeat(${Math.max(staff.length, 1)}, 1fr)` }}>
-            <div className="py-3 px-2 text-xs text-s-ink/30" />
-            {staff.length > 0 ? staff.map((s, i) => (
-              <div key={s.id} className="py-3 px-2 text-center border-l border-s-ink/5">
-                {/* mockup-ok: C1 punch fix, literal STAFF_TEXT_COLORS index (was a runtime-built "bg-".replace("text-") string that Tailwind's scanner never sees, so it compiled to nothing) */}
-                <p className={`text-xs font-medium ${STAFF_TEXT_COLORS[i % STAFF_TEXT_COLORS.length]}`}>{s.name}</p>
-              </div>
-            )) : (
-              <div className="py-3 px-2 text-center border-l border-s-ink/5">
-                <p className="text-xs font-medium text-s-ink-2">{t("allStaff")}</p>
-              </div>
-            )}
-          </div>
-          {showSpinner ? (
-            <div className="flex justify-center py-10"><Spinner size="sm" /></div>
-          ) : (
-            Array.from({ length: 13 }, (_, rowIdx) => {
-              const hour = rowIdx + 8;
-              const dateStr = ymdLocal(currentDate);
-              return (
-                <div key={hour} className="grid border-b border-s-ink/5 min-h-[48px]"
-                  style={{ gridTemplateColumns: `60px repeat(${Math.max(staff.length, 1)}, 1fr)` }}>
-                  <div className="py-1 px-2 text-[12px] text-s-ink/30 text-right pr-3 pt-2">
-                    {`${String(hour).padStart(2, "0")}:00`}
-                  </div>
-                  {staff.length > 0 ? staff.map((staffMember) => {
-                    const cellSlots = (slotsByDay.get(dateStr) ?? []).filter((s) =>
-                      new Date(s.starts_at).getHours() === hour &&
-                      s.staff_member_id === staffMember.id
-                    );
-                    const dropId = `${dateStr}:${String(hour).padStart(2, "0")}:${staffMember.id}`;
-                    return (
-                      <Droppable key={staffMember.id} droppableId={dropId}>
-                        {(provided, snapshot) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.droppableProps}
-                            className={`border-l border-s-ink/5 p-0.5 cursor-pointer transition-colors group relative ${snapshot.isDraggingOver ? "bg-s-accent-bright/10" : "hover:bg-s-accent-bright/5"}`}
-                            onClick={() => setCreateModal({ date: dateStr, time: `${String(hour).padStart(2, "0")}:00` })}>
-                            {cellSlots.map((s, idx) => (
-                              <Draggable key={s.id} draggableId={s.id} index={idx} isDragDisabled={s.status !== "available"}>
-                                {(dragProvided, dragSnapshot) => (
-                                  <div
-                                    ref={dragProvided.innerRef}
-                                    {...dragProvided.draggableProps}
-                                    {...dragProvided.dragHandleProps}
-                                    onClick={(e) => { e.stopPropagation(); setDetailSlot(s); }}
-                                    className={`relative rounded text-[12px] px-1.5 py-1 mb-0.5 cursor-pointer group/slot ${slotBg(s)} ${dragSnapshot.isDragging ? "shadow-2xl z-50 scale-105" : ""}`}
-                                    style={{ ...dragProvided.draggableProps.style }}>
-                                    {s.status === "booked" ? t("statusBooked") : s.status === "blocked" ? t("statusBlocked") : t("statusFree")}
-                                    <button onClick={(e) => { e.stopPropagation(); deleteSlot(s.id); }}
-                                      className="absolute top-0 right-0 opacity-100 md:opacity-0 group-hover/slot:md:opacity-100 p-0.5 text-current"><X size={8} /></button>
-                                  </div>
-                                )}
-                              </Draggable>
-                            ))}
-                            {provided.placeholder}
-                            {cellSlots.length === 0 && !snapshot.isDraggingOver && (
-                              <div className="opacity-100 md:opacity-0 group-hover:md:opacity-100 text-[12px] text-s-accent-bright absolute inset-0 flex items-center justify-center"><Plus size={10} /></div>
-                            )}
-                          </div>
-                        )}
-                      </Droppable>
-                    );
-                  }) : (
-                    <Droppable droppableId={`${dateStr}:${String(hour).padStart(2, "0")}:unassigned`}>
-                      {(provided, snapshot) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.droppableProps}
-                          className={`border-l border-s-ink/5 p-0.5 cursor-pointer transition-colors group relative ${snapshot.isDraggingOver ? "bg-s-accent-bright/10" : "hover:bg-s-accent-bright/5"}`}
-                          onClick={() => setCreateModal({ date: dateStr, time: `${String(hour).padStart(2, "0")}:00` })}>
-                          {slotForCell(dateStr, hour).map((s, idx) => {
-                            const sm = staff.find((st) => st.id === s.staff_member_id);
-                            return (
-                              <Draggable key={s.id} draggableId={s.id} index={idx} isDragDisabled={s.status !== "available"}>
-                                {(dragProvided, dragSnapshot) => (
-                                  <div
-                                    ref={dragProvided.innerRef}
-                                    {...dragProvided.draggableProps}
-                                    {...dragProvided.dragHandleProps}
-                                    onClick={(e) => { e.stopPropagation(); setDetailSlot(s); }}
-                                    className={`relative rounded text-[12px] px-1.5 py-1 mb-0.5 cursor-pointer group/slot ${slotBg(s)} ${dragSnapshot.isDragging ? "shadow-2xl z-50 scale-105" : ""}`}
-                                    style={{ ...dragProvided.draggableProps.style }}>
-                                    {sm ? sm.name.split(" ")[0] : s.status === "booked" ? t("statusBooked") : t("statusFree")}
-                                  </div>
-                                )}
-                              </Draggable>
-                            );
-                          })}
-                          {provided.placeholder}
-                        </div>
-                      )}
-                    </Droppable>
-                  )}
-                </div>
-              );
-            })
-          )}
-        </div>
-      )}
-
-      {/* ═══ MONTH VIEW ═══ */}
-      {!showError && viewMode === "month" && (() => {
-        const monthDays = getMonthCalendarDays(currentDate);
-        const thisMonth = currentDate.getMonth();
-        return (
-          <div className="rounded-[12px] border border-s-ink/5 bg-white shadow-warm-md">
-            <div className="grid grid-cols-7 border-b border-s-ink/5">
-              {DAYS_LABEL.map((label) => (
-                <div key={label} className="py-2 text-center text-xs font-medium text-s-ink-2">{label}</div>
+          <div className="mb-4">{staffSelect}</div>
+          {mobileView !== "monat" && (
+            <div className="mb-4 flex gap-2 overflow-x-auto">
+              {weekDays.map((day) => (
+                <button
+                  key={ymdLocal(day)}
+                  onClick={() => setCurrentDate(day)}
+                  aria-label={formatDate(day, {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                  })}
+                  aria-pressed={ymdLocal(day) === ymdLocal(currentDate)}
+                  className={`min-h-11 min-w-11 rounded-btn border border-s-border px-2 py-2 text-xs tabular-nums ${ymdLocal(day) === ymdLocal(currentDate) ? "bg-s-bg-sunken font-semibold text-s-ink" : "text-s-ink-2"} ${CALENDAR_FOCUS}`}
+                >
+                  <span className="block">
+                    {formatDate(day, { weekday: "short" })}
+                  </span>
+                  <span className="block text-sm">{day.getUTCDate()}</span>
+                </button>
               ))}
             </div>
-            <div className="grid grid-cols-7">
-              {monthDays.map((d, i) => {
-                const dateStr = ymdLocal(d);
-                const isToday = d.toDateString() === new Date().toDateString();
-                const isCurrentMonth = d.getMonth() === thisMonth;
-                // Round 4 correction: round 3 replaced the three-status-dot look below with an
-                // available/total count, which is a dashboard look change that needed the owner's
-                // approval it never got. Restored VERBATIM (same classes, same t() keys, same
-                // structure, HEAD lines 1118-1125) reading counts from `monthSummary` (backed by
-                // slot_day_status_summary, which carries the full booked/available/blocked/total
-                // breakdown) in place of the old per-row counts from `slotsByDay`.
-                const daySummary = monthSummary.get(dateStr);
-                return (
-                  <div key={i}
-                    onClick={() => { setCurrentDate(d); setViewMode("day"); }}
-                    className={`min-h-[80px] p-1.5 border-b border-r border-s-ink/5 cursor-pointer hover:bg-s-accent-bright/5 transition-colors ${!isCurrentMonth ? "opacity-40" : ""}`}>
-                    <p className={`text-xs font-medium mb-1 ${isToday ? "w-5 h-5 rounded-full bg-s-accent-bright text-white flex items-center justify-center" : "text-s-ink"}`}>
-                      {d.getDate()}
-                    </p>
-                    {daySummary && daySummary.total > 0 && (
-                      <div className="flex flex-wrap gap-0.5">
-                        {daySummary.booked > 0 && <span className="w-2 h-2 rounded-full bg-s-ink" title={t("bookedCount", { count: daySummary.booked })} />}
-                        {daySummary.available > 0 && <span className="w-2 h-2 rounded-full bg-s-accent-bright/40" title={t("availableCount", { count: daySummary.available })} />}
-                        {daySummary.blocked > 0 && <span className="w-2 h-2 rounded-full bg-s-ink/20" title={t("blockedCount", { count: daySummary.blocked })} />}
-                        {daySummary.total > 3 && <span className="text-[12px] text-s-ink/40">{daySummary.total}</span>}
-                      </div>
+          )}
+          {showSpinner ? (
+            <div className="flex justify-center py-12">
+              <Spinner size="lg" />
+            </div>
+          ) : showError ? (
+            errorState
+          ) : mobileView === "monat" ? (
+            renderMonth(true)
+          ) : (
+            renderAgenda()
+          )}
+          <div className="mt-4 flex flex-wrap gap-2">
+            <button
+              onClick={() =>
+                setCreateModal({
+                  date: ymdLocal(currentDate),
+                  time: "09:00",
+                  staffId:
+                    staffFilter === "all" || staffFilter === "unassigned"
+                      ? ""
+                      : staffFilter,
+                })
+              }
+              className={`h-11 flex-1 rounded-btn bg-s-ink px-4 text-sm font-semibold text-white ${CALENDAR_FOCUS}`}
+            >
+              {t("slot")}
+            </button>
+            <button
+              onClick={() => setWalkInModal(true)}
+              className={CALENDAR_CONTROL}
+            >
+              {t("walkIn")}
+            </button>
+            <button
+              onClick={() => setBulkModal(true)}
+              className={CALENDAR_CONTROL}
+            >
+              {t("plan")}
+            </button>
+          </div>
+        </div>
+        <div className="hidden lg:block" data-calendar-desktop>
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap items-center gap-2">
+              {staffSelect}
+              <button
+                aria-label={t("previous")}
+                onClick={() => navigate(viewMode, -1)}
+                className={`${CALENDAR_CONTROL} w-11 !px-0`}
+              >
+                <ChevronLeft size={16} className="mx-auto" />
+              </button>
+              <button onClick={today} className={CALENDAR_CONTROL}>
+                {t("today")}
+              </button>
+              <button
+                aria-label={t("next")}
+                onClick={() => navigate(viewMode, 1)}
+                className={`${CALENDAR_CONTROL} w-11 !px-0`}
+              >
+                <ChevronRight size={16} className="mx-auto" />
+              </button>
+              <span className="text-sm font-semibold text-s-ink">
+                {dateLabel(viewMode)}
+              </span>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="flex overflow-hidden rounded-btn border border-s-border">
+                {(["day", "week", "month"] as const).map((mode) => (
+                  <button
+                    key={mode}
+                    aria-pressed={viewMode === mode}
+                    onClick={() => setViewMode(mode)}
+                    className={`h-11 px-4 text-sm ${viewMode === mode ? "bg-s-bg-sunken font-semibold text-s-ink" : "text-s-ink-2"} ${CALENDAR_FOCUS}`}
+                  >
+                    {t(
+                      mode === "day"
+                        ? "viewDay"
+                        : mode === "week"
+                          ? "viewWeek"
+                          : "viewMonth",
                     )}
-                  </div>
-                );
-              })}
+                  </button>
+                ))}
+              </div>
+              <button
+                onClick={() => setWalkInModal(true)}
+                className={CALENDAR_CONTROL}
+              >
+                {t("walkIn")}
+              </button>
+              <button
+                onClick={() => setBulkModal(true)}
+                className={CALENDAR_CONTROL}
+              >
+                {t("plan")}
+              </button>
+              <button
+                onClick={() =>
+                  setCreateModal({
+                    date: ymdLocal(currentDate),
+                    time: "09:00",
+                    staffId:
+                      staffFilter === "all" || staffFilter === "unassigned"
+                        ? ""
+                        : staffFilter,
+                  })
+                }
+                className={`inline-flex h-11 items-center gap-2 rounded-btn bg-s-ink px-4 text-sm font-semibold text-white ${CALENDAR_FOCUS}`}
+              >
+                <Plus size={16} />
+                {t("add")}
+              </button>
             </div>
           </div>
-        );
-      })()}
-
-      {/* Legend */}
-      <div className="flex flex-wrap gap-4 mt-3 text-xs text-s-ink/40">
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-accent-bright/15 border border-s-accent-bright/30" />{t("statusFree")}</span>
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-ink" />{t("statusBooked")}</span>
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-bg-sunken border border-dashed border-s-border" />{t("statusBlocked")}</span>
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-urgency-bg border-2 border-s-urgency" />{t("lastMinute")}</span>
-        {/* Service category colors */}
-        <span className="w-px h-4 bg-s-sand" />
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded border-l-4 border-l-s-accent-bright bg-s-accent-bright/10" />{t("categoryHair")}</span>
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded border-l-4 border-l-s-blue bg-s-blue/10" />{t("categoryNails")}</span>
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded border-l-4 border-l-s-sage bg-s-sage/10" />{t("categorySpa")}</span>
-        {staff.length > 0 && (
-          <>
-            <span className="w-px h-4 bg-s-sand" />
-            {staff.map((s, i) => (
-              <span key={s.id} className="flex items-center gap-1.5">
-                {/* mockup-ok: C1 fix, solid fill + initial letter so color is not the sole carrier (WCAG 1.4.1) */}
-                <span className={`w-4 h-4 rounded flex items-center justify-center text-[9px] font-bold leading-none ${STAFF_COLORS[i % STAFF_COLORS.length]}`} title={s.name}> {/* drift-ok: single decorative glyph in a 16px identity swatch, matches owner-approved fixes-refined mockup literal */}
-                  {s.name.charAt(0).toUpperCase()}
-                </span>
-                {s.name.split(" ")[0]}
-              </span>
-            ))}
-          </>
-        )}
-      </div>
-      </div>
+          {showSpinner ? (
+            <div className="flex justify-center py-12">
+              <Spinner size="lg" />
+            </div>
+          ) : showError ? (
+            errorState
+          ) : viewMode === "month" ? (
+            renderMonth(false)
+          ) : (
+            renderTimeline()
+          )}
+        </div>
       </DragDropContext>
     </DashboardLayout>
   );

@@ -2243,7 +2243,10 @@
       "categorySpa": "Spa",
       "loadErrorTitle": "Impossibile caricare il calendario",
       "loadErrorMessage": "Si è verificato un errore durante il caricamento dell'agenda.",
-      "retry": "Riprova"
+      "retry": "Riprova",
+      "add": "Aggiungi",
+      "unassigned": "Non assegnato",
+      "manageBookings": "Gestisci prenotazioni"
     },
     "clientsPage": {
       "title": "Clienti",

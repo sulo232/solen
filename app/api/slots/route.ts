@@ -1,10 +1,11 @@
 export const dynamic = "force-dynamic";
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { validateBody, createSlotSchema } from "@/lib/validations";
-import { zurichWallClockToUtc } from "@/lib/time/zurich";
+import { zurichWallClockToUtc, zurichCalendarRange } from "@/lib/time/zurich";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { requireSalonAccess } from "@/lib/auth/require";
 
 // GET /api/slots?salon_id=&date=&service_id=&staff_member_id=
 // (or ?week= for a 7-day window, or ?from=&to= for an explicit range - see below)
@@ -28,6 +29,34 @@ export async function GET(request: NextRequest) {
   const summary = searchParams.get("summary") === "1";
   const service_id = searchParams.get("service_id");
   const staff_member_id = searchParams.get("staff_member_id");
+
+  // Operator-only counted pages. The public reader below retains its existing
+  // response and RLS contract; never expose booking/customer identity here.
+  if (searchParams.get("calendar") === "1") {
+    const range = zurichCalendarRange(from, to);
+    const offset = Number(searchParams.get("offset") ?? "0");
+    if (!salon_id || !range || !Number.isSafeInteger(offset) || offset < 0 || !Number.isSafeInteger(offset + 499)) {
+      return NextResponse.json({ message: "Invalid calendar interval or offset", code: "VALIDATION_ERROR" }, { status: 400 });
+    }
+    const access = await requireSalonAccess(salon_id, "calendar");
+    if (access instanceof NextResponse) return access;
+    const limited = await applyRateLimit(generalLimiter, { userId: access.user.id });
+    if (limited) return limited;
+    const admin = createAdminSupabaseClient();
+    const { data, error, count } = await admin.from("availability_slots")
+      .select("id, salon_id, service_id, staff_member_id, starts_at, ends_at, status, price_override, services(id, name_de, name_en, name_fr, name_it), staff_members(id, name)", { count: "exact" })
+      .eq("salon_id", salon_id)
+      .lt("starts_at", range.end)
+      .gt("ends_at", range.start)
+      .order("starts_at", { ascending: true })
+      .order("id", { ascending: true })
+      .range(offset, offset + 499);
+    if (error || count == null) {
+      console.error("[slots] calendar read failed:", error?.message ?? "missing count");
+      return NextResponse.json({ message: "Could not load calendar slots", code: "DB_ERROR" }, { status: 500 });
+    }
+    return NextResponse.json({ slots: data ?? [], total: count }, { headers: { "Cache-Control": "private, no-store" } });
+  }
 
   const YMD_RE = /^\d{4}-\d{2}-\d{2}$/;
   const hasRange = Boolean(from && to);

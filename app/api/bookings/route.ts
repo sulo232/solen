@@ -17,7 +17,7 @@ import { completeReferralForFirstBooking } from "@/lib/referral/complete-referra
 import { reportError } from "@/lib/error-report";
 import { resolveSwissLocale } from "@/lib/format";
 import { localizedField } from "@/lib/i18n/localized-field";
-import { zurichYmd } from "@/lib/time/zurich";
+import { zurichYmd, zurichCalendarRange } from "@/lib/time/zurich";
 import { requireSalonAccess } from "@/lib/auth/require";
 import { resolveRequestUser } from "@/lib/auth/request-user";
 import { isSalonHidden, isViewerAdmin } from "@/lib/salon-detail";
@@ -47,6 +47,12 @@ export async function GET(request: NextRequest) {
   const page = Math.max(1, parseInt(searchParams.get("page") ?? "1"));
   const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") ?? "20")));
   const offset = (page - 1) * limit;
+  const calendar = searchParams.get("calendar") === "1";
+  const calendarRange = calendar ? zurichCalendarRange(searchParams.get("from"), searchParams.get("to")) : null;
+  const calendarOffset = Number(searchParams.get("offset") ?? "0");
+  if (calendar && (!salonId || !calendarRange || !Number.isSafeInteger(calendarOffset) || calendarOffset < 0 || !Number.isFinite(limit) || !Number.isSafeInteger(calendarOffset + limit - 1))) {
+    return NextResponse.json({ message: "Invalid calendar interval or offset", code: "VALIDATION_ERROR" }, { status: 400 });
+  }
 
   // ── Owner / salon-scoped mode (G1, 2026-06-03): the dashboard passes ?salon_id.
   //    The default GET below is USER-scoped (the customer "my bookings" view, keyed
@@ -69,23 +75,29 @@ export async function GET(request: NextRequest) {
     let q = admin
       .from("bookings")
       .select(
-        "id, user_id, starts_at, ends_at, status, price_paid, paid_amount, payment_status, is_first_visit, is_recurring, cancellation_reason, fee_charge_status, guest_name, reference_code, services(name_de, name_en, name_fr, name_it), staff_members(name)",
+        "id, user_id, service_id, staff_member_id, slot_id, starts_at, ends_at, status, price_paid, paid_amount, payment_status, is_first_visit, is_recurring, cancellation_reason, fee_charge_status, guest_name, reference_code, services(name_de, name_en, name_fr, name_it), staff_members(name)",
         { count: "exact" },
       )
       .eq("salon_id", salonId)
       .order("starts_at", { ascending: false })
-      .range(offset, offset + limit - 1);
+      .range(calendar ? calendarOffset : offset, (calendar ? calendarOffset : offset) + limit - 1);
+    if (calendarRange) q = q.lt("starts_at", calendarRange.end).gt("ends_at", calendarRange.start).order("id", { ascending: true });
     if (status) q = q.eq("status", status);
     if (date) q = q.gte("starts_at", `${date}T00:00:00`).lte("starts_at", `${date}T23:59:59`);
 
     const { data, error, count } = await q;
     if (error) return NextResponse.json({ message: error.message, code: "DB_ERROR" }, { status: 500 });
+    if (calendar && count == null) return NextResponse.json({ message: "Calendar population unavailable", code: "DB_ERROR" }, { status: 500 });
 
     // Enrich customer_name from public_profiles (logged-in) or guest_name (guest booking).
     const userIds = [...new Set((data ?? []).map((b) => b.user_id).filter(Boolean) as string[])];
     const nameMap = new Map<string, string | null>();
     if (userIds.length) {
-      const { data: profs } = await admin.from("public_profiles").select("id, display_name").in("id", userIds);
+      const { data: profs, error: profileError } = await admin.from("public_profiles").select("id, display_name").in("id", userIds);
+      if (calendar && profileError) {
+        console.error("[bookings] calendar customer names unavailable:", profileError.message);
+        return NextResponse.json({ message: "Calendar customer names unavailable", code: "DB_ERROR" }, { status: 500 });
+      }
       (profs ?? []).forEach((p) => { if (p.id) nameMap.set(p.id, p.display_name); });
     }
     // Ring 2d: the explicit multi-column select above (vs the old `*, services(...)`) makes
@@ -99,7 +111,7 @@ export async function GET(request: NextRequest) {
       service_name: (b.services as any)?.name_de ?? (b.services as any)?.name_en ?? "Service",
       staff_name: (b.staff_members as any)?.name ?? null,
     }));
-    return NextResponse.json({ bookings, total: count ?? 0, page, limit });
+    return NextResponse.json({ bookings, total: count ?? 0, page, limit }, calendar ? { headers: { "Cache-Control": "private, no-store" } } : undefined);
   }
 
   // ── Default: USER-scoped "my bookings" (unchanged contract → { items }).
