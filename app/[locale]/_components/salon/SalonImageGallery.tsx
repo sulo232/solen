@@ -360,25 +360,30 @@ export function SalonImageGallery({
             // it is the anchor.
             <div className="grid grid-cols-2 gap-2">
               {activePhotos.map((u, i) => (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                // a11y (G19-a11y): img -> button-wrapped img, same tokens moved onto the button
+                // (the grid cell) so a portfolio photo opens the lightbox from a real focusable
+                // control instead of an onClick <img>; the img itself keeps its object-fit/crop.
+                <button
                   key={i}
-                  src={u}
-                  // accessibility-06: a stylist portfolio photo is evaluative content (past
-                  // haircut/work), never decorative; name whose portfolio it is instead of "".
-                  alt={activeStylistName ? `${activeStylistName}, ${i + 1}` : `${salonName} – ${i + 1}`} // em-dash-ok
+                  type="button"
                   onClick={() => openLb(activePhotos, i)}
-                  // ig4 (owner-approved 2026-07-16): object-top (was center) on the square
-                  // grid so a portrait crop keeps the face/wrists, not the feet.
-                  // mockup-ok: every third photo leads its group at full width, the two after it
-                  // sit half-width beside each other. All three stay square, which is what the
-                  // reference measures; only the width changes, so no crop rule moves.
                   className={cn(
-                    "aspect-square w-full cursor-pointer rounded-xl bg-s-bg-sunken object-cover object-top transition-transform duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide",
+                    "relative aspect-square w-full overflow-hidden rounded-xl bg-s-bg-sunken transition-transform duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide",
                     i % 3 === 0 && "col-span-2",
                   )}
-                  loading="lazy"
-                />
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={u}
+                    // accessibility-06: a stylist portfolio photo is evaluative content (past
+                    // haircut/work), never decorative; name whose portfolio it is instead of "".
+                    alt={activeStylistName ? `${activeStylistName}, ${i + 1}` : `${salonName} – ${i + 1}`} // em-dash-ok
+                    // ig4 (owner-approved 2026-07-16): object-top (was center) on the square
+                    // grid so a portrait crop keeps the face/wrists, not the feet.
+                    className="h-full w-full object-cover object-top"
+                    loading="lazy"
+                  />
+                </button>
               ))}
             </div>
           )}

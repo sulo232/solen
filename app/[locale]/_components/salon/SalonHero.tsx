@@ -74,8 +74,12 @@ export function SalonHero({
               // B4 load win: next/image for responsive srcset + AVIF/WebP + priority preload
               // on the LCP photo. Wrapper div carries the flex/snap sizing + view-transition-name
               // (fill images are position:absolute, so they can't own the flex-item sizing).
-              <div
+              // a11y (G19-a11y): div -> button, no className token changed, so the slide opens
+              // the lightbox as a real focusable/keyboard-actionable control instead of a bare
+              // onClick div. type="button" only reset needed; class list is byte-identical.
+              <button
                 key={i}
+                type="button"
                 className="relative h-full w-full shrink-0 snap-center bg-s-bg-sunken"
                 style={i === 0 ? { viewTransitionName: `vt-salon-${salon.slug}` } : undefined}
                 onClick={onOpenGallery}
@@ -89,7 +93,7 @@ export function SalonHero({
                   priority={i === 0}
                   loading={i === 0 ? undefined : "lazy"}
                 />
-              </div>
+              </button>
             ))}
           </div>
         ) : (
