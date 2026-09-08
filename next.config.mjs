@@ -49,6 +49,9 @@ const nextConfig = {
       // is no honest per-slug destination, every old link goes to the home page where search lives.
       { source: '/:locale(de|en|fr|it)/behandlungen/:path*', destination: '/:locale', permanent: true },
       { source: '/:locale(de|en|fr|it)/behandlungen', destination: '/:locale', permanent: true },
+      // Existing legal aliases redirect before streaming, retaining their current destinations.
+      { source: '/:locale(de|en|fr|it)/agb', destination: '/:locale/terms', permanent: true },
+      { source: '/:locale(de|en|fr|it)/datenschutz', destination: '/:locale/privacy', permanent: true },
       {
         source: "/:locale/coiffeur",
         has: [{ type: "query", key: "quartier" }],

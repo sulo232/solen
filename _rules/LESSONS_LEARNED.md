@@ -955,3 +955,9 @@ Bindings: `app/[locale]/error.tsx`, `app/error.tsx`, `components-legacy/ui/Error
 Observed: historical error recovery deleted walk-in-join and its parity alias; historical SEO recovery built a server-fetch destination from request Host/protocol and forwarded arbitrary URL fields before suppressing the client fetch. Current search instead fixes the page size, derives coordinates from client state, and normalizes individual filters. Copying the historical seed path can therefore suppress the correct current query after rendering mismatched results. The shared error fallback also displayed raw English error messages under translated headings.
 
 Prevention: recover additions against the current owners; preserve unrelated route consumers; require exact server/client query identity before skipping a fetch. Keep diagnostic details in contextual logs and use the existing localized generic message in a route-level fallback. Exercise an actual throwing child and a healthy child, retry, and locale boundaries. These are recovery and acceptance checks, not a new gate.
+
+### Existing URL aliases must redirect before streaming
+
+Bindings: `next.config.mjs`, `app/[locale]/agb/page.tsx`, `app/[locale]/datenschutz/page.tsx`, `app/sitemap.ts`.
+
+Observed: the production English agb alias returned HTTP200 even though its page called redirect to terms. A page redirect after streaming is a client redirect, not a transport redirect. Existing aliases now also use the established config-level permanent redirect pattern. Actual Next checks return308 for both aliases in all four locales and retain query strings. List the final terms/privacy destinations in the sitemap. This does not authorize redirecting different legal documents or changing their wording.
