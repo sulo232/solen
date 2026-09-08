@@ -24,7 +24,6 @@ export async function GET(
   const access = await requireSalonAccess(id, "finance");
   if (access instanceof NextResponse) return access;
   const admin = createAdminSupabaseClient();
-  const { data: salon } = await admin.from("salons").select("opening_hours").eq("id", id).single();
 
   // Determine period date range — support explicit from/to params OR named period
   const fromParam = searchParams.get("from");
@@ -43,22 +42,58 @@ export async function GET(
   // Fetch pre-aggregated analytics if available
   const periodStartDate = periodStart.split("T")[0];
   const periodEndDate = periodEnd.split("T")[0];
+  const adviceRequested = searchParams.get("advice") === "1";
+  const adviceStart = new Date(now.getTime() - (ADVICE_WINDOW_WEEKS * 7 + 1) * 24 * 60 * 60 * 1000).toISOString();
 
-  const { data: preAggregated } = await admin
-    .from("salon_analytics")
-    .select("*")
-    .eq("salon_id", id)
-    .eq("period_start", periodStartDate)
-    .eq("period_end", periodEndDate)
-    .maybeSingle();
-
-  // Live-query bookings for real-time stats
-  const { data: bookings } = await admin
-    .from("bookings")
-    .select("id, user_id, service_id, starts_at, ends_at, price_paid, status, is_first_visit, acquisition_source, created_at")
-    .eq("salon_id", id)
-    .gte("starts_at", periodStart)
-    .lte("starts_at", periodEnd);
+  // These reads share only the already-authorized Store and date boundaries. Starting
+  // them together avoids adding independent network latency while keeping each current
+  // query, fallback, and error result unchanged. Service names remain dependent on the
+  // current-period bookings and are loaded after this group below.
+  const [
+    { data: salon },
+    { data: preAggregated },
+    { data: bookings },
+    { data: reviews },
+    { data: priorBookings },
+    profileViews,
+    adviceQueryResult,
+  ] = await Promise.all([
+    admin.from("salons").select("opening_hours").eq("id", id).single(),
+    admin
+      .from("salon_analytics")
+      .select("*")
+      .eq("salon_id", id)
+      .eq("period_start", periodStartDate)
+      .eq("period_end", periodEndDate)
+      .maybeSingle(),
+    admin
+      .from("bookings")
+      .select("id, user_id, service_id, starts_at, ends_at, price_paid, status, is_first_visit, acquisition_source, created_at")
+      .eq("salon_id", id)
+      .gte("starts_at", periodStart)
+      .lte("starts_at", periodEnd),
+    admin
+      .from("reviews")
+      .select("rating")
+      .eq("salon_id", id)
+      .gte("created_at", periodStart)
+      .lte("created_at", periodEnd),
+    admin
+      .from("bookings")
+      .select("status, price_paid, user_id, is_first_visit")
+      .eq("salon_id", id)
+      .gte("starts_at", priorStart)
+      .lte("starts_at", priorEnd),
+    fetchPostHogProfileViews(id, days),
+    adviceRequested
+      ? admin
+          .from("bookings")
+          .select("starts_at, status")
+          .eq("salon_id", id)
+          .gte("starts_at", adviceStart)
+          .lt("starts_at", now.toISOString())
+      : Promise.resolve(null),
+  ]);
 
   const allBookings = bookings ?? [];
   const completed = allBookings.filter(b => b.status === "completed");
@@ -155,30 +190,12 @@ export async function GET(
     .sort((a, b) => a[0].localeCompare(b[0]))
     .map(([date, v]) => ({ date, ...v }));
 
-  // Reviews in period
-  const { data: reviews } = await admin
-    .from("reviews")
-    .select("rating")
-    .eq("salon_id", id)
-    .gte("created_at", periodStart)
-    .lte("created_at", periodEnd);
-
   const totalReviews = reviews?.length ?? 0;
   const avgRating = totalReviews > 0
     ? Math.round((reviews!.reduce((s, r) => s + r.rating, 0) / totalReviews) * 10) / 10
     : 0;
 
-  // PostHog Insights
-  const profileViews = await fetchPostHogProfileViews(id, days);
   const conversionRate = profileViews > 0 ? (totalBookings / profileViews) * 100 : 0;
-
-  // Prior period bookings for trends_vs_prior delta percentages
-  const { data: priorBookings } = await admin
-    .from("bookings")
-    .select("status, price_paid, user_id, is_first_visit")
-    .eq("salon_id", id)
-    .gte("starts_at", priorStart)
-    .lte("starts_at", priorEnd);
 
   const priorAll = priorBookings ?? [];
   const priorCompleted = priorAll.filter(b => b.status === "completed");
@@ -193,14 +210,11 @@ export async function GET(
   // Dashboard-home advice (opt-in). Its own lookback, because the weekday pattern
   // it reports cannot be read off a 7-day period: one Tuesday is one sample.
   let advice: DashboardAdvice | undefined;
-  if (searchParams.get("advice") === "1") {
-    const adviceStart = new Date(now.getTime() - (ADVICE_WINDOW_WEEKS * 7 + 1) * 24 * 60 * 60 * 1000).toISOString();
-    const { data: adviceBookings, error: adviceError } = await admin
-      .from("bookings")
-      .select("starts_at, status")
-      .eq("salon_id", id)
-      .gte("starts_at", adviceStart)
-      .lt("starts_at", now.toISOString());
+  if (adviceRequested) {
+    const { data: adviceBookings, error: adviceError } = (adviceQueryResult ?? { data: null, error: null }) as {
+      data: { starts_at: string; status: string }[] | null;
+      error: { message: string } | null;
+    };
     if (adviceError) {
       console.error("[AnalyticsSalon] advice lookback query failed:", adviceError);
     } else {

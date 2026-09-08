@@ -17,17 +17,10 @@ export async function GET(request: NextRequest) {
 
   const admin = createAdminSupabaseClient();
 
-  const { data: salon } = await admin
-    .from("salons")
-    .select("owner_id")
-    .eq("id", salonId)
-    .single();
-
-  const { data: profile } = await admin
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
+  const [{ data: salon }, { data: profile }] = await Promise.all([
+    admin.from("salons").select("owner_id").eq("id", salonId).single(),
+    admin.from("profiles").select("role").eq("id", user.id).single(),
+  ]);
 
   if (salon?.owner_id !== user.id && profile?.role !== "admin") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
@@ -49,22 +42,22 @@ export async function GET(request: NextRequest) {
 
   const staffIds = staffMembers.map(s => s.id);
 
-  // All bookings for this salon in period
-  const { data: bookings } = await admin
-    .from("bookings")
-    .select("id, staff_member_id, user_id, price_paid, status, starts_at")
-    .eq("salon_id", salonId)
-    .in("staff_member_id", staffIds)
-    .gte("starts_at", periodStart)
-    .lte("starts_at", now.toISOString());
-
-  // All reviews for staff in period
-  const { data: reviews } = await admin
-    .from("reviews")
-    .select("staff_member_id, rating")
-    .eq("salon_id", salonId)
-    .in("staff_member_id", staffIds)
-    .gte("created_at", periodStart);
+  // Both datasets depend on the active staff IDs but not on each other.
+  const [{ data: bookings }, { data: reviews }] = await Promise.all([
+    admin
+      .from("bookings")
+      .select("id, staff_member_id, user_id, price_paid, status, starts_at")
+      .eq("salon_id", salonId)
+      .in("staff_member_id", staffIds)
+      .gte("starts_at", periodStart)
+      .lte("starts_at", now.toISOString()),
+    admin
+      .from("reviews")
+      .select("staff_member_id, rating")
+      .eq("salon_id", salonId)
+      .in("staff_member_id", staffIds)
+      .gte("created_at", periodStart),
+  ]);
 
   const staff = staffMembers.map(s => {
     const staffBookings = (bookings ?? []).filter(b => b.staff_member_id === s.id);
