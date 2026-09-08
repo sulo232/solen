@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import SearchTemplate from "@/app/[locale]/_components/search/SearchTemplate";
 import { getCategorySeo } from "@/lib/seo/category-seo-cache";
 import { buildAlternates, generateBreadcrumbSchema, generateFaqSchema, CATEGORY_FAQS, safeJsonLd } from "@/lib/seo";
@@ -52,6 +53,7 @@ export default async function Page({
 }) {
   const { locale } = await params;
   const loc = locale ?? "de";
+  const tNavigation = await getTranslations({ locale: loc, namespace: "navigation" });
   const breadcrumb = generateBreadcrumbSchema([
     { name: "Solen", item: `https://solen.ch/${loc}` },
     { name: "Spa" },
@@ -60,6 +62,7 @@ export default async function Page({
   const filterAvailability = await getFilterAvailability();
   return (
     <>
+      <h1 className="sr-only">{tNavigation("spa")}</h1>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumb) }}

@@ -84,6 +84,7 @@ export default function LanguageSwitcher({ locale, variant = "header" }: { local
                   key={key}
                   type="button"
                   onClick={() => switchLocale(key)}
+                  aria-current={key === locale ? "true" : undefined}
                   className="flex w-full items-center justify-between border-b border-s-border py-4 text-left last:border-b-0"
                 >
                   <span className="flex items-center gap-3 text-[16px] text-s-ink">
@@ -112,6 +113,7 @@ export default function LanguageSwitcher({ locale, variant = "header" }: { local
           <span key={loc} className="flex items-center">
             <button
               onClick={() => switchLocale(loc)}
+              aria-current={locale === loc ? "true" : undefined}
               className={`text-xs font-heading tracking-wide transition-colors duration-150 ${
                 locale === loc
                   ? "text-white"
@@ -152,10 +154,11 @@ export default function LanguageSwitcher({ locale, variant = "header" }: { local
                 e.stopPropagation();
                 switchLocale(key);
               }}
+              aria-current={key === locale ? "true" : undefined}
               className={`w-full text-left px-3 py-2 text-sm flex items-center gap-2 transition-colors ${
                 key === locale
                   ? "text-s-accent font-medium bg-s-ink/5"
-                  : "text-s-ink/70 hover:bg-s-bg-surface:bg-white/5"
+                  : "text-s-ink/70 hover:bg-s-bg-sunken"
               }`}
             >
               <span>{label}</span>

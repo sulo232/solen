@@ -522,9 +522,6 @@ export default function PartnerPage() {
               {t("cta_consult")}
             </a>
           </div>
-          <p className="text-xs text-s-ink-2 mt-6">
-            {t("cta_counter")}
-          </p>
         </div>
       </div>
     </div>
