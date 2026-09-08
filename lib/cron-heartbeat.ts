@@ -25,7 +25,6 @@ export const EXPECTED_CRON_INTERVALS_MS: Record<string, number> = {
   "abandon-sweep": 15 * 60 * 1000,
   "walkin-no-show": 15 * 60 * 1000,
   // */30 * * * * (every-30-min job)
-  "late-cancel": 30 * 60 * 1000,
   "sms-reminders": 30 * 60 * 1000,
   "no-show": 30 * 60 * 1000,
   // */30 * * * * (every-30-min-ai-backfill job)

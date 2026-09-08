@@ -82,7 +82,7 @@ jobs:
 
   every-30-min:
     if: github.event.schedule == '*/30 * * * *' || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'late-cancel-reminders-noshow')
-    name: Every 30 min · late-cancel, sms-reminders, no-show
+    name: Every 30 min · sms-reminders, no-show
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -91,7 +91,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/ping-cron
         with:
-          paths: /api/cron/late-cancel,/api/cron/sms-reminders,/api/cron/no-show
+          paths: /api/cron/sms-reminders,/api/cron/no-show
           secret: ${{ secrets.CRON_SECRET }}
 
   hourly:
