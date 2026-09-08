@@ -9,6 +9,15 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { makeDbStub, type StubResult } from "../../helpers/supabase-stub";
 
+const stripeMock = vi.hoisted(() => ({ paymentIntents: {
+  list: vi.fn(async () => ({ data: [], has_more: false })),
+  retrieve: vi.fn(async () => ({ ...stripeMock.paymentIntents.create.mock.calls.at(-1)![0], id: "pi_new", status: "succeeded" })),
+  create: vi.fn(async (params: any) => ({ ...params, id: "pi_new", status: "requires_payment_method", client_secret: "secret" })),
+} }));
+vi.mock("@/lib/stripe", () => ({ getStripe: () => stripeMock, toRappen: (value: number) => Math.round(value * 100) }));
+
+vi.mock("@/lib/bookings/settle-fee-payment", () => ({ settleFeePayment: vi.fn(async () => ({status:"charged",alreadySettled:false})) }));
+
 const chargeOffSessionMock = vi.fn();
 vi.mock("@/lib/bookings/off-session-charge", () => ({
   chargeOffSession: (...args: unknown[]) => chargeOffSessionMock(...args),
@@ -31,6 +40,8 @@ function bookingRow(overrides: Record<string, unknown> = {}) {
     price_paid: null,
     fee_charge_status: null,
     fee_charge_claimed_at: null,
+    fee_charge_intent_id: null,
+    fee_charge_kind: null,
     stripe_customer_id: "cus_1",
     stripe_payment_method_id: "pm_1",
     policy_accepted_at: "2026-01-01T00:00:00.000Z",
@@ -106,6 +117,7 @@ describe("chargeFee money math", () => {
   it("caps the charge at the paid base when amountCents exceeds it", async () => {
     const db = makeDbStub([
       { data: bookingRow({ paid_amount: 5000 }), error: null }, // fetch: paid 50.00 CHF
+      CLAIM_OK,
       SETTINGS_ROW,
       CLAIM_OK,
       { data: { id: BOOKING_ID }, error: null }, // casUpdate write
@@ -126,6 +138,7 @@ describe("chargeFee money math", () => {
   it("charges the full amountCents when it is under the paid base, at the resolved commission rate", async () => {
     const db = makeDbStub([
       { data: bookingRow({ paid_amount: 10000 }), error: null },
+      CLAIM_OK,
       SETTINGS_ROW,
       CLAIM_OK,
       { data: { id: BOOKING_ID }, error: null }, // casUpdate write
@@ -144,7 +157,8 @@ describe("chargeFee money math", () => {
   it("falls back to DEFAULT_COMMISSION_RATE_PERCENT (15) when platform_settings has no commission row", async () => {
     const db = makeDbStub([
       { data: bookingRow({ paid_amount: 10000 }), error: null },
-      { data: null, error: { message: "no rows" } }, // settings read fails
+      CLAIM_OK,
+      { data: null, error: null }, // absent settings row uses the existing default
       CLAIM_OK,
       { data: { id: BOOKING_ID }, error: null }, // casUpdate write
     ]);
@@ -161,6 +175,7 @@ describe("chargeFee money math", () => {
   it("returns 'requires_action' on SCA without charging chargedCents", async () => {
     const db = makeDbStub([
       { data: bookingRow(), error: null },
+      CLAIM_OK,
       SETTINGS_ROW,
       CLAIM_OK,
       { data: { id: BOOKING_ID }, error: null }, // casUpdate write
@@ -178,10 +193,9 @@ describe("chargeFee money math", () => {
 });
 
 describe("chargeFee claim-first race guard", () => {
-  it("reports the raced status without ever calling Stripe when the claim CAS matches 0 rows", async () => {
+  it("reports a pending system outcome without confirming Stripe when the claim CAS matches 0 rows", async () => {
     const db = makeDbStub([
       { data: bookingRow(), error: null }, // fetch
-      SETTINGS_ROW,
       { data: null, error: null }, // claim UPDATE matched 0 rows (lost the race)
       { data: { fee_charge_status: "charged" }, error: null }, // refetch after losing
     ]);
@@ -190,7 +204,7 @@ describe("chargeFee claim-first race guard", () => {
       db, source: "booking", id: BOOKING_ID, amountCents: 1000, kind: "cancellation", actor: "system", reason: "x",
     });
 
-    expect(result).toEqual({ status: "charged" });
+    expect(result).toMatchObject({ status: "failed", declined: false });
     expect(chargeOffSessionMock).not.toHaveBeenCalled();
   });
 });

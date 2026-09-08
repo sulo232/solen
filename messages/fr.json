@@ -2119,6 +2119,8 @@
       "serviceColumn": "Service"
     },
     "bookingsPage": {
+      "feeChargeFailed": "Frais impayés",
+      "feeChargeRequiresAction": "Frais en attente",
       "title": "Rendez-vous",
       "filterAll": "Tous",
       "emptyState": "Aucun rendez-vous trouvé",
@@ -6680,5 +6682,30 @@
     "step2": "Votre ami s'inscrit et réserve un rendez-vous",
     "step3": "Vous recevez tous les deux CHF 10 de crédit !",
     "shareText": "Salut ! Réserve ton prochain rendez-vous sur Solen et tu reçois CHF 10 de crédit avec mon code : {code}\n{url}"
+  },
+  "feePay": {
+    "pendingTitle": "Paiement en cours",
+    "pendingMessage": "Vérifiez à nouveau le statut avant de payer.",
+    "checkStatus": "Vérifier le statut",
+    "reconciliationTitle": "Paiement à vérifier",
+    "reconciliationMessage": "Contactez le support Solen. Tout nouveau paiement est bloqué ici.",
+
+    "headingNoShow": "Payer les frais de non-présentation",
+    "headingLateCancel": "Payer les frais d'annulation",
+    "totalLabel": "Total",
+    "termsSentence": "Ces frais suivent les conditions d'annulation que vous avez acceptées lors de la réservation.",
+    "payButton": "Payer {amount}",
+    "payFailed": "Le paiement a échoué. Veuillez réessayer.",
+    "successTitle": "Paiement réussi",
+    "successReceipt": "Ces frais ont été payés.",
+    "alreadySettledTitle": "Ces frais ont déjà été payés.",
+    "notDueTitle": "Aucun frais n'est actuellement dû.",
+    "invalidTitle": "Lien invalide ou expiré",
+    "invalidMessage": "Ce lien de paiement ne peut plus être utilisé. Veuillez contacter le salon si vous pensez qu'il s'agit d'une erreur.",
+    "networkErrorTitle": "Une erreur s'est produite",
+    "networkErrorMessage": "Impossible de charger ce paiement. Veuillez réessayer.",
+    "confirmErrorTitle": "Le paiement n'a pas pu être confirmé",
+    "confirmErrorMessage": "Votre carte a été débitée, mais nous n'avons pas pu confirmer le paiement. Veuillez contacter le salon.",
+    "retryLabel": "Réessayer"
   }
 }

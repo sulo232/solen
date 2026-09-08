@@ -257,7 +257,7 @@ function CookieBanner({ onVisibilityChange }: { onVisibilityChange: (visible: bo
   const pathname = usePathname() ?? "/";
   const overlayOwnsScreen = useOverlayOwnsScreen();
   const suppressedByRoute = !!pathname && (
-    /\/walk-in-pay\/?$/.test(pathname) || /\/dashboard(\/|$)/.test(pathname) || /\/dev(\/|$)/.test(pathname)
+    /\/walk-in-pay\/?$/.test(pathname) || /\/booking\/[^/]+\/fee\/?$/.test(pathname) || /\/dashboard(\/|$)/.test(pathname) || /\/dev(\/|$)/.test(pathname)
   );
   const visible = !suppressedByRoute && !overlayOwnsScreen;
 

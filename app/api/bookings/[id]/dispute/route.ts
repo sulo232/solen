@@ -358,6 +358,10 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     return NextResponse.json({ status: "salon_approved", charge_status: "deferred" }, { status: 200 });
   }
 
+  if (charge.status === "pending") {
+    return NextResponse.json({ status: "salon_approved", charge_status: "pending" }, { status: 200 });
+  }
+
   await logAuditEvent(req, userId ?? "guest", "booking_upcharge_charged", "booking_dispute", dispute.id, {
     actor, charge_status: charge.status, charged_cents: charge.chargedCents ?? 0,
     payment_intent_id: charge.paymentIntentId ?? null,

@@ -2119,6 +2119,8 @@
       "serviceColumn": "Service"
     },
     "bookingsPage": {
+      "feeChargeFailed": "Gebühr nicht bezahlt",
+      "feeChargeRequiresAction": "Gebühr ausstehend",
       "title": "Termine",
       "filterAll": "Alle",
       "emptyState": "Keine Termine gefunden",
@@ -6680,5 +6682,30 @@
     "step2": "Ihr Freund registriert sich und bucht einen Termin",
     "step3": "Sie beide erhalten CHF 10 Guthaben!",
     "shareText": "Hey! Buch deinen nächsten Termin auf Solen und du bekommst CHF 10 Guthaben mit meinem Code: {code}\n{url}"
+  },
+  "feePay": {
+    "pendingTitle": "Zahlung wird geprüft",
+    "pendingMessage": "Prüfen Sie den Status erneut, bevor Sie bezahlen.",
+    "checkStatus": "Status prüfen",
+    "reconciliationTitle": "Zahlung muss geprüft werden",
+    "reconciliationMessage": "Kontaktieren Sie den Solen-Support. Eine erneute Zahlung ist hier gesperrt.",
+
+    "headingNoShow": "Ausfallgebühr bezahlen",
+    "headingLateCancel": "Stornogebühr bezahlen",
+    "totalLabel": "Total",
+    "termsSentence": "Diese Gebühr richtet sich nach den Stornobedingungen, die Sie bei der Buchung akzeptiert haben.",
+    "payButton": "{amount} bezahlen",
+    "payFailed": "Zahlung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    "successTitle": "Zahlung erfolgreich",
+    "successReceipt": "Diese Gebühr ist bezahlt.",
+    "alreadySettledTitle": "Diese Gebühr wurde bereits bezahlt.",
+    "notDueTitle": "Derzeit ist keine Gebühr fällig.",
+    "invalidTitle": "Ungültiger oder abgelaufener Link",
+    "invalidMessage": "Dieser Zahlungslink kann nicht mehr verwendet werden. Bitte kontaktieren Sie den Salon, falls Sie dies für einen Irrtum halten.",
+    "networkErrorTitle": "Etwas ist schiefgelaufen",
+    "networkErrorMessage": "Diese Zahlung konnte nicht geladen werden. Bitte versuchen Sie es erneut.",
+    "confirmErrorTitle": "Zahlung konnte nicht bestätigt werden",
+    "confirmErrorMessage": "Ihre Karte wurde belastet, die Zahlung konnte jedoch nicht bestätigt werden. Bitte kontaktieren Sie den Salon.",
+    "retryLabel": "Erneut versuchen"
   }
 }

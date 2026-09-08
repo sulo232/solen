@@ -7,8 +7,9 @@ import { verifyCronSecret } from "@/lib/cron-auth";
 import { toRappen } from "@/lib/stripe";
 import { calculateNoShowFee } from "@/lib/cancellation-policy";
 import { chargeFee, FeeError } from "@/lib/bookings/charge-fee";
-import { notifyNoShowFee } from "@/lib/bookings/notify-no-show-fee";
+import { sendFeePaymentIssueEmail } from "@/lib/email";
 import { logAuditEvent } from "@/lib/audit";
+import { buildFeePayUrl } from "@/lib/bookings/fee-pay-link";
 import { withCronRun, ALL_DECLINED_SYMPTOM_FLOOR } from "@/lib/cron-run";
 import { localizedField } from "@/lib/i18n/localized-field";
 
@@ -100,6 +101,7 @@ export async function GET(req: NextRequest) {
           kind: "no_show",
           actor: "system",
           reason: "salon-marked no-show",
+          request: req,
         });
         if (result.status === "charged") {
           charged++;
@@ -116,31 +118,34 @@ export async function GET(req: NextRequest) {
             errors.push(`booking ${booking.id}: no-show fee charge failed${result.error ? `: ${result.error}` : ""}`);
           }
         }
-        await logAuditEvent(req, "system", "no_show_fee_charged", "booking", booking.id, {
-          kind: "no_show",
-          fee_cents: feeCents,
-          charged_cents: result.chargedCents ?? 0,
-          status: result.status,
-          payment_intent_id: result.paymentIntentId,
-        });
+        const salon = (booking as any).salons as { name?: string } | null;
+        const services = (booking as any).services as Record<string, string | null> | null;
+        const custLocale = (booking as any).profiles?.locale ?? "de";
 
-        // N4: notify the customer a no-show fee was actually charged (silent debit =
-        // chargeback magnet). Only on a real charge, with the amount actually taken.
-        // user_id → in-app + email; guest_email → email only. Never blocks the charge.
-        if (result.status === "charged") {
-          const salon = (booking as any).salons as { name?: string } | null;
-          const services = (booking as any).services as Record<string, string | null> | null;
-          const custLocale = (booking as any).profiles?.locale ?? "de";
-          await notifyNoShowFee({
+        // Successful fees are audited and receipted only by the shared settlement
+        // winner, including when Stripe delivers the webhook before confirm returns.
+        if ((result.status === "failed" && result.declined) || result.status === "requires_action") {
+          // 2026-09-06 (owner-approved variant B): the automated off-session attempt
+          // came back declined or needs re-auth. NEVER on the charged branch above
+          // (that gets the "fee charged" receipt instead) and NEVER on a system-side
+          // failure (result.declined === false, e.g. a claim race or a non-decline
+          // Stripe error) - that is our own machinery breaking, not a customer-payable
+          // problem, so no pay-link email fires for it. Never blocks/rolls back the
+          // charge attempt above: fire-and-forget, .catch only.
+          console.log(`[no-show] sending payment-issue email for booking ${booking.id} (status=${result.status})`);
+          const payUrl = buildFeePayUrl(custLocale, booking.id, "no_show");
+          await sendFeePaymentIssueEmail({
             admin,
             userId: (booking.user_id as string | null) ?? null,
             guestEmail: (booking as any).guest_email ?? null,
             serviceName: localizedField(services, "name", custLocale) || "Service",
             salonName: salon?.name ?? "Salon",
-            feeCents: result.chargedCents ?? feeCents,
+            feeCents,
             date: (booking.starts_at as string | null) ?? new Date().toISOString(),
+            payUrl,
+            kind: "no_show",
             logPrefix: "no-show",
-          }).catch((err) => console.error(`[no-show] fee notification failed for booking ${booking.id}:`, err));
+          }).catch((err) => console.error(`[no-show] payment-issue email failed for booking ${booking.id}:`, err));
         }
       } catch (e) {
         // NO_SAVED_CARD / INVALID_AMOUNT etc: log, continue the loop (never crash the cron),

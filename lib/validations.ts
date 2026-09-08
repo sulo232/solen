@@ -1744,3 +1744,14 @@ export const lastMinuteSettingsSchema = z.object({
   service_overrides: z.record(z.string(), z.unknown()).optional(),
 });
 
+// 2026-09-06 (owner-approved fee-pay link, variant B): the two public token-gated fee-pay
+// routes. The token itself is the authorization; these schemas only shape-check the body.
+export const feePayIntentSchema = z.object({
+  token: z.string().min(1).max(1024),
+  locale: z.enum(["de", "en", "fr", "it"]).optional(),
+});
+
+export const feePayConfirmSchema = z.object({
+  token: z.string().min(1).max(1024),
+  payment_intent_id: z.string().regex(/^pi_[A-Za-z0-9_]+$/).max(255),
+});

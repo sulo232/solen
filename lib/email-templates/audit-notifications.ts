@@ -1,4 +1,4 @@
-import { EmailLocale, EmailPayload } from "../email";
+import { escapeHtml, type EmailLocale, type EmailPayload } from "../email";
 import { EMAIL_COLORS } from "../email-colors";
 
 // seo-comms-04 (2026-07-27): every function below used to accept a `locale: EmailLocale`
@@ -106,12 +106,67 @@ export function lateCancellationFeeEmail(to: string, vars: { service: string; sa
     it: `Cancellazione tardiva da ${vars.salonName}`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Hallo,</p><p>Sie haben Ihren Termin für <strong>${vars.service}</strong> am ${vars.date} bei <strong>${vars.salonName}</strong> weniger als 24 Stunden im Voraus storniert.</p><p>Ihnen wurde eine Stornierungsgebühr in Höhe von ${vars.feeAmount} berechnet (gemäss AGB §4.2).</p>`,
-    en: `<p>Hello,</p><p>You cancelled your appointment for <strong>${vars.service}</strong> on ${vars.date} at <strong>${vars.salonName}</strong> less than 24 hours in advance.</p><p>You have been charged a cancellation fee of ${vars.feeAmount} (per Terms §4.2).</p>`,
-    fr: `<p>Bonjour,</p><p>Vous avez annulé votre rendez-vous pour <strong>${vars.service}</strong> le ${vars.date} chez <strong>${vars.salonName}</strong> moins de 24 heures à l'avance.</p><p>Des frais d'annulation de ${vars.feeAmount} vous ont été facturés (conformément aux CGV §4.2).</p>`,
-    it: `<p>Ciao,</p><p>Hai cancellato il tuo appuntamento per <strong>${vars.service}</strong> il ${vars.date} da <strong>${vars.salonName}</strong> con meno di 24 ore di anticipo.</p><p>Ti è stata addebitata una penale di cancellazione di ${vars.feeAmount} (secondo i Termini §4.2).</p>`,
+    de: `<p>Hallo,</p><p>Sie haben Ihren Termin für <strong>${vars.service}</strong> am ${vars.date} bei <strong>${vars.salonName}</strong> innerhalb der vereinbarten Stornofrist storniert.</p><p>Ihnen wurde eine Stornierungsgebühr in Höhe von ${vars.feeAmount} berechnet (gemäss AGB §4.2).</p>`,
+    en: `<p>Hello,</p><p>You cancelled your appointment for <strong>${vars.service}</strong> on ${vars.date} at <strong>${vars.salonName}</strong> within the agreed cancellation window.</p><p>You have been charged a cancellation fee of ${vars.feeAmount} (per Terms §4.2).</p>`,
+    fr: `<p>Bonjour,</p><p>Vous avez annulé votre rendez-vous pour <strong>${vars.service}</strong> le ${vars.date} chez <strong>${vars.salonName}</strong> pendant la période de frais convenue.</p><p>Des frais d'annulation de ${vars.feeAmount} vous ont été facturés (conformément aux CGV §4.2).</p>`,
+    it: `<p>Ciao,</p><p>Hai cancellato il tuo appuntamento per <strong>${vars.service}</strong> il ${vars.date} da <strong>${vars.salonName}</strong> entro il periodo di penale concordato.</p><p>Ti è stata addebitata una penale di cancellazione di ${vars.feeAmount} (secondo i Termini §4.2).</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
+}
+
+// 2026-09-06 (owner-approved variant B of public/_mockups/r2-fee-failed/index.html): sent
+// INSTEAD OF noShowChargeEmail / lateCancellationFeeEmail when the automated off-session
+// fee charge lands on 'failed' (a genuine decline) or 'requires_action' (SCA re-auth
+// needed), so the customer is never silently left owing money nobody told them about.
+// Keeps the same greeting + appointment-context sentence shape as its two siblings above,
+// changes only the fee sentence (could not be charged, instead of was charged) and adds
+// one button. The button reuses the exact ink-CTA recipe already shipped for a different
+// pay email (lib/email.ts, walkInPaymentEmail: padding 12px 24px, background #0A0A0A,
+// color #fff, border-radius 8px, font-weight 600), not an invented recipe.
+export function feePaymentIssueEmail(
+  to: string,
+  vars: { service: string; salonName: string; date: string; feeAmount: string; payUrl: string; kind: "no_show" | "cancellation" },
+  locale: EmailLocale = "de"
+): EmailPayload {
+  const subjects = {
+    no_show: {
+      de: `Zahlungsproblem: No-Show-Gebühr bei ${vars.salonName}`,
+      en: `Payment issue: no-show fee at ${vars.salonName}`,
+      fr: `Problème de paiement : frais de non-présentation chez ${vars.salonName}`,
+      it: `Problema di pagamento: penale per mancata presentazione presso ${vars.salonName}`,
+    },
+    cancellation: {
+      de: `Zahlungsproblem: Stornogebühr bei ${vars.salonName}`,
+      en: `Payment issue: cancellation fee at ${vars.salonName}`,
+      fr: `Problème de paiement : frais d'annulation chez ${vars.salonName}`,
+      it: `Problema di pagamento: penale di cancellazione presso ${vars.salonName}`,
+    },
+  } as const;
+
+  const buttonLabels: Record<EmailLocale, string> = {
+    de: "Gebühr bezahlen",
+    en: "Pay fee",
+    fr: "Payer les frais",
+    it: "Paga la penale",
+  };
+  const button = `<p><a href="${escapeHtml(vars.payUrl)}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">${buttonLabels[locale]} →</a></p>`;
+
+  const bodies: Record<"no_show" | "cancellation", Record<EmailLocale, string>> = {
+    no_show: {
+      de: `<p>Hallo,</p><p>Es wurde gemeldet, dass Sie zu Ihrem Termin für <strong>${escapeHtml(vars.service)}</strong> am ${escapeHtml(vars.date)} bei <strong>${escapeHtml(vars.salonName)}</strong> nicht erschienen sind.</p><p>Leider konnte die Nichterscheinen-Gebühr in Höhe von ${escapeHtml(vars.feeAmount)} nicht von Ihrer hinterlegten Karte abgebucht werden. Die Gebühr bleibt bestehen (gemäss AGB §4.4).</p>${button}`,
+      en: `<p>Hello,</p><p>It has been reported that you did not show up for your appointment for <strong>${escapeHtml(vars.service)}</strong> on ${escapeHtml(vars.date)} at <strong>${escapeHtml(vars.salonName)}</strong>.</p><p>Unfortunately, we were unable to charge your no-show fee of ${escapeHtml(vars.feeAmount)} to your card on file. The fee is still owed (per Terms §4.4).</p>${button}`,
+      fr: `<p>Bonjour,</p><p>Il a été signalé que vous ne vous êtes pas présenté(e) à votre rendez-vous pour <strong>${escapeHtml(vars.service)}</strong> le ${escapeHtml(vars.date)} chez <strong>${escapeHtml(vars.salonName)}</strong>.</p><p>Malheureusement, nous n'avons pas pu débiter vos frais d'absence de ${escapeHtml(vars.feeAmount)} sur votre carte enregistrée. Ces frais restent dus (conformément aux CGV §4.4).</p>${button}`,
+      it: `<p>Buongiorno,</p><p>È stato segnalato che non si è presentato/a al Suo appuntamento per <strong>${escapeHtml(vars.service)}</strong> il ${escapeHtml(vars.date)} da <strong>${escapeHtml(vars.salonName)}</strong>.</p><p>Purtroppo non è stato possibile addebitare la penale di mancata presentazione di ${escapeHtml(vars.feeAmount)} sulla carta registrata. La penale resta dovuta (secondo i Termini §4.4).</p>${button}`,
+    },
+    cancellation: {
+      de: `<p>Hallo,</p><p>Sie haben Ihren Termin für <strong>${escapeHtml(vars.service)}</strong> am ${escapeHtml(vars.date)} bei <strong>${escapeHtml(vars.salonName)}</strong> innerhalb der vereinbarten Stornofrist storniert.</p><p>Leider konnte die Stornierungsgebühr in Höhe von ${escapeHtml(vars.feeAmount)} nicht von Ihrer hinterlegten Karte abgebucht werden. Die Gebühr bleibt bestehen (gemäss AGB §4.2).</p>${button}`,
+      en: `<p>Hello,</p><p>You cancelled your appointment for <strong>${escapeHtml(vars.service)}</strong> on ${escapeHtml(vars.date)} at <strong>${escapeHtml(vars.salonName)}</strong> within the agreed cancellation window.</p><p>Unfortunately, we were unable to charge your cancellation fee of ${escapeHtml(vars.feeAmount)} to your card on file. The fee is still owed (per Terms §4.2).</p>${button}`,
+      fr: `<p>Bonjour,</p><p>Vous avez annulé votre rendez-vous pour <strong>${escapeHtml(vars.service)}</strong> le ${escapeHtml(vars.date)} chez <strong>${escapeHtml(vars.salonName)}</strong> pendant la période de frais convenue.</p><p>Malheureusement, nous n'avons pas pu débiter vos frais d'annulation de ${escapeHtml(vars.feeAmount)} sur votre carte enregistrée. Ces frais restent dus (conformément aux CGV §4.2).</p>${button}`,
+      it: `<p>Buongiorno,</p><p>Ha cancellato il Suo appuntamento per <strong>${escapeHtml(vars.service)}</strong> il ${escapeHtml(vars.date)} da <strong>${escapeHtml(vars.salonName)}</strong> entro il periodo di penale concordato.</p><p>Purtroppo non è stato possibile addebitare la penale di cancellazione di ${escapeHtml(vars.feeAmount)} sulla carta registrata. La penale resta dovuta (secondo i Termini §4.2).</p>${button}`,
+    },
+  };
+
+  return { to, subject: subjects[vars.kind][locale], html: bodies[vars.kind][locale] };
 }
 
 export function refundProcessedEmail(to: string, vars: { service: string; salonName: string; amount: string; net?: string; vat?: string; rate?: string; vatNumber?: string }, locale: EmailLocale = "de"): EmailPayload {

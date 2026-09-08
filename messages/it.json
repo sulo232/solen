@@ -2101,6 +2101,8 @@
       "serviceColumn": "Servizio"
     },
     "bookingsPage": {
+      "feeChargeFailed": "Penale non pagata",
+      "feeChargeRequiresAction": "Penale in sospeso",
       "title": "Appuntamenti",
       "filterAll": "Tutti",
       "emptyState": "Nessun appuntamento trovato",
@@ -6680,5 +6682,30 @@
     "step2": "Il Suo amico si registra e prenota un appuntamento",
     "step3": "Ricevete entrambi CHF 10 di credito!",
     "shareText": "Ehi! Prenota il tuo prossimo appuntamento su Solen e ricevi CHF 10 di credito con il mio codice: {code}\n{url}"
+  },
+  "feePay": {
+    "pendingTitle": "Pagamento in corso",
+    "pendingMessage": "Verifichi nuovamente lo stato prima di pagare.",
+    "checkStatus": "Verifica stato",
+    "reconciliationTitle": "Pagamento da verificare",
+    "reconciliationMessage": "Contatti il supporto Solen. Ulteriori pagamenti sono bloccati qui.",
+
+    "headingNoShow": "Paga la commissione per la mancata presentazione",
+    "headingLateCancel": "Paga la commissione di cancellazione",
+    "totalLabel": "Totale",
+    "termsSentence": "Questa commissione segue le condizioni di cancellazione accettate al momento della prenotazione.",
+    "payButton": "Paga {amount}",
+    "payFailed": "Pagamento non riuscito. Riprovi.",
+    "successTitle": "Pagamento riuscito",
+    "successReceipt": "Questa penale è stata pagata.",
+    "alreadySettledTitle": "Questa commissione è già stata pagata.",
+    "notDueTitle": "Al momento non è dovuta alcuna commissione.",
+    "invalidTitle": "Link non valido o scaduto",
+    "invalidMessage": "Questo link di pagamento non è più utilizzabile. La preghiamo di contattare il salone se ritiene si tratti di un errore.",
+    "networkErrorTitle": "Si è verificato un errore",
+    "networkErrorMessage": "Impossibile caricare questo pagamento. Riprovi.",
+    "confirmErrorTitle": "Il pagamento non è stato confermato",
+    "confirmErrorMessage": "La sua carta è stata addebitata, ma non siamo riusciti a confermare il pagamento. La preghiamo di contattare il salone.",
+    "retryLabel": "Riprova"
   }
 }

@@ -41,7 +41,7 @@ beforeEach(() => {
 
 describe("chargeOffSession Connect params", () => {
   it("sets application_fee_amount + transfer_data.destination for a connected account", async () => {
-    piCreateMock.mockResolvedValue({ id: "pi_1" });
+    piCreateMock.mockResolvedValue({ id: "pi_1", status: "succeeded" });
     await chargeOffSession({ ...BASE_ARGS, stripeAccountId: "acct_1" });
 
     const params = piCreateMock.mock.calls[0][0];
@@ -53,7 +53,7 @@ describe("chargeOffSession Connect params", () => {
   });
 
   it("omits application_fee_amount/transfer_data when there is no connected account", async () => {
-    piCreateMock.mockResolvedValue({ id: "pi_2" });
+    piCreateMock.mockResolvedValue({ id: "pi_2", status: "succeeded" });
     await chargeOffSession({ ...BASE_ARGS, stripeAccountId: null });
 
     const params = piCreateMock.mock.calls[0][0];
@@ -62,7 +62,7 @@ describe("chargeOffSession Connect params", () => {
   });
 
   it("passes the caller's idempotency key through untouched", async () => {
-    piCreateMock.mockResolvedValue({ id: "pi_3" });
+    piCreateMock.mockResolvedValue({ id: "pi_3", status: "succeeded" });
     await chargeOffSession({ ...BASE_ARGS, stripeAccountId: null });
 
     expect(piCreateMock.mock.calls[0][1]).toEqual({ idempotencyKey: "key-1" });
@@ -71,7 +71,7 @@ describe("chargeOffSession Connect params", () => {
 
 describe("chargeOffSession result mapping", () => {
   it("returns status:'charged' with the created PI id on success", async () => {
-    piCreateMock.mockResolvedValue({ id: "pi_ok" });
+    piCreateMock.mockResolvedValue({ id: "pi_ok", status: "succeeded" });
     const result = await chargeOffSession({ ...BASE_ARGS, stripeAccountId: null });
     expect(result).toEqual({ status: "charged", paymentIntentId: "pi_ok", chargedCents: 2500 });
   });
@@ -106,5 +106,13 @@ describe("chargeOffSession result mapping", () => {
     const result = await chargeOffSession({ ...BASE_ARGS, stripeAccountId: null });
     expect(result.status).toBe("failed");
     expect(alertAdminMock).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('Stripe pending results',()=>{
+  it.each(['processing','requires_capture'])('preserves %s instead of reporting authentication or success',async status=>{
+    piCreateMock.mockResolvedValue({id:'pi_pending',status});
+    expect(await chargeOffSession({...BASE_ARGS,stripeAccountId:null})).toEqual({status:'pending',paymentIntentId:'pi_pending'});
+    expect(alertAdminMock).not.toHaveBeenCalled();
   });
 });

@@ -16,11 +16,56 @@
 // (mirrors chargeFee/issueRefund's own convention). this function has no session
 // user to log against for a public/token-gated caller.
 
+import type { NextRequest } from "next/server";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { calculateCancellationFee } from "@/lib/cancellation-policy";
 import { toRappen, getStripe } from "@/lib/stripe";
 import { chargeFee, FeeError, type ChargeFeeResult } from "@/lib/bookings/charge-fee";
 import { issueRefund, RefundError } from "@/lib/bookings/issue-refund";
+import { sendFeePaymentIssueEmail } from "@/lib/email";
+import { buildFeePayUrl } from "@/lib/bookings/fee-pay-link";
+import { localizedField } from "@/lib/i18n/localized-field";
+
+async function notifyLateCancelFeePaymentIssue(
+  admin: SupabaseClient,
+  bookingId: string,
+  feeCents: number,
+): Promise<void> {
+  const { data: bk } = await admin
+    .from("bookings")
+    .select("user_id, guest_email, starts_at, services(name_de, name_en, name_fr, name_it), salons(name)")
+    .eq("id", bookingId)
+    .maybeSingle();
+  const booking = bk as Record<string, any> | null;
+  if (!booking) {
+    console.error(`[customer-cancel-money] payment-issue email: booking ${bookingId} not found`);
+    return;
+  }
+  const salonName = (booking.salons as { name?: string } | null)?.name ?? "Salon";
+  const services = booking.services as Record<string, string | null> | null;
+  const userId = (booking.user_id as string | null) ?? null;
+
+  let locale = "de";
+  if (userId) {
+    const { data: profile } = await admin.from("profiles").select("locale").eq("id", userId).maybeSingle();
+    locale = (profile?.locale as string) ?? "de";
+  }
+  const serviceName = localizedField(services, "name", locale) || "Service";
+  const payUrl = buildFeePayUrl(locale, bookingId, "cancellation");
+
+  await sendFeePaymentIssueEmail({
+    admin,
+    userId,
+    guestEmail: (booking.guest_email as string | null) ?? null,
+    serviceName,
+    salonName,
+    feeCents,
+    date: (booking.starts_at as string | null) ?? new Date().toISOString(),
+    payUrl,
+    kind: "cancellation",
+    logPrefix: "customer-cancel-money",
+  });
+}
 
 export interface CustomerCancelBookingRow {
   id: string;
@@ -107,6 +152,7 @@ export async function applyCustomerCancelMoney(
   booking: CustomerCancelBookingRow,
   salon: CustomerCancelSalonPolicy | null,
   reason: string,
+  auditContext?: { request: NextRequest; userId: string | null },
 ): Promise<CustomerCancelMoneyResult> {
   const baseCents = booking.paid_amount ?? toRappen(Number(booking.price_paid ?? 0));
 
@@ -258,12 +304,19 @@ export async function applyCustomerCancelMoney(
         id: booking.id,
         amountCents: feeCents,
         kind: "cancellation",
-        actor: "system",
+        actor: auditContext ? "customer" : "system",
+        actorUserId: auditContext?.userId,
+        request: auditContext?.request,
         reason,
       });
       feeChargeStatus = result.status;
       feeChargedCents = result.chargedCents ?? 0;
       feeChargePaymentIntentId = result.paymentIntentId ?? null;
+      if ((result.status === "failed" && result.declined) || result.status === "requires_action") {
+        await notifyLateCancelFeePaymentIssue(admin, booking.id, feeCents).catch((err) => {
+          console.error(`[customer-cancel-money] payment-issue email failed for booking ${booking.id}:`, err);
+        });
+      }
     } catch (e) {
       // NO_SAVED_CARD / INVALID_AMOUNT etc, log, do not fail the cancellation.
       if (e instanceof FeeError) {

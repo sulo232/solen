@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, type EmailLocale } from "@/lib/email";
 import { paymentFailedNotification } from "@/lib/email-templates/booking-notifications";
-import { toRappen } from "@/lib/stripe";
+import { toRappen, getStripe } from "@/lib/stripe";
 import { chargeOffSession } from "@/lib/bookings/off-session-charge";
 import { alertAdmin } from "@/lib/alert-admin";
 import { getServerEnv } from "@/lib/env";
@@ -49,6 +49,7 @@ export async function GET(req: NextRequest) {
 
   let charged = 0;
   let declined = 0;
+  let pending = 0;
   const errors: string[] = [];
 
   for (const booking of bookings ?? []) {
@@ -108,7 +109,8 @@ export async function GET(req: NextRequest) {
       // idempotencyKey so a cron retry / overlap before the row flips to 'paid'
       // collapses to ONE Stripe charge instead of double-charging the customer the
       // full amount (H2). Keyed on (booking, amount) — stable across retries.
-      const result = await chargeOffSession({
+      let expectedPaymentIntentId: string | null = null;
+      let result = await chargeOffSession({
         amountCents: amountRappen,
         stripeCustomerId: booking.stripe_customer_id,
         stripePaymentMethodId: booking.stripe_payment_method_id,
@@ -117,6 +119,38 @@ export async function GET(req: NextRequest) {
         idempotencyKey: `pre-charge:${booking.id}:${amountRappen}`,
         metadata: { type: "pre_charge", booking_id: booking.id, salon_id: booking.salon_id },
       });
+
+      if (result.status === "pending") {
+        // Retain the known PI without claiming payment. The selection above excludes
+        // this pointer on later runs, including after Stripe's idempotency window.
+        const { data: pendingRows, error: pendingError } = await admin.from("bookings")
+          .update({ payment_intent_id: result.paymentIntentId })
+          .eq("id", booking.id).eq("status", "confirmed")
+          .eq("payment_status", "card_saved").is("payment_intent_id", null)
+          .select("id");
+        pending++;
+        if (pendingError || !pendingRows?.length) {
+          void alertAdmin("pre-charge: pending payment pointer requires reconciliation", {
+            booking_id: booking.id, payment_intent: result.paymentIntentId,
+            error: pendingError?.message ?? "Booking changed before pointer publication",
+          });
+          errors.push(`booking ${booking.id}: pending payment pointer requires reconciliation`);
+          continue;
+        }
+        expectedPaymentIntentId = result.paymentIntentId;
+        // Close the webhook-before-publication race: that event could not match the
+        // new pointer yet. Later success events use the existing webhook owner.
+        try {
+          const current = await getStripe().paymentIntents.retrieve(result.paymentIntentId);
+          if (current.status !== "succeeded") continue;
+          result = { status: "charged", paymentIntentId: current.id, chargedCents: current.amount };
+          pending--;
+        } catch (error) {
+          console.error(`[pre-charge] pending payment status lookup failed for ${booking.id}:`, error);
+          errors.push(`booking ${booking.id}: pending payment status could not be refreshed`);
+          continue;
+        }
+      }
 
       if (result.status !== "charged") {
         // Decline / restricted account / SCA authentication_required. chargeOffSession
@@ -129,13 +163,9 @@ export async function GET(req: NextRequest) {
         );
       }
 
-      // Re-assert status=confirmed (TXN-03 / data-money-02): the Stripe charge above
-      // already succeeded, but the booking may have been cancelled between the SELECT
-      // that found it and this UPDATE (a concurrent cron overlap or a customer
-      // cancellation racing the batch). Confirm the update actually matched a row
-      // before counting it as charged, mirroring app/api/cron/no-show/route.ts.
-      const { data: updatedRows, error: updateError } = await admin
-        .from("bookings")
+      // Advance only the payment state and pointer observed by this attempt. A
+      // cancellation, refund or replacement during Stripe I/O must win unchanged.
+      const paidUpdate = admin.from("bookings")
         .update({
           payment_status: "paid",
           payment_intent_id: result.paymentIntentId,
@@ -144,13 +174,17 @@ export async function GET(req: NextRequest) {
         })
         .eq("id", booking.id)
         .eq("status", "confirmed")
-        .select("id");
+        .eq("payment_status", "card_saved");
+      const { data: updatedRows, error: updateError } = await (
+        expectedPaymentIntentId === null
+          ? paidUpdate.is("payment_intent_id", null)
+          : paidUpdate.eq("payment_intent_id", expectedPaymentIntentId)
+      ).select("id");
 
       if (updateError) {
-        // The UPDATE itself errored: the row is untouched, still card_saved/confirmed, and
-        // payment_intent_id was never written, so tomorrow's SELECT above would pick this
-        // booking up again and charge the same card a second time. The Stripe charge already
-        // succeeded, so this needs a human, not another automatic attempt.
+        // Stripe succeeded but recording payment failed. A previously published
+        // pending pointer prevents reselection; an initial synchronous success may
+        // still have a null pointer and needs reconciliation before another run.
         console.error(`[pre-charge] booking ${booking.id} charged in Stripe but the paid-marking update errored:`, updateError.message);
         void alertAdmin("pre-charge: paid-marking update failed after a successful Stripe charge", {
           booking_id: booking.id,
@@ -163,12 +197,19 @@ export async function GET(req: NextRequest) {
       }
 
       if (!updatedRows || updatedRows.length === 0) {
-        // Zero rows matched, no error: the booking was cancelled between the SELECT and this
-        // UPDATE, so status is no longer 'confirmed'. Bad (charged, not recorded) but not a
-        // repeat-charge risk, tomorrow's SELECT filters on status='confirmed' and will not
-        // select this row again.
-        console.error(`[pre-charge] booking ${booking.id} no longer confirmed after charge (changed between select and update); charged in Stripe but not marked paid, needs reconciliation`);
-        errors.push(`booking ${booking.id}: charged in Stripe but no longer confirmed after charge, needs reconciliation`);
+        // A webhook may have settled this exact payment during the refresh. Read
+        // the current row to recognize that winner without rewriting its amounts.
+        const { data: currentBooking, error: currentError } = await admin.from("bookings")
+          .select("status, payment_status, payment_intent_id")
+          .eq("id", booking.id).maybeSingle();
+        if (!currentError && currentBooking?.status === "confirmed"
+          && currentBooking.payment_status === "paid"
+          && currentBooking.payment_intent_id === result.paymentIntentId) {
+          charged++;
+          continue;
+        }
+        console.error(`[pre-charge] booking ${booking.id} changed payment state or pointer after charge; needs reconciliation`);
+        errors.push(`booking ${booking.id}: charged in Stripe but booking payment changed, needs reconciliation`);
         continue;
       }
 
@@ -205,6 +246,6 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return { charged, declined, processed: charged + declined, errors };
+  return { charged, declined, pending, processed: charged + declined + pending, errors };
   });
 }

@@ -22,11 +22,13 @@ export const EMAIL_FONT_STACK =
   "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif";
 
 /** Escape the few chars that would break out of an HTML text context. */
-function escapeHtml(s: string): string {
+export function escapeHtml(s: string): string {
   return s
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 // seo-comms-07 (2026-07-27): derive a plain-text alternative from a template's html so
@@ -275,6 +277,7 @@ export function bookingConfirmation(
       location: vars.address ?? vars.salon,
       startsAt: vars.icsStartsAt,
       endsAt: vars.icsEndsAt,
+      url: vars.manageUrl,
     });
     attachments = [{ filename: "termin.ics", content: Buffer.from(ics, "utf-8").toString("base64") }];
   }
@@ -1243,4 +1246,93 @@ export function waitlistSlotFreed(
     it: `<p>Uno slot per <strong>${escapeHtml(vars.service)}</strong> il <strong>${vars.date}</strong> è ora disponibile.</p><p><a href="https://solen.ch">Prenota ora →</a></p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
+}
+
+// ---------------------------------------------------------------------------
+// Fee payment issue email (2026-09-06, owner-approved variant B)
+// ---------------------------------------------------------------------------
+
+/**
+ * Send the customer a "your automated no-show/late-cancel fee could not be charged,
+ * here is a link to pay it" email, when chargeFee's off-session attempt lands on
+ * 'failed' (declined) or 'requires_action' (SCA). Called from the two automated fee
+ * paths (app/api/cron/no-show/route.ts, lib/bookings/customer-cancel-money.ts).
+ *
+ * Recipient resolution mirrors lib/bookings/notify-no-show-fee.ts's own shape (userId ->
+ * in-app + email when resolvable, guest -> email only, no address -> no-op). The in-app
+ * row reuses an EXISTING NotificationType ('no_show_charge' / 'late_cancellation_fee')
+ * for its title/body, WITHOUT emailParams: lib/notifications.ts's own type-keyed email
+ * switch has no case for this new template and is a closed set this app cannot extend
+ * from here, so routing the email through it would silently no-op (console.warn only).
+ * The actual email is therefore sent directly via sendEmail below, with the correct
+ * fee-FAILED copy, never through that switch.
+ */
+export async function sendFeePaymentIssueEmail(args: {
+  admin: import("@supabase/supabase-js").SupabaseClient;
+  userId: string | null;
+  guestEmail?: string | null;
+  serviceName: string;
+  salonName: string;
+  feeCents: number;
+  date: Date | string;
+  payUrl: string;
+  kind: "no_show" | "cancellation";
+  logPrefix: string;
+}): Promise<void> {
+  const { admin, userId, guestEmail, serviceName, salonName, feeCents, date, payUrl, kind, logPrefix } = args;
+  const { feePaymentIssueEmail } = await import("@/lib/email-templates/audit-notifications");
+  const { formatCurrency } = await import("@/lib/format-currency");
+  const { resolveSwissLocale } = await import("@/lib/format");
+
+  if (userId) {
+    const { data: profile, error: preferenceError } = await admin.from("profiles").select("locale, notification_email").eq("id", userId).single();
+    if (preferenceError) console.error(`[${logPrefix}] fee email preference lookup failed:`, preferenceError);
+    const locale: EmailLocale = (profile?.locale as EmailLocale) ?? "de";
+    const bcp47 = resolveSwissLocale(locale);
+    const amountStr = formatCurrency(feeCents / 100, bcp47);
+    const dateStr = new Date(date).toLocaleDateString(bcp47);
+    const { data: authUser } = await admin.auth.admin.getUserById(userId);
+    const email = authUser?.user?.email;
+
+    const inAppTitles: Record<"no_show" | "cancellation", Record<EmailLocale, string>> = {
+      no_show: {
+        de: "Zahlungsproblem: No-Show-Gebühr",
+        en: "Payment issue: no-show fee",
+        fr: "Problème de paiement : frais de non-présentation",
+        it: "Problema di pagamento: penale per mancata presentazione",
+      },
+      cancellation: {
+        de: "Zahlungsproblem: Stornogebühr",
+        en: "Payment issue: cancellation fee",
+        fr: "Problème de paiement : frais d'annulation",
+        it: "Problema di pagamento: penale di cancellazione",
+      },
+    };
+    const { sendNotification } = await import("@/lib/notifications");
+    await sendNotification({
+      userId,
+      type: kind === "no_show" ? "no_show_charge" : "late_cancellation_fee",
+      title: inAppTitles[kind][locale],
+      body: inAppTitles[kind][locale],
+      data: { feeCents, kind, status: "payment_issue" },
+    }).catch((err) => console.error(`[${logPrefix}] fee payment issue in-app notification failed:`, err));
+
+    if (email && !preferenceError && profile && profile.notification_email !== false) {
+      try {
+        await sendEmail(feePaymentIssueEmail(email, { service: serviceName, salonName, date: dateStr, feeAmount: amountStr, payUrl, kind }, locale));
+      } catch (err) {
+        console.error(`[${logPrefix}] fee payment issue email failed:`, err);
+      }
+    }
+    return;
+  }
+
+  if (!guestEmail) return;
+  const amountStr = formatCurrency(feeCents / 100, "de-CH");
+  const guestDateStr = new Date(date).toLocaleDateString("de-CH");
+  try {
+    await sendEmail(feePaymentIssueEmail(guestEmail, { service: serviceName, salonName, date: guestDateStr, feeAmount: amountStr, payUrl, kind }, "de"));
+  } catch (err) {
+    console.error(`[${logPrefix}] fee payment issue guest email failed:`, err);
+  }
 }

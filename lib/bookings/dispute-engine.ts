@@ -352,7 +352,7 @@ export interface ChargeUpchargeArgs {
 }
 
 export interface ChargeUpchargeResult {
-  status: "charged" | "requires_action" | "failed";
+  status: "charged" | "requires_action" | "pending" | "failed";
   paymentIntentId?: string | null;
   /** Rappen actually charged (present on success). */
   chargedCents?: number;
@@ -491,6 +491,9 @@ export async function chargeUpcharge(args: ChargeUpchargeArgs): Promise<ChargeUp
     idempotencyKey,
     metadata: { type: "upcharge", booking_id: booking.id, dispute_id: disputeId, actor: actorRole },
   });
+
+  // Pending Stripe processing/authorization leaves the approved dispute unchanged.
+  if (result.status === "pending") return result;
 
   // 8. SCA — leave at salon_approved so a later on-session re-auth can complete it.
   if (result.status === "requires_action") {

@@ -63,7 +63,7 @@ export default function ErrorState({
       )}
       <button
         onClick={onRetry}
-        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-pill bg-s-ink text-white text-sm font-medium hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 shadow-warm-sm"
+        className="relative before:absolute before:-inset-y-0.5 before:inset-x-0 before:content-[''] inline-flex items-center gap-2 px-5 py-2.5 rounded-pill bg-s-ink text-white text-sm font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 shadow-warm-sm"
       >
         <RotateCcw size={14} strokeWidth={1.6} />
         {retryLabel}

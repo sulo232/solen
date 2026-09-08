@@ -18,6 +18,7 @@ interface EnrichedBooking extends Booking {
   customer_avatar: string | null;
   service_name: string;
   staff_name: string | null;
+  fee_charge_status: string | null;
 }
 
 const STATUS_LABEL_KEYS = {
@@ -36,6 +37,8 @@ const STATUS_TONE: Record<BookingStatus, "success" | "warning" | "error" | "neut
   completed: "neutral",
   no_show: "neutral",
 };
+
+const FEE_CHARGE_LABEL_KEYS = { failed: "feeChargeFailed", requires_action: "feeChargeRequiresAction" } as const;
 
 const CANCEL_REASONS = [
   { value: "illness", labelKey: "reasonIllness" },
@@ -314,6 +317,9 @@ export default function BookingsPage() {
                 <div className="flex flex-col items-end gap-1.5 shrink-0">
                   <span className="font-heading font-semibold text-[13.5px] text-s-ink tabular-nums">{formatCurrency(Number(b.price_paid), locale)}</span>
                   <DashStatusPill tone={STATUS_TONE[b.status]}>{t(STATUS_LABEL_KEYS[b.status])}</DashStatusPill>
+                  {(b.fee_charge_status === "failed" || b.fee_charge_status === "requires_action") && (
+                    <DashStatusPill tone="warning">{t(FEE_CHARGE_LABEL_KEYS[b.fee_charge_status])}</DashStatusPill>
+                  )}
                 </div>
               </div>
               {b.status === "cancelled" && b.cancellation_reason && (

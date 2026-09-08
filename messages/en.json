@@ -2119,6 +2119,8 @@
       "serviceColumn": "Service"
     },
     "bookingsPage": {
+      "feeChargeFailed": "Fee payment failed",
+      "feeChargeRequiresAction": "Fee awaiting payment",
       "title": "Appointments",
       "filterAll": "All",
       "emptyState": "No appointments found",
@@ -6680,5 +6682,30 @@
     "step2": "Your friend signs up and books an appointment",
     "step3": "You both get CHF 10 credit!",
     "shareText": "Hey! Book your next appointment on Solen and get CHF 10 credit with my code: {code}\n{url}"
+  },
+  "feePay": {
+    "pendingTitle": "Payment is pending",
+    "pendingMessage": "Check the status again before paying.",
+    "checkStatus": "Check status",
+    "reconciliationTitle": "Payment needs review",
+    "reconciliationMessage": "Contact Solen support. Further payment is blocked here.",
+
+    "headingNoShow": "Pay the no-show fee",
+    "headingLateCancel": "Pay the cancellation fee",
+    "totalLabel": "Total",
+    "termsSentence": "This fee follows the cancellation terms you accepted when booking.",
+    "payButton": "Pay {amount}",
+    "payFailed": "Payment failed. Please try again.",
+    "successTitle": "Payment successful",
+    "successReceipt": "This fee has been paid.",
+    "alreadySettledTitle": "This fee is already paid.",
+    "notDueTitle": "No fee is currently due.",
+    "invalidTitle": "Invalid or expired link",
+    "invalidMessage": "This payment link can no longer be used. Please contact the salon if you believe this is a mistake.",
+    "networkErrorTitle": "Something went wrong",
+    "networkErrorMessage": "We could not load this payment. Please try again.",
+    "confirmErrorTitle": "Payment could not be confirmed",
+    "confirmErrorMessage": "Your card was charged, but we could not confirm it. Please contact the salon.",
+    "retryLabel": "Try again"
   }
 }

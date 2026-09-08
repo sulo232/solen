@@ -67,10 +67,12 @@ export function calculateCancellationFee(
   feeValueChf: number | null | undefined,
   freeCancelHours: number,
   baseCents: number,
-  appointmentStartsAt: Date
+  appointmentStartsAt: Date,
+  evaluatedAt = Date.now()
 ): { feeCents: number; isWithinWindow: boolean } {
+  if (!Number.isFinite(evaluatedAt) || !Number.isFinite(appointmentStartsAt.getTime())) return { feeCents: 0, isWithinWindow: false };
   const hoursUntil =
-    (appointmentStartsAt.getTime() - Date.now()) / (1000 * 60 * 60);
+    (appointmentStartsAt.getTime() - evaluatedAt) / (1000 * 60 * 60);
   const isWithinWindow = hoursUntil < freeCancelHours;
 
   // Cancelling early (outside the window) is free regardless of the fee policy.

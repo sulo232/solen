@@ -6,8 +6,8 @@ import type { Json } from "@/lib/database.types";
 
 
 export async function logAuditEvent(
-  req: NextRequest,
-  actorId: string,
+  req: NextRequest | null,
+  actorId: string | null,
   action: string,
   targetType: string,
   targetId?: string,
@@ -22,7 +22,7 @@ export async function logAuditEvent(
       target_id: targetId ?? null,
       // metadata is caller-supplied arbitrary JSON; cast to the generated Json column type.
       metadata: (metadata ?? {}) as Json,
-      ip_address: getClientIp(req),
+      ip_address: req ? getClientIp(req) : null,
     });
     if (error) {
       // PostgREST returns { error } on a rejected insert instead of throwing, so the

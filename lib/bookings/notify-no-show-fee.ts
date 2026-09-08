@@ -32,6 +32,7 @@ import { resolveSwissLocale } from "@/lib/format";
 export interface NotifyNoShowFeeArgs {
   /** ADMIN (service-role) Supabase client — the same one the caller holds. */
   admin: SupabaseClient;
+  kind?: "no_show" | "cancellation";
   /** Logged-in customer id, or null for a guest (no in-app row possible). */
   userId: string | null;
   /** Guest email when there is no userId (appointment guests). null for phone-only walk-ins. */
@@ -59,17 +60,20 @@ export interface NotifyNoShowFeeArgs {
  * Never throws meaningfully past the caller's `.catch` — money has already moved.
  */
 export async function notifyNoShowFee(args: NotifyNoShowFeeArgs): Promise<void> {
-  const { admin, userId, guestEmail, serviceName, salonName, feeCents, date, logPrefix } = args;
+  const { admin, kind = "no_show", userId, guestEmail, serviceName, salonName, feeCents, date, logPrefix } = args;
 
   const { sendNotification } = await import("@/lib/notifications");
 
   if (userId) {
     // Logged-in customer → in-app notification + email (mirror notify-refund:60-85).
-    const { data: profile } = await admin
+    const { data: profile, error: preferenceError } = await admin
       .from("profiles")
-      .select("locale")
+      .select("locale, notification_email")
       .eq("id", userId)
       .single();
+    if (preferenceError) {
+      console.error(`[${logPrefix}] fee receipt preference lookup failed:`, preferenceError);
+    }
     const locale: EmailLocale = (profile?.locale as EmailLocale) ?? "de";
     const bcp47 = resolveSwissLocale(locale);
     const amountStr = formatCurrency(feeCents / 100, bcp47);
@@ -78,13 +82,17 @@ export async function notifyNoShowFee(args: NotifyNoShowFeeArgs): Promise<void> 
     const { data: authUser } = await admin.auth.admin.getUserById(userId);
     const email = authUser?.user?.email;
 
+    const { noShowChargeEmail, lateCancellationFeeEmail } = await import("@/lib/email-templates/audit-notifications");
+    const receipt = (kind === "cancellation" ? lateCancellationFeeEmail : noShowChargeEmail)(
+      email ?? "", { service: serviceName, salonName, date: dateStr, feeAmount: amountStr }, locale,
+    );
     await sendNotification({
       userId,
-      type: "no_show_charge",
-      title: "Nichterscheinen-Gebühr berechnet",
-      body: `Dir wurde eine Nichterscheinen-Gebühr in Höhe von ${amountStr} berechnet.`,
-      data: { feeCents, kind: "no_show" },
-      emailParams: email
+      type: kind === "cancellation" ? "late_cancellation_fee" : "no_show_charge",
+      title: receipt.subject,
+      body: amountStr,
+      data: { feeCents, kind },
+      emailParams: email && !preferenceError && profile && profile.notification_email !== false
         ? { to: email, locale, vars: { service: serviceName, salonName, date: dateStr, feeAmount: amountStr } }
         : undefined,
     });
@@ -99,11 +107,11 @@ export async function notifyNoShowFee(args: NotifyNoShowFeeArgs): Promise<void> 
   }
   const amountStr = formatCurrency(feeCents / 100, "de-CH"); // no guest profile → de fallback.
   const guestDateStr = new Date(date).toLocaleDateString("de-CH"); // no guest profile → de fallback.
-  const { noShowChargeEmail } = await import("@/lib/email-templates/audit-notifications");
+  const { noShowChargeEmail, lateCancellationFeeEmail } = await import("@/lib/email-templates/audit-notifications");
   const { sendEmail } = await import("@/lib/email");
   try {
     await sendEmail(
-      noShowChargeEmail(
+      (kind === "cancellation" ? lateCancellationFeeEmail : noShowChargeEmail)(
         guestEmail,
         { service: serviceName, salonName, date: guestDateStr, feeAmount: amountStr },
         "de",

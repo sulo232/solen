@@ -83,6 +83,7 @@ export default function HideInBooking({
   if (
     /\/(booking|staff\/[^/]+|walk-in-pay)\/?$/.test(pathname) ||
     /\/booking\/(lookup|resend-link)\/?$/.test(pathname) ||
+    /\/booking\/[^/]+\/fee\/?$/.test(pathname) ||
     // Walk-in live-queue tracker (/queue/[token]) is a self-contained focused screen —
     // own salon hero + back affordance + sticky action bar. Drop the marketing chrome
     // so the footer/newsletter/cookie banner don't stack onto the live status (same

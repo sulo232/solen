@@ -96,6 +96,14 @@ export async function POST(req: NextRequest) {
         break;
       }
 
+      // All policy-fee types share pointer-checked settlement. They never enter the
+      // booking confirmation path, whose email would misdescribe a fee as a booking.
+      if (["fee_pay", "no_show_fee", "cancellation_fee"].includes(pi.metadata?.type)) {
+        const { settleFeePayment } = await import("@/lib/bookings/settle-fee-payment");
+        await settleFeePayment(admin, req, pi);
+        break;
+      }
+
       // Handle voucher purchases before booking handler
       const { handleVoucherPurchase } = await import("./voucher-handler");
       const wasVoucherPurchase = await handleVoucherPurchase(pi);
@@ -221,14 +229,17 @@ export async function POST(req: NextRequest) {
               console.error(`[StripeWebhook]:${rid} promo_counted_at claim threw:`, promoClaimCatchErr);
             }
           }
-        } else if (pi.metadata?.type !== "pre_charge") {
-          // A pre_charge PI (app/api/cron/pre-charge/route.ts) is CAPTURED IN FULL,
-          // not a deposit hold, and the cron already set payment_status='paid'
-          // synchronously when it captured. Without this guard, this async
-          // success delivery (which only knows type !== 'booking') would
-          // overwrite payment_status back to 'deposit_held', corrupting an
-          // already fully-paid booking. Genuine deposit-hold PIs (no type or
-          // any other non-'booking' type) still take the downgrade below.
+        } else if (pi.metadata?.type === "pre_charge") {
+          // A retained pending pre-charge becomes paid only on Stripe success.
+          // Advance card_saved only; preserve refunds, replays and competing pointers.
+          const { error: preChargeError } = await admin.from("bookings").update({
+            payment_status: "paid", paid_amount: pi.amount,
+            platform_fee: pi.application_fee_amount ?? 0,
+          }).eq("payment_intent_id", pi.id).eq("status", "confirmed")
+            .eq("payment_status", "card_saved");
+          if (preChargeError) throw preChargeError;
+        } else {
+          // Other intent types retain the existing deposit-hold treatment.
           await admin.from("bookings").update({
             payment_status: "deposit_held",
           }).eq("payment_intent_id", pi.id);
@@ -382,8 +393,7 @@ export async function POST(req: NextRequest) {
       // Conservative: if we can't resolve the salon, write nothing.
       const offSessionType = pi.metadata?.type;
       const isUpchargeCharge = offSessionType === "upcharge";
-      const isFeeCharge = offSessionType === "cancellation_fee" || offSessionType === "no_show_fee";
-      if (isUpchargeCharge || isFeeCharge) {
+      if (isUpchargeCharge) {
         try {
           const chargeBookingId = pi.metadata?.booking_id ?? null;
           // salon_id is not in the off-session PI metadata, resolve from the booking.
@@ -520,6 +530,8 @@ export async function POST(req: NextRequest) {
         if (tipErr) console.error(`[StripeWebhook]:${rid} tip status update (failed) failed:`, tipErr.message);
         break;
       }
+
+      if (["fee_pay", "no_show_fee", "cancellation_fee"].includes(pi.metadata?.type)) break;
 
       const bookingId = pi.metadata?.booking_id;
       if (bookingId) {

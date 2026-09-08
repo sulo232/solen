@@ -2,9 +2,10 @@
 //
 // THE single primitive that talks to Stripe `paymentIntents.create` for an
 // OFF-SESSION charge against an already-saved card (SP-G2 setup_future_usage).
-// Both money-IN paths reuse it (REFUND_APPEAL_PLAN §10b#3 "do not duplicate the
+// These money-IN paths reuse it (REFUND_APPEAL_PLAN §10b#3 "do not duplicate the
 // Stripe call"):
-//   - lib/bookings/charge-fee.ts  — Lane A cancellation / no-show policy fee
+//   - lib/bookings/charge-fee.ts: cancellation / no-show policy fee
+//   - app/api/cron/pre-charge/route.ts: scheduled booking prepayment
 //   - the dispute upcharge executor (chargeUpcharge in dispute-engine.ts) — D13
 //
 // It is INTENTIONALLY db-agnostic: it knows nothing about which columns or table
@@ -30,6 +31,8 @@ import { alertAdmin } from "@/lib/alert-admin";
 export interface OffSessionChargeArgs {
   /** Integer Rappen to charge; MUST be a positive integer (caller validates/caps first). */
   amountCents: number;
+  /** Fee caller publishes this intent before confirmation; other callers keep create+confirm. */
+  paymentIntentId?: string;
   /** Saved Stripe customer (SP-G2). */
   stripeCustomerId: string;
   /** Saved payment method on that customer (SP-G2 off-session card). */
@@ -46,6 +49,7 @@ export interface OffSessionChargeArgs {
 
 export type OffSessionChargeResult =
   | { status: "charged"; paymentIntentId: string; chargedCents: number }
+  | { status: "pending"; paymentIntentId: string }
   /** Off-session SCA: the PI is parked; the caller must surface a re-auth (notification hook). */
   | { status: "requires_action"; paymentIntentId: string | null; clientSecret: string | null }
   /**
@@ -86,7 +90,15 @@ export async function chargeOffSession(args: OffSessionChargeArgs): Promise<OffS
   }
 
   try {
-    const pi = await getStripe().paymentIntents.create(piParams, { idempotencyKey });
+    const pi = args.paymentIntentId
+      ? await getStripe().paymentIntents.confirm(args.paymentIntentId, { payment_method: stripePaymentMethodId, off_session: true }, { idempotencyKey })
+      : await getStripe().paymentIntents.create(piParams, { idempotencyKey });
+    if (pi.status === "processing" || pi.status === "requires_capture") {
+      return { status: "pending", paymentIntentId: pi.id };
+    }
+    if (pi.status !== "succeeded") {
+      return { status: "requires_action", paymentIntentId: pi.id, clientSecret: pi.client_secret };
+    }
     return { status: "charged", paymentIntentId: pi.id, chargedCents: amountCents };
   } catch (err: any) {
     // SCA fallback. An off-session charge can require strong customer auth; surface a

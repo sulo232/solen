@@ -7,8 +7,7 @@ import { calculateCancellationFee } from "@/lib/cancellation-policy";
 import { validateBody, bookingCancelSchema } from "@/lib/validations";
 import { toRappen } from "@/lib/stripe";
 import { issueRefund, RefundError } from "@/lib/bookings/issue-refund";
-import { applyCustomerCancelMoney, resolveCustomerCancelPolicy } from "@/lib/bookings/customer-cancel-money";
-import { logAuditEvent } from "@/lib/audit";
+import { applyCustomerCancelMoney, resolveCustomerCancelPolicy, type CustomerCancelMoneyResult } from "@/lib/bookings/customer-cancel-money";
 import { applyRateLimit, bookingLimiter, getClientIp } from "@/lib/ratelimit";
 import { resolveSwissLocale } from "@/lib/format";
 import { resolveBookingActor } from "@/lib/bookings/authorize";
@@ -234,7 +233,7 @@ export async function POST(
   // against the saved card, nothing to refund.
   let feeCents = 0;
   let isWithinWindow = false;
-  let feeChargeStatus: "charged" | "requires_action" | "failed" | "none" = "none";
+  let feeChargeStatus: CustomerCancelMoneyResult["feeChargeStatus"] = "none";
   let feeChargedCents = 0;
   if (isCustomer) {
     const adminForCustomerCancel = createAdminSupabaseClient();
@@ -257,6 +256,7 @@ export async function POST(
       },
       cancelPolicy,
       reason ?? (actor === "guest" ? "guest cancelled the booking" : "customer cancelled the booking"),
+      { request, userId },
     );
     feeCents = money.feeCents;
     isWithinWindow = money.isWithinWindow;
@@ -265,21 +265,8 @@ export async function POST(
     if (money.refundAmount > 0) {
       refundResult = { refundAmount: money.refundAmount, feeAmount: money.feeCents, isWithinWindow: money.isWithinWindow };
     }
-    // Lane A audit -> audit_log (NOT case_events; no dispute parent). Caller owns this.
-    // audit_log.actor_id is a uuid FK to profiles (ON DELETE SET NULL), and a token-verified
-    // guest has no profiles row, so only log when userId is set. (The upcharge PATCH route
-    // logs `userId ?? "guest"` for a guest actor, which throws a uuid-cast error against
-    // this same FK and is silently swallowed by logAuditEvent's own catch, a pre-existing
-    // gap in that route, not repeated here.)
-    if (money.feeChargeStatus !== "none" && userId) {
-      await logAuditEvent(request, userId, "cancellation_fee_charged", "booking", id, {
-        kind: "cancellation",
-        fee_cents: feeCents,
-        charged_cents: feeChargedCents,
-        status: money.feeChargeStatus,
-        payment_intent_id: money.feeChargePaymentIntentId,
-      });
-    }
+    // Successful fee audits belong to the shared settlement winner. A pending
+    // authorization remains pending in this response and is never reported charged.
   }
 
   // Free the slot. Use the FRESH slot_id from the CAS update above, not the stale

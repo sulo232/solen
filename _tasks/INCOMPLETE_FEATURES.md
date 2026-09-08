@@ -7,8 +7,8 @@
 ## Branch recovery: live verification and deferred source, 2026-09-08
 
 - **Recurring booking recovery**: [route](/Users/sulo/Documents/solen/app/api/bookings/recurring/route.ts:30). The missing claim and compensation checks are committed on local main with actual-handler tests using mocked external boundaries. **Remaining**: the existing RLS lesson requires a non-owner transaction in the target runtime; that live check has not run. **Next step**: use an authorized isolated customer fixture, suppress outbound delivery through an approved test setup, and verify competing slot claims and returned compensation rows. Do not describe mocked tests as live RLS proof.
-- **Approved fee-payment direction on the unmerged recent branch**: [source intent route](/Users/sulo/Documents/solen/.claude/worktrees/design-system-consolidation-10167f/app/api/bookings/[id]/fee-pay-intent/route.ts:1). Actual-route tests with external services mocked demonstrate concurrent sibling intents, replacement of an in-flight or succeeded intent, late pointer overwrite and legacy metadata mismatch. **Blocker**: those failures must be repaired before the flow enters main. **Next step**: preserve one payable intent per fee obligation, compatible settlement metadata and observed state transitions; rerun the named failure scenarios. No real duplicate charge was demonstrated. Evidence: [accepted diagnosis](/Users/sulo/Documents/Codex/solen-consolidation/2026-09-07/candidates/recent-branches/fee-diagnosis/findings.md).
-- **Remaining unique branch work and design choices**: [current reconciliation](/Users/sulo/Documents/solen/_plans/BRANCH_RECONCILIATION_2026-08-14.md:3) owns the active recovery order, source identities and pending signup/calendar choice. These items are in progress, not silently dropped or treated as merged. Worktrees remain preserved until integration or an explicit retention/cleanup decision.
+- **Approved fee-payment recovery**: [intent route](/Users/sulo/Documents/solen/app/api/bookings/[id]/fee-pay-intent/route.ts:1). The reproduced concurrent-intent, replacement, pointer-overwrite and metadata cases are repaired in the integrated local source and independently reviewed. Main161actual-handler/helper tests plus3mounted tests pass; full TypeScript passes. **Remaining**: no live Stripe/3DS/Connect/email transaction was exercised. Expired unknown claims and inherited pre-charge publication failure remain the explicit operational items below. Evidence: [final review](/Users/sulo/Documents/Codex/solen-consolidation/2026-09-08/branches/fee-review-precharge-final.md).
+- **Remaining unique branch work and design choices**: [current reconciliation](/Users/sulo/Documents/solen/_plans/BRANCH_RECONCILIATION_2026-08-14.md:3) owns the active recovery order, source identities and pending signup/calendar choice. These items are in progress, not silently dropped or treated as merged. Five completed branch/worktree pairs have been removed with preservation and dependency checks; unresolved source and active dependencies remain retained.
 
 ---
 
@@ -324,3 +324,17 @@ BLOCKER: none technical. It needs a different method, not more attempts at this 
 untried one: apply the treatment as a real, committed change behind a switch on the preview server
 only, so no embedding or URL reading is involved.
 IMPACT: none on the product. Nothing was applied to any real screen.
+
+## Expired unknown fee-intent reservation recovery (2026-09-08)
+
+- Files: `lib/bookings/charge-fee.ts` (`prepareFeePayment` retention guard), `app/api/bookings/[id]/fee-pay-intent/route.ts` (reconciliation response and admin alert).
+- Known exact Stripe intents can be recovered and published by the fee route even after the creation-key retention window. An expired claim with no safely identifiable intent is deliberately blocked instead of creating a potentially duplicate charge.
+- Blocker: `app/api/cron/reconcile/route.ts` reports payment mismatches but has no fee claim reset handler; no `app/api/admin` handler writes `fee_charge_claimed_at`. The customer sees payment review required and no retry-payment action for this case.
+- Next step: inspect the named booking and Stripe obligation with authorization, then implement and independently review a bounded administrative repair that proves the old intent is canceled/absent or adopts its verified pointer before releasing the claim. No claim reset or live payment/database operation was performed during consolidation.
+
+## Pre-charge pointer publication failure (inherited, 2026-09-08)
+
+- Files: `app/api/cron/pre-charge/route.ts:132`, `lib/bookings/off-session-charge.ts`.
+- Observed boundary: if Stripe creates an intent but the database refuses its pointer publication, a confirmed/card_saved booking can remain eligible with a null pointer. A later attempt beyond Stripe idempotency retention is not guaranteed to reuse the original intent. Baseline comparison confirms the preceding synchronous charged path has the same create-before-publication shape.
+- Blocker: no persisted pre-create claim protects this existing pre-charge path during a database publication outage. Successful pending-pointer persistence and normal webhook order tests do not establish that missing guarantee.
+- Next step: separately scope and review durable pre-charge reservation/reconciliation against creation, failed publication and an expired retry, using an isolated payment fixture before activation. No live duplicate charge or database outage was demonstrated during consolidation.

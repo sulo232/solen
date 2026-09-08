@@ -1,29 +1,14 @@
-// lib/bookings/charge-fee.ts
-//
-// THE single chokepoint that talks to Stripe `paymentIntents.create` for an
-// OFF-SESSION policy fee (cancellation / no-show) and writes bookings.fee_charge_*.
-// Sibling to lib/bookings/issue-refund.ts (REFUND_APPEAL_PLAN §10b#3): one refund
-// path + one charge path, both in lib/bookings/. The off-session pattern
-// (off_session:true, confirm:true, customer+payment_method, Connect
-// application_fee_amount + transfer_data.destination) is copied from
-// app/api/cron/pre-charge/route.ts — do NOT write a third ad-hoc off-session create.
-//
-// LANE A (REFUND_APPEAL_PLAN §11): these charges are AUTOMATED — no per-case human
-// review — because the customer pre-agreed to the salon's policy at booking
-// (bookings.policy_accepted_at / policy_snapshot). The CALLER logs the charge to
-// audit_log (logAuditEvent), NOT case_events (which is dispute-only; a policy
-// auto-charge has no dispute parent).
-//
-// MONEY UNIT: integer Rappen (centimes) end-to-end. `amountCents` in, Stripe
-// `amount` in Rappen, bookings.fee_charged_amount is INTEGER Rappen. The fee BASE
-// is paid_amount (Rappen) ?? toRappen(price_paid) — NEVER send a CHF number into
-// Stripe's `amount` (the live 100x bug the chokepoint avoids by construction).
+// The policy-fee owner shares one published PaymentIntent between automated saved-card
+// confirmation and customer recovery. Amounts are integer Rappen. Callers retain their
+// existing policy consent and cancellation/no-show decisions. Successful fees share
+// one settlement owner for the payout, audit and receipt.
 
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { toRappen } from "@/lib/stripe";
+import { getStripe, toRappen } from "@/lib/stripe";
 import { chargeOffSession } from "@/lib/bookings/off-session-charge";
 import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
-import { alertAdmin } from "@/lib/alert-admin";
+import type Stripe from "stripe";
+import type { NextRequest } from "next/server";
 
 export type FeeKind = "cancellation" | "no_show";
 export type FeeSource = "booking" | "walkin"; // 'walkin' reserved (D10); SP-AC implements 'booking'.
@@ -55,13 +40,15 @@ export interface ChargeFeeArgs {
   amountCents: number;
   kind: FeeKind;
   /** 'system' = cron no-show / window-expiry; 'salon' = salon-initiated. */
-  actor: "salon" | "system";
-  /** Free text for the audit log (written by the CALLER, not here). */
+  actor: "salon" | "system" | "customer";
+  actorUserId?: string | null;
+  /** Context supplied by the caller for the successful settlement audit. */
   reason: string;
+  request?: NextRequest;
 }
 
 export interface ChargeFeeResult {
-  status: "charged" | "requires_action" | "failed";
+  status: "charged" | "requires_action" | "pending" | "failed";
   paymentIntentId?: string;
   /** Rappen actually charged (present on success). */
   chargedCents?: number;
@@ -77,264 +64,204 @@ export interface ChargeFeeResult {
   declined?: boolean;
 }
 
-interface BookingRow {
+export interface FeeBooking {
   id: string;
-  payment_intent_id: string | null;
   paid_amount: number | null;
   price_paid: number | null;
   fee_charge_status: string | null;
   fee_charge_claimed_at: string | null;
+  fee_charge_intent_id: string | null;
+  fee_charge_kind: string | null;
   stripe_customer_id: string | null;
-  stripe_payment_method_id: string | null;
+  stripe_payment_method_id?: string | null;
   policy_accepted_at: string | null;
-  salon_id: string | null;
   salons: { stripe_account_id: string | null } | null;
 }
 
-// fee_charge_status values that mean "already settled / in flight" — a second charge
-// must NOT fire. Matches the bookings_fee_charge_status_check enum.
-const TERMINAL_OR_INFLIGHT = new Set(["charged", "requires_action"]);
-
-/**
- * Off-session policy-fee charge against the SP-G2 saved card. Idempotent + CAS-guarded
- * so the on-cancel hook and the no-show cron can never double-charge the same booking.
- * Never throws on a Stripe decline (returns status:'failed'); the cron loop continues.
- * SCA `authentication_required` -> status:'requires_action' (parks the PI, no retry).
- */
-export async function chargeFee(args: ChargeFeeArgs): Promise<ChargeFeeResult> {
-  const { db, source, id, amountCents, kind, actor } = args;
-
-  // D10: only 'booking' is implemented. 'walkin' reserved.
-  if (source !== "booking") {
-    throw new FeeError("UNSUPPORTED_SOURCE", `Fee source '${source}' not implemented`);
-  }
-
-  // 1. Validate input.
-  if (!Number.isInteger(amountCents) || amountCents <= 0) {
-    throw new FeeError("INVALID_AMOUNT", "amountCents must be a positive integer (Rappen)");
-  }
-
-  // 2. Fetch booking (admin client).
-  const { data: bookingData, error: fetchError } = await db
-    .from("bookings")
-    .select(
-      "id, payment_intent_id, paid_amount, price_paid, fee_charge_status, fee_charge_claimed_at, stripe_customer_id, stripe_payment_method_id, policy_accepted_at, salon_id, salons(stripe_account_id)"
-    )
-    .eq("id", id)
-    .single();
-
-  if (fetchError || !bookingData) {
-    throw new FeeError("BOOKING_NOT_FOUND", `Booking ${id} not found`);
-  }
-  const booking = bookingData as unknown as BookingRow;
-
-  // 3. Idempotency / status guard. If already charged or awaiting SCA, no second charge.
-  const currentStatus = booking.fee_charge_status;
-  if (currentStatus && TERMINAL_OR_INFLIGHT.has(currentStatus)) {
-    return {
-      status: currentStatus === "charged" ? "charged" : "requires_action",
-      paymentIntentId: undefined,
-    };
-  }
-
-  // 4. Require a saved card (SP-G2). Absent => skip (do not crash the cron loop).
-  const stripeCustomerId = booking.stripe_customer_id;
-  const stripePaymentMethodId = booking.stripe_payment_method_id;
-  if (!stripeCustomerId || !stripePaymentMethodId) {
-    throw new FeeError("NO_SAVED_CARD", `Booking ${id} has no saved card (SP-G2 not satisfied)`);
-  }
-
-  // 4b. LANE A CONSENT GATE (REFUND_APPEAL_PLAN §11 / Task B). A policy auto-charge has
-  //     no per-case human review — its ONLY legal basis is the customer's pre-agreement
-  //     at booking (bookings.policy_accepted_at). Enforced HERE in the chokepoint so no
-  //     caller can bypass it: a booking with no acceptance is NOT silently charged — the
-  //     callers catch this and leave it for a reviewed Lane B case (and log it).
-  if (!booking.policy_accepted_at) {
-    throw new FeeError(
-      "POLICY_NOT_ACCEPTED",
-      `Booking ${id} has no policy_accepted_at — refusing to auto-charge (no Lane A consent)`,
-    );
-  }
-
-  // 5. Resolve the fee base in Rappen and cap the charge. base = paid_amount (Rappen)
-  //    ?? toRappen(price_paid). NEVER send CHF into Stripe's amount.
-  const base = booking.paid_amount ?? toRappen(Number(booking.price_paid ?? 0));
-  const chargeCents = base > 0 ? Math.min(amountCents, base) : amountCents;
-
-  // Commission read mirrors pre-charge / dispute-engine (platform_settings 'commission',
-  // fallback = canonical DEFAULT_COMMISSION_RATE_PERCENT, NOT a bare `?? 1`). The old
-  // literal 1 disagreed with every other charge path (which default to 15) whenever the
-  // settings row was absent — the live "silent revenue drift" billing.ts warns about.
-  const { data: settings } = await db
-    .from("platform_settings")
-    .select("value")
-    .eq("key", "commission")
-    .single();
-  const ratePercent = (settings as any)?.value?.rate_percent ?? DEFAULT_COMMISSION_RATE_PERCENT;
-  const applicationFeeRappen = Math.round(chargeCents * (ratePercent / 100));
-
-  // 6. Deterministic idempotency key — a double cron tick or hook+cron race collapses
-  //    to ONE Stripe charge. Keyed on (source, booking, kind, amount).
-  const idempotencyKey = `fee:${source}:${id}:${kind}:${chargeCents}`;
-
-  // 6b. CLAIM-FIRST guard against the cross-kind race: the on-cancel hook (kind
-  //    'cancellation') and the no-show cron (kind 'no_show') can both read
-  //    fee_charge_status = null before either writes, since chargeOffSession is
-  //    keyed by (source, id, kind, amount) and different kinds don't share a
-  //    Stripe idempotency key. Claim fee_charge_claimed_at atomically BEFORE
-  //    calling Stripe, so only one caller can ever reach chargeOffSession for
-  //    this booking. Only null/'failed' rows are claimable (allows a first
-  //    attempt and a retry after a decline).
-  const claimedAt = new Date().toISOString();
-  // A claim older than STALE_CLAIM_MS is treated as crash-orphaned (the process died
-  // between the claim UPDATE and the post-charge casUpdate, so it never released the
-  // claim): reclaimable, so a hard process kill self-heals on the next attempt instead
-  // of permanently stranding the booking. 5 min is far longer than any Stripe round-trip
-  // (times out ~80s) and far longer than the microseconds between two genuinely
-  // concurrent claims, so an in-flight claim is never stolen.
-  const STALE_CLAIM_MS = 5 * 60 * 1000;
-  const staleBefore = new Date(Date.now() - STALE_CLAIM_MS).toISOString();
-  const { data: claimRow, error: claimErr } = await db
-    .from("bookings")
-    .update({ fee_charge_claimed_at: claimedAt, fee_charge_kind: kind })
-    .eq("id", id)
-    .or(`fee_charge_claimed_at.is.null,fee_charge_claimed_at.lt.${staleBefore}`)
-    .or("fee_charge_status.is.null,fee_charge_status.eq.failed")
-    .select("id")
-    .maybeSingle();
-
-  if (claimErr) {
-    console.error(`[charge-fee] claim write failed for booking ${id} (${kind}):`, claimErr.message);
-    // A DB write failure, not a card outcome: system-side.
-    return { status: "failed", error: `claim write failed: ${claimErr.message}`, declined: false };
-  }
-
-  if (!claimRow) {
-    // A concurrent chargeFee call already claimed this booking (or just resolved
-    // it). Re-read the status to report accurately, but never call Stripe here,
-    // the concurrent caller owns the charge.
-    const { data: refetched } = await db
-      .from("bookings")
-      .select("fee_charge_status")
-      .eq("id", id)
-      .single();
-    const raced = (refetched as { fee_charge_status: string | null } | null)?.fee_charge_status ?? null;
-    if (raced === "charged") return { status: "charged" };
-    if (raced === "requires_action") return { status: "requires_action" };
-    // A concurrent claim race, not a card outcome: system-side.
-    return {
-      status: "failed",
-      error: `booking ${id} already claimed by a concurrent charge attempt (fee_charge_status=${raced ?? "null"})`,
-      declined: false,
-    };
-  }
-
-  // 7. Off-session charge via the shared primitive (the single place that talks to
-  //    Stripe paymentIntents.create for an off-session charge, no duplicate Stripe
-  //    call, §10b#3). We charge first, then CAS the result onto a stale/null status
-  //    row so a concurrent caller that already advanced the status loses the write
-  //    (and Stripe collapsed via the shared idempotency key).
-  const stripeAccountId = booking.salons?.stripe_account_id ?? null;
-  const result = await chargeOffSession({
-    amountCents: chargeCents,
-    stripeCustomerId,
-    stripePaymentMethodId,
-    stripeAccountId,
-    applicationFeeCents: applicationFeeRappen,
-    idempotencyKey,
-    metadata: { type: `${kind}_fee`, booking_id: id, actor },
-  });
-
-  if (result.status === "requires_action") {
-    // 8. SCA fallback. Park the PI for a later on-session re-auth. Do NOT retry
-    //    off-session (it will keep failing). CAS onto a stale/null status row so a
-    //    racing caller can't clobber.
-    await casUpdate(db, id, currentStatus, {
-      fee_charge_status: "requires_action",
-      fee_charge_intent_id: result.paymentIntentId,
-      fee_charge_kind: kind,
-    });
-    console.error(
-      `[charge-fee] SCA authentication_required for booking ${id} (${kind}); parked PI ${result.paymentIntentId}`
-    );
-    return {
-      status: "requires_action",
-      paymentIntentId: result.paymentIntentId ?? undefined,
-      clientSecret: result.clientSecret ?? undefined,
-    };
-  }
-
-  if (result.status === "failed") {
-    // Any other Stripe error (decline, restricted account, etc.) -> failed, logged,
-    // cron continues to the next booking.
-    await casUpdate(db, id, currentStatus, {
-      fee_charge_status: "failed",
-      fee_charge_kind: kind,
-      fee_charge_claimed_at: null,
-    });
-    console.error(`[charge-fee] charge failed for booking ${id} (${kind}):`, result.error);
-    // Propagate the real Stripe classification (card decline vs. non-decline
-    // failure) instead of re-deriving it here.
-    return { status: "failed", error: result.error, declined: result.declined };
-  }
-
-  // 9. Success. CAS the charged state onto the stale/null status row.
-  await casUpdate(db, id, currentStatus, {
-    fee_charge_status: "charged",
-    fee_charged_amount: chargeCents,
-    fee_charge_intent_id: result.paymentIntentId,
-    fee_charge_kind: kind,
-  });
-
-  // 10. Audit (logAuditEvent) is the CALLER's responsibility — this chokepoint is
-  //     single-responsibility: money + the fee_charge_* booking columns only.
-  return { status: "charged", paymentIntentId: result.paymentIntentId, chargedCents: chargeCents };
+export class FeePaymentPending extends Error {
+  constructor(message: string, public retryable = false) { super(message); }
 }
 
-/**
- * Compare-and-set the fee_charge_* columns, guarded on the status we read before charging.
- * If a concurrent caller already advanced fee_charge_status, this matches 0 rows and is a
- * no-op (Stripe already collapsed via the shared idempotency key, so no double-charge).
- * `staleStatus` of null/undefined is matched with `.is(...)` (PostgREST null semantics).
- */
-async function casUpdate(
-  db: SupabaseClient,
-  id: string,
-  staleStatus: string | null,
-  patch: Record<string, unknown>
-): Promise<void> {
-  let q = db.from("bookings").update(patch).eq("id", id);
-  q = staleStatus == null ? q.is("fee_charge_status", null) : q.eq("fee_charge_status", staleStatus);
-  const { error } = await q;
-  if (error) {
-    // Non-fatal: the money already moved (or didn't). Log so the row drift is visible.
-    console.error(`[charge-fee] CAS status update failed for booking ${id}:`, error.message);
-    // Alert ONLY when this was the SUCCESS write (fee actually charged) — a captured
-    // fee whose fee_charge_status failed to persist is a money move with no record
-    // (the same drift class as the upcharge CAS). The 'failed' (decline) and
-    // 'requires_action' (parked PI) CAS writes moved NO money, so they don't alert.
-    if (patch.fee_charge_status === "charged") {
-      void alertAdmin("fee charged but status write failed", {
-        booking_id: id,
-        charged_cents: patch.fee_charged_amount ?? null,
-        payment_intent: patch.fee_charge_intent_id ?? null,
-        kind: patch.fee_charge_kind ?? null,
-        error: error.message,
-        note: "Money captured at Stripe; bookings.fee_charge_status did NOT advance to 'charged'. Reconcile manually.",
-      });
-    }
-    // Alert ALSO when this was a claim-RELEASE write (the 'failed'/decline path
-    // clearing fee_charge_claimed_at back to null for a retry). If that write
-    // itself fails, the claim stays stuck set with no other signal than this
-    // console.error, permanently stranding the booking (never re-claimable /
-    // fee-chargeable again).
-    if (patch.fee_charge_claimed_at === null) {
-      void alertAdmin("fee-charge claim release failed", {
-        booking_id: id,
-        kind: patch.fee_charge_kind ?? null,
-        error: error.message,
-        note: "fee_charge_claimed_at is stuck set (release write failed); clear it manually so the booking can be re-claimed and re-charged.",
-      });
+export function feeIntentKind(pi: Pick<Stripe.PaymentIntent, "metadata">): FeeKind | null {
+  if (pi.metadata.type === "no_show_fee") return "no_show";
+  if (pi.metadata.type === "cancellation_fee") return "cancellation";
+  if (pi.metadata.type === "fee_pay" && ["no_show", "cancellation"].includes(pi.metadata.kind)) {
+    return pi.metadata.kind as FeeKind;
+  }
+  return null;
+}
+
+export function matchesFeeIntent(pi: Stripe.PaymentIntent, booking: FeeBooking, kind: FeeKind, amount: number): boolean {
+  const customer = typeof pi.customer === "string" ? pi.customer : pi.customer?.id ?? null;
+  const destination = typeof pi.transfer_data?.destination === "string"
+    ? pi.transfer_data.destination : pi.transfer_data?.destination?.id ?? null;
+  return pi.metadata.booking_id === booking.id && feeIntentKind(pi) === kind &&
+    pi.amount === amount && pi.currency === "chf" && customer === booking.stripe_customer_id &&
+    destination === (booking.salons?.stripe_account_id ?? null);
+}
+
+async function findFeeIntent(booking: FeeBooking, kind: FeeKind, amount: number): Promise<Stripe.PaymentIntent | undefined> {
+  const stripe = getStripe();
+  let recovered: Stripe.PaymentIntent | undefined;
+  if (booking.stripe_customer_id) {
+    let after: string | undefined;
+    for (let page = 0; page < 10; page++) {
+      const result = await stripe.paymentIntents.list({ customer: booking.stripe_customer_id, limit: 100, ...(after ? { starting_after: after } : {}) });
+      for (const pi of result.data) {
+        if (pi.metadata.booking_id !== booking.id || !feeIntentKind(pi) || pi.status === "canceled") continue;
+        if (!matchesFeeIntent(pi, booking, kind, amount) || recovered) throw new FeePaymentPending("Fee intents require reconciliation");
+        recovered = pi;
+      }
+      if (!result.has_more) break;
+      if (page === 9 || !result.data.length) throw new FeePaymentPending("Fee history requires reconciliation");
+      after = result.data[result.data.length - 1].id;
     }
   }
+
+  return recovered;
+}
+
+/** Shared reservation for off-session fees and pay links. Publish before confirming or
+ * exposing a secret. Retries use the same Stripe key; an unresolved old claim is never
+ * stolen after Stripe may have forgotten that key. Expired unknown claims require
+ * manual Stripe inspection; this repository has no fee-claim reset endpoint. */
+export async function prepareFeePayment(db: SupabaseClient, booking: FeeBooking, kind: FeeKind, amount: number): Promise<Stripe.PaymentIntent> {
+  if (!booking.policy_accepted_at || (booking.fee_charge_kind && booking.fee_charge_kind !== kind)) {
+    throw new FeePaymentPending("Fee obligation does not match the accepted policy");
+  }
+  if (!booking.stripe_customer_id) throw new FeePaymentPending("Fee customer requires reconciliation");
+  const stripe = getStripe();
+  const pointer = booking.fee_charge_intent_id;
+  let recovered: Stripe.PaymentIntent | undefined;
+  if (pointer) {
+    const existing = await stripe.paymentIntents.retrieve(pointer);
+    if (!matchesFeeIntent(existing, booking, kind, amount)) throw new FeePaymentPending("Stored fee requires reconciliation");
+    const sibling = await findFeeIntent(booking, kind, amount);
+    if (existing.status !== "canceled") {
+      if (sibling && sibling.id !== existing.id) throw new FeePaymentPending("Fee has another active intent");
+      return existing;
+    }
+    // A retained reservation plus one exact active intent identifies an interrupted
+    // replacement. With no reservation, an independently payable sibling is ambiguous.
+    if (sibling && !booking.fee_charge_claimed_at) throw new FeePaymentPending("Fee has another active intent");
+    recovered = sibling;
+  }
+
+  const claimedAt = booking.fee_charge_claimed_at ?? new Date().toISOString();
+  if (!booking.fee_charge_claimed_at) {
+    let q = db.from("bookings").update({ fee_charge_claimed_at: claimedAt, fee_charge_kind: kind })
+      .eq("id", booking.id).is("fee_charge_claimed_at", null)
+      .or("fee_charge_status.is.null,fee_charge_status.eq.failed,fee_charge_status.eq.requires_action");
+    q = pointer ? q.eq("fee_charge_intent_id", pointer) : q.is("fee_charge_intent_id", null);
+    const { data, error } = await q.select("id").maybeSingle();
+    if (error) throw error;
+    if (!data) throw new FeePaymentPending("Fee preparation is already in progress", true);
+  }
+
+  if (!pointer) recovered = await findFeeIntent(booking, kind, amount);
+
+  let pi = recovered;
+  if (!pi) {
+    const age = Date.now() - new Date(claimedAt).getTime();
+    // Stripe retains idempotency results for at least 24 hours. Leave one hour of
+    // clock/transport margin; never create from an expired or malformed reservation.
+    if (!Number.isFinite(age) || age < 0 || age >= 23 * 60 * 60 * 1000) {
+      throw new FeePaymentPending("Fee preparation requires reconciliation");
+    }
+    const { data: settings, error } = await db.from("platform_settings").select("value").eq("key", "commission").maybeSingle();
+    if (error) throw error;
+    const rate = (settings as any)?.value?.rate_percent ?? DEFAULT_COMMISSION_RATE_PERCENT;
+    const destination = booking.salons?.stripe_account_id;
+    const params: Stripe.PaymentIntentCreateParams = {
+      amount, currency: "chf", automatic_payment_methods: { enabled: true, allow_redirects: "never" },
+      metadata: { type: "fee_pay", booking_id: booking.id, kind },
+      ...(booking.stripe_customer_id ? { customer: booking.stripe_customer_id } : {}),
+      ...(destination ? { application_fee_amount: Math.round(amount * rate / 100), transfer_data: { destination } } : {}),
+    };
+    const key = `fee:booking:${booking.id}:${kind}:${amount}${pointer ? `:after:${pointer}` : ""}`;
+    pi = await stripe.paymentIntents.create(params, { idempotencyKey: key });
+  }
+  if (!matchesFeeIntent(pi, booking, kind, amount)) throw new FeePaymentPending("Created fee does not match the obligation");
+
+  let publication = db.from("bookings").update({ fee_charge_intent_id: pi.id, fee_charge_claimed_at: null, fee_charge_kind: kind })
+    .eq("id", booking.id).eq("fee_charge_claimed_at", claimedAt)
+    .or("fee_charge_status.is.null,fee_charge_status.eq.failed,fee_charge_status.eq.requires_action");
+  publication = pointer ? publication.eq("fee_charge_intent_id", pointer) : publication.is("fee_charge_intent_id", null);
+  const { data: published, error: publishError } = await publication.select("id").maybeSingle();
+  if (publishError) throw publishError;
+  if (!published) {
+    const { data: current, error } = await db.from("bookings").select("fee_charge_intent_id, fee_charge_status").eq("id", booking.id).single();
+    if (error) throw error;
+    if (current?.fee_charge_intent_id !== pi.id || current?.fee_charge_status === "charged") {
+      // A newly created unexposed intent can be canceled, but never cancel the current
+      // pointer: another caller may already be completing it.
+      if (!recovered && current?.fee_charge_intent_id !== pi.id) await stripe.paymentIntents.cancel(pi.id);
+      throw new FeePaymentPending("Fee state changed during preparation");
+    }
+  }
+  return pi;
+}
+
+export async function chargeFee(args: ChargeFeeArgs): Promise<ChargeFeeResult> {
+  const { db, source, id, amountCents, kind } = args;
+  if (source !== "booking") throw new FeeError("UNSUPPORTED_SOURCE");
+  if (!Number.isInteger(amountCents) || amountCents <= 0) throw new FeeError("INVALID_AMOUNT");
+  const { data, error } = await db.from("bookings")
+    .select("id, paid_amount, price_paid, fee_charge_status, fee_charge_claimed_at, fee_charge_intent_id, fee_charge_kind, stripe_customer_id, stripe_payment_method_id, policy_accepted_at, salons(stripe_account_id)")
+    .eq("id", id).single();
+  if (error || !data) throw new FeeError("BOOKING_NOT_FOUND");
+  const booking = data as unknown as FeeBooking;
+  if (booking.fee_charge_status === "charged") return { status: "charged", paymentIntentId: booking.fee_charge_intent_id ?? undefined };
+  if (!booking.stripe_customer_id || !booking.stripe_payment_method_id) throw new FeeError("NO_SAVED_CARD");
+  if (!booking.policy_accepted_at) throw new FeeError("POLICY_NOT_ACCEPTED");
+  const base = booking.paid_amount ?? toRappen(Number(booking.price_paid ?? 0));
+  const amount = base > 0 ? Math.min(amountCents, base) : amountCents;
+  let pi: Stripe.PaymentIntent;
+  try { pi = await prepareFeePayment(db, booking, kind, amount); }
+  catch (err) {
+    console.error(`[charge-fee] preparation failed for booking ${id}:`, err);
+    return { status: "failed", error: "Fee preparation requires reconciliation or retry", declined: false };
+  }
+  // An in-flight payment or held authorization is not a card decline or a new
+  // confirmation opportunity. Leave its stored business state intact and wait.
+  if (pi.status === "processing" || pi.status === "requires_capture") {
+    return { status: "pending", paymentIntentId: pi.id };
+  }
+  if (pi.status === "requires_action" || (booking.fee_charge_intent_id && pi.status !== "succeeded")) {
+    return { status: "requires_action", paymentIntentId: pi.id, clientSecret: pi.client_secret ?? undefined };
+  }
+  const result = pi.status === "succeeded"
+    ? { status: "charged" as const, paymentIntentId: pi.id, chargedCents: pi.amount }
+    : await chargeOffSession({ amountCents: amount, stripeCustomerId: booking.stripe_customer_id,
+      stripePaymentMethodId: booking.stripe_payment_method_id, stripeAccountId: booking.salons?.stripe_account_id ?? null,
+      applicationFeeCents: pi.application_fee_amount ?? 0, idempotencyKey: `fee-confirm:${pi.id}`,
+      metadata: pi.metadata, paymentIntentId: pi.id });
+  if (result.status === "charged") {
+    // This is the same settlement winner used by the webhook and customer confirm.
+    // Retrieve the actual succeeded object instead of fabricating a status change.
+    const succeeded = pi.status === "succeeded" ? pi : await getStripe().paymentIntents.retrieve(pi.id);
+    const { settleFeePayment } = await import("@/lib/bookings/settle-fee-payment");
+    await settleFeePayment(db, args.request ?? null, succeeded, { actor: args.actor, actorUserId: args.actorUserId, via: "off_session", reason: args.reason });
+    return { status: "charged", paymentIntentId: pi.id, chargedCents: succeeded.amount };
+  }
+  if (result.status === "pending") return result;
+  const { data: updated, error: writeError } = await db.from("bookings").update({ fee_charge_status: result.status })
+    .eq("id", id).eq("fee_charge_intent_id", pi.id)
+    .or("fee_charge_status.is.null,fee_charge_status.eq.failed,fee_charge_status.eq.requires_action")
+    .select("id").maybeSingle();
+  if (writeError) {
+    console.error(`[charge-fee] result write failed for booking ${id}:`, writeError);
+    const { alertAdmin } = await import("@/lib/alert-admin");
+    await alertAdmin("fee result write failed", { booking_id: id, payment_intent: pi.id, error: writeError.message });
+  } else if (!updated) {
+    const { data: current } = await db.from("bookings").select("fee_charge_status, fee_charge_intent_id").eq("id", id).single();
+    if (current?.fee_charge_status === "charged" && current.fee_charge_intent_id === pi.id) {
+      return { status: "charged", paymentIntentId: pi.id, chargedCents: pi.amount };
+    }
+    return { status: "pending", paymentIntentId: pi.id };
+  }
+  if (result.status === "requires_action") {
+    return { status: "requires_action", paymentIntentId: pi.id, clientSecret: result.clientSecret ?? undefined };
+  }
+  return { status: "failed", paymentIntentId: pi.id, error: result.error, declined: result.declined };
 }
