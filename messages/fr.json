@@ -4465,7 +4465,8 @@
     "retail_low_stock_alert": "{count, plural, one {# produit à faible stock} other {# produits à faible stock}}",
     "retail_stock": "Stock : {count}",
     "retail_stock_minus": "Diminuer le stock",
-    "retail_stock_plus": "Augmenter le stock"
+    "retail_stock_plus": "Augmenter le stock",
+    "retail_cat_label": "Catégorie"
   },
   "makeup": {
     "coming_soon_title": "Bientôt disponible",

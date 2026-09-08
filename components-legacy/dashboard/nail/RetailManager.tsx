@@ -127,7 +127,7 @@ export default function RetailManager({ salonId }: { salonId: string }) {
               value={formData.category}
               onChange={(e) => setFormData({ ...formData, category: e.target.value })}
               className="flex-1 px-3 py-2 text-sm" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
-              aria-label={t("retail_cat_nail_care")}
+              aria-label={t("retail_cat_label")}
             >
               {/* A5 BUG-2: `nail_care` is NOT a valid DB category (never was in the CHECK) , the
                   nail-care option now uses the valid `care` value. General categories added so a

@@ -4447,7 +4447,8 @@
     "retail_low_stock_alert": "{count, plural, one {# prodotto in esaurimento} other {# prodotti in esaurimento}}",
     "retail_stock": "Scorte: {count}",
     "retail_stock_minus": "Riduci scorte",
-    "retail_stock_plus": "Aumenta scorte"
+    "retail_stock_plus": "Aumenta scorte",
+    "retail_cat_label": "Categoria"
   },
   "makeup": {
     "coming_soon_title": "Prossimamente",
