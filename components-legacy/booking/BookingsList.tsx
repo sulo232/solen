@@ -8,6 +8,7 @@ import CancelBookingSheet from './CancelBookingSheet';
 import RescheduleSheet from './RescheduleSheet';
 import { Skeleton } from '@/app/[locale]/_components/primitives';
 import EmptyState from '@/components-legacy/ui/EmptyState';
+import ErrorState from '@/components-legacy/ui/ErrorState';
 import { toast } from '@/app/[locale]/_components/primitives/Toast';
 
 type BookingTab = 'upcoming' | 'past' | 'cancelled';
@@ -19,6 +20,7 @@ interface BookingsListProps {
 export default function BookingsList({ userId }: BookingsListProps) {
   const t = useTranslations('bookingsList');
   const tUi = useTranslations('bookingsListUi');
+  const tCommon = useTranslations('common');
   const [tab, setTab] = useState<BookingTab>('upcoming');
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
@@ -214,9 +216,11 @@ export default function BookingsList({ userId }: BookingsListProps) {
       )}
 
       {!loading && error && (
-        <div className="text-center py-12">
-          <p className="text-s-error">{error}</p>
-        </div>
+        <ErrorState
+          title={tCommon('errorLoading')}
+          onRetry={fetchBookings}
+          retryLabel={tCommon('retry')}
+        />
       )}
 
       {!loading && !error && bookings.length === 0 && (
