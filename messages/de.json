@@ -800,21 +800,6 @@
     "viewReviewsCountAria": "{count} Bewertungen ansehen",
     "share": "Teilen"
   },
-  "cookies": {
-    "title": "Wir verwenden Cookies",
-    "description": "Wir nutzen Cookies für die Funktion der Website und optional für Analytics. Mehr dazu in unserer",
-    "privacyLink": "Datenschutzerklärung",
-    "accept": "Akzeptieren",
-    "reject": "Ablehnen",
-    "settings": "Cookie-Einstellungen",
-    "settingsTitle": "Cookie-Einstellungen",
-    "necessary": "Notwendig",
-    "necessaryDesc": "Erforderlich für die Grundfunktion",
-    "analytics": "Analytics",
-    "analyticsDesc": "Hilft uns, die Website zu verbessern",
-    "saveSettings": "Einstellungen speichern",
-    "acceptAll": "Alle akzeptieren"
-  },
   "notFound": {
     "title": "Seite nicht gefunden",
     "description": "Die Seite existiert nicht oder wurde verschoben.",
@@ -873,10 +858,6 @@
     "newsletterError": "Eintragen fehlgeschlagen. Bitte versuchen Sie es erneut."
   },
   "cookie": {
-    "title": "Wir verwenden Cookies",
-    "description": "Wir nutzen Cookies für die Funktion der Website und optional für Analytics.",
-    "accept": "Akzeptieren",
-    "reject": "Ablehnen",
     "settings": {
       "title": "Cookie-Einstellungen",
       "eyebrow": "Datenschutz",
@@ -895,14 +876,6 @@
       "cancel": "Abbrechen",
       "save": "Auswahl speichern"
     },
-    "necessary": "Notwendig",
-    "necessary_desc": "Erforderlich für die Grundfunktion",
-    "analytics_label": "Analytics",
-    "analytics_desc": "Hilft uns, die Website zu verbessern",
-    "marketing_label": "Marketing",
-    "marketing_desc": "Personalisierte Empfehlungen",
-    "save_settings": "Einstellungen speichern",
-    "accept_all": "Alle akzeptieren",
     "banner": {
       "ariaLabel": "Cookie-Einwilligung",
       "title": "Wir verwenden Cookies",
@@ -4645,7 +4618,6 @@
     "cta_button": "Jetzt Salon registrieren",
     "cta_consult": "Lieber eine persönliche Beratung?",
     "cta_consult_subject": "Beratung für Salon-Registrierung auf solen.ch",
-    "cta_counter": "Bereits von Salons in Basel vertraut",
     "pricing_title": "Transparent & Fair",
     "pricing_subtitle": "15% auf Neubuchungen · 0% auf Stammkunden. Keine versteckten Kosten, keine Verträge.",
     "pricing_badge": "Bestes Angebot",

@@ -800,21 +800,6 @@
     "viewReviewsCountAria": "View {count} reviews",
     "share": "Share"
   },
-  "cookies": {
-    "title": "We use cookies",
-    "description": "We use cookies for the website's functionality and optionally for analytics. Learn more in our",
-    "privacyLink": "Privacy Policy",
-    "accept": "Accept",
-    "reject": "Reject",
-    "settings": "Cookie Settings",
-    "settingsTitle": "Cookie Settings",
-    "necessary": "Necessary",
-    "necessaryDesc": "Required for basic functionality",
-    "analytics": "Analytics",
-    "analyticsDesc": "Helps us improve the website",
-    "saveSettings": "Save settings",
-    "acceptAll": "Accept all"
-  },
   "notFound": {
     "title": "Page not found",
     "description": "This page doesn't exist or has been moved.",
@@ -873,10 +858,6 @@
     "newsletterError": "Subscription failed. Please try again."
   },
   "cookie": {
-    "title": "We use cookies",
-    "description": "We use cookies for website functionality and optionally for analytics.",
-    "accept": "Accept",
-    "reject": "Reject",
     "settings": {
       "title": "Cookie Settings",
       "eyebrow": "Privacy",
@@ -895,14 +876,6 @@
       "cancel": "Cancel",
       "save": "Save selection"
     },
-    "necessary": "Necessary",
-    "necessary_desc": "Required for basic functionality",
-    "analytics_label": "Analytics",
-    "analytics_desc": "Helps us improve the website",
-    "marketing_label": "Marketing",
-    "marketing_desc": "Personalized recommendations",
-    "save_settings": "Save settings",
-    "accept_all": "Accept all",
     "banner": {
       "ariaLabel": "Cookie consent",
       "title": "We use cookies",
@@ -4645,7 +4618,6 @@
     "cta_button": "Register your salon now",
     "cta_consult": "Prefer a personal consultation?",
     "cta_consult_subject": "Consultation for salon registration on solen.ch",
-    "cta_counter": "Already trusted by salons in Basel",
     "pricing_title": "Transparent & Fair",
     "pricing_subtitle": "15% on new bookings · 0% on returning clients. No hidden fees, no contracts.",
     "pricing_badge": "Best deal",

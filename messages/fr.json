@@ -800,21 +800,6 @@
     "viewReviewsCountAria": "Voir {count} avis",
     "share": "Partager"
   },
-  "cookies": {
-    "title": "Nous utilisons des cookies",
-    "description": "Nous utilisons des cookies pour le fonctionnement du site et optionnellement pour l'analyse. En savoir plus dans notre",
-    "privacyLink": "Politique de confidentialité",
-    "accept": "Accepter",
-    "reject": "Refuser",
-    "settings": "Paramètres des cookies",
-    "settingsTitle": "Paramètres des cookies",
-    "necessary": "Nécessaire",
-    "necessaryDesc": "Requis pour les fonctionnalités de base",
-    "analytics": "Analyse",
-    "analyticsDesc": "Nous aide à améliorer le site",
-    "saveSettings": "Enregistrer les paramètres",
-    "acceptAll": "Tout accepter"
-  },
   "notFound": {
     "title": "Page non trouvée",
     "description": "Cette page n'existe pas ou a été déplacée.",
@@ -873,10 +858,6 @@
     "newsletterError": "Échec de l'inscription. Veuillez réessayer."
   },
   "cookie": {
-    "title": "Nous utilisons des cookies",
-    "description": "Nous utilisons des cookies pour le fonctionnement du site et optionnellement pour l'analyse.",
-    "accept": "Accepter",
-    "reject": "Refuser",
     "settings": {
       "title": "Paramètres des cookies",
       "eyebrow": "Confidentialité",
@@ -895,14 +876,6 @@
       "cancel": "Annuler",
       "save": "Enregistrer la sélection"
     },
-    "necessary": "Nécessaire",
-    "necessary_desc": "Requis pour les fonctions de base",
-    "analytics_label": "Analytique",
-    "analytics_desc": "Nous aide à améliorer le site",
-    "marketing_label": "Marketing",
-    "marketing_desc": "Recommandations personnalisées",
-    "save_settings": "Enregistrer les paramètres",
-    "accept_all": "Tout accepter",
     "banner": {
       "ariaLabel": "Consentement aux cookies",
       "title": "Nous utilisons des cookies",
@@ -4645,7 +4618,6 @@
     "cta_button": "Inscrire votre salon",
     "cta_consult": "Vous préférez un conseil personnalisé ?",
     "cta_consult_subject": "Conseil pour l'inscription salon sur solen.ch",
-    "cta_counter": "Déjà utilisé par des salons à Bâle",
     "pricing_title": "Transparent & Équitable",
     "pricing_subtitle": "15% sur les nouvelles réservations · 0% sur les clients fidèles. Pas de frais cachés, pas de contrat.",
     "pricing_badge": "Meilleure offre",

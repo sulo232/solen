@@ -782,21 +782,6 @@
     "viewReviewsCountAria": "Vedi {count} recensioni",
     "share": "Condividi"
   },
-  "cookies": {
-    "title": "Utilizziamo i cookie",
-    "description": "Utilizziamo i cookie per il funzionamento del sito e opzionalmente per l'analisi. Maggiori informazioni nella nostra",
-    "privacyLink": "Informativa sulla privacy",
-    "accept": "Accetta",
-    "reject": "Rifiuta",
-    "settings": "Impostazioni cookie",
-    "settingsTitle": "Impostazioni cookie",
-    "necessary": "Necessari",
-    "necessaryDesc": "Richiesti per le funzionalità di base",
-    "analytics": "Analisi",
-    "analyticsDesc": "Ci aiuta a migliorare il sito",
-    "saveSettings": "Salva impostazioni",
-    "acceptAll": "Accetta tutto"
-  },
   "notFound": {
     "title": "Pagina non trovata",
     "description": "Questa pagina non esiste o è stata spostata.",
@@ -855,10 +840,6 @@
     "newsletterError": "Iscrizione non riuscita. Riprovi."
   },
   "cookie": {
-    "title": "Utilizziamo i cookie",
-    "description": "Utilizziamo i cookie per la funzionalità del sito e opzionalmente per l'analisi.",
-    "accept": "Accetta",
-    "reject": "Rifiuta",
     "settings": {
       "title": "Impostazioni cookie",
       "eyebrow": "Privacy",
@@ -877,14 +858,6 @@
       "cancel": "Annulla",
       "save": "Salva selezione"
     },
-    "necessary": "Necessari",
-    "necessary_desc": "Necessario per le funzionalità di base",
-    "analytics_label": "Analitica",
-    "analytics_desc": "Ci aiuta a migliorare il sito",
-    "marketing_label": "Marketing",
-    "marketing_desc": "Raccomandazioni personalizzate",
-    "save_settings": "Salva impostazioni",
-    "accept_all": "Accetta tutto",
     "banner": {
       "ariaLabel": "Consenso ai cookie",
       "title": "Utilizziamo i cookie",
@@ -4627,7 +4600,6 @@
     "cta_button": "Registri il Suo salone",
     "cta_consult": "Preferisci una consulenza personale?",
     "cta_consult_subject": "Consulenza per registrazione salone su solen.ch",
-    "cta_counter": "Già scelto da saloni a Basilea",
     "pricing_title": "Trasparente & Equo",
     "pricing_subtitle": "15% sulle nuove prenotazioni · 0% sui clienti abituali. Nessun costo nascosto, nessun contratto.",
     "pricing_badge": "Miglior offerta",
