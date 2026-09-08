@@ -5,7 +5,7 @@ import SearchTemplate from "@/app/[locale]/_components/search/SearchTemplate";
 import type { SalonCategory } from "@/lib/types";
 import { getActiveCityBySlug, getActiveCities, getCityName, type CitySlug } from "@/lib/cities";
 import { getFilterAvailability } from "@/lib/search/filter-availability";
-import { buildAlternates } from "@/lib/seo";
+import { buildAlternates, generateBreadcrumbSchema, safeJsonLd } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 // DB `cities WHERE is_active` is the runtime gate (2026-07-04 city-rollout refactor); a city
@@ -209,11 +209,18 @@ export default async function Page({
   const cityName = getCityName(city, locale, row);
   const categoryName = CATEGORY_NAMES[category]?.[locale] || category;
   const filterAvailability = await getFilterAvailability();
+  const breadcrumb = generateBreadcrumbSchema([
+    { name: "Solen", item: buildAlternates("", locale).canonical },
+    { name: cityName, item: buildAlternates(city, locale).canonical },
+    { name: categoryName },
+  ]);
 
   return (
     // V3-D262 (W4, 2026-05-27): rewired from broken handcrafted page (raw bare salon
     // divs + no filters) to SearchTemplate, same pattern as /makeup + /waxing fix
     // (V3-D241 in W2). City + service filter inherited via SearchTemplate props.
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumb) }} />
     <SearchTemplate
       locale={locale}
       serviceFilter={category as SalonCategory}
@@ -230,5 +237,6 @@ export default async function Page({
       }}
       belowSlot={<CityCategoryFaq locale={locale} cityName={cityName} categoryName={categoryName} />}
     />
+    </>
   );
 }

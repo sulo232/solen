@@ -947,3 +947,11 @@ Bindings: `lib/email.ts`, `lib/email-templates/booking-notifications.ts`, `tests
 Observed failure: a DE/IT source recovery left an informal Italian infinitive in a subject, while source-touched French barber variants and cross-locale punctuation still violated the current copy law. Testing only German and Italian pronoun fragments did not exercise these adjacent outputs.
 
 Prevention: render every locale of each touched builder, assert exact clitics where a generic pronoun regex is ambiguous, and scan the rendered subject plus body for prohibited emoji and long dashes. Keep the assertion limited to the touched builders so it does not silently broaden a recovery into an unrelated catalog rewrite.
+
+### Recovery must preserve current route and consumer contracts
+
+Bindings: `app/[locale]/error.tsx`, `app/error.tsx`, `components-legacy/ui/ErrorFallback.tsx`, `app/[locale]/[city]/[category]/page.tsx`, `app/[locale]/_components/search/SearchTemplate.tsx`.
+
+Observed: historical error recovery deleted walk-in-join and its parity alias; historical SEO recovery built a server-fetch destination from request Host/protocol and forwarded arbitrary URL fields before suppressing the client fetch. Current search instead fixes the page size, derives coordinates from client state, and normalizes individual filters. Copying the historical seed path can therefore suppress the correct current query after rendering mismatched results. The shared error fallback also displayed raw English error messages under translated headings.
+
+Prevention: recover additions against the current owners; preserve unrelated route consumers; require exact server/client query identity before skipping a fetch. Keep diagnostic details in contextual logs and use the existing localized generic message in a route-level fallback. Exercise an actual throwing child and a healthy child, retry, and locale boundaries. These are recovery and acceptance checks, not a new gate.

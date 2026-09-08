@@ -63,17 +63,23 @@ export async function getCategorySeo(category: string): Promise<CategorySeo> {
 
   try {
     const supabase = createAdminSupabaseClient();
+    // Same visibility rule as app/sitemap.ts:54-56, so the ItemList JSON-LD below never lists a
+    // test or unlisted salon that the sitemap and salon page already hide from Google.
     const [countRes, salonsRes] = await Promise.all([
       supabase
         .from("salons")
         .select("id", { count: "exact", head: true })
         .contains("categories", [category])
-        .eq("is_active", true),
+        .eq("is_active", true)
+        .or("listed_on_marketplace.is.null,listed_on_marketplace.eq.true")
+        .or("is_test.is.null,is_test.eq.false"),
       supabase
         .from("salons")
         .select("name, slug, cover_photo_url, average_rating, review_count")
         .contains("categories", [category])
         .eq("is_active", true)
+        .or("listed_on_marketplace.is.null,listed_on_marketplace.eq.true")
+        .or("is_test.is.null,is_test.eq.false")
         .order("average_rating", { ascending: false })
         .limit(20),
     ]);

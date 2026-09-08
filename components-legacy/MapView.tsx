@@ -399,7 +399,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
   return (
     <div className="relative w-full h-full min-h-[200px]">
       {/* Map container */}
-      <div ref={containerRef} className={`w-full h-full min-h-[280px] md:min-h-[400px] rounded-[12px] overflow-hidden ${mapError ? 'hidden' : ''}`} />
+      <div ref={containerRef} role="region" aria-label={tCommon("salonCount", { count: salons.length })} className={`w-full h-full min-h-[280px] md:min-h-[400px] rounded-[12px] overflow-hidden ${mapError ? 'hidden' : ''}`} />
 
       {/* Fallback Error UI */}
       {mapError && (

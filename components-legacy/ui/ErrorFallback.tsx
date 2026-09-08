@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { AlertCircle, RotateCcw } from "lucide-react";
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
@@ -11,6 +12,11 @@ interface ErrorFallbackProps {
 
 export default function ErrorFallback({ error, reset }: ErrorFallbackProps) {
   const t = useTranslations("ui.error") as any;
+
+  useEffect(() => {
+    console.error("[ErrorFallback]", error);
+  }, [error]);
+
   return (
     <div className="min-h-[60vh] flex items-center justify-center px-4">
       <motion.div
@@ -26,11 +32,11 @@ export default function ErrorFallback({ error, reset }: ErrorFallbackProps) {
           {t("title")}
         </h2>
         <p className="text-sm text-s-ink-2 font-body mb-6">
-          {error.message || t("defaultMessage")}
+          {t("defaultMessage")}
         </p>
         <button
           onClick={reset}
-          className="inline-flex items-center gap-2 px-6 py-2.5 rounded-pill bg-s-ink text-white text-sm font-medium hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 shadow-warm-sm"
+          className="relative before:absolute before:-inset-y-0.5 before:inset-x-0 before:content-[''] inline-flex items-center gap-2 px-6 py-2.5 rounded-pill bg-s-ink text-white text-sm font-medium hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 shadow-warm-sm"
         >
           <RotateCcw size={14} strokeWidth={1.6} />
           {t("retry")}

@@ -216,12 +216,18 @@ interface CategoryListSalon {
   name: string;
   slug: string;
   cover_photo_url?: string | null;
+  average_rating?: number | null;
+  review_count?: number | null;
+  address?: string | null;
+  postal_code?: string | null;
+  categories?: string[] | null;
 }
 
 export function generateCategoryListSchema(
   category: string,
   salons: CategoryListSalon[],
   locale: string = "de",
+  options?: { url?: string; cityName?: string },
 ) {
   return {
     "@context": "https://schema.org",
@@ -231,15 +237,47 @@ export function generateCategoryListSchema(
     // salon in any other city (the seed DB already has Zuerich salons).
     // Category name only, no invented city.
     name: category.charAt(0).toUpperCase() + category.slice(1),
-    url: `https://solen.ch/${locale}/${category}`,
-    numberOfItems: salons.length,
-    itemListElement: salons.slice(0, 20).map((s, i) => ({
-      "@type": "ListItem",
-      position: i + 1,
-      url: `https://solen.ch/${locale}/salon/${s.slug}`,
-      name: s.name,
-      ...(s.cover_photo_url ? { image: s.cover_photo_url } : {}),
-    })),
+    url: options?.url ?? `https://solen.ch/${locale}/${category}`,
+    numberOfItems: Math.min(salons.length, 20),
+    itemListElement: salons.slice(0, 20).map((s, i) => {
+      const url = `https://solen.ch/${locale}/salon/${s.slug}`;
+      return {
+        "@type": "ListItem",
+        position: i + 1,
+        item: {
+          "@type": getSchemaType((s.categories ?? []) as SalonCategory[]),
+          "@id": url,
+          name: s.name,
+          url,
+          ...(s.cover_photo_url ? { image: s.cover_photo_url } : {}),
+          // No-fabrication: only emitted when the salon actually has reviews AND a rating to
+          // report, never a 0/0 placeholder.
+          ...(s.review_count && s.review_count > 0 && s.average_rating != null
+            ? {
+                aggregateRating: {
+                  "@type": "AggregateRating",
+                  ratingValue: s.average_rating,
+                  reviewCount: s.review_count,
+                },
+              }
+            : {}),
+          // A street address is the anchor; postalCode/addressLocality/addressCountry only
+          // join it when there IS a street to attach them to, so a salon with a postal_code
+          // but no street never emits a half address.
+          ...(s.address
+            ? {
+                address: {
+                  "@type": "PostalAddress",
+                  streetAddress: s.address,
+                  ...(s.postal_code ? { postalCode: s.postal_code } : {}),
+                  ...(options?.cityName ? { addressLocality: options.cityName } : {}),
+                  addressCountry: "CH",
+                },
+              }
+            : {}),
+        },
+      };
+    }),
   };
 }
 
@@ -259,6 +297,17 @@ export function generateWebsiteSchema(locale: string = "de") {
       },
       "query-input": "required name=search_term_string",
     },
+  };
+}
+
+/* ─── Organization schema (homepage) ─── */
+export function generateOrganizationSchema(locale: string = "de") {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Solen",
+    url: `https://solen.ch/${locale}`,
+    logo: "https://solen.ch/logo.svg",
   };
 }
 

@@ -37,6 +37,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { useRecentSearches, recentLabel } from "./useRecentSearches";
+import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import { Search } from "lucide-react";
 
 type BookingSalon = { slug: string | null; name: string | null; cover_photo_url: string | null };
@@ -70,8 +71,14 @@ export default function ContinueCard() {
 
   React.useEffect(() => {
     let active = true;
-    fetch("/api/bookings/user?tab=upcoming")
-      .then((r) => (r.ok ? r.json() : { bookings: [] }))
+    // A local session only gates this optional request; the API still verifies identity.
+    createBrowserSupabaseClient()
+      .auth.getSession()
+      .then(({ data: { session }, error }) => {
+        if (error) throw error;
+        if (!active || !session) return { bookings: [] };
+        return fetch("/api/bookings/user?tab=upcoming").then((r) => (r.ok ? r.json() : { bookings: [] }));
+      })
       .then((d) => {
         if (!active) return;
         const row = (d.bookings?.[0] as UpcomingBookingRow | undefined) ?? null;

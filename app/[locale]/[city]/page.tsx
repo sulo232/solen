@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getActiveCityBySlug, getCityName, getActiveCities, type CitySlug } from "@/lib/cities";
-import { buildAlternates } from "@/lib/seo";
+import { buildAlternates, generateBreadcrumbSchema, safeJsonLd } from "@/lib/seo";
 import CityPage from "@/components-legacy/CityPage";
 
 interface Props {
@@ -26,7 +26,17 @@ export default async function CityRoute({ params }: Props) {
     notFound();
   }
 
-  return <CityPage city={city as CitySlug} locale={locale} cityName={getCityName(city, locale, row)} />;
+  const cityName = getCityName(city, locale, row);
+  const breadcrumb = generateBreadcrumbSchema([
+    { name: "Solen", item: buildAlternates("", locale).canonical },
+    { name: cityName },
+  ]);
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumb) }} />
+      <CityPage city={city as CitySlug} locale={locale} cityName={cityName} />
+    </>
+  );
 }
 
 export async function generateStaticParams() {

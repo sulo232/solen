@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { buildAlternates } from "@/lib/seo";
+import { buildAlternates, generateWebsiteSchema, generateOrganizationSchema, safeJsonLd } from "@/lib/seo";
 import Hero from "./_components/homepage/Hero";
 import HomeSearchPill from "./_components/homepage/HomeSearchPill";
 import CategoryPillRow from "./_components/layout/CategoryPillRow";
@@ -238,8 +238,23 @@ export default async function Page({
     ...topSalonIds,
     ...Object.values(topByCategory).flat(),
   ]);
+  // P1-3 (gap-loop-2026-09-05): the home rendered zero application/ld+json blocks. WebSite +
+  // SearchAction and Organization are both compile-time-literal-only payloads (no DB-sourced
+  // value), so safeJsonLd's </script>-breakout escaping is applied for consistency with the other
+  // JSON-LD sites in this codebase, not because either payload here is user-editable.
+  const websiteJsonLd = generateWebsiteSchema(locale);
+  const organizationJsonLd = generateOrganizationSchema(locale);
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(websiteJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(organizationJsonLd) }}
+      />
       {/* FIX B (2026-08-01, owner "it should be search bar instead of category bar"): the sticky
           search-pill wrapper is a sibling BEFORE the page's root div, not nested inside it.
           Measured: that root div carries `overflow-hidden` (below), and ANY ancestor with a

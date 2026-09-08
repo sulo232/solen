@@ -1,14 +1,17 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { detectLocaleFromPathname } from "@/lib/detect-locale";
+import { ui, errors } from "@/messages/de.json";
 
-/**
- * Root error boundary — LOCKFILE §15.3 typographic language (2026-06-11
- * video-audit; matches the approved errors mockup + the new 404). Replaces
- * the retired-s-coral AlertTriangle layout. Outside [locale], so next-intl
- * is unavailable — German copy hardcoded like before, §15.4 human voice
- * (cause named, no exclamation cheer). One ink CTA + one blue link.
- */
+// Outside the locale provider, resolve the existing message keys after hydration.
+const DE_STRINGS = {
+  title: ui.error.title,
+  message: ui.error.defaultMessage,
+  retry: ui.error.retry,
+  home: errors["404_home"],
+};
+
 export default function Error({
   error,
   reset,
@@ -16,9 +19,34 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const [strings, setStrings] = useState(DE_STRINGS);
+  const [homeHref, setHomeHref] = useState("/");
+
   useEffect(() => {
     console.error("App error:", error);
   }, [error]);
+
+  useEffect(() => {
+    let active = true;
+    const locale = detectLocaleFromPathname(window.location.pathname);
+    setHomeHref(`/${locale}`);
+    if (locale === "de") return;
+    import(`@/messages/${locale}.json`)
+      .then((mod) => {
+        if (!active) return;
+        const data = mod.default ?? mod;
+        setStrings({
+          title: data?.ui?.error?.title ?? DE_STRINGS.title,
+          message: data?.ui?.error?.defaultMessage ?? DE_STRINGS.message,
+          retry: data?.ui?.error?.retry ?? DE_STRINGS.retry,
+          home: data?.errors?.["404_home"] ?? DE_STRINGS.home,
+        });
+      })
+      .catch((err) => {
+        console.error("[app/error.tsx] locale messages load failed:", err);
+      });
+    return () => { active = false; };
+  }, []);
 
   return (
     <div className="flex min-h-[70vh] flex-col items-center justify-center px-5 text-center">
@@ -29,21 +57,20 @@ export default function Error({
         Uff.
       </span>
       <h1 className="mt-4 font-heading text-[clamp(19px,2.6vw,22px)] font-bold tracking-[-0.02em] text-s-ink">
-        Das war unser Fehler.
+        {strings.title}
       </h1>
       <p className="mx-auto mt-3 max-w-[320px] font-body text-[14.5px] leading-relaxed text-s-ink-2">
-        Bei uns ist etwas kaputtgegangen. Ihre Buchungen sind sicher, versuchen
-        Sie es gleich nochmal.
+        {strings.message}
       </p>
       <div className="mt-7 flex flex-col items-center gap-4">
         <button
           onClick={reset}
           className="rounded-btn bg-s-ink px-7 py-3.5 font-heading text-sm font-semibold text-white transition-[transform,filter] duration-150 hover:brightness-[1.06] active:scale-[0.97]"
         >
-          Erneut versuchen
+          {strings.retry}
         </button>
-        <a href="/" className="font-body text-[13.5px] font-semibold text-s-ink-2 transition-colors duration-150 hover:text-s-ink">
-          Zur Startseite
+        <a href={homeHref} className="font-body text-[13.5px] font-semibold text-s-ink-2 transition-colors duration-150 hover:text-s-ink">
+          {strings.home}
         </a>
       </div>
     </div>
