@@ -859,7 +859,24 @@
     "description": "Utilizziamo i cookie per la funzionalità del sito e opzionalmente per l'analisi.",
     "accept": "Accetta",
     "reject": "Rifiuta",
-    "settings": "Impostazioni cookie",
+    "settings": {
+      "title": "Impostazioni cookie",
+      "eyebrow": "Privacy",
+      "intro": "Utilizziamo cookie e tecnologie simili per gestire e migliorare Solen. I cookie necessari sono sempre attivi. Lei decide se possiamo utilizzare anche cookie di analisi e marketing.",
+      "necessaryTitle": "Necessari",
+      "necessaryDesc": "Sessione di autenticazione, preferenza di lingua, questo stesso banner dei cookie. Sempre attivo (interesse legittimo).",
+      "necessaryAria": "Cookie necessari (sempre attivi)",
+      "analyticsTitle": "Analisi",
+      "analyticsDesc": "Statistiche di utilizzo anonime tramite PostHog. Aiutano a capire quali saloni vengono trovati e dove le prenotazioni vengono abbandonate.",
+      "analyticsAria": "Cookie di analisi",
+      "marketingTitle": "Marketing",
+      "marketingDesc": "Tracciamento delle conversioni e retargeting (Meta, Google), per mostrare annunci pertinenti e raggiungere nuovi clienti.",
+      "marketingAria": "Cookie di marketing",
+      "footerNote": "Può modificare le Sue impostazioni in qualsiasi momento tramite il link nel footer \"Impostazioni cookie\". Maggiori informazioni nella nostra",
+      "privacyLink": "Informativa sulla privacy",
+      "cancel": "Annulla",
+      "save": "Salva selezione"
+    },
     "necessary": "Necessari",
     "necessary_desc": "Necessario per le funzionalità di base",
     "analytics_label": "Analitica",
@@ -867,7 +884,16 @@
     "marketing_label": "Marketing",
     "marketing_desc": "Raccomandazioni personalizzate",
     "save_settings": "Salva impostazioni",
-    "accept_all": "Accetta tutto"
+    "accept_all": "Accetta tutto",
+    "banner": {
+      "ariaLabel": "Consenso ai cookie",
+      "title": "Utilizziamo i cookie",
+      "subtitle": "Analisi e marketing solo con il Suo consenso.",
+      "customizeAria": "Personalizza le impostazioni dei cookie",
+      "customize": "Personalizza",
+      "necessaryOnly": "Solo necessari",
+      "acceptAll": "Accetta tutto"
+    }
   },
   "onboarding": {
     "setup": {

@@ -877,7 +877,24 @@
     "description": "Nous utilisons des cookies pour le fonctionnement du site et optionnellement pour l'analyse.",
     "accept": "Accepter",
     "reject": "Refuser",
-    "settings": "Paramètres des cookies",
+    "settings": {
+      "title": "Paramètres des cookies",
+      "eyebrow": "Confidentialité",
+      "intro": "Nous utilisons des cookies et des technologies similaires pour faire fonctionner et améliorer Solen. Les cookies nécessaires sont toujours actifs. Vous décidez si nous pouvons également utiliser des cookies d'analyse et de marketing.",
+      "necessaryTitle": "Nécessaire",
+      "necessaryDesc": "Session d'authentification, préférence de langue, cette bannière de cookies elle-même. Toujours actif (intérêt légitime).",
+      "necessaryAria": "Cookies nécessaires (toujours actifs)",
+      "analyticsTitle": "Analyse",
+      "analyticsDesc": "Statistiques d'utilisation anonymes via PostHog. Elles nous aident à comprendre quels salons sont trouvés et où les réservations sont abandonnées.",
+      "analyticsAria": "Cookies d'analyse",
+      "marketingTitle": "Marketing",
+      "marketingDesc": "Suivi des conversions et retargeting (Meta, Google), afin de diffuser des publicités pertinentes et d'atteindre de nouveaux clients.",
+      "marketingAria": "Cookies marketing",
+      "footerNote": "Vous pouvez modifier vos paramètres à tout moment via le lien de pied de page \"Paramètres des cookies\". Plus d'informations dans notre",
+      "privacyLink": "Politique de confidentialité",
+      "cancel": "Annuler",
+      "save": "Enregistrer la sélection"
+    },
     "necessary": "Nécessaire",
     "necessary_desc": "Requis pour les fonctions de base",
     "analytics_label": "Analytique",
@@ -885,7 +902,16 @@
     "marketing_label": "Marketing",
     "marketing_desc": "Recommandations personnalisées",
     "save_settings": "Enregistrer les paramètres",
-    "accept_all": "Tout accepter"
+    "accept_all": "Tout accepter",
+    "banner": {
+      "ariaLabel": "Consentement aux cookies",
+      "title": "Nous utilisons des cookies",
+      "subtitle": "Analyse et marketing uniquement avec votre accord.",
+      "customizeAria": "Personnaliser les paramètres des cookies",
+      "customize": "Personnaliser",
+      "necessaryOnly": "Nécessaire uniquement",
+      "acceptAll": "Tout accepter"
+    }
   },
   "onboarding": {
     "setup": {

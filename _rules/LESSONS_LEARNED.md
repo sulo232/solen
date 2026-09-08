@@ -124,6 +124,12 @@ Before a change, search the ledger by affected paths, component or feature and s
 
 ## i18n
 
+### Existing translations need a live render owner
+- **Date**: 2026-09-08
+- **File(s)**: `app/[locale]/_components/primitives/CookieConsent.tsx`, `messages/de.json`, `messages/en.json`, `messages/fr.json`, `messages/it.json`
+- **Observed failure**: the cookie banner and settings rendered hardcoded German on every locale while unused cookie translations existed. The settings privacy link also omitted the active locale.
+- **Prevention**: verify the actual component calls the matching translation namespace, including accessible control names and shared primitive label overrides. Recover only the relevant leaves from historical branches, preserving current consent persistence, event handlers and route suppression. Check the real banner and settings in all four locales, Cancel discarding an unsaved toggle, and the localized privacy destination. JSON parity alone does not prove translated rendering.
+
 ### Locale projections and uncapped staff ratings must survive their real read/render path
 - Date: 2026-09-08
 - Files: `lib/salon-detail.ts`, `app/api/staff/[id]/profile/route.ts`, `components-legacy/staff/StaffProfilePage.tsx`, `components-legacy/staff/StaffReviewsSheet.tsx`, `app/[locale]/salon/[slug]/booking/page.tsx`, `components-legacy/booking/ServicesStaffStep.tsx`, `lib/booking-state.ts`, `app/api/bookings/route.ts`, `app/api/salon/bundles/route.ts`, `app/[locale]/tip/[bookingId]/page.tsx`, `app/[locale]/queue/[token]/page.tsx`, `app/[locale]/onboarding/salon/page.tsx`.

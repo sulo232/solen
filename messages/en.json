@@ -877,7 +877,24 @@
     "description": "We use cookies for website functionality and optionally for analytics.",
     "accept": "Accept",
     "reject": "Reject",
-    "settings": "Cookie Settings",
+    "settings": {
+      "title": "Cookie Settings",
+      "eyebrow": "Privacy",
+      "intro": "We use cookies and similar technologies to operate and improve Solen. Necessary cookies are always active. You decide whether we may also set analytics and marketing cookies.",
+      "necessaryTitle": "Necessary",
+      "necessaryDesc": "Auth session, language preference, this cookie banner itself. Always active (legitimate interest).",
+      "necessaryAria": "Necessary cookies (always active)",
+      "analyticsTitle": "Analytics",
+      "analyticsDesc": "Anonymous usage statistics via PostHog. They help us understand which salons are found and where bookings are abandoned.",
+      "analyticsAria": "Analytics cookies",
+      "marketingTitle": "Marketing",
+      "marketingDesc": "Conversion tracking and retargeting (Meta, Google), so we can show relevant ads and reach new customers.",
+      "marketingAria": "Marketing cookies",
+      "footerNote": "You can change your settings anytime via the footer link \"Cookie Settings\". More in our",
+      "privacyLink": "Privacy Policy",
+      "cancel": "Cancel",
+      "save": "Save selection"
+    },
     "necessary": "Necessary",
     "necessary_desc": "Required for basic functionality",
     "analytics_label": "Analytics",
@@ -885,7 +902,16 @@
     "marketing_label": "Marketing",
     "marketing_desc": "Personalized recommendations",
     "save_settings": "Save settings",
-    "accept_all": "Accept all"
+    "accept_all": "Accept all",
+    "banner": {
+      "ariaLabel": "Cookie consent",
+      "title": "We use cookies",
+      "subtitle": "Analytics and marketing only with your OK.",
+      "customizeAria": "Customize cookie settings",
+      "customize": "Customize",
+      "necessaryOnly": "Necessary only",
+      "acceptAll": "Accept all"
+    }
   },
   "onboarding": {
     "setup": {

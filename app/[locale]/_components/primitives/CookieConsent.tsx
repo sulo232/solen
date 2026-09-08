@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { usePathname } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { Cookie, Settings2 } from "lucide-react";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "./Modal";
 import { Switch } from "./Switch";
@@ -254,6 +255,7 @@ function useOverlayOwnsScreen(): boolean {
 
 function CookieBanner({ onVisibilityChange }: { onVisibilityChange: (visible: boolean) => void }) {
   const { acceptAll, acceptNecessary, openSettings } = useCookieConsent();
+  const t = useTranslations("cookie.banner");
   const pathname = usePathname() ?? "/";
   const overlayOwnsScreen = useOverlayOwnsScreen();
   const suppressedByRoute = !!pathname && (
@@ -301,7 +303,7 @@ function CookieBanner({ onVisibilityChange }: { onVisibilityChange: (visible: bo
   return (
     <div
       role="region"
-      aria-label="Cookie-Einwilligung"
+      aria-label={t("ariaLabel")}
       className={cn(
         // Z-INDEX FIX (2026-09-04): was `z-tooltip` (700), which sat above the toast layer (600)
         // and covered the favorites Undo toast on a fresh session with no consent yet. Moved to
@@ -357,10 +359,10 @@ function CookieBanner({ onVisibilityChange }: { onVisibilityChange: (visible: bo
           </span>
           <div className="min-w-0 flex-1">
             <div className="font-body font-semibold text-[15px] md:text-[16px] leading-[1.3] text-s-ink mb-0.5">
-              Wir verwenden Cookies
+              {t("title")}
             </div>
             <p className="font-body font-normal text-[13px] md:text-[14px] leading-[1.45] text-s-ink-2">
-              Analyse &amp; Marketing nur mit Ihrem OK.
+              {t("subtitle")}
             </p>
           </div>
           {/* V2-D49o-fu: Anpassen text → Settings icon button on the far
@@ -370,7 +372,7 @@ function CookieBanner({ onVisibilityChange }: { onVisibilityChange: (visible: bo
           <button
             type="button"
             onClick={openSettings}
-            aria-label="Cookie-Einstellungen anpassen"
+            aria-label={t("customizeAria")}
             className={cn(
               "shrink-0 grid h-9 w-9 place-items-center rounded-full",
               "bg-white border border-s-border text-s-ink-2 cursor-pointer",
@@ -399,7 +401,7 @@ function CookieBanner({ onVisibilityChange }: { onVisibilityChange: (visible: bo
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 rounded-md",
             )}
           >
-            Anpassen
+            {t("customize")}
           </button>
           <button
             type="button"
@@ -413,7 +415,7 @@ function CookieBanner({ onVisibilityChange }: { onVisibilityChange: (visible: bo
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
             )}
           >
-            Nur notwendige
+            {t("necessaryOnly")}
           </button>
           <button
             type="button"
@@ -427,7 +429,7 @@ function CookieBanner({ onVisibilityChange }: { onVisibilityChange: (visible: bo
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
             )}
           >
-            Alle akzeptieren
+            {t("acceptAll")}
           </button>
         </div>
       </div>
@@ -446,6 +448,9 @@ interface CookieSettingsModalProps {
 
 function CookieSettingsModal({ isOpen, onOpenChange }: CookieSettingsModalProps) {
   const { consent, savePreferences } = useCookieConsent();
+  const locale = useLocale();
+  const t = useTranslations("cookie.settings");
+  const tCommon = useTranslations("common");
   const [analytics, setAnalytics] = React.useState(consent?.analytics ?? false);
   const [marketing, setMarketing] = React.useState(consent?.marketing ?? false);
 
@@ -460,57 +465,51 @@ function CookieSettingsModal({ isOpen, onOpenChange }: CookieSettingsModalProps)
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="lg">
       <ModalHeader
-        title="Cookie-Einstellungen"
-        eyebrow="Datenschutz"
+        title={t("title")}
+        eyebrow={t("eyebrow")}
+        closeAriaLabel={tCommon("close")}
         size="lg"
         onClose={() => onOpenChange(false)}
       />
       <ModalBody size="lg">
-        <p className="text-s-ink-2 mb-4">
-          Wir nutzen Cookies und ähnliche Technologien, um Solen zu betreiben und zu verbessern.
-          Notwendige Cookies sind immer aktiv. Sie entscheiden, ob wir auch Analyse + Marketing-Cookies
-          setzen dürfen.
-        </p>
+        <p className="text-s-ink-2 mb-4">{t("intro")}</p>
 
         <div className="bg-s-bg-base border border-s-border rounded-[12px] px-4">
           <div className="flex items-center justify-between gap-4 py-[14px] border-b border-s-border">
             <div className="flex flex-col">
-              <span className="font-body font-semibold text-[15px] text-s-ink">Notwendig</span>
+              <span className="font-body font-semibold text-[15px] text-s-ink">{t("necessaryTitle")}</span>
               <span className="font-body font-normal text-[13px] text-s-ink-2 mt-1">
-                Auth-Session, Sprachpräferenz, dieser Cookie-Banner selbst. Immer aktiv (legitime
-                Interessen).
+                {t("necessaryDesc")}
               </span>
             </div>
-            <Switch checked disabled aria-label="Notwendige Cookies (immer aktiv)" />
+            <Switch checked disabled aria-label={t("necessaryAria")} />
           </div>
 
           <div className="flex items-center justify-between gap-4 py-[14px] border-b border-s-border">
             <div className="flex flex-col">
-              <span className="font-body font-semibold text-[15px] text-s-ink">Analyse</span>
+              <span className="font-body font-semibold text-[15px] text-s-ink">{t("analyticsTitle")}</span>
               <span className="font-body font-normal text-[13px] text-s-ink-2 mt-1">
-                Anonyme Nutzungsstatistiken via PostHog — hilft uns zu verstehen, welche Salons gefunden werden und wo Buchungen abbrechen. {/* em-dash-ok: pre-existing dash, unrelated to this word-only edit */}
+                {t("analyticsDesc")}
               </span>
             </div>
-            <Switch checked={analytics} onCheckedChange={setAnalytics} aria-label="Analyse-Cookies" />
+            <Switch checked={analytics} onCheckedChange={setAnalytics} aria-label={t("analyticsAria")} />
           </div>
 
           <div className="flex items-center justify-between gap-4 py-[14px]">
             <div className="flex flex-col">
-              <span className="font-body font-semibold text-[15px] text-s-ink">Marketing</span>
+              <span className="font-body font-semibold text-[15px] text-s-ink">{t("marketingTitle")}</span>
               <span className="font-body font-normal text-[13px] text-s-ink-2 mt-1">
-                Konversions-Tracking + Retargeting (Meta, Google) — damit wir relevante Anzeigen
-                ausspielen und neue Kund:innen erreichen.
+                {t("marketingDesc")}
               </span>
             </div>
-            <Switch checked={marketing} onCheckedChange={setMarketing} aria-label="Marketing-Cookies" />
+            <Switch checked={marketing} onCheckedChange={setMarketing} aria-label={t("marketingAria")} />
           </div>
         </div>
 
         <p className="text-[13px] text-s-ink-2 mt-4">
-          Sie können Ihre Einstellungen jederzeit über den Footer-Link
-          "Cookie-Einstellungen" ändern. Mehr in unserer{" "}
-          <a href="/datenschutz" className="text-s-ink hover:text-s-ink transition-colors">
-            Datenschutzerklärung
+          {t("footerNote")}{" "}
+          <a href={`/${locale}/privacy`} className="text-s-ink hover:text-s-ink transition-colors">
+            {t("privacyLink")}
           </a>
           .
         </p>
@@ -526,7 +525,7 @@ function CookieSettingsModal({ isOpen, onOpenChange }: CookieSettingsModalProps)
             "hover:bg-s-bg-sunken transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide",
           )}
         >
-          Abbrechen
+          {t("cancel")}
         </button>
         <button
           type="button"
@@ -538,7 +537,7 @@ function CookieSettingsModal({ isOpen, onOpenChange }: CookieSettingsModalProps)
             "hover:bg-black transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide",
           )}
         >
-          Auswahl speichern
+          {t("save")}
         </button>
       </ModalFooter>
     </Modal>

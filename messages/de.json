@@ -877,7 +877,24 @@
     "description": "Wir nutzen Cookies für die Funktion der Website und optional für Analytics.",
     "accept": "Akzeptieren",
     "reject": "Ablehnen",
-    "settings": "Cookie-Einstellungen",
+    "settings": {
+      "title": "Cookie-Einstellungen",
+      "eyebrow": "Datenschutz",
+      "intro": "Wir nutzen Cookies und ähnliche Technologien, um Solen zu betreiben und zu verbessern. Notwendige Cookies sind immer aktiv. Sie entscheiden, ob wir auch Analyse + Marketing-Cookies setzen dürfen.",
+      "necessaryTitle": "Notwendig",
+      "necessaryDesc": "Auth-Session, Sprachpräferenz, dieser Cookie-Banner selbst. Immer aktiv (legitime Interessen).",
+      "necessaryAria": "Notwendige Cookies (immer aktiv)",
+      "analyticsTitle": "Analyse",
+      "analyticsDesc": "Anonyme Nutzungsstatistiken via PostHog. Sie helfen uns zu verstehen, welche Salons gefunden werden und wo Buchungen abbrechen.",
+      "analyticsAria": "Analyse-Cookies",
+      "marketingTitle": "Marketing",
+      "marketingDesc": "Konversions-Tracking + Retargeting (Meta, Google), damit wir relevante Anzeigen ausspielen und neue Kund:innen erreichen.",
+      "marketingAria": "Marketing-Cookies",
+      "footerNote": "Sie können Ihre Einstellungen jederzeit über den Footer-Link \"Cookie-Einstellungen\" ändern. Mehr in unserer",
+      "privacyLink": "Datenschutzerklärung",
+      "cancel": "Abbrechen",
+      "save": "Auswahl speichern"
+    },
     "necessary": "Notwendig",
     "necessary_desc": "Erforderlich für die Grundfunktion",
     "analytics_label": "Analytics",
@@ -885,7 +902,16 @@
     "marketing_label": "Marketing",
     "marketing_desc": "Personalisierte Empfehlungen",
     "save_settings": "Einstellungen speichern",
-    "accept_all": "Alle akzeptieren"
+    "accept_all": "Alle akzeptieren",
+    "banner": {
+      "ariaLabel": "Cookie-Einwilligung",
+      "title": "Wir verwenden Cookies",
+      "subtitle": "Analyse & Marketing nur mit Ihrem OK.",
+      "customizeAria": "Cookie-Einstellungen anpassen",
+      "customize": "Anpassen",
+      "necessaryOnly": "Nur notwendige",
+      "acceptAll": "Alle akzeptieren"
+    }
   },
   "onboarding": {
     "setup": {
