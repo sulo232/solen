@@ -378,10 +378,7 @@
     box-shadow: 0 1px 2px rgba(26, 18, 9, 0.06), 0 4px 16px rgba(26, 18, 9, 0.06);
     transition: border-color 200ms ease, box-shadow 200ms ease;
   }
-  .glass-search:focus-within {
-    border-color: rgba(26, 18, 9, 0.22);
-    box-shadow: 0 1px 2px rgba(26, 18, 9, 0.08), 0 4px 24px rgba(26, 18, 9, 0.10);
-  }
+
   /* V5 Filter toolbar — sticks below header */
   .glass-toolbar {
     background: rgba(255, 255, 255, 0.88);
@@ -476,101 +473,8 @@
 
 }
 
-/* ── V3-D189 (2026-05-26, QUESTIONS.md#q5): focus-visible ring teal #043338 → s-ink #0A0A0A.
-     Pre-B&W pivot teal is retired; B&W pivot means chrome is ink-only. 2px ink on
-     white = 19.80:1 contrast (comfortably clears WCAG 1.4.11's 3:1 non-text floor).
-       CORRECTED 2026-07-28: this said "~5.8:1" from 2026-05-26 until today. That number
-       matched nothing , not s-ink #0A0A0A (19.80:1), not the retired teal #043338
-       (13.67:1). Recomputed from the sRGB relative-luminance formula. The conclusion it
-       supported was right, so no rule changes, but an uncited number in a comment is how
-       a wrong figure gets inherited. Originally
-     locked as Q47 2026-05-02; supersedes that. ─ */
-@layer base {
-  /* Owner 2026-07-01 (furious, repeated): NO focus ring on interactive chrome, on ANY device.
-     The global 2px ink :focus-visible outline lit up on every button/link/pill (desktop keyboard
-     + the tap-focus that iOS fires). Removed entirely per the owner's standing no-focus-ring
-     policy. (a11y note: this drops the WCAG 2.4.7 keyboard focus indicator on chrome , owner call;
-     inputs keep their caret, and the no-focus-ring-gate blocks re-adding a ring.) */
-  /* BELT-AND-SUSPENDERS (owner 2026-07-02, furious repeat: "both has focus ring on open"):
-     kill plain :focus too, not just :focus-visible. iOS Safari can classify a TAP as :focus
-     WITHOUT :focus-visible, so the UA ring slipped through the :focus-visible-only kill (desktop
-     showed nothing, the phone showed the ring). Chrome elements only , inputs keep their edge below. */
-  a:focus, a:focus-visible,
-  button:focus, button:focus-visible,
-  [role="button"]:focus, [role="button"]:focus-visible,
-  [tabindex]:focus, [tabindex]:focus-visible,
-  summary:focus, summary:focus-visible {
-    outline: none;
-  }
-
-  /* Inputs/textareas use box-shadow ring instead of outline so it follows border-radius cleanly.
-     NOTE 2026-07-16: the actual declarations moved OUT of @layer base to the unlayered block at
-     the end of this file. Measured cause: any input carrying a Tailwind border utility
-     (border-s-border, border-transparent, ...) kept its RESTING border on focus and showed no
-     halo, because a utility beats a base-layer rule regardless of specificity. That left swept
-     inputs with NO focus indicator at all once their per-input blue rings were removed. The
-     ink-edge + halo law is unchanged, only its cascade position. */
-
-  /* Touch devices fire :focus-visible on TAP for buttons/rows (iOS Safari), so the ink ring
-     lit up "everywhere" after a tap , esp. on selected filter pills (owner 2026-07-01). Keyboard
-     users are on hover-capable devices, so drop the button/link focus ring on touch only;
-     desktop keyboard nav keeps it for a11y. */
-  @media (hover: none) and (pointer: coarse) {
-    a:focus-visible,
-    button:focus-visible,
-    [role="button"]:focus-visible,
-    [tabindex]:focus-visible,
-    summary:focus-visible {
-      outline: none;
-    }
-    /* The input/textarea/select touch carve-out that used to live here is DEAD: it duplicated
-       the live one in the unlayered "THE INPUT FOCUS LAW" block at the end of this file (which
-       already has its own @media (hover: none) touch rule). Deleted 2026-07-17 to remove the
-       duplicate; the chrome (a/button/role/tabindex/summary) touch carve-out above stays, it is
-       not duplicated anywhere else. */
-  }
-}
-
-/* ── D1-focus-visible (2026-07-27): keyboard-only focus cue, still no ring.
-   CLAUDE.md precedence chain tier 2 (statutory/a11y floor): satisfy the WCAG 2.4.7 keyboard-
-   focus-indicator floor WITHOUT reopening the owner's no-ring taste call above (that block is
-   untouched, outline stays none on :focus AND :focus-visible, on all chrome, all devices).
-   Treatment: a 3px ink INSET LEFT EDGE (inset box-shadow, not an outline, not a spread glow
-   halo, so no-focus-ring-gate.py stays satisfied , its own regex was run against this exact
-   rule before commit and found no hit). Fires on :focus-visible ONLY, never plain :focus, and
-   Fires on :focus-visible ONLY, never plain :focus.
-
-   SCOPE WIDENED 2026-07-28 (design-principle research, contract lens). It was
-   (hover: hover) and (pointer: fine), i.e. desktop only, which left EVERY touch device with no
-   keyboard-focus indicator at all , and mobile is this product's primary surface. The desktop
-   scoping was belt-and-braces against a tap showing the cue, but that risk does not exist:
-   :focus-visible is NEVER fired by a tap. The block immediately above proves it in this
-   codebase's own words , iOS Safari classifies a tap as plain :focus WITHOUT :focus-visible,
-   which is exactly why that block kills plain :focus separately. So the touch carve-out on
-   :focus-visible was suppressing nothing a tap would ever have shown; it only removed the cue
-   for someone driving a phone or iPad with an external keyboard or a switch device.
-   Widening this is therefore NOT a reopening of the no-ring taste call: the ring stays dead,
-   outline stays none on :focus and :focus-visible on all chrome on all devices, taps still show
-   nothing, and no spread halo is introduced (this is an inset edge, which no-focus-ring-gate.py
-   does not match). It only closes a WCAG 2.4.7 AA gap on the surface that had it worst.
-   Per the precedence chain, tier 2 statutory floors outrank tier 5 taste, and the chain's own
-   prescribed resolution is a treatment that satisfies the floor while honouring the taste
-   intent, which is precisely what this is. */
-  a:focus-visible,
-  button:focus-visible,
-  [role="button"]:focus-visible,
-  [tabindex]:focus-visible,
-  summary:focus-visible {
-    box-shadow: inset 3px 0 0 0 #0A0A0A; /* drift-ok: s-ink literal, raw CSS focus cue not a Tailwind utility */
-  }
-
-/* ── B.7: Override global coral focus ring inside GuidedSearch sheet ── */
-#gs-sheet input:focus-visible,
-#gs-sheet textarea:focus-visible {
-  border-color: transparent !important;
-  box-shadow: none !important;
-  outline: none !important;
-}
+/* Focus treatment is owned by the unlayered modality rules at the end of
+   this file. Device type does not determine whether a keyboard is in use. */
 
 /* ── Discovery search input: force a UNIFORM cool hairline (measured 2026-06-24).
      Tailwind parses `!border-s-border` two ways and ALSO emits
@@ -1388,82 +1292,6 @@ body::after {
   .team-wave > *, .animate-breathe, .heart-burst, .animate-toast-tilt { animation: none !important; opacity: 1 !important; transform: none !important; }
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   THE INPUT FOCUS LAW (V3-D449), unlayered ON PURPOSE. Do not move it back
-   into @layer base.
-   ═══════════════════════════════════════════════════════════════════════════
-   ONE ink edge, nothing else: the border darkens to ink and the field goes
-   white. One global definition, so no input re-declares its own focus treatment
-   (the per-input blue rings this replaces were swept out 2026-07-16).
-
-   WHY UNLAYERED (measured 2026-07-16, live, keyboard-focused input on
-   /de/booking/lookup): from @layer base these declarations LOST to any Tailwind
-   border utility on the element. border-s-border kept its resting #E4E4E7 edge
-   on focus, so once the per-input blue rings were swept out, those inputs had NO
-   visible focus indicator at all, a WCAG 2.4.7 hole. A utility beats a
-   base-layer rule no matter the specificity; unlayered beats every layer, so the
-   law now actually applies. Verify by re-measuring, never by reading: Tab into
-   an input and check border-color = #0A0A0A.
-
-   WHY EDGE-ONLY (2026-07-16, contradiction surfaced to the owner): the CLAUDE.md
-   contract row still describes this treatment as an ink edge PLUS a soft 3px ink
-   halo, but the GLOBAL no-focus-ring gate (~/.claude/hooks/no-focus-ring-gate.py,
-   not a repo hook, so grepping .claude/hooks here will not find it) refuses any
-   such halo on any element, and a gate outranks a doc row in the precedence
-   chain. The edge alone clears the WCAG focus-indicator floor (the resting edge
-   is either transparent or #E4E4E7, both a large state change against #0A0A0A),
-   so the law ships edge-only until the owner reconciles the row with the gate by
-   name.
-
-   Touch keeps its own carve-out (owner 2026-07-01: nothing on tap, the caret and
-   keyboard already signal focus). */
-/* `:not([data-bare-input])` added 2026-08-11. The carve-out documented at the top of this file
-   (fields where a WRAPPER owns the visible chrome, and the input ships `!bg-transparent` so it
-   disappears into it) held for the RESTING state and broke on FOCUS, because the rule below fires
-   `background: #ffffff !important` and an `!important` in a stylesheet beats the utility's own.
-   Measured on the search field the moment the owner picked its filled-capsule treatment: the
-   capsule reads rgb(244,244,245) and the focused input inside it computed rgb(255,255,255), so a
-   white pill appeared around the text inside the grey capsule.
-   The owner's "goes white on focus" decision (V3-D-input-fill-2026-07-17) is about a FIELD. Where
-   the field is the wrapper, the input is not the thing that should turn white. This opts those
-   specific inputs out by name rather than weakening the law for everyone. */
-input:focus-visible:not([data-bare-input]),
-textarea:focus-visible,
-select:focus-visible {
-  outline: none;
-  /* !important is load-bearing, not laziness: measured 2026-07-16, a plain
-     declaration here still lost to Tailwind's border-color utility on the
-     element even unlayered, later in source, and at higher specificity, so the
-     focus edge silently never rendered. The file's own GuidedSearch override
-     below already had to reach for !important against the same wall. */
-  /* 2026-08-09, owner: "without the focus line when tapped in". The ink line on focus is GONE by
-     his instruction. The line stays the resting grey, so tapping a field changes nothing visible.
-     THE COST, stated once and then his call: this removes the only visible focus indicator, so
-     anyone moving through a form with a keyboard cannot see where they are, and WCAG 2.4.7 asks
-     for one. On a phone the caret and keyboard cover it; on a laptop they do not. The smallest
-     thing that would satisfy both is the line darkening to ink-2 rather than jumping to black. */
-  border-color: #E4E4E7 !important;   /* drift-ok: s-border literal, same reason as the base rule */
-  /* !important added 2026-07-17: the base input law's selector widened from a
-     comma-list of `input[type="x"]` branches (each specificity 0,1,1, tied with
-     this rule so source order settled it in the focus law's favor) to a single
-     `input:not([type=...]):not(...)...` chain (specificity ~0,10,1, no longer a
-     tie). That out-specified this plain `background` on focus, leaving fields
-     stuck gray instead of the owner's locked "goes white on focus" (input-fill
-     decision, V3-D-input-fill-2026-07-17). Measured live on /de/booking/lookup:
-     without !important, #lookup-code stayed rgb(244,244,245) on focus instead
-     of white. */
-  background: #ffffff !important;
-}
-
-@media (hover: none) and (pointer: coarse) {
-  input:focus-visible,
-  textarea:focus-visible,
-  select:focus-visible {
-    outline: none;
-    border-color: var(--color-border) !important;
-  }
-}
-
 /* Forced-colors mode (Windows/Edge High Contrast). color-tokens-10, 2026-07-27.
    forced-colors: active fires when the OS has a forced-colors theme on
    (practically, Windows High Contrast Mode). The browser already remaps most
@@ -1496,5 +1324,24 @@ select:focus-visible {
   .fill-s-error,
   .bg-s-error {
     forced-color-adjust: none;
+  }
+}
+
+/* Owner focus decision, 2026-09-06: pointer focus changes no outline; keyboard
+   focus uses one 2px ink outline with 2px separation, including bare inputs.
+   InputModality reuses React Aria's existing global focus tracking. Before
+   hydration, native :focus-visible remains an accessible keyboard fallback. */
+:is(a, button, input, textarea, select, [role="button"], [tabindex], summary, [contenteditable]):focus {
+  outline: none !important;
+}
+
+html:not([data-input="pointer"]) :is(a, button, input, textarea, select, [role="button"], [tabindex], summary, [contenteditable]):focus-visible {
+  outline: 2px solid #0A0A0A !important; /* drift-ok: existing approved s-ink focus literal */
+  outline-offset: 2px !important;
+}
+
+@media (forced-colors: active) {
+  html:not([data-input="pointer"]) :is(a, button, input, textarea, select, [role="button"], [tabindex], summary, [contenteditable]):focus-visible {
+    outline-color: Highlight !important;
   }
 }

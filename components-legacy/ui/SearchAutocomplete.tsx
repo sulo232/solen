@@ -194,7 +194,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
           onKeyDown={handleKeyDown}
           onFocus={() => { if (services.length || salons.length) setOpen(true); }}
           placeholder={t("placeholder")}
-          className="w-full !pl-9 !pr-8 py-2.5 text-sm text-s-ink placeholder:italic placeholder:text-s-ink/35 focus:outline-none focus-visible:border-transparent transition-colors duration-150" // mockup-ok: dead-class removal only, type=text already caught before this change (V3-D-input-fill-2026-07-17)
+          className="w-full !pl-9 !pr-8 py-2.5 text-sm text-s-ink placeholder:italic placeholder:text-s-ink/35 focus:outline-none transition-colors duration-150" // mockup-ok: dead-class removal only, type=text already caught before this change (V3-D-input-fill-2026-07-17)
         />
         {query && (
           <button

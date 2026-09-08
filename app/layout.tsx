@@ -3,6 +3,7 @@ import { ViewTransitions } from "next-view-transitions";
 import { Inter_Tight, Inter } from "next/font/google";
 import { headers } from "next/headers";
 import { locales, defaultLocale } from "@/i18n";
+import InputModality from "@/app/_components/InputModality";
 import "@/app/globals.css";
 
 // Self-hosted via next/font (Next downloads these at build time and serves the
@@ -105,6 +106,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           transparent (set in globals.css `body { background: transparent }`)
           so the wash shows. text-s-ink kept. */}
       <body style={{ margin: 0, padding: 0 }} className="text-s-ink">
+        <InputModality />
         {/* DS-A4 / LOCKFILE 16.3 (2026-06-11): View Transitions provider — enables
             the ONE shared-element moment (salon card photo -> PDP hero) via the
             native View Transitions API. No-ops on unsupported browsers. */}

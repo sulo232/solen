@@ -23,7 +23,6 @@ const textareaVariants = cva(
     "resize-y min-h-[88px] max-h-[280px]",
     // focus-visible
     "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
-    "focus-visible:border-s-ink",
     // disabled
     "disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-s-bg-sunken disabled:text-s-ink-2",
   ),
@@ -32,14 +31,11 @@ const textareaVariants = cva(
       tone: {
         default: "",
         error:
-          "border-s-error ring-1 ring-inset ring-s-error " +
-          "focus-visible:outline-s-error focus-visible:border-s-error",
+          "border-s-error ring-1 ring-inset ring-s-error",
         warning:
-          "border-s-warning ring-1 ring-inset ring-s-warning " +
-          "focus-visible:outline-s-warning focus-visible:border-s-warning",
+          "border-s-warning ring-1 ring-inset ring-s-warning",
         success:
-          "border-s-success ring-1 ring-inset ring-s-success " +
-          "focus-visible:outline-s-success focus-visible:border-s-success",
+          "border-s-success ring-1 ring-inset ring-s-success",
         active:
           "border-s-ink ring-1 ring-inset ring-s-ink bg-s-bg-active",
       },

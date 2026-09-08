@@ -13,7 +13,8 @@ import { cn } from "@/lib/utils";
  * paint the second pixel from the inside. Visually identical to a 2px border, but the
  * box-model layout doesn't shift on state change. Spec compliance is preserved.
  */
-const inputVariants = cva( // mockup-ok: dead-class removal only, base input law already renders this fill/border/radius with higher specificity (V3-D-input-fill-2026-07-17)
+const inputVariants = cva(
+  // mockup-ok: dead-class removal only, base input law already renders this fill/border/radius with higher specificity (V3-D-input-fill-2026-07-17)
   cn(
     // base
     "block w-full font-body font-normal text-s-ink",
@@ -26,10 +27,8 @@ const inputVariants = cva( // mockup-ok: dead-class removal only, base input law
     "selection:bg-s-ink/20",
     "transition-[border-color,background-color,box-shadow,color] duration-150 ease-snap",
     "caret-s-brand",
-    // focus-visible — ONE ring only. globals.css `input:focus-visible` already paints the
-    // ring (box-shadow) + ink border; a second `outline` here was the double-outline the
-    // owner flagged (V3-D449). Border tint kept; the single ring comes from globals.
-    "focus-visible:border-s-ink focus-visible:bg-s-bg-base",
+    // Keyboard outline comes from the shared modality rule; pointer focus
+    // preserves the resting field colors.
     // disabled: opacity .5, sunken bg, ink-3 text, not-allowed. Distinct from read-only below:
     // disabled = "not available right now" (removed from tab order, unfocusable, unselectable);
     // read-only = "this value is fixed by design" (still focusable + selectable, so its value
@@ -52,17 +51,13 @@ const inputVariants = cva( // mockup-ok: dead-class removal only, base input law
       tone: {
         default: "",
         error:
-          "border-s-error ring-1 ring-inset ring-s-error " +
-          "focus-visible:outline-s-error focus-visible:border-s-error",
+          "border-s-error ring-1 ring-inset ring-s-error",
         warning:
-          "border-s-warning ring-1 ring-inset ring-s-warning " +
-          "focus-visible:outline-s-warning focus-visible:border-s-warning",
+          "border-s-warning ring-1 ring-inset ring-s-warning",
         success:
-          "border-s-success ring-1 ring-inset ring-s-success " +
-          "focus-visible:outline-s-success focus-visible:border-s-success",
+          "border-s-success ring-1 ring-inset ring-s-success",
         // Active = mouse-focused / typing — peach-tinted bg + brand border
-        active:
-          "border-s-ink ring-1 ring-inset ring-s-ink bg-s-bg-active",
+        active: "border-s-ink ring-1 ring-inset ring-s-ink bg-s-bg-active",
       },
     },
     defaultVariants: {
@@ -72,11 +67,17 @@ const inputVariants = cva( // mockup-ok: dead-class removal only, base input law
   },
 );
 
-export type TextInputTone = NonNullable<VariantProps<typeof inputVariants>["tone"]>;
-export type TextInputSize = NonNullable<VariantProps<typeof inputVariants>["size"]>;
+export type TextInputTone = NonNullable<
+  VariantProps<typeof inputVariants>["tone"]
+>;
+export type TextInputSize = NonNullable<
+  VariantProps<typeof inputVariants>["size"]
+>;
 
-export interface TextInputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
+export interface TextInputProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "size"
+> {
   /** Size variant (LIVE_TRUTH §F.1.0a). Default `md`. */
   size?: TextInputSize;
   /** Visual tone (LIVE_TRUTH §F.1.0b). Default `default` — focus-visible only. */
@@ -92,6 +93,8 @@ export interface TextInputProps
    * `type="password"` (hidden) and `type="text"` (visible).
    */
   revealable?: boolean;
+  /** Localized accessible labels for the password reveal control. */
+  revealLabels?: { show: string; hide: string };
 }
 
 /**
@@ -114,6 +117,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
       tone = "default",
       loading = false,
       revealable = false,
+      revealLabels = { show: "Passwort anzeigen", hide: "Passwort verbergen" },
       disabled,
       ...props
     },
@@ -148,8 +152,8 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
         {hasTrailingSlot && (
           <div
             className={cn(
-              "absolute right-[14px] top-1/2 -translate-y-1/2",
-              "flex items-center justify-center w-5 h-5",
+              "absolute right-0 top-1/2 -translate-y-1/2",
+              "flex h-11 w-11 shrink-0 items-center justify-center",
               "pointer-events-none [&>button]:pointer-events-auto",
             )}
           >
@@ -172,18 +176,27 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
                 type="button"
                 onClick={() => setRevealed((v) => !v)}
                 className={cn(
-                  "w-[18px] h-[18px] flex items-center justify-center",
+                  "flex h-11 w-11 shrink-0 items-center justify-center",
                   "text-s-ink-2 hover:text-s-ink",
                   "transition-colors duration-150 ease-snap",
                   "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 rounded-sm",
                 )}
-                aria-label={revealed ? "Passwort verbergen" : "Passwort anzeigen"}
+                aria-label={revealed ? revealLabels.hide : revealLabels.show}
                 tabIndex={disabled ? -1 : 0}
               >
-                {revealed
-                  ? <EyeOff className="w-[18px] h-[18px]" strokeWidth={2} aria-hidden="true" />
-                  : <Eye className="w-[18px] h-[18px]" strokeWidth={2} aria-hidden="true" />
-                }
+                {revealed ? (
+                  <EyeOff
+                    className="w-[18px] h-[18px]"
+                    strokeWidth={2}
+                    aria-hidden="true"
+                  />
+                ) : (
+                  <Eye
+                    className="w-[18px] h-[18px]"
+                    strokeWidth={2}
+                    aria-hidden="true"
+                  />
+                )}
               </button>
             )}
           </div>
