@@ -12,6 +12,7 @@ import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import type { AvailabilitySlot } from "@/lib/types";
 import { resolveSwissLocale } from "@/lib/format";
 import { zurichYmd } from "@/lib/time/zurich";
+import { localizedField } from "@/lib/i18n/localized-field";
 
 // ─────────────────────────────────────────
 // Helpers
@@ -82,8 +83,7 @@ type RawServiceRow = {
 };
 
 function serviceName(s: RawServiceRow, locale: string): string {
-  const localized = locale === "en" ? s.name_en : locale === "fr" ? s.name_fr : locale === "it" ? s.name_it : s.name_de;
-  return localized || s.name_de;
+  return localizedField(s as Record<string, unknown>, "name", locale) || s.name_de;
 }
 
 // ─────────────────────────────────────────

@@ -17,7 +17,7 @@ export async function GET(request: Request) {
       .select(
         `id, salon_id, service_id, staff_member_id, starts_at, ends_at, status, price_override,
          salon:salons!inner(id, name, slug, cover_photo_url, average_rating, last_minute_discount_percent),
-         service:services!inner(id, name_de, name_en, category, duration_minutes, price),
+         service:services!inner(id, name_de, name_en, name_fr, name_it, category, duration_minutes, price),
          staff_member:staff_members(id, name, avatar_url)`,
         { count: "exact" }
       )

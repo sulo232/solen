@@ -53,14 +53,6 @@ const cardCategoryColors = {
   spa:        { bg: "#F4F4F5", initial: "#0A0A0A" }, // s-bg-sunken + s-ink
 } as const;
 
-/** V2-D60-cards-4 (2026-05-14): display labels for the category subtitle row. */
-const CATEGORY_LABEL = {
-  coiffeur:   "Coiffeur",
-  barbershop: "Barbershop",
-  nails:      "Nails",
-  spa:        "Spa & Wellness",
-} as const;
-
 type Category = keyof typeof cardCategoryColors;
 
 /** Card badge geometry — V2-D63 (2026-05-15).
@@ -366,6 +358,7 @@ export function SalonCard({
   // language and (b) inserts a redirect that kills the 16.3 view transition.
   const locale = useLocale();
   const t = useTranslations("common");
+  const tNav = useTranslations("navigation");
   const cat = cardCategoryColors[category];
   // V2-D48: spa cat flipped to light moss-pale bg, so this is false for all cats.
   // Kept for forward-compat when real salon photos may have dark composition.
@@ -465,7 +458,7 @@ export function SalonCard({
             // to a screen-reader user. Uses the one real piece of photo-adjacent metadata
             // this card actually has, the salon's category, so the alt text says WHAT kind
             // of place the photo shows, not just whose photo it is again.
-            alt={photoAlt ?? `${name}, ${CATEGORY_LABEL[category]}`}
+            alt={photoAlt ?? `${name}, ${tNav(category)}`}
             fill
             sizes="(max-width: 768px) 160px, 180px"
             className="object-cover"
@@ -541,7 +534,7 @@ export function SalonCard({
 
         {/* Row 2 - category label, always (address moved to Row 3, C11). */}
         <div className="font-body text-[12px] font-normal leading-[1.35] text-s-ink-2 truncate">
-          {CATEGORY_LABEL[category]}
+          {tNav(category)}
         </div>
 
         {/* Row 3 - conditional address (C6/C16) + price, one line, mockup-ok:

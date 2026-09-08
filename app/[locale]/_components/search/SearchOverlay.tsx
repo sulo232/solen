@@ -313,6 +313,7 @@ export function SearchOverlay({
 }: SearchOverlayProps) {
   const router = useRouter();
   const t = useTranslations("ui.searchOverlay");
+  const tNav = useTranslations("navigation");
   // P13 (owner-approved 2026-07-16): the Services section's price row reuses the SAME
   // common.fromPrice pattern SalonCard.tsx already uses ("ab {price}" + formatPrice), no
   // new price-copy invented.
@@ -1694,8 +1695,8 @@ export function SearchOverlay({
   // query , not just one of them. Falls back to the legacy `service` value (a picked salon
   // name/autocomplete term) when neither is set.
   const categoryLabel = React.useMemo(
-    () => CATEGORY_PILLS.find((c) => c.slug === category)?.label ?? "",
-    [category],
+    () => { const selected = CATEGORY_PILLS.find((c) => c.slug === category); return selected ? tNav(selected.slug) : ""; },
+    [category, tNav],
   );
   const serviceRowValue = React.useMemo(
     () => [categoryLabel, serviceQ.trim()].filter(Boolean).join(" ") || service,
@@ -2585,6 +2586,7 @@ function HighlightedText({ text, query }: { text: string; query: string }) {
 // state (locked gray-sunken, never blue/ink). Tapping the active pill again deselects to
 // "any category" (matching the Model B mockup's toggle behavior) , it never touches serviceQ.
 function CategoryPillsRow({ active, onSelect, ariaLabel }: { active: string; onSelect: (slug: string) => void; ariaLabel: string }) {
+  const tNav = useTranslations("navigation");
   return (
     <div
       role="tablist"
@@ -2607,7 +2609,7 @@ function CategoryPillsRow({ active, onSelect, ariaLabel }: { active: string; onS
               // eslint-disable-next-line @next/next/no-img-element
               <img src={c.iconSrc} alt="" className="h-[22px] w-[22px] shrink-0 object-contain" aria-hidden />
             ) : null}
-            {c.label}
+            {tNav(c.slug)}
           </button>
         );
       })}

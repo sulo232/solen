@@ -21,7 +21,7 @@ interface ConfirmationPageProps {
 const BOOKING_SELECT = `id, salon_id, service_id, staff_member_id, starts_at, ends_at,
   price_paid, remaining_at_salon, paid_amount, status, payment_status, payment_intent_id, reference_code, paid_via, user_id, access_token_hash, access_token_expires_at, vat_rate,
   salons(id, name, slug, address, phone, cover_photo_url, vat_number),
-  services(id, name_de, name_en, duration_minutes, price),
+  services(id, name_de, name_en, name_fr, name_it, duration_minutes, price),
   staff_members(name)`;
 
 export async function generateMetadata({

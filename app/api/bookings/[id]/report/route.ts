@@ -133,7 +133,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     .from("bookings")
     .select(
       "id, reference_code, status, starts_at, paid_amount, refunded_amount, " +
-        "guest_name, salons(name, address, postal_code, cover_photo_url), services(name_de, name_en), " +
+        "guest_name, salons(name, address, postal_code, cover_photo_url), services(name_de, name_en, name_fr, name_it), " +
         "staff_members(name)",
     )
     .eq("id", bookingId)
@@ -159,13 +159,14 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
         salon_address: salon?.address ?? null,
         salon_city: salon?.postal_code ?? null, // postal code stands in for the city line
         salon_photo: salon?.cover_photo_url ?? null, // V3-D424: real salon photo (FE falls back to initials when null)
-        // services only carry de/en today; fr/it fall back via the FE serviceName() helper.
+        // name_fr/name_it now selected above; the FE serviceName() helper (refund/shared.ts)
+        // already falls back en -> de -> fr -> it when a locale column is empty.
         service_name: service
           ? {
               de: service.name_de ?? null,
               en: service.name_en ?? null,
-              fr: null,
-              it: null,
+              fr: service.name_fr ?? null,
+              it: service.name_it ?? null,
             }
           : null,
         staff_name: staff?.name ?? null,

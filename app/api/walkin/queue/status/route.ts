@@ -63,7 +63,7 @@ export async function GET(req: NextRequest) {
       ? admin.from("staff_members").select("name, avatar_url, average_rating, review_count").eq("id", barberId).maybeSingle()
       : Promise.resolve({ data: null as any }),
     entry.service_id
-      ? admin.from("services").select("name_de, name_en, price, duration_minutes").eq("id", entry.service_id).maybeSingle()
+      ? admin.from("services").select("name_de, name_en, name_fr, name_it, price, duration_minutes").eq("id", entry.service_id).maybeSingle()
       : Promise.resolve({ data: null as any }),
     admin.from("salons").select("name, slug, address, cover_photo_url, gallery_urls, latitude, longitude").eq("id", entry.salon_id).maybeSingle(),
   ]);
@@ -102,7 +102,15 @@ export async function GET(req: NextRequest) {
     recipientPhoto: (staffRes.data as any)?.avatar_url ?? null,
     recipientRating: (staffRes.data as any)?.average_rating ?? null,
     recipientReviewCount: (staffRes.data as any)?.review_count ?? null,
+    // This public token route has no request locale (no ?locale param, no session to read a
+    // profile from), so serviceName keeps the de -> en fallback the caller already had; the
+    // raw name_fr/name_it are exposed alongside it so the /queue/[token] page can pick by its
+    // own next-intl locale once that follow-up lands (out of this route's scope).
     serviceName: (svcRes.data as any)?.name_de ?? (svcRes.data as any)?.name_en ?? null,
+    serviceNameDe: (svcRes.data as any)?.name_de ?? null,
+    serviceNameEn: (svcRes.data as any)?.name_en ?? null,
+    serviceNameFr: (svcRes.data as any)?.name_fr ?? null,
+    serviceNameIt: (svcRes.data as any)?.name_it ?? null,
     servicePrice: (svcRes.data as any)?.price ?? null,
     serviceDuration: (svcRes.data as any)?.duration_minutes ?? null,
     salonName: (salonRes.data as any)?.name ?? null,

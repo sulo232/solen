@@ -77,7 +77,7 @@ async function assembleBundles(
   const { data: services, error: servicesError } = serviceIds.length
     ? await client
         .from("services")
-        .select("id, name_de, name_en, price, duration_minutes")
+        .select("id, name_de, name_en, name_fr, name_it, price, duration_minutes")
         .in("id", serviceIds)
     : { data: [], error: null };
 
@@ -99,6 +99,8 @@ async function assembleBundles(
           id: s.id,
           name_de: s.name_de,
           name_en: s.name_en,
+          name_fr: s.name_fr,
+          name_it: s.name_it,
           price: Number(s.price),
           duration_minutes: s.duration_minutes,
         }));

@@ -89,3 +89,13 @@ describe("recurring creation through the real handler and claimSlot", () => {
     const res = await run(); expect(res.status).toBe(201); expect((await res.json()).data.first_booking).toBeNull(); expect(state.send).not.toHaveBeenCalled();
   });
 });
+
+
+it.each([['fr','Coupe'],['it','Taglio'],[null,'Schnitt']])('recurring confirmation uses profile locale %s and preserves booking price',async(locale,label)=>{
+  setup({service:ok({price:55,name_de:'Schnitt',name_en:'Cut',name_fr:'Coupe',name_it:'Taglio'}),profile:ok({locale,is_first_visit_default:false})});
+  expect((await run()).status).toBe(201);
+  expect(state.send.mock.calls[0][0][1].service).toBe(label);
+  expect(state.send.mock.calls[0][0][2]).toBe(locale??'de');
+  expect(state.session.calls.find((c:any)=>c.table==='bookings').ops.find((o:any)=>o[0]==='insert')[1].price_paid).toBe(55);
+  expect(state.session.calls.find((c:any)=>c.table==='services').ops).toContainEqual(['select','price, name_de, name_en, name_fr, name_it']);
+});

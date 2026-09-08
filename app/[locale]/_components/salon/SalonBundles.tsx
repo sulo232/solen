@@ -28,11 +28,14 @@ import Link from "next/link";
 import { Combine, Clock } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { formatCurrency } from "@/lib/format-currency";
+import { localizedField } from "@/lib/i18n/localized-field";
 
 interface BundleService {
   id: string;
   name_de: string;
   name_en: string | null;
+  name_fr?: string | null;
+  name_it?: string | null;
   price: number; // CHF decimal
   duration_minutes: number;
 }
@@ -160,7 +163,10 @@ function BundleCard({ bundle, slug, locale }: { bundle: Bundle; slug: string; lo
             className="flex items-center justify-between border-t border-s-border px-4 py-3 first:border-t-0"
           >
             <p className="truncate font-body text-[14px] font-medium text-s-ink">
-              {locale === "en" && s.name_en ? s.name_en : s.name_de}
+              {/* P3-3 (2026-09-05): was an en-only ternary, so fr/it always fell to German
+                  anyway but by accident rather than by a real fallback chain. Same
+                  localizedField helper as SalonServices.tsx's service rows. */}
+              {localizedField(s as unknown as Record<string, unknown>, "name", locale)}
             </p>
             {/* mockup-ok: /dev/round5 option two, second half. 12px was a fifth type size that
                 existed nowhere else in the card; 13px is one the card already used, so the card

@@ -7,6 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "motion/react";
 import { X, MapPin, Clock } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
+import { localizedField } from "@/lib/i18n/localized-field";
 import { RatingStars } from "@/app/[locale]/_components/primitives";
 
 interface PreviewSalon {
@@ -16,7 +17,7 @@ interface PreviewSalon {
   average_rating: number;
   review_count: number;
   opening_hours?: Record<string, { open: string; close: string } | null>;
-  services?: { name_de: string; name_en: string; price: number; duration_minutes: number }[];
+  services?: { name_de: string; name_en: string; name_fr?: string | null; name_it?: string | null; price: number; duration_minutes: number }[];
 }
 
 interface QuickPreviewSheetProps {
@@ -123,7 +124,7 @@ function SheetContent({
 }: {
   salon: PreviewSalon;
   locale: string;
-  topServices: { name_de: string; name_en: string; price: number; duration_minutes: number }[];
+  topServices: { name_de: string; name_en: string; name_fr?: string | null; name_it?: string | null; price: number; duration_minutes: number }[];
   todayHours: { open: string; close: string } | null | undefined;
   onClose: () => void;
   t: any;
@@ -163,7 +164,7 @@ function SheetContent({
               <div key={i} className="flex items-center justify-between py-2.5">
                 <div>
                   <p className="text-sm font-medium text-s-ink">
-                    {locale === "de" ? svc.name_de : svc.name_en}
+                    {localizedField(svc as unknown as Record<string, unknown>, "name", locale)}
                   </p>
                   <p className="text-xs text-s-ink/40">{svc.duration_minutes} {t("minutes")}</p>
                 </div>

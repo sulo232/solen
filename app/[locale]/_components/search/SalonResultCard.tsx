@@ -7,6 +7,7 @@ import { withDateParam } from "../salon/_shared";
 import { FROST_GLASS } from "@/lib/frost-glass";
 import { CardName, CardMeta, RatingStars, PriceFrom } from "../primitives";
 import { HeartButton } from "../homepage/HeartButton";
+import { localizedField } from "@/lib/i18n/localized-field";
 
 /**
  * SalonResultCard — V3-D350 (2026-05-28).
@@ -69,6 +70,8 @@ export interface SalonResultCardProps {
     id: string;
     name_de?: string | null;
     name_en?: string | null;
+    name_fr?: string | null;
+    name_it?: string | null;
     price?: number | null;
     duration_minutes?: number | null;
     slots?: string[] | null;
@@ -567,7 +570,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
               <>
                 <div className="mt-2.5 space-y-1.5">
                   {rows.map((s) => {
-                    const svcName = (locale === "en" && s.name_en ? s.name_en : s.name_de) ?? "";
+                    const svcName = localizedField(s as Record<string, unknown>, "name", locale) || s.name_de || "";
                     const dur = formatDuration(s.duration_minutes, locale);
                     return (
                       <div key={s.id} className="flex items-center justify-between gap-3 rounded-xl bg-s-bg-sunken px-3.5 py-2.5 text-[13.5px]">

@@ -16,6 +16,7 @@ import { HeartButton } from "../homepage/HeartButton";
 import { CATEGORY_LABEL, FROM_LABEL, REVIEWS_LABEL, DURATION_UNIT, PHOTO_OF_LABEL } from "./SalonResultCard";
 import { withDateParam } from "../salon/_shared";
 import type { Salon } from "./SearchTemplate";
+import { localizedField } from "@/lib/i18n/localized-field";
 
 /**
  * MapSalonDetail, V3-D453 (2026-07-02, owner-approved /dev/map-behavior mockup).
@@ -179,7 +180,7 @@ export function MapSalonDetail({
       {visibleRows.length > 0 && (
         <div className="mt-3 space-y-1.5"> {/* mockup-ok */}
           {visibleRows.map((s) => {
-            const svcName = (locale === "en" && s.name_en ? s.name_en : s.name_de) ?? "";
+            const svcName = localizedField(s as Record<string, unknown>, "name", locale) || s.name_de || "";
             const dur = formatDuration(s.duration_minutes, locale);
             return (
               <Link

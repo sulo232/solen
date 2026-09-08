@@ -864,7 +864,13 @@
     "customerHelp": "Aide clients",
     "safety": "Sécurité",
     "contact": "Contact",
-    "aboutUs": "À propos"
+    "aboutUs": "À propos",
+    "newsletterFormLabel": "S'abonner à la newsletter",
+    "newsletterEmailLabel": "Adresse e-mail",
+    "newsletterEmailPlaceholder": "votre@email.ch",
+    "newsletterSubmitLabel": "S'abonner",
+    "newsletterSuccess": "Merci ! Vous êtes inscrit(e).",
+    "newsletterError": "Échec de l'inscription. Veuillez réessayer."
   },
   "cookie": {
     "title": "Nous utilisons des cookies",
@@ -1147,7 +1153,7 @@
       "subtitle": "Sélectionnez un ou plusieurs services. Les frais sont calculés automatiquement.",
       "minutes": "min",
       "selected": "sélectionnés",
-      "items": "article(s)",
+      "items": "{count, plural, one {# article} other {# articles}}",
       "menOnly": "Hommes uniquement",
       "womenOnly": "Femmes uniquement",
       "continue": "Continuer",
@@ -1336,7 +1342,39 @@
       "privacyLink": "Politique de confidentialité",
       "readCta": "Lire",
       "acceptButton": "J'accepte les nouvelles conditions"
-    }
+    },
+    "account_recovery": "Récupération de compte",
+    "apple_login": "Se connecter avec Apple",
+    "back_to_login": "Retour à la connexion",
+    "change_password": "Changer le mot de passe",
+    "checking_link": "Vérification du lien…",
+    "confirm_password_placeholder": "Confirmer le mot de passe",
+    "error_email_not_confirmed": "Veuillez d'abord confirmer votre e-mail",
+    "error_invalid_credentials": "L'e-mail ou le mot de passe est incorrect",
+    "error_login_failed": "La connexion a échoué",
+    "error_rate_limited": "Trop de tentatives. Veuillez patienter un instant.",
+    "error_reset_generic": "Erreur lors de l'envoi. Veuillez réessayer.",
+    "error_reset_rate_limited": "Trop de demandes. Veuillez patienter un instant et réessayer.",
+    "forgot_password": "Mot de passe oublié ?",
+    "hide_password": "Masquer le mot de passe",
+    "link_expired_body": "Ce lien de récupération ne fonctionne plus. Demandez-en un nouveau ci-dessous.",
+    "link_expired_title": "Lien invalide ou expiré",
+    "new_password_instruction": "Choisissez un nouveau mot de passe pour votre compte.",
+    "new_password_title": "Nouveau mot de passe",
+    "no_account_yet": "Vous n'avez pas encore de compte ?",
+    "password_changed": "Mot de passe modifié",
+    "password_placeholder": "Mot de passe",
+    "passwords_mismatch": "Les mots de passe ne correspondent pas",
+    "redirecting_to_login": "Vous allez être redirigé vers la connexion…",
+    "request_new_link": "Demander un nouveau lien",
+    "reset_email_sent_label": "E-mail envoyé",
+    "reset_instruction": "Indiquez votre e-mail et nous vous enverrons un lien de réinitialisation.",
+    "reset_link_sent_body": "Vérifiez votre boîte de réception pour un lien de réinitialisation.",
+    "reset_link_sent_title": "Lien envoyé",
+    "send_reset_link": "Envoyer le lien de réinitialisation",
+    "show_password": "Afficher le mot de passe",
+    "success_label": "Succès",
+    "welcome_back": "Bon retour"
   },
   "account": {
     "profile": "Profil",
@@ -3634,7 +3672,7 @@
     "removal_heading": "4. Suppression de contenu",
     "removal_text": "solen.ch se réserve le droit de supprimer sans préavis tout contenu violant ces conditions ou jugé inapproprié.",
     "gdpr_heading": "5. Conformité RGPD",
-    "gdpr_text": "Le contenu téléchargé est stocké sur des serveurs UE/Suisse. Vous pouvez demander la suppression de votre contenu à tout moment via vos paramètres de profil ou par e-mail à privacy@solen.ch.",
+    "gdpr_text": "Le contenu téléchargé est stocké sur des serveurs UE/Suisse. Vous pouvez demander la suppression de votre contenu à tout moment via vos paramètres de profil ou par e-mail à support@solen.ch.",
     "disclaimer_heading": "6. Avertissement",
     "disclaimer_text": "solen.ch ne garantit pas l'exactitude des descriptions générées par l'IA. Les prix affichés sont des estimations et peuvent varier selon le salon."
   },
@@ -4077,7 +4115,16 @@
       "tosPrefix": "J'accepte les",
       "tosLink": "Conditions générales",
       "privacyLink": "Politique de confidentialité",
-      "emailUse": "Nous utilisons cette adresse uniquement pour vous contacter au sujet de votre salon."
+      "emailUse": "Nous utilisons cette adresse uniquement pour vous contacter au sujet de votre salon.",
+      "errors": {
+        "name": "Le nom doit contenir au moins 2 caractères.",
+        "email": "Adresse e-mail invalide.",
+        "categories": "Veuillez sélectionner au moins une catégorie.",
+        "city": "Veuillez sélectionner une ville.",
+        "address": "L'adresse est trop courte.",
+        "tos": "Veuillez accepter les conditions générales et la politique de confidentialité."
+      },
+      "city": "Ville *"
     },
     "step2": {
       "title": "Profil du salon",
@@ -4168,7 +4215,10 @@
       "duration": "Durée",
       "price": "Prix CHF",
       "hint": "Juste un début !",
-      "hintDesc": "Vous pouvez ajouter des services, des membres d'équipe et des horaires dans le tableau de bord."
+      "hintDesc": "Vous pouvez ajouter des services, des membres d'équipe et des horaires dans le tableau de bord.",
+      "errors": {
+        "serviceName": "Le nom du service est requis."
+      }
     },
     "stepPhotos": {
       "title": "Télécharger des photos",
@@ -4210,7 +4260,8 @@
       "title": "Salon créé !",
       "subtitle": "Votre salon est en cours de vérification. Vous serez informé(e) par e-mail.",
       "dashboardHint": "Redirection vers le tableau de bord…"
-    }
+    },
+    "networkError": "Erreur réseau. Veuillez vérifier votre connexion et réessayer."
   },
   "imageUpload": {
     "dropZoneTitle": "Glissez des photos ici ou cliquez pour télécharger",
@@ -6689,7 +6740,6 @@
     "checkStatus": "Vérifier le statut",
     "reconciliationTitle": "Paiement à vérifier",
     "reconciliationMessage": "Contactez le support Solen. Tout nouveau paiement est bloqué ici.",
-
     "headingNoShow": "Payer les frais de non-présentation",
     "headingLateCancel": "Payer les frais d'annulation",
     "totalLabel": "Total",

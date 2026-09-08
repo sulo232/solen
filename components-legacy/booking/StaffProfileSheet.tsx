@@ -6,6 +6,7 @@ import { Sheet, SheetHeader, SheetBody, Avatar, RatingStars } from '@/app/[local
 import StaffReviewsSheet, { type SheetReview } from '@/components-legacy/staff/StaffReviewsSheet';
 import Spinner from '@/components-legacy/ui/Spinner';
 import type { StaffMember } from '@/lib/types';
+import { resolveSwissLocale } from '@/lib/format';
 
 const REVIEWS_PREVIEW = 3;
 
@@ -76,7 +77,7 @@ export default function StaffProfileSheet({
   const reviewCount = staff.review_count ?? 0;
   const visibleReviews = reviews.slice(0, REVIEWS_PREVIEW);
   const fmtDate = (iso: string) =>
-    new Date(iso).toLocaleDateString(locale === 'en' ? 'en-US' : 'de-DE', {
+    new Date(iso).toLocaleDateString(resolveSwissLocale(locale), {
       day: '2-digit',
       month: 'long',
       year: 'numeric',

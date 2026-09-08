@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
     let q = admin
       .from("bookings")
       .select(
-        "id, user_id, starts_at, ends_at, status, price_paid, paid_amount, payment_status, is_first_visit, is_recurring, cancellation_reason, fee_charge_status, guest_name, reference_code, services(name_de, name_en), staff_members(name)",
+        "id, user_id, starts_at, ends_at, status, price_paid, paid_amount, payment_status, is_first_visit, is_recurring, cancellation_reason, fee_charge_status, guest_name, reference_code, services(name_de, name_en, name_fr, name_it), staff_members(name)",
         { count: "exact" },
       )
       .eq("salon_id", salonId)

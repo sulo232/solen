@@ -13,6 +13,7 @@ import TipFlow from "@/app/[locale]/_components/tips/TipFlow";
 import { BackButton } from "@/app/[locale]/_components/primitives/BackButton";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "@/app/[locale]/_components/primitives/Modal";
+import { localizedField } from "@/lib/i18n/localized-field";
 import { strokeForSize } from "@/lib/icon-stroke";
 
 // Mirrors the public GET /api/walkin/queue/status?token= response.
@@ -33,6 +34,10 @@ interface QueueStatus {
   recipientRating?: number | null;
   recipientReviewCount?: number | null;
   serviceName?: string | null;
+  serviceNameDe?: string | null;
+  serviceNameEn?: string | null;
+  serviceNameFr?: string | null;
+  serviceNameIt?: string | null;
   servicePrice?: number | null;
   serviceDuration?: number | null;
   salonName?: string | null;
@@ -209,6 +214,13 @@ export default function QueueTrackingPage() {
   const isLive = isWaiting || isUp;
   const almost = isWaiting && data.aheadCount <= 1;
 
+  const localizedServiceName = localizedField({
+    name_de: data.serviceNameDe,
+    name_en: data.serviceNameEn,
+    name_fr: data.serviceNameFr,
+    name_it: data.serviceNameIt,
+  }, "name", locale) || data.serviceName?.trim() || null;
+
   // ---- Done: rate (stars) → then tip (>=3) OR feedback+help (<3), one smooth screen ----
   // Owner-approved walkin-rate-tip: capture a per-staff rating on every visit (feeds the
   // token-gated /api/walkin/review), prime tipping for happy customers, and route unhappy
@@ -264,7 +276,7 @@ export default function QueueTrackingPage() {
                   recipientPhoto={data.recipientPhoto}
                   recipientRating={data.recipientRating}
                   recipientReviewCount={data.recipientReviewCount}
-                  contextLine={[data.serviceName, data.salonName].filter(Boolean).join(" ") || undefined}
+                  contextLine={[localizedServiceName, data.salonName].filter(Boolean).join(" ") || undefined}
                   locale={locale}
                   createIntent={(amount) => fetch("/api/walkin/tip", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token, amount }) }).then((r) => r.json())}
                   onClose={() => { void sendReview(ratingRef.current, false); router.push(`/${locale}`); }}
@@ -509,7 +521,7 @@ export default function QueueTrackingPage() {
         )}
 
         {/* Dein Termin barber + service */}
-        {(data.recipientName || data.serviceName) && (
+        {(data.recipientName || localizedServiceName) && (
           <div className="mt-4 rounded-[20px] border border-s-border bg-white p-4 shadow-[0_8px_26px_-16px_rgba(10,10,10,.16)]">
             {data.recipientName && (
               <div className="flex items-center gap-[13px]">
@@ -532,10 +544,10 @@ export default function QueueTrackingPage() {
                 </div>
               </div>
             )}
-            {data.serviceName && (
+            {localizedServiceName && (
               <div className={`flex items-center gap-3 ${data.recipientName ? "mt-3.5 border-t border-s-border pt-3.5" : ""}`}>
                 <div className="flex-1">
-                  <div className="font-heading text-[14.5px] font-semibold text-s-ink">{data.serviceName}</div>
+                  <div className="font-heading text-[14.5px] font-semibold text-s-ink">{localizedServiceName}</div>
                   {data.serviceDuration != null && <div className="mt-0.5 text-[12.5px] text-s-ink-2"><span className="tabular-nums">{data.serviceDuration}</span> {l.min}</div>}
                 </div>
                 {data.servicePrice != null && (

@@ -14,6 +14,7 @@ export default function ResetPasswordPage() {
   const locale = useLocale();
   const tc = useTranslations("common");
   const tp = useTranslations("passwordStrength");
+  const t = useTranslations("auth");
   const router = useRouter();
   const searchParams = useSearchParams() ?? new URLSearchParams();
   const supabase = createBrowserSupabaseClient();
@@ -83,11 +84,11 @@ export default function ResetPasswordPage() {
             <Check size={28} className="text-s-success" />
           </div>
           <p className="text-[12px] font-heading uppercase tracking-[.18em] text-s-success mb-2">
-            Erfolgreich
+            {t("success_label")}
           </p>
-          <p className="font-heading text-xl text-s-ink">Passwort geändert</p>
+          <p className="font-heading text-xl text-s-ink">{t("password_changed")}</p>
           <p className="text-xs font-body text-s-ink-2 mt-2">
-            Sie werden zur Anmeldung weitergeleitet…
+            {t("redirecting_to_login")}
           </p>
         </div>
       </div>
@@ -121,11 +122,11 @@ export default function ResetPasswordPage() {
               <Lock size={24} strokeWidth={2.4} className="text-s-ink" />
             </div>
             <p className="text-[12px] font-heading uppercase tracking-[.18em] text-s-ink/45 mb-2">
-              Konto-Wiederherstellung
+              {t("account_recovery")}
             </p>
-            <p className="font-heading text-lg text-s-ink">Neues Passwort</p>
+            <p className="font-heading text-lg text-s-ink">{t("new_password_title")}</p>
             <p className="text-xs font-body text-s-ink-2 mt-1">
-              Wählen Sie ein neues Passwort für Ihr Konto.
+              {t("new_password_instruction")}
             </p>
           </div>
 
@@ -134,20 +135,20 @@ export default function ResetPasswordPage() {
               <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-[14px] bg-s-error-bg">
                 <AlertCircle size={22} strokeWidth={2.2} className="text-s-error" />
               </div>
-              <p className="font-heading text-base text-s-ink">Link ungültig oder abgelaufen</p>
+              <p className="font-heading text-base text-s-ink">{t("link_expired_title")}</p>
               <p className="text-xs font-body text-s-ink-2">
-                Dieser Wiederherstellungs-Link funktioniert nicht mehr. Fordere unten einen neuen an.
+                {t("link_expired_body")}
               </p>
               <Link
                 href={`/${locale}/auth/login`}
                 className="mt-1 w-full rounded-pill bg-s-ink py-3 text-center text-xs font-heading uppercase tracking-[.04em] text-white transition-transform active:scale-[0.97]">
-                Neuen Link anfordern
+                {t("request_new_link")}
               </Link>
             </div>
           ) : !sessionReady ? (
             <div className="flex flex-col items-center gap-3 py-4">
               <Spinner size="md" />
-              <p className="text-xs font-body text-s-ink-2">Link wird überprüft…</p>
+              <p className="text-xs font-body text-s-ink-2">{t("checking_link")}</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -156,7 +157,8 @@ export default function ResetPasswordPage() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Neues Passwort"
+                  placeholder={t("new_password_title")}
+                  aria-label={t("new_password_title")}
                   required
                   className="w-full px-4 py-3.5 !pr-10 text-sm font-body text-s-ink placeholder:text-s-ink/30 transition-colors" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
                 />
@@ -164,7 +166,7 @@ export default function ResetPasswordPage() {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-1 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center text-s-ink-2 hover:text-s-ink transition-colors"
-                  aria-label={showPassword ? "Passwort verbergen" : "Passwort anzeigen"}
+                  aria-label={showPassword ? t("hide_password") : t("show_password")}
                 >
                   {showPassword ? <EyeOff size={16} strokeWidth={1.9} /> : <Eye size={16} strokeWidth={1.9} />}
                 </button>
@@ -195,14 +197,15 @@ export default function ResetPasswordPage() {
                 type={showPassword ? "text" : "password"}
                 value={confirm}
                 onChange={(e) => setConfirm(e.target.value)}
-                placeholder="Passwort bestätigen"
+                placeholder={t("confirm_password_placeholder")}
+                aria-label={t("confirm_password_placeholder")}
                 required
                 className="w-full px-4 py-3.5 text-sm font-body text-s-ink placeholder:text-s-ink/30 transition-colors" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               />
 
               {confirm.length > 0 && !passwordsMatch && (
                 <div className="flex items-center gap-2 px-3 py-2.5 rounded-[10px] border border-s-error/20 bg-s-error-bg">
-                  <p className="text-xs font-body text-s-error">Passwörter stimmen nicht überein</p>
+                  <p role="alert" className="text-xs font-body text-s-error">{t("passwords_mismatch")}</p>
                 </div>
               )}
 
@@ -211,7 +214,7 @@ export default function ResetPasswordPage() {
                 disabled={loading || !passwordValid || !passwordsMatch}
                 className="w-full py-4 rounded-pill bg-s-ink shadow-elevation-2 text-white text-xs font-heading uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
                 {loading ? <Spinner size="sm" invert /> : null}
-                Passwort ändern
+                {t("change_password")}
               </button>
             </form>
           )}
@@ -220,7 +223,7 @@ export default function ResetPasswordPage() {
         <p className="text-center mt-6">
           <Link href={`/${locale}/auth/login`}
             className="text-[13.5px] font-body font-semibold text-s-ink-2 transition-colors hover:text-s-ink">
-            Zurück zur Anmeldung
+            {t("back_to_login")}
           </Link>
         </p>
       </div>

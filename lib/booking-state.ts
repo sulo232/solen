@@ -16,6 +16,8 @@ export interface SelectedService {
   id: string;
   name_de: string;
   name_en: string;
+  name_fr?: string | null;
+  name_it?: string | null;
   price: number;
   duration_minutes: number;
 }

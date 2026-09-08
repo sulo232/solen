@@ -6,6 +6,7 @@ import { sendEmail, recurringConfirmation } from "@/lib/email";
 import { validateBody, recurringBookingSchema } from "@/lib/validations";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, bookingLimiter } from "@/lib/ratelimit";
+import { localizedField } from "@/lib/i18n/localized-field";
 import { claimSlot } from "@/lib/bookings/claim-slot";
 import { zurichYmd } from "@/lib/time/zurich";
 
@@ -30,7 +31,7 @@ export async function POST(request: NextRequest) {
 
   // Resolve the service through the session before using privileged slot access.
   const { data: service, error: serviceError } = await supabase.from("services")
-    .select("price, name_de").eq("id", service_id).eq("salon_id", salon_id).single();
+    .select("price, name_de, name_en, name_fr, name_it").eq("id", service_id).eq("salon_id", salon_id).single();
   if (serviceError || !service) {
     console.error("[bookings/recurring] service lookup failed:", serviceError);
     return NextResponse.json({ message: "Service unavailable", code: "DB_ERROR" }, { status: 500 });
@@ -185,7 +186,7 @@ export async function POST(request: NextRequest) {
     try {
       // A9-email-locale (2026-07-27): the logged-in booker's own profile.locale, was hardcoded "de".
       const recurringLocale = (profile?.locale as "de" | "en" | "fr" | "it") ?? "de";
-      await sendEmail(recurringConfirmation(user.email!, { frequency, service: service?.name_de ?? "Service", salon: salon?.name ?? "Salon" }, recurringLocale));
+      await sendEmail(recurringConfirmation(user.email!, { frequency, service: localizedField(service, "name", recurringLocale) || "Service", salon: salon?.name ?? "Salon" }, recurringLocale));
     } catch (err) { console.error("[bookings/recurring] confirmation email failed:", err); }
   }
 

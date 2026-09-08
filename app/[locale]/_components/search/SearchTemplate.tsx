@@ -444,6 +444,7 @@ export default function SearchTemplate({
   const reduce = useReducedMotion();
   // V3-D351 (2026-05-28): all search-chrome + filter-sheet strings via next-intl.
   // Keys live under ui.searchChrome / ui.filterSheet in messages/{de,en,fr,it}.json.
+  const tNav = useTranslations("navigation");
   const tChrome = useTranslations("ui.searchChrome");
   const tFilter = useTranslations("ui.filterSheet");
   const tToast = useTranslations("toasts");
@@ -1158,7 +1159,7 @@ export default function SearchTemplate({
   const cityName = activeCity ? getCityName(activeCity, locale, activeCityRow) : t("countrywide");
   // CategoryMobileRails' "Top <Category>" rail title , reuses the same CATEGORY_PILLS label
   // the filter pills / header pills already render (e.g. "Coiffeur"), not new copy.
-  const categoryLabel = CATEGORY_PILLS.find((p) => p.slug === activeCategory)?.label ?? "";
+  const categoryLabel = activeCategory ? tNav(activeCategory) : "";
   const sortLabel =
     SORT_OPTIONS.find((s) => s.value === sort)?.label ?? t("sort_rating");
   // V3-D451: title of the FOCUSED filter sheet (the category whose pill opened it).
@@ -1370,7 +1371,7 @@ export default function SearchTemplate({
               <span className="block truncate font-body text-[14px] font-medium text-s-ink"> {/* mockup-ok: variant C label, owner pick 2026-08-10 */}
                 {/* A2/Model B (2026-07-04): category + query are independent, so line 1 shows
                     BOTH when both are set, not one clobbering the other. */}
-                {[activeCategory ? CATEGORY_PILLS.find((c) => c.slug === activeCategory)?.label : null, q]
+                {[activeCategory ? tNav(activeCategory) : null, q]
                   .filter(Boolean)
                   .join(" ") || tChrome("searchPlaceholder")}
                 {/* city slides INLINE when collapsed so the info isn't lost */}
@@ -2026,7 +2027,7 @@ export default function SearchTemplate({
                       No "Suchen" placeholder (owner). */}
                   <span className="min-w-0 flex-1">
                     <span className="block truncate font-body text-[14px] font-medium text-s-ink">
-                      {q || (activeCategory ? CATEGORY_PILLS.find((c) => c.slug === activeCategory)?.label : null) || cityName}
+                      {q || (activeCategory ? tNav(activeCategory) : null) || cityName}
                     </span>
                     {(q || activeCategory) && (
                       <span className="block truncate font-body text-[12.5px] font-normal text-s-ink-2">{cityName}</span>

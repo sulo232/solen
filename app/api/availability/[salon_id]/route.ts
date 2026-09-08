@@ -39,7 +39,7 @@ export async function GET(
       query,
       supabase
         .from("services")
-        .select("id, name_de, name_en, duration_minutes, price")
+        .select("id, name_de, name_en, name_fr, name_it, duration_minutes, price")
         .eq("salon_id", salon_id),
       supabase
         .from("staff_members")
@@ -50,8 +50,8 @@ export async function GET(
   if (servicesError) console.error("[api/availability/[salon_id]] services lookup failed:", servicesError.message);
   if (staffError) console.error("[api/availability/[salon_id]] staff lookup failed:", staffError.message);
 
-  const services: Record<string, { name_de: string | null; name_en: string | null; duration_minutes: number | null; price: number | null }> = {};
-  for (const s of salonServices ?? []) services[s.id] = { name_de: s.name_de, name_en: s.name_en, duration_minutes: s.duration_minutes, price: s.price };
+  const services: Record<string, { name_de: string | null; name_en: string | null; name_fr: string | null; name_it: string | null; duration_minutes: number | null; price: number | null }> = {};
+  for (const s of salonServices ?? []) services[s.id] = { name_de: s.name_de, name_en: s.name_en, name_fr: s.name_fr, name_it: s.name_it, duration_minutes: s.duration_minutes, price: s.price };
 
   const staff: Record<string, { name: string | null; avatar_url: string | null }> = {};
   for (const m of salonStaff ?? []) staff[m.id] = { name: m.name, avatar_url: m.avatar_url };

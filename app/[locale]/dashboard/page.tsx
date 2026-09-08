@@ -16,6 +16,7 @@ import DashboardAdvicePanel from "@/app/[locale]/_components/dashboard/Dashboard
 import { cn } from "@/lib/utils";
 import { resolveSwissLocale } from "@/lib/format";
 import { avGrad } from "@/lib/avatar-gradients";
+import { localizedField } from "@/lib/i18n/localized-field";
 import type { Booking } from "@/lib/types";
 import type { DashboardAdvice } from "@/lib/dashboard-advice";
 
@@ -31,7 +32,11 @@ interface DashboardStats {
   /** Only present because this page asks for it with &advice=1. */
   advice?: DashboardAdvice;
 }
-interface EnrichedBooking extends Booking { customer_name: string; service_name: string }
+interface EnrichedBooking extends Booking {
+  customer_name: string;
+  service_name: string;
+  services?: { name_de: string | null; name_en: string | null; name_fr?: string | null; name_it?: string | null } | null;
+}
 interface StaffStat { id: string; name: string; revenue?: number; bookings?: number }
 
 // mockup-ok: hook-enforced no-caps compliance fix (CLAUDE.md rule 10), ported from reviewed commit 37e703762
@@ -274,7 +279,7 @@ export default function DashboardPage() {
                       <span className={`grid place-items-center w-[30px] h-[30px] rounded-full bg-gradient-to-br ${avGrad(b.customer_name)} text-white text-[12px] font-semibold shrink-0`}>{initials(b.customer_name)}</span>
                       <span className="flex-1 min-w-0">
                         <span className="block text-[15px] font-semibold tracking-[-0.005em] text-s-ink truncate">{b.customer_name}</span>
-                        <span className="block text-[13px] text-s-ink-2 truncate">{b.service_name}</span>
+                        <span className="block text-[13px] text-s-ink-2 truncate">{localizedField(b.services, "name", locale) || b.service_name}</span>
                       </span>
                       {statusPill(b.status, t)}
                     </DashRow>

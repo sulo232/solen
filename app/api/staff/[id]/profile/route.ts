@@ -18,7 +18,7 @@ export async function GET(
   const { data: staff, error } = await supabase
     .from("staff_members")
     .select(
-      "id, name, avatar_url, specialties, languages, bio, instagram_url, years_experience, average_rating, review_count, appointments_completed, clients_served, salons(name, slug, categories, is_active, listed_on_marketplace, is_test)"
+      "id, name, avatar_url, specialties, languages, bio, instagram_url, years_experience, appointments_completed, clients_served, salons(name, slug, categories, is_active, listed_on_marketplace, is_test)"
     )
     .eq("id", id)
     .eq("is_active", true)
@@ -35,7 +35,7 @@ export async function GET(
   }
 
   // Fetch portfolio, services, and reviews in parallel
-  const [portfolioRes, servicesRes, reviewsRes] = await Promise.all([
+  const [portfolioRes, servicesRes, reviewsRes, ratingRes] = await Promise.all([
     supabase
       .from("staff_portfolio_images")
       .select("id, image_url, sort_order, created_at")
@@ -44,7 +44,7 @@ export async function GET(
       .limit(30),
     supabase
       .from("staff_services")
-      .select("service_id, services(id, name_de, name_en, duration_minutes, price)")
+      .select("service_id, services(id, name_de, name_en, name_fr, name_it, duration_minutes, price)")
       .eq("staff_member_id", id),
     supabase
       .from("reviews")
@@ -52,7 +52,12 @@ export async function GET(
       .eq("staff_member_id", id)
       .order("created_at", { ascending: false })
       .limit(100),
+    supabase.from("staff_ratings_view")
+      .select("average_rating, review_count")
+      .eq("staff_id", staff.id).maybeSingle(),
   ]);
+  if (ratingRes.error) console.error("[staff/profile] rating lookup failed:", ratingRes.error);
+  const rating = ratingRes.error ? null : ratingRes.data;
 
   return NextResponse.json({
     staff: {
@@ -64,8 +69,8 @@ export async function GET(
       bio: staff.bio,
       instagram_url: staff.instagram_url,
       years_experience: staff.years_experience,
-      average_rating: staff.average_rating,
-      review_count: staff.review_count,
+      average_rating: rating?.average_rating ?? null,
+      review_count: rating?.review_count ?? null,
       appointments_completed: staff.appointments_completed,
       clients_served: staff.clients_served,
       salon_name: staff.salons?.name,

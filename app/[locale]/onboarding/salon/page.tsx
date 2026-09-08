@@ -140,13 +140,13 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
 
         <div className="grid grid-cols-1 gap-4">
           <div>
-            <label className="block text-[12px] font-heading tracking-[0.08em] text-s-ink/40 mb-1.5">{/* will add translations later if needed */} Stadt</label>
+            <label className="block text-[12px] font-heading tracking-[0.08em] text-s-ink/40 mb-1.5">{t("step1.city")}</label>
             <select // mockup-ok: dead-class removal only, base input law already renders fill/border/radius for select; !border-s-accent keeps the error edge visible (V3-D-input-fill-2026-07-17)
               value={data.city}
               onChange={(e) => onChange({ ...data, city: e.target.value })}
               className={`w-full px-4 py-3 text-sm text-s-ink shadow-warm-sm transition-[border-color,box-shadow] ${errors.city ? "!border-s-accent" : ""}`}
             >
-              <option value="">Stadt wählen</option>
+              <option value="">{t("step1.selectPlaceholder")}</option>
               <option value="zuerich">Zürich</option>
               <option value="basel">Basel</option>
               <option value="bern">Bern</option>
@@ -202,11 +202,12 @@ interface QuickWinData {
   service_price: number;
 }
 
-function Step3({ data, onChange, category, t }: {
+function Step3({ data, onChange, category, t, errors }: {
   data: QuickWinData;
   onChange: (d: QuickWinData) => void;
   category: string;
   t: TFunc;
+  errors: Record<string, string>;
 }) {
   const [suggesting, setSuggesting] = useState(false);
   const [suggested, setSuggested] = useState(false);
@@ -257,6 +258,7 @@ function Step3({ data, onChange, category, t }: {
               </div>
             )}
           </div>
+          {errors.service_name && <p className="text-xs text-s-error mt-0.5">{errors.service_name}</p>}
           {suggested && data.service_name && (
             <div className="flex items-center gap-1.5 mt-1.5">
               <TrendingUp size={10} className="text-s-ink-2" />
@@ -564,15 +566,15 @@ export default function SalonOnboardingPage() {
   const validateCurrentStep = (): Record<string, string> => {
     const errors: Record<string, string> = {};
     if (step === 1) {
-      if (!basics.name || basics.name.length < 2) errors.name = "Name muss mindestens 2 Zeichen haben";
-      if (!basics.email || !basics.email.includes("@")) errors.email = "Ungültige E-Mail-Adresse";
-      if (basics.categories.length === 0) errors.categories = "Wähle mindestens eine Kategorie";
-      if (!basics.city) errors.city = "Wähle eine Stadt";
-      if (!basics.address || basics.address.length < 5) errors.address = "Adresse ist zu kurz";
-      if (!basics.tos_accepted) errors.tos_accepted = "Bitte akzeptiere die AGB und Datenschutzerklärung";
+      if (!basics.name || basics.name.length < 2) errors.name = t("step1.errors.name");
+      if (!basics.email || !basics.email.includes("@")) errors.email = t("step1.errors.email");
+      if (basics.categories.length === 0) errors.categories = t("step1.errors.categories");
+      if (!basics.city) errors.city = t("step1.errors.city");
+      if (!basics.address || basics.address.length < 5) errors.address = t("step1.errors.address");
+      if (!basics.tos_accepted) errors.tos_accepted = t("step1.errors.tos");
     }
     if (step === 2) {
-      if (!quickWin.service_name || quickWin.service_name.length < 2) errors.service_name = "Service-Name erforderlich";
+      if (!quickWin.service_name || quickWin.service_name.length < 2) errors.service_name = t("step3Quick.errors.serviceName");
     }
     // Step 3 (photos) is optional — no validation needed
     return errors;
@@ -643,7 +645,7 @@ export default function SalonOnboardingPage() {
       setDone(true);
       setTimeout(() => router.push(`/${locale}/dashboard?onboarded=1`), 1500);
     } catch {
-      setSubmitError("Netzwerkfehler — bitte prüfen Sie Ihre Verbindung und versuchen Sie es erneut."); // em-dash-ok: pre-existing, unrelated to this edit
+      setSubmitError(t("networkError"));
     } finally {
       setSubmitting(false);
     }
@@ -795,6 +797,7 @@ export default function SalonOnboardingPage() {
                 onChange={setQuickWin}
                 category={basics.categories[0] || "coiffeur"}
                 t={t as any}
+                errors={stepErrors}
               />
             )}
             {step === 3 && (

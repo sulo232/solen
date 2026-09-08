@@ -8,6 +8,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Search, X, Sparkles } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
+import { localizedField } from "@/lib/i18n/localized-field";
 import type { SalonCategory } from "@/lib/types";
 import { RatingStars } from "@/app/[locale]/_components/primitives";
 
@@ -15,6 +16,8 @@ interface SuggestService {
   id: string;
   name_de: string;
   name_en: string;
+  name_fr?: string | null;
+  name_it?: string | null;
   category: string;
   price: number;
 }
@@ -102,7 +105,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
         smartDebounceRef.current = setTimeout(async () => {
           try {
             const smartRes = await fetch(
-              `/api/search/smart?q=${encodeURIComponent(q)}${categoryParam}${cityParam}`,
+              `/api/search/smart?q=${encodeURIComponent(q)}${categoryParam}${cityParam}&locale=${locale}`,
               { signal: controller.signal }
             );
             if (!smartRes.ok) return;
@@ -147,7 +150,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
 
   const handleServiceClick = (service: SuggestService) => {
     setOpen(false);
-    setQuery(service.name_de);
+    setQuery(localizedField(service as unknown as Record<string, unknown>, "name", locale));
     onServiceSelect?.(service);
   };
 
@@ -228,7 +231,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
                     activeIndex === i ? "bg-s-bg-sunken text-s-accent" : "text-s-ink/80 hover:bg-s-bg-surface"
                   }`}
                 >
-                  <span className="font-medium truncate">{service.name_de}</span>
+                  <span className="font-medium truncate">{localizedField(service as unknown as Record<string, unknown>, "name", locale)}</span>
                   <span className="text-xs text-s-ink/40 data-text shrink-0 ml-2">
                     {formatCurrency(service.price, locale)}
                   </span>
@@ -290,8 +293,10 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
                       if (result.entity_type === "service") {
                         onServiceSelect?.({
                           id: result.entity_id,
-                          name_de: result.name,
-                          name_en: "",
+                          name_de: locale === "de" ? result.name : "",
+                          name_en: locale === "en" ? result.name : "",
+                          name_fr: locale === "fr" ? result.name : undefined,
+                          name_it: locale === "it" ? result.name : undefined,
                           category: result.category,
                           price: 0,
                         });

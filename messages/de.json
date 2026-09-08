@@ -864,7 +864,13 @@
     "customerHelp": "Kund:innen-Hilfe",
     "safety": "Sicherheit",
     "contact": "Kontakt",
-    "aboutUs": "Über uns"
+    "aboutUs": "Über uns",
+    "newsletterFormLabel": "Newsletter abonnieren",
+    "newsletterEmailLabel": "E-Mail-Adresse",
+    "newsletterEmailPlaceholder": "ihre@email.ch",
+    "newsletterSubmitLabel": "Abonnieren",
+    "newsletterSuccess": "Danke! Sie sind eingetragen.",
+    "newsletterError": "Eintragen fehlgeschlagen. Bitte versuchen Sie es erneut."
   },
   "cookie": {
     "title": "Wir verwenden Cookies",
@@ -1147,7 +1153,7 @@
       "subtitle": "Wählen Sie ein oder mehrere Services aus. Die Kosten werden automatisch berechnet.",
       "minutes": "Min",
       "selected": "ausgewählt",
-      "items": "Artikel",
+      "items": "{count, plural, one {# Artikel} other {# Artikel}}",
       "menOnly": "Nur Männer",
       "womenOnly": "Nur Frauen",
       "continue": "Weiter",
@@ -1336,7 +1342,39 @@
       "privacyLink": "Datenschutzerklärung",
       "readCta": "Lesen",
       "acceptButton": "Ich akzeptiere die neuen Bedingungen"
-    }
+    },
+    "account_recovery": "Konto-Wiederherstellung",
+    "apple_login": "Mit Apple anmelden",
+    "back_to_login": "Zurück zur Anmeldung",
+    "change_password": "Passwort ändern",
+    "checking_link": "Link wird überprüft…",
+    "confirm_password_placeholder": "Passwort bestätigen",
+    "error_email_not_confirmed": "Bitte bestätigen Sie zuerst Ihre E-Mail",
+    "error_invalid_credentials": "E-Mail oder Passwort stimmt nicht",
+    "error_login_failed": "Anmeldung fehlgeschlagen",
+    "error_rate_limited": "Zu viele Versuche. Bitte warten Sie einen Moment.",
+    "error_reset_generic": "Fehler beim Senden. Bitte versuchen Sie es erneut.",
+    "error_reset_rate_limited": "Zu viele Anfragen. Bitte warten Sie einen Moment und versuchen Sie es erneut.",
+    "forgot_password": "Passwort vergessen?",
+    "hide_password": "Passwort verbergen",
+    "link_expired_body": "Dieser Wiederherstellungs-Link funktioniert nicht mehr. Fordern Sie unten einen neuen an.",
+    "link_expired_title": "Link ungültig oder abgelaufen",
+    "new_password_instruction": "Wählen Sie ein neues Passwort für Ihr Konto.",
+    "new_password_title": "Neues Passwort",
+    "no_account_yet": "Noch kein Konto?",
+    "password_changed": "Passwort geändert",
+    "password_placeholder": "Passwort",
+    "passwords_mismatch": "Passwörter stimmen nicht überein",
+    "redirecting_to_login": "Sie werden zur Anmeldung weitergeleitet…",
+    "request_new_link": "Neuen Link anfordern",
+    "reset_email_sent_label": "E-Mail gesendet",
+    "reset_instruction": "Geben Sie Ihre E-Mail ein und wir senden Ihnen einen Reset-Link.",
+    "reset_link_sent_body": "Schauen Sie in Ihrem Postfach nach einem Link zum Zurücksetzen.",
+    "reset_link_sent_title": "Link gesendet",
+    "send_reset_link": "Reset-Link senden",
+    "show_password": "Passwort anzeigen",
+    "success_label": "Erfolgreich",
+    "welcome_back": "Willkommen zurück"
   },
   "account": {
     "profile": "Profil",
@@ -3634,7 +3672,7 @@
     "removal_heading": "4. Inhaltsentfernung",
     "removal_text": "solen.ch behält sich das Recht vor, Inhalte ohne Vorankündigung zu entfernen, die gegen diese Bedingungen verstossen oder anderweitig unangemessen sind.",
     "gdpr_heading": "5. DSGVO-Konformität",
-    "gdpr_text": "Hochgeladene Inhalte werden auf Servern in der EU/Schweiz gespeichert. Sie können die Löschung Ihrer Inhalte jederzeit über Ihre Profileinstellungen oder per E-Mail an privacy@solen.ch beantragen.",
+    "gdpr_text": "Hochgeladene Inhalte werden auf Servern in der EU/Schweiz gespeichert. Sie können die Löschung Ihrer Inhalte jederzeit über Ihre Profileinstellungen oder per E-Mail an support@solen.ch beantragen.",
     "disclaimer_heading": "6. Haftungsausschluss",
     "disclaimer_text": "solen.ch übernimmt keine Garantie für die Genauigkeit von KI-generierten Beschreibungen. Die angezeigten Preise sind Schätzungen und können je nach Salon variieren."
   },
@@ -4077,7 +4115,16 @@
       "tosPrefix": "Ich akzeptiere die",
       "tosLink": "AGB",
       "privacyLink": "Datenschutzerklärung",
-      "emailUse": "Wir verwenden diese Adresse nur, um Sie zu Ihrem Salon zu kontaktieren."
+      "emailUse": "Wir verwenden diese Adresse nur, um Sie zu Ihrem Salon zu kontaktieren.",
+      "errors": {
+        "name": "Der Name muss mindestens 2 Zeichen haben.",
+        "email": "Ungültige E-Mail-Adresse.",
+        "categories": "Wählen Sie mindestens eine Kategorie.",
+        "city": "Wählen Sie eine Stadt aus.",
+        "address": "Die Adresse ist zu kurz.",
+        "tos": "Bitte akzeptieren Sie die AGB und die Datenschutzerklärung."
+      },
+      "city": "Stadt *"
     },
     "step2": {
       "title": "Salon-Profil",
@@ -4168,7 +4215,10 @@
       "duration": "Dauer",
       "price": "Preis CHF",
       "hint": "Nur ein Anfang!",
-      "hintDesc": "Im Dashboard können Sie beliebig viele Services, Teammitglieder und Öffnungszeiten ergänzen."
+      "hintDesc": "Im Dashboard können Sie beliebig viele Services, Teammitglieder und Öffnungszeiten ergänzen.",
+      "errors": {
+        "serviceName": "Service-Name erforderlich."
+      }
     },
     "stepPhotos": {
       "title": "Fotos hochladen",
@@ -4210,7 +4260,8 @@
       "title": "Salon erstellt!",
       "subtitle": "Ihr Salon wird jetzt geprüft. Sie werden per E-Mail informiert.",
       "dashboardHint": "Sie werden gleich zum Dashboard weitergeleitet…"
-    }
+    },
+    "networkError": "Netzwerkfehler. Bitte prüfen Sie Ihre Verbindung und versuchen Sie es erneut."
   },
   "imageUpload": {
     "dropZoneTitle": "Fotos hierher ziehen oder klicken zum Hochladen",
@@ -6689,7 +6740,6 @@
     "checkStatus": "Status prüfen",
     "reconciliationTitle": "Zahlung muss geprüft werden",
     "reconciliationMessage": "Kontaktieren Sie den Solen-Support. Eine erneute Zahlung ist hier gesperrt.",
-
     "headingNoShow": "Ausfallgebühr bezahlen",
     "headingLateCancel": "Stornogebühr bezahlen",
     "totalLabel": "Total",

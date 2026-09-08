@@ -26,7 +26,8 @@ function clearWelcome() {
 }
 
 export default function SignIn() {
-  const t = useTranslations("auth") as any;
+  const t = useTranslations("auth");
+  const tc = useTranslations("common");
   const searchParams = useSearchParams() ?? new URLSearchParams();
   const router = useRouter();
   const locale = useLocale();
@@ -91,10 +92,10 @@ export default function SignIn() {
         // Friendly, localized copy instead of leaking the raw Supabase string.
         const m = (error.message || "").toLowerCase();
         toast.error(
-          /invalid login credentials/.test(m) ? "E-Mail oder Passwort stimmt nicht"
-          : /email not confirmed/.test(m) ? "Bitte bestätigen Sie zuerst Ihre E-Mail"
-          : /rate|too many|after \d+ second|security purposes/.test(m) ? "Zu viele Versuche. Bitte warten Sie einen Moment."
-          : "Anmeldung fehlgeschlagen"
+          /invalid login credentials/.test(m) ? t("error_invalid_credentials")
+          : /email not confirmed/.test(m) ? t("error_email_not_confirmed")
+          : /rate|too many|after \d+ second|security purposes/.test(m) ? t("error_rate_limited")
+          : t("error_login_failed")
         );
         setLoading(false);
       } else if (data.session) {
@@ -105,7 +106,7 @@ export default function SignIn() {
         window.location.replace(redirect);
       }
     } catch {
-      toast.error("Netzwerkfehler");
+      toast.error(tc("networkError"));
       setLoading(false);
     }
   };
@@ -127,14 +128,14 @@ export default function SignIn() {
         const rateLimited = res.status === 429 || /rate limit|too many|after \d+ second|security purposes/.test(raw);
         toast.error(
           rateLimited
-            ? "Zu viele Anfragen. Bitte warten Sie einen Moment und versuchen Sie es erneut."
-            : "Fehler beim Senden. Bitte versuchen Sie es erneut."
+            ? t("error_reset_rate_limited")
+            : t("error_reset_generic")
         );
       } else {
         setResetSent(true);
       }
     } catch {
-      toast.error("Netzwerkfehler");
+      toast.error(tc("networkError"));
     }
     setLoading(false);
   };
@@ -148,17 +149,17 @@ export default function SignIn() {
         </div>
         <div>
           <p className="text-[13px] text-s-ink-2 mb-2">
-            E-Mail gesendet
+            {t("reset_email_sent_label")}
           </p>
-          <p className="font-heading text-lg text-s-ink">Link gesendet</p>
+          <p className="font-heading text-lg text-s-ink">{t("reset_link_sent_title")}</p>
           <p className="text-xs font-body text-s-ink-2 mt-1 leading-relaxed">
-            Schauen Sie in Ihrem Postfach nach einem Link zum Zurücksetzen.
+            {t("reset_link_sent_body")}
           </p>
         </div>
         <button
           onClick={() => { setResetMode(false); setResetSent(false); }}
           className="text-[13px] text-s-ink-2 hover:text-s-ink transition-colors mt-2">
-          Zurück zur Anmeldung
+          {t("back_to_login")}
         </button>
       </div>
     );
@@ -170,11 +171,11 @@ export default function SignIn() {
       <div className="flex flex-col gap-4 w-full">
         <div className="text-center mb-2">
           <p className="text-[13px] text-s-ink-2 mb-2">
-            Konto-Wiederherstellung
+            {t("account_recovery")}
           </p>
-          <p className="font-heading text-lg text-s-ink">Passwort vergessen?</p>
+          <p className="font-heading text-lg text-s-ink">{t("forgot_password")}</p>
           <p className="text-xs font-body text-s-ink-2 mt-1">
-            Geben Sie Ihre E-Mail ein und wir senden Ihnen einen Reset-Link.
+            {t("reset_instruction")}
           </p>
         </div>
         <form onSubmit={handlePasswordReset} className="flex flex-col gap-3">
@@ -183,6 +184,7 @@ export default function SignIn() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t("email_placeholder")}
+            aria-label={t("email_placeholder")}
             required
             autoComplete="email"
             inputMode="email"
@@ -193,13 +195,13 @@ export default function SignIn() {
             disabled={loading || !email}
             className="w-full py-4 rounded-btn bg-s-ink text-white text-[15px] font-medium tracking-[-0.005em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
             {loading ? <Spinner size="sm" invert /> : <Mail size={15} strokeWidth={1.9} />}
-            Reset-Link senden
+            {t("send_reset_link")}
           </button>
         </form>
         <button
           onClick={() => setResetMode(false)}
           className="text-[13px] text-s-ink-2 hover:text-s-ink text-center transition-colors">
-          Zurück zur Anmeldung
+          {t("back_to_login")}
         </button>
       </div>
     );
@@ -214,6 +216,7 @@ export default function SignIn() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("email_placeholder")}
+          aria-label={t("email_placeholder")}
           required
           autoComplete="email"
           inputMode="email"
@@ -224,7 +227,8 @@ export default function SignIn() {
             type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Passwort"
+            placeholder={t("password_placeholder")}
+            aria-label={t("password_placeholder")}
             required
             autoComplete="current-password"
             className="w-full h-14 px-5 !pr-12 text-[15px] text-s-ink placeholder:text-s-ink-2 !bg-s-bg-sunken !border-transparent focus:outline-none transition-colors" // mockup-ok: public/_mockups/login-uncluttered-2026-08-20.html "B, with your three changes" panel, owner-approved (!bg/!border beat the unlayered focus-visible !important in globals.css so the fill stays grey at rest AND on focus, no new focus treatment)
@@ -233,7 +237,7 @@ export default function SignIn() {
             type="button"
             onClick={() => setShowPassword(!showPassword)}
             className="absolute right-2 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center text-s-ink-2 hover:text-s-ink transition-colors"
-            aria-label={showPassword ? "Passwort verbergen" : "Passwort anzeigen"}
+            aria-label={showPassword ? t("hide_password") : t("show_password")}
           >
             {showPassword ? <EyeOff size={18} strokeWidth={1.9} /> : <Eye size={18} strokeWidth={1.9} />}
           </button>
@@ -243,14 +247,14 @@ export default function SignIn() {
           disabled={loading || !email || !password}
           className="w-full h-14 rounded-btn bg-s-ink text-white text-[15px] font-medium tracking-[-0.005em] active:scale-[0.97] transition-[transform,opacity] duration-[80ms] disabled:opacity-50 flex items-center justify-center gap-2 mt-1">
           {loading ? <Spinner size="sm" invert /> : null}
-          Anmelden
+          {t("login_title")}
         </button>
       </form>
 
       <button
         onClick={() => setResetMode(true)}
         className="mt-3 text-[13px] font-medium text-s-ink underline underline-offset-[3px] transition-colors text-center py-1">
-        Passwort vergessen?
+        {t("forgot_password")}
       </button>
 
       {/* mockup-ok: public/_mockups/login-uncluttered-2026-08-20.html "B, with your three changes"
@@ -270,7 +274,7 @@ export default function SignIn() {
             <path d="M17.05 12.04c-.03-2.6 2.12-3.85 2.22-3.91-1.21-1.77-3.09-2.01-3.76-2.04-1.6-.16-3.12.94-3.93.94-.81 0-2.06-.92-3.39-.89-1.74.03-3.35 1.01-4.25 2.57-1.81 3.14-.46 7.79 1.3 10.34.86 1.25 1.88 2.65 3.22 2.6 1.29-.05 1.78-.83 3.34-.83 1.56 0 2 .83 3.37.81 1.39-.03 2.27-1.27 3.12-2.53.98-1.45 1.39-2.85 1.41-2.92-.03-.01-2.71-1.04-2.74-4.13zM14.69 4.5c.71-.86 1.19-2.06 1.06-3.25-1.02.04-2.26.68-2.99 1.54-.66.76-1.23 1.98-1.08 3.15 1.14.09 2.3-.58 3.01-1.44z"/>
           </svg>
         </span>
-        Mit Apple anmelden
+        {t("apple_login")}
       </button>
       <button
         onClick={handleGoogle}

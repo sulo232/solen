@@ -9,6 +9,7 @@ import ItemCard from "@/components-legacy/discovery/ItemCard";
 import VideoCard from "@/components-legacy/discovery/VideoCard";
 import DiscoveryGridSkeleton from "@/components-legacy/discovery/DiscoveryGridSkeleton";
 import type { DiscoveryItem } from "@/lib/types";
+import { localizedField } from "@/lib/i18n/localized-field";
 
 // V3-D414: board (collection) detail page. Tapping a Kollektion now opens this — hero cover + description +
 // the board's looks in the same masonry as the feed. Looks come from /api/discovery/boards/[id] (curated pins,
@@ -46,9 +47,7 @@ export default function BoardDetailPage() {
     return () => { cancelled = true; };
   }, [id]);
 
-  const localName = board
-    ? (locale === "de" ? board.name_de : locale === "en" ? board.name_en : locale === "fr" ? board.name_fr : board.name_it) || board.name
-    : "";
+  const localName = board ? localizedField(board, "name", locale) || board.name : "";
   const cover = board?.cover_images?.[0] as string | undefined;
 
   const handleItemClick = (item: DiscoveryItem) => {

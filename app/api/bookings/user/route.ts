@@ -55,7 +55,7 @@ export async function GET(req: NextRequest) {
         is_first_visit, is_recurring,
         sms_sent_24h, sms_sent_1h, review_prompt_sent,
         salon:salons(id, slug, name, address, average_rating, review_count, cover_photo_url),
-        service:services(id, name_de, name_en, duration_minutes, price),
+        service:services(id, name_de, name_en, name_fr, name_it, duration_minutes, price),
         staff:staff_members(id, name, avatar_url)
       `
       )

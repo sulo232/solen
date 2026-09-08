@@ -116,6 +116,14 @@ Before a change, search the ledger by affected paths, component or feature and s
 
 ## i18n
 
+### Locale projections and uncapped staff ratings must survive their real read/render path
+- Date: 2026-09-08
+- Files: `lib/salon-detail.ts`, `app/api/staff/[id]/profile/route.ts`, `components-legacy/staff/StaffProfilePage.tsx`, `components-legacy/staff/StaffReviewsSheet.tsx`, `app/[locale]/salon/[slug]/booking/page.tsx`, `components-legacy/booking/ServicesStaffStep.tsx`, `lib/booking-state.ts`, `app/api/bookings/route.ts`, `app/api/salon/bundles/route.ts`, `app/[locale]/tip/[bookingId]/page.tsx`, `app/[locale]/queue/[token]/page.tsx`, `app/[locale]/onboarding/salon/page.tsx`.
+- Observed failure: selecting only German/English fields or reconstructing a two-language cart drops stored French/Italian names. A source branch also calculated staff summaries from the 100 displayed reviews; that is not the full aggregate and cannot supply a truthful count or average beyond that page.
+- Reader-chain correction: the tip page expected a singular relation and a booking envelope while its endpoint returned plural relations inside data; bundle assembly and the dashboard GET also discarded FR/IT fields. Queue guards checked the legacy name rather than the resolved name, and a city field was translated as a neighbourhood. Helper-unit success did not exercise those paths. Read and test the actual API envelope, selected fields, intermediate reconstruction and final mounted consumer together; include unauthorized/error payloads, null/whitespace fallback, and the real field binding. Payment context requires the returned booking identity to match before rendering its commit flow.
+- Prevention: retain raw locale fields through projection and cart reconstruction, then resolve via the existing localizedField fallback at render. Read staff_ratings_view server-side only after resolving active staff ids and passing the existing hidden-Store guard; verify the view's invoker and hidden-review contract. Keep the display-list cap separate from the aggregate. On aggregate lookup error or absence, omit the summary in every caller, including the review sheet, without substituting zero or a capped/stale average. Test actual handlers and mounted callers with an aggregate larger than the displayed list, missing/error results, and a locale selection/deselection plus live-list draft restoration.
+
+
 ### Adding a translation key to one locale file but not all 4 causes runtime errors
 - **Date**: 2026-03-30
 - **File(s)**: `messages/de.json`, `messages/en.json`, `messages/fr.json`, `messages/it.json`

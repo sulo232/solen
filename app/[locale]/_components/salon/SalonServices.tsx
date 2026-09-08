@@ -11,6 +11,7 @@ import { PriceFrom, SeeAllButton, ServiceDisclosureRow } from "../primitives";
 // map SalonCard.tsx and MapSalonDetail.tsx already import from SalonResultCard.
 import { FROM_LABEL } from "../search/SalonResultCard";
 import { cn } from "@/lib/utils";
+import { localizedField } from "@/lib/i18n/localized-field";
 
 /**
  * Duration label. Owner spec (2026-06-09): ALWAYS minutes, lowercase "min",
@@ -230,7 +231,7 @@ function ServiceRow({
       <ServiceDisclosureRow
         title={
           <div className="font-body text-[15px] font-medium text-s-ink md:text-[16px]">
-            {service.name_de}
+            {localizedField(service as unknown as Record<string, unknown>, "name", locale)}
           </div>
         }
         meta={
@@ -238,7 +239,7 @@ function ServiceRow({
             {formatDurationDE(service.duration_minutes)}
           </div>
         }
-        description={service.description_de}
+        description={localizedField(service as unknown as Record<string, unknown>, "description", locale)}
         price={
           <div className="font-body mt-3 text-[14px] text-s-ink md:text-[15px]">
             <PriceFrom amount={service.price} label={FROM_LABEL[locale] ?? FROM_LABEL.de} emphasis />

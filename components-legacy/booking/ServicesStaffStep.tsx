@@ -13,11 +13,14 @@ import ServiceDetailSheet from './ServiceDetailSheet';
 import Spinner from '@/components-legacy/ui/Spinner';
 import type { SelectedService } from '@/lib/booking-state';
 import type { StaffMember } from '@/lib/types';
+import { localizedField } from '@/lib/i18n/localized-field';
 
 interface Service {
   id: string;
   name_de: string;
   name_en: string;
+  name_fr?: string | null;
+  name_it?: string | null;
   category: string;
   subcategory: string | null;
   duration_minutes: number;
@@ -25,6 +28,8 @@ interface Service {
   is_active: boolean;
   description_de: string | null;
   description_en: string | null;
+  description_fr?: string | null;
+  description_it?: string | null;
   suitable_gender: string[] | null;
 }
 
@@ -42,6 +47,8 @@ interface ServiceOption {
   service_id: string;
   name_de: string;
   name_en: string;
+  name_fr?: string | null;
+  name_it?: string | null;
   price: number;
   duration_minutes: number;
   sort_order: number | null;
@@ -118,9 +125,9 @@ export default function ServicesStaffStep({
       .filter((a) => a.service_id === serviceId)
       .map((a) => a.addon_service_id);
 
-  const serviceName = (s: Service) => (locale === 'en' ? s.name_en : s.name_de);
+  const serviceName = (s: Service) => localizedField(s as unknown as Record<string, unknown>, 'name', locale);
   const serviceDesc = (s: Service) =>
-    locale === 'en' ? s.description_en : s.description_de;
+    localizedField(s as unknown as Record<string, unknown>, 'description', locale);
   // Text-only duration, no Clock icon (SalonServices.tsx formatDurationDE parity).
   const formatDuration = (mins: number) => `${mins} ${t('minutes')}`;
   // Gender suffix only when a service is restricted to a single gender (Fresha pattern)
@@ -138,6 +145,8 @@ export default function ServicesStaffStep({
       id: service.id,
       name_de: service.name_de,
       name_en: service.name_en,
+      name_fr: service.name_fr ?? null,
+      name_it: service.name_it ?? null,
       price: service.price,
       duration_minutes: service.duration_minutes,
     };
@@ -200,6 +209,8 @@ export default function ServicesStaffStep({
     id: s.id,
     name_de: s.name_de,
     name_en: s.name_en,
+    name_fr: s.name_fr ?? null,
+    name_it: s.name_it ?? null,
     price: s.price,
     duration_minutes: s.duration_minutes,
   });
@@ -222,6 +233,8 @@ export default function ServicesStaffStep({
           id: svc.id,
           name_de: svc.name_de,
           name_en: svc.name_en,
+          name_fr: svc.name_fr ?? null,
+          name_it: svc.name_it ?? null,
           price: opt.price,
           duration_minutes: opt.duration_minutes,
         }
@@ -597,7 +610,7 @@ export default function ServicesStaffStep({
             </p>
             <p className="flex items-center gap-1.5 text-xs text-s-ink-2 mt-1.5 tabular-nums">
               <ShoppingCart size={13} aria-hidden />
-              {formData.services.length} {t('items')}&emsp;<CountUpNumber value={formData.totalDuration} />{' '}
+              {t('items', { count: formData.services.length })}&emsp;<CountUpNumber value={formData.totalDuration} />{' '}
               {t('minutes')}
             </p>
           </div>

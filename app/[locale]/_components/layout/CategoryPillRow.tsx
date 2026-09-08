@@ -47,6 +47,7 @@ import Image from "next/image";
 import { Link } from "next-view-transitions";
 import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
+import type { SalonCategory } from "@/lib/types";
 import { Home } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { strokeForSize } from "@/lib/icon-stroke";
@@ -73,7 +74,7 @@ type CategorySearchSegment = (typeof CATEGORY_SEARCH_SEGMENTS)[number];
 // the way on the left, so there is a home page, so they can actually go to the home page instead
 // of being stuck in whatever category"). No PNG exists for it, it renders the real Lucide house
 // glyph.
-const HEADER_CATEGORIES: { slug: string; route: string; label: string; iconSrc?: string; home?: boolean }[] = [
+const HEADER_CATEGORIES: { slug: SalonCategory | "home" | "inspo"; route: string; label: string; iconSrc?: string; home?: boolean }[] = [
   { slug: "home", route: "", label: "All", home: true },
   // HIS OWN NEW ICONS, 2026-08-10. Owner: "I also gave you a fucking branch name for the icons,
   // right, that I made new icons, but you still did not do anything."
@@ -343,7 +344,7 @@ export default function CategoryPillRow() {
                     aria-hidden
                   />
                 ) : null}
-                {c.label}
+                {c.slug === "home" || c.slug === "inspo" ? c.label : tNav(c.slug)}
               </Link>
             );
           })}

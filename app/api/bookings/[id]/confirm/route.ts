@@ -8,6 +8,7 @@ import { resolveBookingActor } from "@/lib/bookings/authorize";
 import { applyRateLimit, bookingLimiter } from "@/lib/ratelimit";
 import { completeReferralForFirstBooking } from "@/lib/referral/complete-referral";
 import { resolveSwissLocale } from "@/lib/format";
+import { localizedField } from "@/lib/i18n/localized-field";
 
 // POST /api/bookings/[id]/confirm
 // Called by salon owner to confirm a pending booking, INCLUDING the manual-approval
@@ -80,7 +81,7 @@ export async function POST(
   // Send confirmation email to customer
   const { data: fullBooking } = await admin
     .from("bookings")
-    .select("user_id, starts_at, services(name_de), salons(name)")
+    .select("user_id, starts_at, services(name_de, name_en, name_fr, name_it), salons(name)")
     .eq("id", id)
     .single();
 
@@ -93,7 +94,7 @@ export async function POST(
     if (email) {
       const dateStr = new Date(fullBooking.starts_at).toLocaleDateString(resolveSwissLocale(locale), { weekday: "long", day: "numeric", month: "long" });
       const timeStr = new Date(fullBooking.starts_at).toLocaleTimeString(resolveSwissLocale(locale), { hour: "2-digit", minute: "2-digit" });
-      const serviceName = (fullBooking.services as any)?.name_de ?? "Service";
+      const serviceName = localizedField(fullBooking.services as Record<string, unknown> | null, "name", locale) || "Service";
       const salonName = (fullBooking.salons as any)?.name ?? "Salon";
       await sendNotification({
         userId: fullBookingUserId,

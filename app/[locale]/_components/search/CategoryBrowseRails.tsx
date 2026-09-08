@@ -5,6 +5,7 @@ import { Section, SectionFrame, SectionTitle, ScrollRow } from "../homepage/Sect
 import { SalonCard, type SalonCardProps } from "../homepage/SalonCard";
 import { nextAvailableSlotLabel } from "@/lib/format";
 import { nameForLocale } from "@/lib/min-price-service";
+import { localizedField } from "@/lib/i18n/localized-field";
 
 /**
  * CategoryBrowseRails — V3-D366 (2026-05-29) · re-expanded to 6 rails V3-D368
@@ -58,6 +59,8 @@ export type RailSalon = {
   services?: {
     name_de?: string | null;
     name_en?: string | null;
+    name_fr?: string | null;
+    name_it?: string | null;
     price?: number | null;
     slots?: string[] | null;
   }[];
@@ -80,13 +83,13 @@ export const pick = (rec: Record<string, string>, locale: string) => rec[locale]
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-// Service-name matchers (lowercased, locale-agnostic substrings).
-const MEN_RE = /herren|männer|maenner|\bmann\b|\bmen\b|barber|bart|beard/;
-const COLOR_RE = /färb|faerb|farb|colo|tönung|toenung|strähn|straehn|balayage|highlight|mèche|meche/;
+// Match localized service names in all four supported languages.
+const MEN_RE = /herren|männer|maenner|\bmann\b|\bmen\b|barber|bart|beard|homme|hommes|barbe|barbier|uomo|uomini|barba|barbiere/;
+const COLOR_RE = /färb|faerb|farb|colo|couleur|tönung|toenung|strähn|straehn|balayage|highlight|mèche|meche/;
 
-function serviceText(s: RailSalon): string {
+function serviceText(s: RailSalon, locale: string): string {
   return (s.services ?? [])
-    .map((sv) => (sv.name_de ?? sv.name_en ?? "").toLowerCase())
+    .map((sv) => localizedField(sv, "name", locale).toLowerCase())
     .join(" | ");
 }
 
@@ -204,10 +207,10 @@ export function CategoryBrowseRails({
     .slice(0, 10);
 
   // 5. Für Männer — offers a men's service.
-  const men = salons.filter((s) => MEN_RE.test(serviceText(s))).slice(0, 10);
+  const men = salons.filter((s) => MEN_RE.test(serviceText(s, locale))).slice(0, 10);
 
   // 6. Coloration — offers a coloration service.
-  const color = salons.filter((s) => COLOR_RE.test(serviceText(s))).slice(0, 10);
+  const color = salons.filter((s) => COLOR_RE.test(serviceText(s, locale))).slice(0, 10);
 
   return (
     <div className="mt-2">

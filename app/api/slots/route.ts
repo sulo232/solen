@@ -114,7 +114,7 @@ export async function GET(request: NextRequest) {
   // price-quote fields the calendar UI renders are selected here.
   let query = supabase
     .from("availability_slots")
-    .select("id, salon_id, service_id, staff_member_id, starts_at, ends_at, status, price_override, services(id, name_de, name_en, duration_minutes, price), staff_members(id, name, avatar_url)")
+    .select("id, salon_id, service_id, staff_member_id, starts_at, ends_at, status, price_override, services(id, name_de, name_en, name_fr, name_it, duration_minutes, price), staff_members(id, name, avatar_url)")
     .eq("salon_id", salon_id)
     .gte("starts_at", startOfRange)
     .lt("starts_at", endOfRange)
@@ -270,7 +270,7 @@ export async function POST(request: NextRequest) {
       ends_at: endsAt,
       status: "available",
     })
-    .select("*, services(id, name_de, name_en, duration_minutes, price), staff_members(id, name, avatar_url)")
+    .select("*, services(id, name_de, name_en, name_fr, name_it, duration_minutes, price), staff_members(id, name, avatar_url)")
     .single();
 
   if (insertError) {

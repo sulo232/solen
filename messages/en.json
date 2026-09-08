@@ -864,7 +864,13 @@
     "customerHelp": "Customer help",
     "safety": "Safety",
     "contact": "Contact",
-    "aboutUs": "About us"
+    "aboutUs": "About us",
+    "newsletterFormLabel": "Subscribe to newsletter",
+    "newsletterEmailLabel": "Email address",
+    "newsletterEmailPlaceholder": "your@email.ch",
+    "newsletterSubmitLabel": "Subscribe",
+    "newsletterSuccess": "Thanks! You're subscribed.",
+    "newsletterError": "Subscription failed. Please try again."
   },
   "cookie": {
     "title": "We use cookies",
@@ -1147,7 +1153,7 @@
       "subtitle": "Select one or more services. Costs are calculated automatically.",
       "minutes": "min",
       "selected": "selected",
-      "items": "item(s)",
+      "items": "{count, plural, one {# item} other {# items}}",
       "menOnly": "Men only",
       "womenOnly": "Women only",
       "continue": "Continue",
@@ -1336,7 +1342,39 @@
       "privacyLink": "Privacy Policy",
       "readCta": "Read",
       "acceptButton": "I accept the new terms"
-    }
+    },
+    "account_recovery": "Account recovery",
+    "apple_login": "Sign in with Apple",
+    "back_to_login": "Back to sign in",
+    "change_password": "Change password",
+    "checking_link": "Checking link…",
+    "confirm_password_placeholder": "Confirm password",
+    "error_email_not_confirmed": "Please confirm your email first",
+    "error_invalid_credentials": "Email or password is incorrect",
+    "error_login_failed": "Sign in failed",
+    "error_rate_limited": "Too many attempts. Please wait a moment.",
+    "error_reset_generic": "Error sending. Please try again.",
+    "error_reset_rate_limited": "Too many requests. Please wait a moment and try again.",
+    "forgot_password": "Forgot password?",
+    "hide_password": "Hide password",
+    "link_expired_body": "This recovery link no longer works. Request a new one below.",
+    "link_expired_title": "Link invalid or expired",
+    "new_password_instruction": "Choose a new password for your account.",
+    "new_password_title": "New password",
+    "no_account_yet": "Don't have an account yet?",
+    "password_changed": "Password changed",
+    "password_placeholder": "Password",
+    "passwords_mismatch": "Passwords do not match",
+    "redirecting_to_login": "Redirecting you to sign in…",
+    "request_new_link": "Request new link",
+    "reset_email_sent_label": "Email sent",
+    "reset_instruction": "Enter your email and we will send you a reset link.",
+    "reset_link_sent_body": "Check your inbox for a link to reset your password.",
+    "reset_link_sent_title": "Link sent",
+    "send_reset_link": "Send reset link",
+    "show_password": "Show password",
+    "success_label": "Success",
+    "welcome_back": "Welcome back"
   },
   "account": {
     "profile": "Profile",
@@ -3634,7 +3672,7 @@
     "removal_heading": "4. Content Removal",
     "removal_text": "solen.ch reserves the right to remove content without notice that violates these terms or is otherwise inappropriate.",
     "gdpr_heading": "5. GDPR Compliance",
-    "gdpr_text": "Uploaded content is stored on EU/Swiss servers. You may request deletion of your content at any time via your profile settings or by emailing privacy@solen.ch.",
+    "gdpr_text": "Uploaded content is stored on EU/Swiss servers. You may request deletion of your content at any time via your profile settings or by emailing support@solen.ch.",
     "disclaimer_heading": "6. Disclaimer",
     "disclaimer_text": "solen.ch makes no guarantees about the accuracy of AI-generated descriptions. Displayed prices are estimates and may vary by salon."
   },
@@ -4077,7 +4115,16 @@
       "tosPrefix": "I accept the",
       "tosLink": "Terms of Service",
       "privacyLink": "Privacy Policy",
-      "emailUse": "We use this address only to contact you about your salon."
+      "emailUse": "We use this address only to contact you about your salon.",
+      "errors": {
+        "name": "Name must be at least 2 characters.",
+        "email": "Invalid email address.",
+        "categories": "Please select at least one category.",
+        "city": "Please select a city.",
+        "address": "Address is too short.",
+        "tos": "Please accept the Terms of Service and Privacy Policy."
+      },
+      "city": "City *"
     },
     "step2": {
       "title": "Salon Profile",
@@ -4168,7 +4215,10 @@
       "duration": "Duration",
       "price": "Price CHF",
       "hint": "Just a start!",
-      "hintDesc": "You can add unlimited services, team members, and opening hours in the dashboard."
+      "hintDesc": "You can add unlimited services, team members, and opening hours in the dashboard.",
+      "errors": {
+        "serviceName": "Service name is required."
+      }
     },
     "stepPhotos": {
       "title": "Upload Photos",
@@ -4210,7 +4260,8 @@
       "title": "Salon created!",
       "subtitle": "Your salon is now being reviewed. You will be notified by email.",
       "dashboardHint": "Redirecting to your dashboard…"
-    }
+    },
+    "networkError": "Network error. Please check your connection and try again."
   },
   "imageUpload": {
     "dropZoneTitle": "Drag photos here or click to upload",
@@ -6689,7 +6740,6 @@
     "checkStatus": "Check status",
     "reconciliationTitle": "Payment needs review",
     "reconciliationMessage": "Contact Solen support. Further payment is blocked here.",
-
     "headingNoShow": "Pay the no-show fee",
     "headingLateCancel": "Pay the cancellation fee",
     "totalLabel": "Total",

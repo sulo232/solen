@@ -296,8 +296,8 @@
       "demoService": "Taglio e piega",
       "demoConfirmed": "Confermato",
       "headlineLine1": "Solen per",
-      "headlineLine2": "la tua attività.",
-      "teaserSub": "Più prenotazioni, meno lavoro, per il tuo team.",
+      "headlineLine2": "la Sua attività.",
+      "teaserSub": "Più prenotazioni, meno lavoro, per il Suo team.",
       "learnMore": "Scopri di più",
       "forStores": "Per i negozi"
     },
@@ -327,7 +327,7 @@
       "whatYouCanLong": "Cosa puoi fare con Solen",
       "theApp": "L'app Solen",
       "fromYourPocket": "Direttamente in tasca.",
-      "walkInSub": "Senza appuntamento. Vedi l'attesa e prendi il tuo posto.",
+      "walkInSub": "Senza appuntamento. Veda l'attesa e prenda il Suo posto.",
       "allWalkIns": "Tutti i walk-in",
       "untilFree": "fino a libero",
       "queueEmpty": "Nessuno in attesa",
@@ -435,7 +435,7 @@
       "scrollRight": "Scorri a destra",
       "browseAll": "Sfoglia tutto",
       "inspirationText": "Lasciati ispirare da migliaia di stili",
-      "inspirationTitle": "Trova la tua ispirazione.",
+      "inspirationTitle": "Trovi la Sua ispirazione.",
       "browseAllLooks": "Esplora tutti i look",
       "inspireSub": "Lasciati ispirare da migliaia di look"
     },
@@ -846,7 +846,13 @@
     "customerHelp": "Aiuto clienti",
     "safety": "Sicurezza",
     "contact": "Contatti",
-    "aboutUs": "Chi siamo"
+    "aboutUs": "Chi siamo",
+    "newsletterFormLabel": "Iscriversi alla newsletter",
+    "newsletterEmailLabel": "Indirizzo e-mail",
+    "newsletterEmailPlaceholder": "sua@email.ch",
+    "newsletterSubmitLabel": "Iscriversi",
+    "newsletterSuccess": "Grazie! Iscrizione confermata.",
+    "newsletterError": "Iscrizione non riuscita. Riprovi."
   },
   "cookie": {
     "title": "Utilizziamo i cookie",
@@ -1129,7 +1135,7 @@
       "subtitle": "Seleziona uno o più servizi. I costi sono calcolati automaticamente.",
       "minutes": "min",
       "selected": "selezionati",
-      "items": "articolo(i)",
+      "items": "{count, plural, one {# articolo} other {# articoli}}",
       "menOnly": "Solo uomini",
       "womenOnly": "Solo donne",
       "continue": "Continua",
@@ -1318,7 +1324,39 @@
       "privacyLink": "Politica sulla privacy",
       "readCta": "Leggi",
       "acceptButton": "Accetto i nuovi termini"
-    }
+    },
+    "account_recovery": "Recupero account",
+    "apple_login": "Accedi con Apple",
+    "back_to_login": "Torna all'accesso",
+    "change_password": "Cambia password",
+    "checking_link": "Verifica del link in corso…",
+    "confirm_password_placeholder": "Conferma password",
+    "error_email_not_confirmed": "Confermi prima la Sua e-mail",
+    "error_invalid_credentials": "E-mail o password non corretti",
+    "error_login_failed": "Accesso non riuscito",
+    "error_rate_limited": "Troppi tentativi. Attenda un momento.",
+    "error_reset_generic": "Errore durante l'invio. Riprovi.",
+    "error_reset_rate_limited": "Troppe richieste. Attenda un momento e riprovi.",
+    "forgot_password": "Password dimenticata?",
+    "hide_password": "Nascondi password",
+    "link_expired_body": "Questo link di recupero non funziona più. Ne richieda uno nuovo qui sotto.",
+    "link_expired_title": "Link non valido o scaduto",
+    "new_password_instruction": "Scelga una nuova password per il Suo account.",
+    "new_password_title": "Nuova password",
+    "no_account_yet": "Non ha ancora un account?",
+    "password_changed": "Password modificata",
+    "password_placeholder": "Password",
+    "passwords_mismatch": "Le password non corrispondono",
+    "redirecting_to_login": "La stiamo reindirizzando all'accesso…",
+    "request_new_link": "Richiedi nuovo link",
+    "reset_email_sent_label": "E-mail inviata",
+    "reset_instruction": "Inserisca la Sua e-mail e Le invieremo un link di reimpostazione.",
+    "reset_link_sent_body": "Controlli la Sua casella di posta per un link di reimpostazione.",
+    "reset_link_sent_title": "Link inviato",
+    "send_reset_link": "Invia link di reimpostazione",
+    "show_password": "Mostra password",
+    "success_label": "Riuscito",
+    "welcome_back": "Bentornato"
   },
   "account": {
     "profile": "Profilo",
@@ -3616,7 +3654,7 @@
     "removal_heading": "4. Rimozione dei contenuti",
     "removal_text": "solen.ch si riserva il diritto di rimuovere senza preavviso i contenuti che violano questi termini o sono altrimenti inappropriati.",
     "gdpr_heading": "5. Conformità GDPR",
-    "gdpr_text": "I contenuti caricati sono archiviati su server UE/Svizzera. Può richiedere la cancellazione dei Suoi contenuti in qualsiasi momento tramite le impostazioni del profilo o inviando un'e-mail a privacy@solen.ch.",
+    "gdpr_text": "I contenuti caricati sono archiviati su server UE/Svizzera. Può richiedere la cancellazione dei Suoi contenuti in qualsiasi momento tramite le impostazioni del profilo o inviando un'e-mail a support@solen.ch.",
     "disclaimer_heading": "6. Disclaimer",
     "disclaimer_text": "solen.ch non garantisce l'accuratezza delle descrizioni generate dall'IA. I prezzi visualizzati sono stime e possono variare in base al salone."
   },
@@ -4059,7 +4097,16 @@
       "tosPrefix": "Accetto le",
       "tosLink": "Condizioni generali",
       "privacyLink": "Informativa sulla privacy",
-      "emailUse": "Utilizziamo questo indirizzo solo per contattarLa in merito al Suo salone."
+      "emailUse": "Utilizziamo questo indirizzo solo per contattarLa in merito al Suo salone.",
+      "errors": {
+        "name": "Il nome deve contenere almeno 2 caratteri.",
+        "email": "Indirizzo e-mail non valido.",
+        "categories": "Selezioni almeno una categoria.",
+        "city": "Selezioni una città.",
+        "address": "L'indirizzo è troppo corto.",
+        "tos": "La preghiamo di accettare i Termini di servizio e l'Informativa sulla privacy."
+      },
+      "city": "Città *"
     },
     "step2": {
       "title": "Profilo del salone",
@@ -4150,7 +4197,10 @@
       "duration": "Durata",
       "price": "Prezzo CHF",
       "hint": "Solo l'inizio!",
-      "hintDesc": "Puoi aggiungere servizi, membri del team e orari nella dashboard."
+      "hintDesc": "Puoi aggiungere servizi, membri del team e orari nella dashboard.",
+      "errors": {
+        "serviceName": "Il nome del servizio è obbligatorio."
+      }
     },
     "stepPhotos": {
       "title": "Carica foto",
@@ -4192,7 +4242,8 @@
       "title": "Salone creato!",
       "subtitle": "Il Suo salone è in fase di verifica. Sarà informato/a via e-mail.",
       "dashboardHint": "Reindirizzamento alla dashboard…"
-    }
+    },
+    "networkError": "Errore di rete. Verifichi la connessione e riprovi."
   },
   "imageUpload": {
     "dropZoneTitle": "Trascini le foto qui o clicchi per caricare",
@@ -6643,7 +6694,7 @@
     },
     "salonRejected": {
       "title": "Store rifiutato",
-      "body": "Il tuo store {salon} purtroppo non è stato approvato. Motivo: {reason}"
+      "body": "Il Suo store {salon} purtroppo non è stato approvato. Motivo: {reason}"
     }
   },
   "profileFavorites": {
@@ -6689,7 +6740,6 @@
     "checkStatus": "Verifica stato",
     "reconciliationTitle": "Pagamento da verificare",
     "reconciliationMessage": "Contatti il supporto Solen. Ulteriori pagamenti sono bloccati qui.",
-
     "headingNoShow": "Paga la commissione per la mancata presentazione",
     "headingLateCancel": "Paga la commissione di cancellazione",
     "totalLabel": "Totale",

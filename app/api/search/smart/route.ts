@@ -6,6 +6,7 @@ import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { generateEmbedding } from "@/lib/search/embeddings";
 import { detectCategory } from "@/lib/search/category-detect";
 import { createAdminSupabaseClient } from "@/lib/supabase";
+import { localizedField } from "@/lib/i18n/localized-field";
 
 export async function GET(req: NextRequest) {
   // IP-based rate limit (public route, aggressive — embeddings cost money)
@@ -19,6 +20,7 @@ export async function GET(req: NextRequest) {
 
   const category = req.nextUrl.searchParams.get("category") || undefined;
   const citySlug = req.nextUrl.searchParams.get("city");
+  const locale = req.nextUrl.searchParams.get("locale") || "de";
 
   try {
     // 1. Generate embedding for query
@@ -61,7 +63,7 @@ export async function GET(req: NextRequest) {
     // Fetch service details for matched entities
     const { data: services } = await supabase
       .from("services")
-      .select("id, name_de, salon_id, category")
+      .select("id, name_de, name_en, name_fr, name_it, salon_id, category")
       .in("id", entityIds)
       .eq("is_active", true);
 
@@ -80,7 +82,7 @@ export async function GET(req: NextRequest) {
           entity_type: "service",
           entity_id: match.entity_id,
           salon_id: svc?.salon_id ?? "",
-          name: svc?.name_de ?? match.entity_id,
+          name: (svc ? localizedField(svc as unknown as Record<string, unknown>, "name", locale) : "") || match.entity_id,
           category: match.category,
           similarity: match.similarity,
         };

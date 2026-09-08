@@ -110,7 +110,7 @@ export default async function BookingSalonPage({
   const { data: services, error: servicesError } = await supabase
     .from('services')
     .select(
-      'id, name_de, name_en, category, subcategory, duration_minutes, price, is_active, description_de, description_en, suitable_gender'
+      'id, name_de, name_en, name_fr, name_it, category, subcategory, duration_minutes, price, is_active, description_de, description_en, description_fr, description_it, suitable_gender'
     )
     .eq('salon_id', salon.id)
     .eq('is_active', true)
@@ -167,6 +167,8 @@ export default async function BookingSalonPage({
         id: string;
         name_de?: string | null;
         name_en?: string | null;
+        name_fr?: string | null;
+        name_it?: string | null;
         price?: number | null;
         duration_minutes?: number | null;
       }[]).find((s) => s.id === serviceParam)
@@ -175,7 +177,9 @@ export default async function BookingSalonPage({
     ? {
         id: matchedService.id,
         name_de: matchedService.name_de ?? "",
-        name_en: matchedService.name_en ?? matchedService.name_de ?? "",
+        name_en: matchedService.name_en ?? "",
+        name_fr: matchedService.name_fr ?? null,
+        name_it: matchedService.name_it ?? null,
         price: matchedService.price ?? 0,
         duration_minutes: matchedService.duration_minutes ?? 0,
       }
@@ -184,7 +188,7 @@ export default async function BookingSalonPage({
   // Multi-select handoff from the PDP "Alle ansehen" sheet (?services=<csv>): seed the cart with
   // every chosen service (validated against the real list). Falls back to the single ?service= above.
   const svcList = services as {
-    id: string; name_de?: string | null; name_en?: string | null;
+    id: string; name_de?: string | null; name_en?: string | null; name_fr?: string | null; name_it?: string | null;
     price?: number | null; duration_minutes?: number | null;
   }[];
   const initialServices = servicesParam
@@ -197,7 +201,9 @@ export default async function BookingSalonPage({
         .map((s) => ({
           id: s.id,
           name_de: s.name_de ?? "",
-          name_en: s.name_en ?? s.name_de ?? "",
+          name_en: s.name_en ?? "",
+          name_fr: s.name_fr ?? null,
+          name_it: s.name_it ?? null,
           price: s.price ?? 0,
           duration_minutes: s.duration_minutes ?? 0,
         }))
@@ -228,7 +234,7 @@ export default async function BookingSalonPage({
         await supabase
           .from('service_options')
           .select(
-            'id, service_id, name_de, name_en, price, duration_minutes, sort_order'
+            'id, service_id, name_de, name_en, name_fr, name_it, price, duration_minutes, sort_order'
           )
           .in('service_id', serviceIds)
       ).data ?? []

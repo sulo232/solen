@@ -129,13 +129,13 @@ export async function loadSalonDetailWithAccess(
     supabase
       .from("services")
       .select(
-        "id, salon_id, name_de, name_en, description_de, description_en, price, duration_minutes, category, subcategory, is_active, sort_order, photo_urls, suitable_for, suitable_gender, buffer_minutes, curing_minutes, processing_minutes, finishing_minutes, material_type, station_required, daily_limit_per_staff, reminder_cycle_days, created_at"
+        "id, salon_id, name_de, name_en, name_fr, name_it, description_de, description_en, description_fr, description_it, price, duration_minutes, category, subcategory, is_active, sort_order, photo_urls, suitable_for, suitable_gender, buffer_minutes, curing_minutes, processing_minutes, finishing_minutes, material_type, station_required, daily_limit_per_staff, reminder_cycle_days, created_at"
       )
       .eq("salon_id", salon.id)
       .eq("is_active", true),
     supabase
       .from("staff_members")
-      .select("id, name, avatar_url, specialties, languages, average_rating, review_count")
+      .select("id, name, avatar_url, specialties, languages")
       .eq("salon_id", salon.id)
       .eq("is_active", true),
     // Reviews via the service-role client: profiles RLS (rightly) blocks anon reads,
@@ -164,10 +164,16 @@ export async function loadSalonDetailWithAccess(
   const staff = staffRes.data ?? [];
   let staffWithServices = staff;
   if (staff.length > 0) {
-    const { data: links } = await supabase
-      .from("staff_services")
-      .select("staff_member_id, service_id")
-      .in("staff_member_id", staff.map((s) => s.id));
+    const staffIds = staff.map((s) => s.id);
+    const [linksResult, ratingsResult] = await Promise.all([
+      supabase.from("staff_services").select("staff_member_id, service_id")
+        .in("staff_member_id", staffIds),
+      supabase.from("staff_ratings_view").select("staff_id, average_rating, review_count")
+        .in("staff_id", staffIds),
+    ]);
+    const links = linksResult.data;
+    if (ratingsResult.error) console.error("[salon-detail] staff ratings lookup failed:", ratingsResult.error);
+    const ratings = new Map((ratingsResult.error ? [] : ratingsResult.data ?? []).map((r) => [r.staff_id, r]));
     const byStaff = new Map<string, string[]>();
     (links ?? []).forEach((l) => {
       const arr = byStaff.get(l.staff_member_id) ?? [];
@@ -178,8 +184,8 @@ export async function loadSalonDetailWithAccess(
       ...s,
       service_ids: byStaff.get(s.id) ?? [],
       // Aliases for SalonTeam.tsx which reads staff_average_rating / staff_review_count.
-      staff_average_rating: s.average_rating,
-      staff_review_count: s.review_count,
+      staff_average_rating: ratings.get(s.id)?.average_rating ?? null,
+      staff_review_count: ratings.get(s.id)?.review_count ?? null,
     }));
   }
 

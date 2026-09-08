@@ -5,6 +5,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { validateBody, expressRebookSchema } from "@/lib/validations";
+import { localizedField } from "@/lib/i18n/localized-field";
 
 // POST /api/bookings/express-rebook — One-tap rebook: find next available slot
 export async function POST(req: NextRequest) {
@@ -28,12 +29,17 @@ export async function POST(req: NextRequest) {
 
   const admin = createAdminSupabaseClient();
 
+  // Caller's own locale (A9-email-locale pattern): this response's serviceName goes straight
+  // to the caller who is currently logged in, so their profile.locale is the source of truth.
+  const { data: callerProfile } = await admin.from("profiles").select("locale").eq("id", user.id).maybeSingle();
+  const locale = (callerProfile?.locale as "de" | "en" | "fr" | "it") ?? "de";
+
   // Fetch source booking. rebook_from_booking_id is optional in the schema (lib/validations.ts);
   // when missing, this .eq() cannot match a row and the existing `if (!source)` 404 below
   // handles it, same as before typing (type-only cast, no new branch).
   const { data: source } = await admin
     .from("bookings")
-    .select("id, salon_id, service_id, staff_member_id, price_paid, services(name_de, duration_minutes), staff_members(name)")
+    .select("id, salon_id, service_id, staff_member_id, price_paid, services(name_de, name_en, name_fr, name_it, duration_minutes), staff_members(name)")
     .eq("id", rebook_from_booking_id as string)
     .eq("user_id", user.id)
     .single();
@@ -104,7 +110,7 @@ export async function POST(req: NextRequest) {
       endsAt: slot.ends_at,
     },
     serviceId: source.service_id,
-    serviceName: service?.name_de ?? null,
+    serviceName: service ? localizedField(service, "name", locale) || null : null,
     staffId: source.staff_member_id,
     staffName: staff?.name ?? null,
     price: source.price_paid,

@@ -13,6 +13,7 @@ import { capStoredValueRappen, getAvailableCreditRappen, isMoneySpendFlagEnabled
 import { bookingPayIntentSchema } from "@/lib/validations";
 import { createHash } from "crypto";
 import type { Database } from "@/lib/database.types";
+import { localizedField, type AppLocale } from "@/lib/i18n/localized-field";
 
 // POST /api/stripe/booking-pay-intent
 // FULL PREPAY at booking (the Fresha model). Creates an automatic-capture
@@ -125,12 +126,24 @@ export async function POST(req: NextRequest) {
   //    explicit: derive CHF from services.price and convert via toRappen only.)
   const { data: service } = await admin
     .from("services")
-    .select("price, salon_id, is_active, name_de")
+    .select("price, salon_id, is_active, name_de, name_en, name_fr, name_it")
     .eq("id", booking.service_id)
     .single();
   if (!service || service.salon_id !== booking.salon_id || service.is_active === false) {
     return NextResponse.json({ error: "Service not found for this salon", code: "NOT_FOUND" }, { status: 404 });
   }
+
+  // Booking customer's own locale (A9-email-locale pattern, mirrors lib/bookings/notify-refund.ts):
+  // the PI description/metadata service name shows on the card statement/receipt, so it must
+  // match the paying customer's language, not German by default. A guest booking (user_id
+  // null) has no profile and bookingPayIntentSchema carries no locale field, so it stays "de",
+  // the same schema gap the guest branches in notify-refund.ts / notify-upcharge.ts report.
+  let piLocale: AppLocale = "de";
+  if (booking.user_id) {
+    const { data: payerProfile } = await admin.from("profiles").select("locale").eq("id", booking.user_id).maybeSingle();
+    piLocale = (payerProfile?.locale as AppLocale) ?? "de";
+  }
+  const serviceName = localizedField(service, "name", piLocale) || "Service";
   // Multi-service: add the booking's server-set extras_addons (resolved at booking time from the
   // services table, never the client) to the primary service price, so the charge = the full total.
   let extrasChf = 0;
@@ -423,7 +436,7 @@ export async function POST(req: NextRequest) {
       salon_id: booking.salon_id,
       salon_name: salon.name ?? "",
       service_id: booking.service_id,
-      service_name: service.name_de ?? "",
+      service_name: serviceName,
       customer_id: booking.user_id ?? "",
       guest_email: guestEmail,
       slot_id: booking.slot_id ?? "",
@@ -441,7 +454,7 @@ export async function POST(req: NextRequest) {
       promo_discount_rappen: promoDiscountRappen ? String(promoDiscountRappen) : "",
       promo_full_discount_rappen: promoFullDiscountRappen ? String(promoFullDiscountRappen) : "",
     },
-    description: `Buchung: ${service.name_de ?? "Service"} @ ${salon.name ?? "Salon"}`,
+    description: `Buchung: ${serviceName} @ ${salon.name ?? "Salon"}`,
   };
   // Connect destination charge: route funds to the salon, keep the commission.
   // on_behalf_of is implied by transfer_data.destination for destination charges
@@ -738,6 +751,6 @@ export async function POST(req: NextRequest) {
     // at 0: on a ~100%-off promo the online charge cannot go below Stripe's 0.50 minimum, so up to CHF 0.50
     // can remain uncredited , that residual is Stripe-mandated, not the discount-clamp bug (down from up to CHF 15.50).
     remaining_at_salon: remainingAtSalonChf,
-    service_name: service.name_de,
+    service_name: serviceName,
   });
 }

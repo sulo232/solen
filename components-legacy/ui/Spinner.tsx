@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
 interface SpinnerProps {
@@ -16,10 +17,11 @@ const sizeMap = {
 };
 
 export default function Spinner({ size = "md", invert = false, coral = false, className }: SpinnerProps) {
+  const t = useTranslations("common");
   return (
     <div
       role="status"
-      aria-label="Laden…"
+      aria-label={t("loading")}
       className={cn(
         "animate-[spin_0.7s_linear_infinite] rounded-full border-2",
         sizeMap[size],

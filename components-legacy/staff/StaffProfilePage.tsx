@@ -24,15 +24,15 @@ interface StaffProfile {
   bio: string | null;
   instagram_url: string | null;
   years_experience: number | null;
-  average_rating: number;
-  review_count: number;
+  average_rating: number | null;
+  review_count: number | null;
   appointments_completed: number | null;
   clients_served: number | null;
   salon_name: string;
   salon_slug: string;
 }
 interface PortfolioImage { id: string; image_url: string; sort_order: number }
-interface StaffService { id: string; name_de: string; name_en: string; duration_minutes: number; price: number }
+interface StaffService { id: string; name_de: string; name_en: string; name_fr?: string | null; name_it?: string | null; duration_minutes: number; price: number }
 interface StaffReview {
   id: string;
   rating: number;
@@ -181,6 +181,7 @@ export default function StaffProfilePage({
     );
   }
 
+  const aggregateRating = staff.average_rating;
   const langRole = [
     staff.languages?.map((l) => l.toUpperCase()).join("/"),
     staff.specialties?.[0],
@@ -248,7 +249,7 @@ export default function StaffProfilePage({
         <h1 className="mt-3 font-heading text-[24px] font-bold leading-tight tracking-[-0.01em] text-s-ink">{staff.name}</h1>
         {langRole && <p className="mt-1 text-[14px] text-s-ink-2">{langRole}</p>}
         <div className="mt-2 flex items-center gap-3">
-          {staff.average_rating > 0 && (
+          {staff.average_rating != null && staff.average_rating > 0 && staff.review_count != null && (
             <button type="button" onClick={() => goTo("reviews")} className="inline-flex items-center gap-1 text-[14px] transition-opacity hover:opacity-80" aria-label={t("viewReviewsCountAria", { count: staff.review_count })}>
               <RatingStars value={staff.average_rating} size="lg" className="font-semibold text-s-ink" />
               <span className="text-s-accent underline-offset-2 hover:underline">({staff.review_count})</span>
@@ -289,7 +290,7 @@ export default function StaffProfilePage({
                 }`}
               >
                 {TAB_LABEL[t]}
-                {count > 0 && <span className={on ? "text-white/70" : "text-s-ink/45"}> {count}</span>}
+                {count != null && count > 0 && <span className={on ? "text-white/70" : "text-s-ink/45"}> {count}</span>}
               </button>
             );
           })}
@@ -403,15 +404,17 @@ export default function StaffProfilePage({
       {/* Bewertungen */}
       <section ref={setRef("reviews")} data-tab="reviews" className="scroll-mt-[112px] px-5 pb-2 pt-9">
         <p className="mb-4 font-heading text-[18px] font-bold text-s-ink">{t("reviews")}</p>
+        {aggregateRating != null && staff.review_count != null && staff.review_count > 0 && (
         <div className="mb-6 flex items-baseline gap-2.5">
           <div className="flex items-center gap-0.5">
             {[0, 1, 2, 3, 4].map((i) => (
-              <Star key={i} size={18} strokeWidth={1.9} stroke="none" className={i < Math.floor(staff.average_rating) ? "fill-s-star" : "fill-s-border"} />
+              <Star key={i} size={18} strokeWidth={1.9} stroke="none" className={i < Math.floor(aggregateRating) ? "fill-s-star" : "fill-s-border"} />
             ))}
           </div>
-          <span className="font-body text-[18px] font-semibold tabular-nums text-s-ink">{staff.average_rating.toFixed(1)}</span>
+          <span className="font-body text-[18px] font-semibold tabular-nums text-s-ink">{aggregateRating.toFixed(1)}</span>
           <span className="text-[14px] text-s-accent">({staff.review_count})</span>
         </div>
+        )}
         {reviews.length === 0 ? (
           <p className="text-[14px] italic text-s-ink-2">{t("noReviewsModeration")}</p>
         ) : (

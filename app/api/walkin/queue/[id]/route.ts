@@ -12,6 +12,7 @@ import type { Database } from "@/lib/database.types";
 import { verifyTrackingToken } from "@/lib/walkin/authz";
 import { sendSMS } from "@/lib/sms";
 import { barberYoureNextSMS, type EmailLocale } from "@/lib/email";
+import { localizedField } from "@/lib/i18n/localized-field";
 
 // PATCH /api/walkin/queue/[id] — Salon owner/staff: update queue entry status
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -387,9 +388,19 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       .from("salons").select("name").eq("id", entry.salon_id).maybeSingle();
     let serviceName = "Service";
     if (entry.service_id) {
+      // Pick with the CUSTOMER's own locale (notifyNoShowFee resolves the same
+      // profiles.locale column again for the email itself, per its own doc comment; this
+      // keeps the service name it renders consistent with that locale instead of a
+      // de/en-only ternary that showed fr/it customers the German name).
+      let customerLocale: "de" | "en" | "fr" | "it" = "de";
+      if (entry.customer_id) {
+        const { data: prof } = await admin
+          .from("profiles").select("locale").eq("id", entry.customer_id).maybeSingle();
+        if (prof?.locale === "en" || prof?.locale === "fr" || prof?.locale === "it") customerLocale = prof.locale;
+      }
       const { data: svc } = await admin
-        .from("services").select("name_de, name_en").eq("id", entry.service_id).maybeSingle();
-      serviceName = svc?.name_de ?? svc?.name_en ?? "Service";
+        .from("services").select("name_de, name_en, name_fr, name_it").eq("id", entry.service_id).maybeSingle();
+      serviceName = localizedField(svc, "name", customerLocale) || "Service";
     }
     await notifyNoShowFee({
       admin,

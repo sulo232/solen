@@ -13,11 +13,11 @@
 // Renders nothing for logged-out / no-picks users, homepage is unchanged for them.
 
 import * as React from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Section, SectionFrame, SectionTitle, ScrollRow } from "./SectionHeader";
 import { SalonCard } from "./SalonCard";
 import { useCustomerPrefs, type CustomerPrefs } from "./useCustomerPrefs";
-import { FORYOU_SALONS, FORYOU_LABEL, FORYOU_CATEGORIES, type ForYouCategory } from "./forYouSalons";
+import { FORYOU_SALONS, FORYOU_CATEGORIES, type ForYouCategory } from "./forYouSalons";
 // 2026-07-13: real rating/review-count data, batch-fetched server-side in
 // page.tsx (type-only import, the Supabase fetch code never reaches this
 // client bundle).
@@ -38,6 +38,7 @@ function ForYouRow({
   salonData: SalonCardDataMap;
 }) {
   const scrollRef = React.useRef<HTMLDivElement>(null);
+  const tNav = useTranslations("navigation");
   const salons = [...FORYOU_SALONS[category]];
   // Sort by the REAL fetched rating only, missing rating sorts last, so the
   // "Top bewertet" badge below always lands on the actually-top-rated card
@@ -54,7 +55,7 @@ function ForYouRow({
   }
   if (salons.length === 0) return null;
 
-  const label = FORYOU_LABEL[category];
+  const label = tNav(category);
   return (
     <Section>
       <SectionFrame>

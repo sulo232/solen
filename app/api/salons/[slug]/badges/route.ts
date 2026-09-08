@@ -33,7 +33,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ slu
   // which no consumer of this public/dashboard endpoint reads.
   const { data: badges } = await admin
     .from("salon_badges")
-    .select("id, name_de, name_en, icon, color, bg_color, is_system")
+    .select("id, name_de, name_en, name_fr, name_it, icon, color, bg_color, is_system")
     .in("id", badgeIds);
 
   return NextResponse.json({ badges: badges ?? [] });

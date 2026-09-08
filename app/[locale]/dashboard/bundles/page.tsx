@@ -47,6 +47,7 @@ import { Skeleton, Switch } from "@/app/[locale]/_components/primitives";
 import { formatCurrency } from "@/lib/format-currency";
 import { computeBundlePriceChf, type BundlePricingMode } from "@/lib/pricing/bundle";
 import type { Service } from "@/lib/types";
+import { localizedField } from "@/lib/i18n/localized-field";
 
 // ── Shapes returned by the owner CRUD + GET routes ──
 
@@ -211,7 +212,7 @@ function BundleForm({
                         />
                         <div className="min-w-0">
                           <p className={`truncate text-s-ink ${checked ? "font-semibold" : "font-medium"}`}>
-                            {locale === "en" && s.name_en ? s.name_en : s.name_de}
+                            {localizedField(s as unknown as Record<string, unknown>, "name", locale) || s.name_de}
                           </p>
                           <p className="flex items-center gap-1 text-[12px] text-s-ink-2">
                             <Clock size={11} strokeWidth={1.9} /> {s.duration_minutes} min
@@ -343,7 +344,7 @@ function BundleForm({
                     {selectedServices.map((s) => (
                       <div key={s.id} className="flex items-center justify-between border-t border-s-border px-4 py-3 first:border-t-0">
                         <p className="truncate font-body text-[14px] font-medium text-s-ink">
-                          {locale === "en" && s.name_en ? s.name_en : s.name_de}
+                          {localizedField(s as unknown as Record<string, unknown>, "name", locale) || s.name_de}
                         </p>
                         <span className="flex shrink-0 items-center gap-1 pl-3 text-[12px] text-s-ink-2 tabular-nums">
                           <Clock size={11} strokeWidth={1.9} aria-hidden /> {s.duration_minutes} min

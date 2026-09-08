@@ -6,6 +6,7 @@ import { X, Check } from 'lucide-react';
 import { useTranslations, useLocale } from 'next-intl';
 import type { SelectedService } from '@/lib/booking-state';
 import type { StaffMember } from '@/lib/types';
+import { localizedField } from '@/lib/i18n/localized-field';
 
 interface WaitlistModalProps {
   salonId: string;
@@ -43,7 +44,8 @@ export default function WaitlistModal({
     day: 'numeric',
     month: 'short',
   });
-  const serviceName = service ? (locale === 'de' ? service.name_de : service.name_en) : null;
+  // P3-3 (2026-09-05): was `locale === 'de' ? service.name_de : service.name_en`, so fr/it always fell to English.
+  const serviceName = service ? localizedField(service as unknown as Record<string, unknown>, 'name', locale) : null;
 
   // Static labels — next-intl typed keys forbid dynamic t(`time_${x}`).
   const timeLabel = (tr: TimeRange) => {

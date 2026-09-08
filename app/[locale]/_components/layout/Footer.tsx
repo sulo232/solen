@@ -200,6 +200,7 @@ export default function Footer({ locale }: { locale: string }) {
  *  (the real route; the schema is `z.object({ email })`). Shows an inline
  *  success state on 2xx and an inline error message otherwise. */
 function NewsletterForm() {
+  const t = useTranslations("footer");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
 
@@ -229,7 +230,7 @@ function NewsletterForm() {
     return (
       <p className="flex w-full max-w-[360px] items-center gap-2 font-body text-[14px] text-s-ink" role="status">
         <Check size={18} strokeWidth={1.9} className="text-s-success" aria-hidden />
-        Danke! Sie sind eingetragen.
+        {t("newsletterSuccess")}
       </p>
     );
   }
@@ -238,9 +239,9 @@ function NewsletterForm() {
     <form
       onSubmit={handleSubmit}
       className="relative w-full max-w-[360px]"
-      aria-label="Newsletter abonnieren"
+      aria-label={t("newsletterFormLabel")}
     >
-      <label htmlFor="footer-newsletter-email" className="sr-only">E-Mail-Adresse</label>
+      <label htmlFor="footer-newsletter-email" className="sr-only">{t("newsletterEmailLabel")}</label>
       <input
         id="footer-newsletter-email"
         type="email"
@@ -248,7 +249,7 @@ function NewsletterForm() {
         required
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        placeholder="ihre@email.ch"
+        placeholder={t("newsletterEmailPlaceholder")}
         className="w-full py-[12px] pl-[14px] !pr-[48px] font-body text-[14px] text-s-ink outline-none transition-colors placeholder:text-s-ink-2" // mockup-ok: !important carve-out, base input rule (globals.css, V3-D-input-fill-2026-07-17) out-specifies plain pr-[48px] and collapses right padding to 16px, letting typed text run under the absolute submit button
       />
       {/* mockup-ok: DS-4 nested-radius formula (LOCKFILE:428-431, locked law). This
@@ -256,7 +257,7 @@ function NewsletterForm() {
           12-6 = 6 (was rounded-[9px], off the formula). */}
       <button
         type="submit"
-        aria-label="Abonnieren"
+        aria-label={t("newsletterSubmitLabel")}
         disabled={status === "loading"}
         className="absolute right-[6px] top-[6px] grid h-9 w-9 place-items-center rounded-[6px] bg-s-ink text-white transition-transform duration-200 ease-glide active:scale-95 active:duration-[80ms] disabled:opacity-60"
       >
@@ -264,7 +265,7 @@ function NewsletterForm() {
       </button>
       {status === "error" && (
         <p className="mt-1.5 font-body text-[12px] text-s-error" role="alert">
-          Eintragen fehlgeschlagen. Bitte versuch es erneut.
+          {t("newsletterError")}
         </p>
       )}
     </form>

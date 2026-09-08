@@ -15,6 +15,7 @@ import { DashStatusPill } from "@/app/[locale]/_components/dashboard/DashboardUI
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { resolveSwissLocale } from "@/lib/format";
+import { localizedField } from "@/lib/i18n/localized-field";
 
 interface BookingItem {
   id: string;
@@ -23,7 +24,7 @@ interface BookingItem {
   paid_amount: number; // Rappen
   guest_name: string | null;
   customer_name?: string | null; // enriched by the salon-scoped /api/bookings
-  services?: { name_de: string | null; name_en: string | null } | null;
+  services?: { name_de: string | null; name_en: string | null; name_fr?: string | null; name_it?: string | null } | null;
 }
 
 interface UpchargeCase {
@@ -145,7 +146,7 @@ export default function SalonUpchargePage() {
     }
   };
 
-  const svcName = (b: BookingItem) => b.services?.name_de || b.services?.name_en || "";
+  const svcName = (b: BookingItem) => localizedField(b.services, "name", locale) || "";
   const bookingName = (b: BookingItem) => b.customer_name || b.guest_name || b.reference_code || b.id.slice(0, 8);
 
   return (

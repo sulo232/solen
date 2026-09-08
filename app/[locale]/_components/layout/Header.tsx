@@ -15,6 +15,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { ChevronDown, Home, Menu, MapPin, X, ChevronLeft } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useTranslations } from "next-intl";
+import type { SalonCategory } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import type { Session } from "@supabase/supabase-js";
@@ -62,11 +63,11 @@ const CATEGORIES: { label: string; href: string }[] = [
 // (consumer-facing categories) and Für Unternehmen (B2B links). Mobile
 // keeps the scroll strip, it works well on touch and the hamburger
 // already exists for everything else.
-const SERVICES_MENU: { label: string; href: string }[] = [
-  { label: "Coiffeur",         href: "/coiffeur"   },
-  { label: "Barbershop",       href: "/barbershop" },
-  { label: "Nails",            href: "/nails"      },
-  { label: "Spa & Wellness",   href: "/spa"        },
+const SERVICES_MENU: { label: string; href: string; category?: SalonCategory }[] = [
+  { label: "Coiffeur",         href: "/coiffeur"   , category: "coiffeur" },
+  { label: "Barbershop",       href: "/barbershop" , category: "barbershop" },
+  { label: "Nails",            href: "/nails"      , category: "nails" },
+  { label: "Spa & Wellness",   href: "/spa"        , category: "spa" },
   // V3-D208 (2026-05-26, overnight ghost-404 sweep): /services route never
   // existed. Closest live "all services" surface is /search (all salons across
   // all categories). Swap.
@@ -894,7 +895,7 @@ export default function Header({ locale }: { locale: string }) {
               Keys added to all four locale files. */}
           <DropdownMenu
             label={tNav("services")}
-            items={SERVICES_MENU}
+            items={SERVICES_MENU.map((item) => ({ ...item, label: item.category ? tNav(item.category) : item.label }))}
             locale={locale}
           />
           <DropdownMenu

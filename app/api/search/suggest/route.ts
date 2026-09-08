@@ -44,5 +44,27 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ services: [], salons: [] });
   }
 
-  return NextResponse.json(data ?? { services: [], salons: [] });
+  const payload = (data ?? { services: [], salons: [] }) as { services?: { id: string }[]; salons?: unknown[] };
+
+  // search_suggest only ever selects name_de/name_en for services
+  // (supabase/migrations/20260701140000_search_suggest_treatment_from_price.sql:73-94), so a
+  // fr/it customer got the German name from this endpoint. No migration needed: read the two
+  // missing columns straight off `services` by id and merge them onto what the RPC returned.
+  if (Array.isArray(payload.services) && payload.services.length > 0) {
+    const serviceIds = payload.services.map((s) => s.id).filter(Boolean);
+    if (serviceIds.length > 0) {
+      const { data: labels } = await supabase
+        .from("services")
+        .select("id, name_fr, name_it")
+        .in("id", serviceIds);
+      const labelMap = new Map((labels ?? []).map((l) => [l.id, l]));
+      payload.services = payload.services.map((s) => ({
+        ...s,
+        name_fr: labelMap.get(s.id)?.name_fr ?? null,
+        name_it: labelMap.get(s.id)?.name_it ?? null,
+      }));
+    }
+  }
+
+  return NextResponse.json(payload);
 }

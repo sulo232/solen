@@ -26,7 +26,7 @@
 // constraint: do not run `npm run build`). Full reasoning: components/TopCategoryRails.md.
 
 import * as React from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Section, SectionFrame, SectionTitle, ScrollRow } from "./SectionHeader";
 import { SalonCard } from "./SalonCard";
 import type { SalonCardDataMap } from "./salonCardData";
@@ -67,9 +67,11 @@ function CategoryRail({
   locale: string;
 }) {
   const scrollRef = React.useRef<HTMLDivElement>(null);
+  const tNav = useTranslations("navigation");
   if (salons.length < 2) return null;
 
-  const { route, label } = CATEGORY_ROUTE[category];
+  const { route } = CATEGORY_ROUTE[category];
+  const label = tNav(category);
   return (
     <Section>
       <SectionFrame>
