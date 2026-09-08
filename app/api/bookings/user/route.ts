@@ -3,6 +3,8 @@ export const runtime = 'edge';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/lib/supabase';
+import { checkUserBanned } from '@/lib/feature-flags';
+import { applyRateLimit, generalLimiter } from '@/lib/ratelimit';
 
 export async function GET(req: NextRequest) {
   try {
@@ -22,6 +24,11 @@ export async function GET(req: NextRequest) {
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    const banned = await checkUserBanned(user.id);
+    if (banned) return banned;
+    const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+    if (rateLimited) return rateLimited;
 
     // Get tab + pagination parameters
     const url = new URL(req.url);
@@ -52,7 +59,7 @@ export async function GET(req: NextRequest) {
         `
         id, user_id, salon_id, service_id, slot_id,
         starts_at, ends_at, price_paid, status, created_at,
-        is_first_visit, is_recurring,
+        is_first_visit, is_recurring, payment_intent_id, payment_status, paid_amount,
         sms_sent_24h, sms_sent_1h, review_prompt_sent,
         salon:salons(id, slug, name, address, average_rating, review_count, cover_photo_url),
         service:services(id, name_de, name_en, name_fr, name_it, duration_minutes, price),
@@ -97,7 +104,11 @@ export async function GET(req: NextRequest) {
 
     const list = bookings ?? [];
     return NextResponse.json({
-      bookings: list,
+      bookings: list.map(({ payment_intent_id, payment_status, paid_amount, ...booking }) => ({
+        ...booking,
+        has_receipt: Boolean(payment_intent_id && (paid_amount == null || paid_amount > 0) &&
+          ['paid', 'partially_refunded', 'refunded'].includes(payment_status ?? '')),
+      })),
       page,
       pageSize: PAGE_SIZE,
       hasMore: list.length === PAGE_SIZE,

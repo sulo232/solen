@@ -6031,7 +6031,11 @@
     "reschedule": "Umbuchen",
     "cancel": "Stornieren",
     "rebook": "Erneut buchen",
-    "total": "Gesamtpreis"
+    "total": "Gesamtpreis",
+    "directions": "Wegbeschreibung",
+    "addToCalendar": "Kalender hinzufügen",
+    "receipt": "Beleg",
+    "actions": "Aktionen"
   },
   "bookingsList": {
     "upcoming": "Anstehend",

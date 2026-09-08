@@ -12,6 +12,19 @@ export function getStripe(): Stripe {
   return _stripe;
 }
 
+// Separate credentials for new read-only consumers; never fall back to the payment write key.
+let _readOnlyStripe: Stripe | null = null;
+export function getReadOnlyStripe(): Stripe {
+  if (!_readOnlyStripe) {
+    const key = process.env.STRIPE_RESTRICTED_KEY;
+    if (!key || !/^rk_(live|test)_/.test(key)) {
+      throw new Error("STRIPE_RESTRICTED_KEY is not configured");
+    }
+    _readOnlyStripe = new Stripe(key, { apiVersion: "2026-02-25.clover" });
+  }
+  return _readOnlyStripe;
+}
+
 /** @deprecated Use getStripe() instead — kept for backward compatibility */
 export const stripe = new Proxy({} as Stripe, {
   get(_target, prop) {

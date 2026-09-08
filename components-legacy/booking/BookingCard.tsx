@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useTranslations, useLocale } from 'next-intl';
-import { Clock, MapPin, MoreVertical } from 'lucide-react';
+import { Clock, MapPin, MoreHorizontal, Navigation, CalendarPlus, Receipt } from 'lucide-react';
 import { formatCurrency } from '@/lib/format-currency';
 
 export interface Booking {
@@ -16,6 +16,7 @@ export interface Booking {
   ends_at: string;
   price_paid: number;
   status: 'confirmed' | 'pending' | 'cancelled' | 'completed' | 'no_show';
+  has_receipt?: boolean;
   is_first_visit?: boolean;
   is_recurring?: boolean;
   sms_sent_24h?: boolean;
@@ -55,7 +56,7 @@ interface BookingCardProps {
 }
 
 /**
- * BookingCard — redesign 2026-06-09 (owner-approved mockup solen-bookings-mockup.html).
+ * BookingCard: redesign 2026-06-09 (owner-approved mockup solen-bookings-mockup.html).
  * Was a 5-section, 4-hairline "form" card that read dated vs the app's mobile cards.
  * Now: one calm card with a focal date block (mirrors the confirmation screen), grouped
  * service/place/time, a single semantic status pill, one hairline, ink "Book again" + an
@@ -71,6 +72,33 @@ export default function BookingCard({
   const t = useTranslations('bookingCard');
   const locale = useLocale();
   const [showMenu, setShowMenu] = React.useState(false);
+  const menuRef = React.useRef<HTMLDivElement>(null);
+  const menuTriggerRef = React.useRef<HTMLButtonElement>(null);
+  const menuId = React.useId();
+
+  // Match the existing disclosure pattern: dismiss before another card's
+  // pointer or keyboard action opens its menu, retaining only one raised card.
+  React.useEffect(() => {
+    if (!showMenu) return;
+    const dismissOutside = (event: Event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) setShowMenu(false);
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setShowMenu(false);
+        menuTriggerRef.current?.focus();
+      }
+    };
+    document.addEventListener('pointerdown', dismissOutside, true);
+    document.addEventListener('focusin', dismissOutside, true);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('pointerdown', dismissOutside, true);
+      document.removeEventListener('focusin', dismissOutside, true);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [showMenu]);
 
   const startDate = new Date(booking.starts_at);
   const endDate = new Date(booking.ends_at);
@@ -105,7 +133,8 @@ export default function BookingCard({
   const stop = (e: React.MouseEvent) => { e.preventDefault(); e.stopPropagation(); };
 
   const inner = (
-    <div className="bg-[--raised] rounded-card border border-s-border p-4 shadow-elevation-1 transition-[transform,box-shadow] duration-200 ease-glide hover:-translate-y-[2px] hover:shadow-elevation-2 active:scale-[0.98]">
+    <div className={`relative bg-[--raised] rounded-card border border-s-border p-4 shadow-elevation-1 transition-[transform,box-shadow] duration-200 ease-glide hover:-translate-y-[2px] hover:shadow-elevation-2 active:scale-[0.98] ${showMenu ? 'z-30' : ''}`}>
+      {href && <Link href={href} className="absolute inset-0 z-10 rounded-card" aria-label={booking.salon?.name || getServiceName()} />}
       <div className="flex items-start gap-3">
         {/* Focal date block */}
         <div className="flex-none w-[52px] rounded-[12px] bg-s-bg-sunken py-2 text-center">
@@ -146,36 +175,77 @@ export default function BookingCard({
           <span className="mr-1.5 text-[12px] font-normal text-s-ink-2">{t('total')}</span>
           {formatCurrency(booking.price_paid)}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="relative z-20 flex items-center gap-2">
           <button
             onClick={(e) => { stop(e); onRebook?.(booking); }}
-            className="rounded-pill bg-s-ink px-4 py-2 text-[13px] font-semibold text-white transition-transform duration-150 hover:brightness-[1.08] active:scale-[0.97]"
+            className="group grid min-h-11 place-items-center rounded-pill"
           >
-            {t('rebook')}
+            <span className="rounded-pill bg-s-ink px-4 py-2 text-[13px] font-semibold text-white transition-transform duration-150 group-hover:brightness-[1.08] group-active:scale-[0.97]">
+              {t('rebook')}
+            </span>
           </button>
-          {booking.status === 'confirmed' && isUpcoming && (
-            <div className="relative">
+          {(booking.status === 'confirmed' || booking.status === 'completed' || booking.has_receipt || booking.salon?.address) && (
+            <div ref={menuRef} className="relative">
               <button
+                ref={menuTriggerRef}
                 onClick={(e) => { stop(e); setShowMenu((v) => !v); }}
-                className="grid h-[38px] w-[38px] place-items-center rounded-pill border border-s-border bg-white text-s-ink transition-transform duration-150 active:scale-[0.97]"
-                aria-label={t('reschedule') + ' / ' + t('cancel')}
+                className="grid h-11 w-11 place-items-center rounded-pill border border-s-border bg-white text-s-ink transition-transform duration-150 active:scale-[0.97]"
+                aria-label={t('actions')}
+                aria-expanded={showMenu}
+                aria-controls={showMenu ? menuId : undefined}
               >
-                <MoreVertical size={18} strokeWidth={1.9} />
+                <MoreHorizontal size={18} strokeWidth={1.9} />
               </button>
               {showMenu && (
-                <div className="absolute right-0 top-full z-50 mt-2 min-w-[160px] rounded-card border border-s-border bg-[--raised] shadow-elevation-3" onClick={stop}>
+                <div id={menuId} className="absolute right-0 top-full z-50 mt-2 min-w-[160px] rounded-card border border-s-border bg-[--raised] shadow-elevation-3" onClick={stop}>
+                  {booking.status === 'confirmed' && isUpcoming && (<>
                   <button
                     onClick={(e) => { stop(e); onReschedule?.(booking); setShowMenu(false); }}
-                    className="block w-full px-4 py-2.5 text-left text-[14px] text-s-ink hover:bg-s-bg-sunken"
+                    className="block min-h-11 w-full px-4 py-2.5 text-left text-[14px] text-s-ink hover:bg-s-bg-sunken"
                   >
                     {t('reschedule')}
                   </button>
                   <button
                     onClick={(e) => { stop(e); onCancel?.(booking); setShowMenu(false); }}
-                    className="block w-full px-4 py-2.5 text-left text-[14px] text-s-error hover:bg-s-error/10"
+                    className="block min-h-11 w-full px-4 py-2.5 text-left text-[14px] text-s-error hover:bg-s-error/10"
                   >
                     {t('cancel')}
                   </button>
+                  </>)}
+                  {/* mockup-ok: public/_mockups/r2-booking-actions/index.html (variant B, owner-approved 2026-09-06) */}
+                  {booking.salon?.address && (
+                    <a
+                      href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${booking.salon.name}, ${booking.salon.address}`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="flex min-h-11 items-center gap-2 w-full px-4 py-2.5 text-left text-[14px] text-s-ink hover:bg-s-bg-sunken"
+                    >
+                      <Navigation size={16} className="flex-none text-s-ink-2" />
+                      {t('directions')}
+                    </a>
+                  )}
+                  {(booking.status === 'confirmed' || booking.status === 'completed') && (
+                  <a
+                    href={`/api/bookings/${booking.id}/ics?locale=${encodeURIComponent(locale)}`}
+                    download
+                    onClick={(e) => e.stopPropagation()}
+                    className="flex min-h-11 items-center gap-2 w-full px-4 py-2.5 text-left text-[14px] text-s-ink hover:bg-s-bg-sunken"
+                  >
+                    <CalendarPlus size={16} className="flex-none text-s-ink-2" />
+                    {t('addToCalendar')}
+                  </a>
+                  )}
+                  {booking.has_receipt && (
+                    <a
+                      href={`/api/bookings/${booking.id}/receipt`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="flex min-h-11 items-center gap-2 w-full px-4 py-2.5 text-left text-[14px] text-s-ink hover:bg-s-bg-sunken"
+                    >
+                      <Receipt size={16} className="flex-none text-s-ink-2" />
+                      {t('receipt')}
+                    </a>
+                  )}
                 </div>
               )}
             </div>
@@ -185,5 +255,5 @@ export default function BookingCard({
     </div>
   );
 
-  return href ? <Link href={href} className="block">{inner}</Link> : inner;
+  return inner;
 }

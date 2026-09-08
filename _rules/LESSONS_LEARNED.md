@@ -961,3 +961,23 @@ Prevention: recover additions against the current owners; preserve unrelated rou
 Bindings: `next.config.mjs`, `app/[locale]/agb/page.tsx`, `app/[locale]/datenschutz/page.tsx`, `app/sitemap.ts`.
 
 Observed: the production English agb alias returned HTTP200 even though its page called redirect to terms. A page redirect after streaming is a client redirect, not a transport redirect. Existing aliases now also use the established config-level permanent redirect pattern. Actual Next checks return308 for both aliases in all four locales and retain query strings. List the final terms/privacy destinations in the sitemap. This does not authorize redirecting different legal documents or changing their wording.
+
+### Booking downloads must preserve the actual booking and payment identity
+
+Bindings: components-legacy/booking/BookingCard.tsx; app/api/bookings/user/route.ts; app/api/bookings/[id]/ics/route.ts; app/api/bookings/[id]/receipt/route.ts; lib/stripe.ts.
+
+Observed source defects: approved action links were nested in the existing card link; the upcoming-only menu guard hid receipts for completed bookings. The ICS source invented a missing booking end from the service's current duration. Receipt source accepted any latest-charge receipt without checking booking metadata/capture, and used the full payment-write key despite backend LAW §8c.
+
+Repair: separate the card destination from action links; gate reschedule/cancel independently. Use persisted start/end times for calendar files and refuse unavailable/invalid spans or states that cannot be exported as confirmed. Route receipt access through current booking authorization, then verify the actual booking/pre-charge intent and captured charge. Return the provider's own receipt, never re-create amounts, refunds or VAT from a service quote. Expose only eligibility to the list. Keep a legacy null paid_amount eligible when a paid state/pointer exists, so Stripe can determine actual receipt availability; explicit zero does not promise one.
+
+Prevention: test actual actor resolution for customer, Store owner, admin and booking-bound guest plus foreign/expired/invalid-Bearer counterparts; inspect generated UID/start/end and redirect identity. Exercise completed/refunded and pending/zero/held states. For a new read-only Stripe consumer, use the existing lib/stripe.ts owner with restricted credentials, no full-key fallback. A missing key must return unavailable, not fabricate a receipt or silently broaden credentials. Parent verified the canonical restricted-key prerequisite is absent, so receipt activation remains pending provisioning.
+
+Round 2 browser discriminator: a full-card sibling overlay at z-10 intercepted the Actions center during the retained body transform, despite local controls at z-20. Moving overlay and controls into the same positioned card removes that cross-context trap; raise the card only while its menu is open so the following card cannot cover overflowing menu rows. Test actual elementFromPoint during hover/press and over the next card, not only direct React callback invocation.
+
+### Elevating each open card does not resolve simultaneous popup overlap
+
+Bindings: `components-legacy/booking/BookingCard.tsx`, `tests/components/booking-card-actions.test.tsx`.
+
+Observed: round2 put each open card at z30, but two adjacent open menus shared that stacking level. The later card's Store overlay could intercept the earlier menu's calendar link. Raising every open container does not impose a single current disclosure.
+
+Applied prevention: reuse current outside pointer/focus dismissal and Escape handling so the previous popup closes as another control receives interaction. Test two actual mounted cards, not only one popup, and verify both neighbor directions with real elementFromPoint while hover/press transforms are active. A small visible pill can retain its geometry inside a transparent44px real button, whose invisible edges need hit testing as well as a DOM height check.

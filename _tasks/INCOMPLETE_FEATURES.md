@@ -359,3 +359,7 @@ IMPACT: none on the product. Nothing was applied to any real screen.
 - Observed at 390px: accepted main baseline document width545px/table510.75px; recovered factual inactive-staff annotation gives document574px/table540.60px. Existing overflow wrapper and table layout classes are unchanged. The inactive annotation must remain because completed work is still owed representation.
 - Blocker: current shared container permits the table to expand the page. The earnings money/read recovery does not establish a phone-layout pass or authorize a broader visual redesign.
 - Next step: measure the table's flex ancestors in the actual populated route, preview a bounded containment correction and verify horizontal scrolling stays inside the table while inactive staff and their earnings remain visible.
+
+### Booking receipt activation (September 8 branch recovery)
+
+- **`lib/stripe.ts:29` and `app/api/bookings/[id]/receipt/route.ts:31`:** reviewed receipt retrieval requires the canonical `STRIPE_RESTRICTED_KEY`, whose presence check is false. Missing configuration returns private unavailable503; it never uses the payment-write key. Blocker: authorized configuration owner must provision a suitable restricted read key. Next step: verify the read-only provider path after provisioning; no live receipt retrieval is claimed. Calendar export is independently verified and does not require this key.

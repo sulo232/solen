@@ -6031,7 +6031,11 @@
     "reschedule": "Reschedule",
     "cancel": "Cancel",
     "rebook": "Rebook",
-    "total": "Total"
+    "total": "Total",
+    "directions": "Directions",
+    "addToCalendar": "Add to calendar",
+    "receipt": "Receipt",
+    "actions": "Actions"
   },
   "bookingsList": {
     "upcoming": "Upcoming",

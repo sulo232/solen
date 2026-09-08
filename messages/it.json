@@ -6031,7 +6031,11 @@
     "reschedule": "Riprogramma",
     "cancel": "Annulla",
     "rebook": "Prenota di nuovo",
-    "total": "Totale"
+    "total": "Totale",
+    "directions": "Indicazioni",
+    "addToCalendar": "Aggiungi al calendario",
+    "receipt": "Ricevuta",
+    "actions": "Azioni"
   },
   "bookingsList": {
     "upcoming": "Prossimi",
