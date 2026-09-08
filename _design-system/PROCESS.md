@@ -61,10 +61,14 @@ is not reopened. If `npm run exists <keyword>` finds it, extend it rather than b
 `TASTE_AUTHORITY.md` and current authorization; ask only when a material owner decision remains,
 otherwise park the dependency and finish independent work.
 
-**3. Grade.** The writer is never the grader. The verifier renders the real route at 390x844,
-measures against the current project floors, and returns a verdict or punch list with `file:line`.
-After a third failing round, diagnose the method, specification, or missing evidence before another
-repair. Ask the owner only when that diagnosis identifies a material owner decision.
+**3. Check and grade.** The working assistant renders the real route at 390x844, inspects the
+screenshot, DOM, interaction, accessibility, and real data, and measures against the current project
+floors. Ordinary low-risk reversible visual work closes with those focused direct checks. When
+actual consequence, uncertainty, or reach requires independent acceptance, the writer is not the
+grader: one read-only native verifier returns a verdict or punch list with `file:line` and can cover
+all applicable visual, code, and security criteria. Add a specialist only for a material uncovered
+question. After a third failing round, diagnose the method, specification, or missing evidence
+before another repair. Ask the owner only when that diagnosis identifies a material owner decision.
 
 ## What a verifier is told to ignore
 

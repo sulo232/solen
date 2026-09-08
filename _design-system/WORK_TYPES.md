@@ -117,7 +117,7 @@ User flag 2026-05-28: "we also got waves or system for example like amazing rebu
 - Write the page top-to-bottom in one Write call (acceptable for new files, NOT for existing-file edits)
 - Build verifies (no compile error)
 - Screenshot mobile + desktop
-- Verifier sub-agent confirms PASS against spec (per CLAUDE.md rule 7)
+- Apply the current consequence, uncertainty, and reach threshold. The working assistant always checks the rendered route directly; add one independent native verifier only when that threshold requires it, and let that reviewer cover all applicable visual, code, and security criteria.
 - User visual sign-off
 
 **Commit granularity:** 1 commit per page-rebuild. Often followed by 1-3 iteration commits as user gives feedback.

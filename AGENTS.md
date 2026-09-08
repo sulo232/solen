@@ -54,7 +54,7 @@ Name the screen class before applying these rules. Customer screens include disc
 
 Operator screens follow the current merchant rules in `_design-system/TASTE_LOG.md`: one carded hero per screen; remaining content is bare text on the canvas; gaps use 16 or 32; one pill specification per context; no colored edge bars; a person or event appears exactly once. A container is earned only when it does something whitespace cannot. Operator screens have no imagery, semantic-color, or sunken-tray floor. Their life source is live data.
 
-For every customer UI or mockup, run a measured self-check and obtain an independent visual review against the correct screen scope. Inspect the rendered screenshot and DOM. Measure font sizes and weights, focus state, content density, container boundaries, and the scroll distance from the last required input to the commit action. A customer UI that violates a floor is not ready.
+For every customer UI or mockup, the working assistant runs a measured check against the correct screen scope. Inspect the rendered screenshot, DOM, interaction, accessibility, and real data. Measure font sizes and weights, focus state, content density, container boundaries, and the scroll distance from the last required input to the commit action. Ordinary low-risk reversible visual work does not require a separate reviewer. Add one independent reviewer only when actual consequence, uncertainty, or reach requires it; that reviewer can cover all applicable visual, code, and security criteria. A customer UI that violates a floor is not ready.
 
 ### Never-again floors
 
@@ -160,7 +160,7 @@ Use the named current skill before editing or offering an opinion:
 | Overlap, clipping, imbalance, mismatch, different heights, comparison, or "still wrong" | Measure the real UI through documented CUA controls and measure the reference before editing. Do not assume the recently changed element is the cause. |
 | Fresha-named structure rebuild | Read `fresha-section-capture`; capture the exact live surface. Use Fresha for structure/placement and Airbnb for look/motion within Solen rules. |
 | Any other named brand, platform, surface, or liked aspect | Read `reference-lock`; resolve the brand, platform, exact surface, and aspect; capture the real behavior and measurements; save the captured specification under `_design-system/references/<brand>--<surface>.md`; record that path in the existing brief or workstream and re-read it before building. |
-| Any visual change completed | Run `gemini-visual-check` against the relevant reference before claiming a match. |
+| Any visual change completed | The working assistant checks the rendered screenshots, measured DOM, interaction, accessibility, real-data scenario, relevant reference, and current design owners. Ordinary low-risk reversible visual work needs no separate reviewer. Add one native reviewer such as `design-verifier` only when actual consequence, uncertainty, or reach requires it; one reviewer can cover every applicable criterion. Do not add Gemini, an automatic external-provider fallback, or a renamed substitute. |
 | Owner says the result looks bad without naming the cause | Read `solen-taste-diagnosis`; measure hierarchy, type, grouping, contrast, and applicable floors before proposing a fix. |
 
 Capture costs less than repeated correction. A named brand is a direction, not authority to copy a solution to a different problem.

@@ -1223,7 +1223,6 @@ When capturing a section, use these sources in this order:
 4. **Mobbin MCP** (`mcp__mobbin__search_screens`) — fallback when Fresha capture is paywalled / auth-gated / structurally broken
 5. **`pixel-spec-auto`** — extra pixel measurements from any saved screenshot when computed-style data is incomplete
 6. **`site-teardown`** — full-URL teardown for global chrome or unfamiliar route shapes
-7. **`gemini-visual-check`** — multimodal second-eye on contested verifier verdicts
 
 For Solen-original surfaces (Entdecken / loyalty / referral) where no Fresha equivalent exists: **first-principles design with these locked primitives + tokens.** Don't force a Fresha-shaped wrapper on Solen content (uncanny valley).
 

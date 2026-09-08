@@ -37,7 +37,6 @@ exact failure MEASUREMENT_LAW was written for.
 |---|---|---|
 | `scripts/check-geometry.mjs --floors-only` | never run against a screen he has already judged, so nobody knows whether it agrees with him | run it on a screen he approved AND one he rejected; if it cannot tell them apart it is blind on taste |
 | `pixel-spec-auto/extract.py` | known to fail on borderless cards, and the failure is silent | PIL-sample the reference directly when the output looks thin, and say which method produced the numbers |
-| `gemini-visual-check` | no constructed case where the right answer was known in advance | feed it two images that are identical and two that differ by a known amount, before trusting a verdict |
 | the motion instruments (`record-interaction.mjs`, `check-motion.mjs`) | **this is the one that cost fourteen rounds.** No fixture exists with a known-correct animation | build one animation whose timing is true by construction, then check the instrument reproduces it. Until that exists, motion readings are hints and his eyes win |
 
 ## How to add a row
