@@ -7,6 +7,7 @@ import { motion } from "motion/react";
 import { Star, MapPin, Lock, Check, AlertTriangle, ChevronLeft, Scissors, Clock, Info, ArrowRight } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import WalkInPaymentForm from "@/components-legacy/barber/WalkInPaymentForm";
+import { computeVat } from "@/lib/vat";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
 
 interface BookingData {
@@ -20,6 +21,8 @@ interface BookingData {
   salon_address: string | null;
   salon_phone: string | null;
   salon_slug: string | null;
+  salon_vat_registered?: boolean | null;
+  salon_vat_rate?: number | null;
   service_name: string;
   service_duration: number | null;
   service_description?: string | null;
@@ -68,6 +71,7 @@ export default function WalkInPayPage() {
   // "refunded" = hold was captured then refunded; "released" = uncaptured hold dropped.
   const [cancelPayment, setCancelPayment] = useState<"refunded" | "released" | null>(null);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [paymentSummary, setPaymentSummary] = useState<{ amount: number; salon_vat_registered?: boolean | null; salon_vat_rate?: number | null } | null>(null);
   const [payError, setPayError] = useState<string | null>(null);
   const [serviceInfoOpen, setServiceInfoOpen] = useState(false);
   // Walk-in can't be paid online right now — non-destructive (the summary stays readable).
@@ -95,7 +99,7 @@ export default function WalkInPayPage() {
 
     if (token) {
       // Token flow: verify the booking via the HMAC token.
-      fetch(`/api/bookings/walk-in-verify?token=${encodeURIComponent(token)}`)
+      fetch(`/api/bookings/walk-in-verify?token=${encodeURIComponent(token)}&locale=${locale}`)
         .then(async (r) => {
           const data = await r.json();
           if (!r.ok) {
@@ -132,6 +136,8 @@ export default function WalkInPayPage() {
             salon_address: salon.address,
             salon_phone: null,
             salon_slug: salon.slug ?? null,
+            salon_vat_registered: salon.vat_registered,
+            salon_vat_rate: salon.vat_rate,
             service_name: service.name,
             service_duration: service.duration_minutes,
             service_description: service.description ?? null,
@@ -179,7 +185,7 @@ export default function WalkInPayPage() {
   // Real booking (either token or tokenless) that's still unpaid → create a manual-capture PaymentIntent
   // so the Stripe card form can mount. Skipped in demo mode and once a ticket already exists.
   useEffect(() => {
-    if (paid || clientSecret) return;
+    if (paid || clientSecret || searchParams.get("demo")) return;
     let body: { salon_id: string; service_id: string; booking_id?: string; preferred_barber_id?: string } | null = null;
     if (token) {
       // Token flow: salon/service come from the verified booking, so wait for it.
@@ -198,12 +204,13 @@ export default function WalkInPayPage() {
     fetch("/api/walkin/pay-intent", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
+      body: JSON.stringify({ ...body, locale }),
     })
       .then(async (r) => {
         const d = await r.json().catch(() => null);
         if (cancelled) return;
         if (r.ok && d?.client_secret) {
+          setPaymentSummary({ amount: d.amount, salon_vat_registered: d.salon_vat_registered, salon_vat_rate: d.salon_vat_rate });
           setClientSecret(d.client_secret);
           return;
         }
@@ -221,7 +228,7 @@ export default function WalkInPayPage() {
         setError(l.loadFailed);
       });
     return () => { cancelled = true; };
-  }, [token, booking, paid, clientSecret, searchParams]);
+  }, [token, token ? booking : null, paid, clientSecret, searchParams, locale]);
 
   const handleCancel = async () => {
     if (cancelling) return;
@@ -305,23 +312,26 @@ export default function WalkInPayPage() {
   };
 
   const labels = {
-    de: { title: "Bestätigen & zahlen", total: "Gesamt", today: "Heute", now: "Sofort", secure: "Sichere Zahlung über Stripe", min: "Min", back: "Zurück", barber: "Ihr Barber", salonEyebrow: "Salon", serviceEyebrow: "Service", walkinEyebrow: "Walk-in", openUntil: "Geöffnet bis", numberOnArrival: "Nummer bei Ankunft", ahead: "vor Ihnen", payOnce: "Einmalzahlung, sofort bestätigt", wait: "Wartezeit", paymentEyebrow: "Zahlung", vat: "inkl. 8.1% MwSt", terminLabel: "Termin", afterPayment: "Nummer nach der Zahlung", paidTitle: "Sie sind in der Schlange", yourNumber: "Ihre Nummer", showInStore: "Zeigen Sie diesen Code im Salon", addressLabel: "Adresse", phoneLabel: "Telefon", walkOut: "Sie können gehen. Wir sagen Ihnen Bescheid, wenn Sie dran sind.", cancelPolicy: "Kostenlose Stornierung bis zum Aufruf", cancelBtn: "Stornieren", payVerb: "bezahlen", confirmFailed: "Bestätigung fehlgeschlagen", cancelFailed: "Stornierung fehlgeschlagen. Bitte versuchen Sie es erneut.", salonNotFound: "Salon nicht gefunden", serviceNotFound: "Service nicht gefunden", loadFailed: "Salon / Service konnte nicht geladen werden", payAtCounter: "Dieser Salon kann Walk-ins noch nicht online bezahlen. Bitte zahlen Sie am Schalter.", blockedCounterTitle: "Online-Zahlung nicht möglich", blockedCounterBody: "Dieser Salon nimmt diesen Termin nur vor Ort an. Zahlen Sie direkt im Salon am Tresen.", blockedPausedTitle: "Walk-ins gerade pausiert", blockedPausedBody: "Dieser Salon nimmt im Moment keine neuen Walk-ins an. Versuchen Sie es später nochmal oder wählen Sie einen anderen Salon.", chooseAnotherSalon: "Anderen Salon wählen", viewSalon: "Zum Salon", verifyFailed: "Token konnte nicht überprüft werden", noTokenOrSalon: "Kein Token oder Salon angegeben", stepNext: "Bald", cancelled: "Storniert", cancelledDesc: "Ihr Walk-in wurde storniert. Die Zahlung wird erstattet.", cancelledRefunded: "Ihr Walk-in wurde storniert. Die Zahlung wird erstattet.", cancelledReleased: "Ihr Walk-in wurde storniert. Die Kartenreservierung wurde aufgehoben.", paid: "Zahlung erfolgreich", paidDesc: "Ihre Zahlung wurde verarbeitet. Sie können dieses Fenster schliessen.", invalid: "Ungültiger oder abgelaufener Link", noToken: "Kein Token angegeben", errorEyebrow: "Fehler", paidEyebrow: "Zahlung", receiptTitle: "Beleg", methodLabel: "Zahlungsart", dateRowLabel: "Datum" },
-    en: { title: "Confirm & pay", total: "Total", today: "Today", now: "Now", secure: "Secure payment via Stripe", min: "min", back: "Back", barber: "Your barber", salonEyebrow: "Store", serviceEyebrow: "Service", walkinEyebrow: "Walk-in", openUntil: "Open until", numberOnArrival: "Number on arrival", ahead: "ahead of you", payOnce: "One-time payment, confirmed instantly", wait: "wait", paymentEyebrow: "Payment", vat: "incl. 8.1% VAT", terminLabel: "When", afterPayment: "Number after payment", paidTitle: "You're in the queue", yourNumber: "Your number", showInStore: "Show this code at the store", addressLabel: "Address", phoneLabel: "Phone", walkOut: "You can leave. We'll let you know when it's your turn.", cancelPolicy: "Free cancellation until you're called", cancelBtn: "Cancel", payVerb: "pay", confirmFailed: "Confirmation failed", cancelFailed: "Cancellation failed. Please try again.", salonNotFound: "Store not found", serviceNotFound: "Service not found", loadFailed: "Could not load store / service", payAtCounter: "This store can't take walk-in payments online yet. Please pay at the counter.", blockedCounterTitle: "Online payment unavailable", blockedCounterBody: "This store only takes this appointment in person. Pay at the counter when you arrive.", blockedPausedTitle: "Walk-ins paused right now", blockedPausedBody: "This store isn't taking new walk-ins at the moment. Try again later or pick another store.", chooseAnotherSalon: "Choose another store", viewSalon: "View store", verifyFailed: "Failed to verify token", noTokenOrSalon: "No token or store provided", stepNext: "Next", cancelled: "Cancelled", cancelledDesc: "Your walk-in was cancelled. Your payment will be refunded.", cancelledRefunded: "Your walk-in was cancelled. Your payment will be refunded.", cancelledReleased: "Your walk-in was cancelled. The card hold has been released.", paid: "Payment successful", paidDesc: "Your payment has been processed. You can close this window.", invalid: "Invalid or expired link", noToken: "No token provided", errorEyebrow: "Error", paidEyebrow: "Payment", receiptTitle: "Receipt", methodLabel: "Payment method", dateRowLabel: "Date" },
-    fr: { title: "Confirmer & payer", total: "Total", today: "Aujourd'hui", now: "Maintenant", secure: "Paiement sécurisé via Stripe", min: "min", back: "Retour", barber: "Votre coiffeur", salonEyebrow: "Salon", serviceEyebrow: "Service", walkinEyebrow: "Walk-in", openUntil: "Ouvert jusqu'à", numberOnArrival: "Numéro à l'arrivée", ahead: "devant vous", payOnce: "Paiement unique, confirmé immédiatement", wait: "d'attente", paymentEyebrow: "Paiement", vat: "TVA 8.1% incluse", terminLabel: "Quand", afterPayment: "Numéro après paiement", paidTitle: "Vous êtes dans la file", yourNumber: "Votre numéro", showInStore: "Montrez ce code au salon", addressLabel: "Adresse", phoneLabel: "Téléphone", walkOut: "Vous pouvez partir. Nous vous préviendrons quand ce sera votre tour.", cancelPolicy: "Annulation gratuite jusqu'à votre appel", cancelBtn: "Annuler", payVerb: "payer", confirmFailed: "Échec de la confirmation", cancelFailed: "Échec de l'annulation. Veuillez réessayer.", salonNotFound: "Salon introuvable", serviceNotFound: "Service introuvable", loadFailed: "Impossible de charger le salon / service", payAtCounter: "Ce salon ne peut pas encore accepter les paiements walk-in en ligne. Veuillez payer au comptoir.", blockedCounterTitle: "Paiement en ligne indisponible", blockedCounterBody: "Ce salon ne prend ce rendez-vous qu'en personne. Payez au comptoir à votre arrivée.", blockedPausedTitle: "Walk-ins en pause", blockedPausedBody: "Ce salon n'accepte pas de nouveaux walk-ins pour le moment. Réessayez plus tard ou choisissez un autre salon.", chooseAnotherSalon: "Choisir un autre salon", viewSalon: "Voir le salon", verifyFailed: "Échec de la vérification du jeton", noTokenOrSalon: "Aucun jeton ou salon fourni", stepNext: "Bientôt", cancelled: "Annulé", cancelledDesc: "Votre walk-in a été annulé. Votre paiement sera remboursé.", cancelledRefunded: "Votre walk-in a été annulé. Votre paiement sera remboursé.", cancelledReleased: "Votre walk-in a été annulé. La préautorisation de la carte a été levée.", paid: "Paiement réussi", paidDesc: "Votre paiement a été traité. Vous pouvez fermer cette fenêtre.", invalid: "Lien invalide ou expiré", noToken: "Aucun jeton fourni", errorEyebrow: "Erreur", paidEyebrow: "Paiement", receiptTitle: "Reçu", methodLabel: "Moyen de paiement", dateRowLabel: "Date" },
-    it: { title: "Conferma e paga", total: "Totale", today: "Oggi", now: "Subito", secure: "Pagamento sicuro con Stripe", min: "min", back: "Indietro", barber: "Il tuo barbiere", salonEyebrow: "Store", serviceEyebrow: "Servizio", walkinEyebrow: "Walk-in", openUntil: "Aperto fino alle", numberOnArrival: "Numero all'arrivo", ahead: "prima di te", payOnce: "Pagamento unico, confermato subito", wait: "di attesa", paymentEyebrow: "Pagamento", vat: "IVA 8.1% inclusa", terminLabel: "Quando", afterPayment: "Numero dopo il pagamento", paidTitle: "Sei in coda", yourNumber: "Il tuo numero", showInStore: "Mostra questo codice allo store", addressLabel: "Indirizzo", phoneLabel: "Telefono", walkOut: "Puoi uscire. Ti avviseremo quando è il tuo turno.", cancelPolicy: "Cancellazione gratuita fino alla chiamata", cancelBtn: "Annulla", payVerb: "paga", confirmFailed: "Conferma non riuscita", cancelFailed: "Annullamento non riuscito. Riprova.", salonNotFound: "Store non trovato", serviceNotFound: "Servizio non trovato", loadFailed: "Impossibile caricare store / servizio", payAtCounter: "Questo store non può ancora accettare pagamenti walk-in online. Paga allo sportello.", blockedCounterTitle: "Pagamento online non disponibile", blockedCounterBody: "Questo store accetta questo appuntamento solo di persona. Paga allo sportello all'arrivo.", blockedPausedTitle: "Walk-in in pausa", blockedPausedBody: "Questo store non accetta nuovi walk-in al momento. Riprova più tardi o scegli un altro store.", chooseAnotherSalon: "Scegli un altro store", viewSalon: "Vai allo store", verifyFailed: "Verifica del token non riuscita", noTokenOrSalon: "Nessun token o store fornito", stepNext: "A breve", cancelled: "Annullato", cancelledDesc: "Il tuo walk-in è stato annullato. Il pagamento sarà rimborsato.", cancelledRefunded: "Il tuo walk-in è stato annullato. Il pagamento sarà rimborsato.", cancelledReleased: "Il tuo walk-in è stato annullato. Il blocco sulla carta è stato rilasciato.", paid: "Pagamento riuscito", paidDesc: "Il pagamento è stato elaborato. Puoi chiudere questa finestra.", invalid: "Link non valido o scaduto", noToken: "Nessun token fornito", errorEyebrow: "Errore", paidEyebrow: "Pagamento", receiptTitle: "Ricevuta", methodLabel: "Metodo di pagamento", dateRowLabel: "Data" },
+    de: { title: "Bestätigen & zahlen", total: "Gesamt", today: "Heute", now: "Sofort", secure: "Sichere Zahlung über Stripe", min: "Min", back: "Zurück", barber: "Ihr Barber", salonEyebrow: "Salon", serviceEyebrow: "Service", walkinEyebrow: "Walk-in", openUntil: "Geöffnet bis", numberOnArrival: "Nummer bei Ankunft", ahead: "vor Ihnen", payOnce: "Einmalzahlung, sofort bestätigt", wait: "Wartezeit", paymentEyebrow: "Zahlung", vat: "inkl. {rate}% MwSt", terminLabel: "Termin", afterPayment: "Nummer nach der Zahlung", paidTitle: "Sie sind in der Schlange", yourNumber: "Ihre Nummer", showInStore: "Zeigen Sie diesen Code im Salon", addressLabel: "Adresse", phoneLabel: "Telefon", walkOut: "Sie können gehen. Wir sagen Ihnen Bescheid, wenn Sie dran sind.", cancelPolicy: "Kostenlose Stornierung bis zum Aufruf", cancelBtn: "Stornieren", payVerb: "bezahlen", confirmFailed: "Bestätigung fehlgeschlagen", cancelFailed: "Stornierung fehlgeschlagen. Bitte versuchen Sie es erneut.", salonNotFound: "Salon nicht gefunden", serviceNotFound: "Service nicht gefunden", loadFailed: "Salon / Service konnte nicht geladen werden", payAtCounter: "Dieser Salon kann Walk-ins noch nicht online bezahlen. Bitte zahlen Sie am Schalter.", blockedCounterTitle: "Online-Zahlung nicht möglich", blockedCounterBody: "Dieser Salon nimmt diesen Termin nur vor Ort an. Zahlen Sie direkt im Salon am Tresen.", blockedPausedTitle: "Walk-ins gerade pausiert", blockedPausedBody: "Dieser Salon nimmt im Moment keine neuen Walk-ins an. Versuchen Sie es später nochmal oder wählen Sie einen anderen Salon.", chooseAnotherSalon: "Anderen Salon wählen", viewSalon: "Zum Salon", verifyFailed: "Token konnte nicht überprüft werden", noTokenOrSalon: "Kein Token oder Salon angegeben", stepNext: "Bald", cancelled: "Storniert", cancelledDesc: "Ihr Walk-in wurde storniert. Die Zahlung wird erstattet.", cancelledRefunded: "Ihr Walk-in wurde storniert. Die Zahlung wird erstattet.", cancelledReleased: "Ihr Walk-in wurde storniert. Die Kartenreservierung wurde aufgehoben.", paid: "Zahlung erfolgreich", paidDesc: "Ihre Zahlung wurde verarbeitet. Sie können dieses Fenster schliessen.", invalid: "Ungültiger oder abgelaufener Link", noToken: "Kein Token angegeben", errorEyebrow: "Fehler", paidEyebrow: "Zahlung", receiptTitle: "Beleg", methodLabel: "Zahlungsart", dateRowLabel: "Datum" },
+    en: { title: "Confirm & pay", total: "Total", today: "Today", now: "Now", secure: "Secure payment via Stripe", min: "min", back: "Back", barber: "Your barber", salonEyebrow: "Store", serviceEyebrow: "Service", walkinEyebrow: "Walk-in", openUntil: "Open until", numberOnArrival: "Number on arrival", ahead: "ahead of you", payOnce: "One-time payment, confirmed instantly", wait: "wait", paymentEyebrow: "Payment", vat: "incl. {rate}% VAT", terminLabel: "When", afterPayment: "Number after payment", paidTitle: "You're in the queue", yourNumber: "Your number", showInStore: "Show this code at the store", addressLabel: "Address", phoneLabel: "Phone", walkOut: "You can leave. We'll let you know when it's your turn.", cancelPolicy: "Free cancellation until you're called", cancelBtn: "Cancel", payVerb: "pay", confirmFailed: "Confirmation failed", cancelFailed: "Cancellation failed. Please try again.", salonNotFound: "Store not found", serviceNotFound: "Service not found", loadFailed: "Could not load store / service", payAtCounter: "This store can't take walk-in payments online yet. Please pay at the counter.", blockedCounterTitle: "Online payment unavailable", blockedCounterBody: "This store only takes this appointment in person. Pay at the counter when you arrive.", blockedPausedTitle: "Walk-ins paused right now", blockedPausedBody: "This store isn't taking new walk-ins at the moment. Try again later or pick another store.", chooseAnotherSalon: "Choose another store", viewSalon: "View store", verifyFailed: "Failed to verify token", noTokenOrSalon: "No token or store provided", stepNext: "Next", cancelled: "Cancelled", cancelledDesc: "Your walk-in was cancelled. Your payment will be refunded.", cancelledRefunded: "Your walk-in was cancelled. Your payment will be refunded.", cancelledReleased: "Your walk-in was cancelled. The card hold has been released.", paid: "Payment successful", paidDesc: "Your payment has been processed. You can close this window.", invalid: "Invalid or expired link", noToken: "No token provided", errorEyebrow: "Error", paidEyebrow: "Payment", receiptTitle: "Receipt", methodLabel: "Payment method", dateRowLabel: "Date" },
+    fr: { title: "Confirmer & payer", total: "Total", today: "Aujourd'hui", now: "Maintenant", secure: "Paiement sécurisé via Stripe", min: "min", back: "Retour", barber: "Votre coiffeur", salonEyebrow: "Salon", serviceEyebrow: "Service", walkinEyebrow: "Walk-in", openUntil: "Ouvert jusqu'à", numberOnArrival: "Numéro à l'arrivée", ahead: "devant vous", payOnce: "Paiement unique, confirmé immédiatement", wait: "d'attente", paymentEyebrow: "Paiement", vat: "TVA {rate}% incluse", terminLabel: "Quand", afterPayment: "Numéro après paiement", paidTitle: "Vous êtes dans la file", yourNumber: "Votre numéro", showInStore: "Montrez ce code au salon", addressLabel: "Adresse", phoneLabel: "Téléphone", walkOut: "Vous pouvez partir. Nous vous préviendrons quand ce sera votre tour.", cancelPolicy: "Annulation gratuite jusqu'à votre appel", cancelBtn: "Annuler", payVerb: "payer", confirmFailed: "Échec de la confirmation", cancelFailed: "Échec de l'annulation. Veuillez réessayer.", salonNotFound: "Salon introuvable", serviceNotFound: "Service introuvable", loadFailed: "Impossible de charger le salon / service", payAtCounter: "Ce salon ne peut pas encore accepter les paiements walk-in en ligne. Veuillez payer au comptoir.", blockedCounterTitle: "Paiement en ligne indisponible", blockedCounterBody: "Ce salon ne prend ce rendez-vous qu'en personne. Payez au comptoir à votre arrivée.", blockedPausedTitle: "Walk-ins en pause", blockedPausedBody: "Ce salon n'accepte pas de nouveaux walk-ins pour le moment. Réessayez plus tard ou choisissez un autre salon.", chooseAnotherSalon: "Choisir un autre salon", viewSalon: "Voir le salon", verifyFailed: "Échec de la vérification du jeton", noTokenOrSalon: "Aucun jeton ou salon fourni", stepNext: "Bientôt", cancelled: "Annulé", cancelledDesc: "Votre walk-in a été annulé. Votre paiement sera remboursé.", cancelledRefunded: "Votre walk-in a été annulé. Votre paiement sera remboursé.", cancelledReleased: "Votre walk-in a été annulé. La préautorisation de la carte a été levée.", paid: "Paiement réussi", paidDesc: "Votre paiement a été traité. Vous pouvez fermer cette fenêtre.", invalid: "Lien invalide ou expiré", noToken: "Aucun jeton fourni", errorEyebrow: "Erreur", paidEyebrow: "Paiement", receiptTitle: "Reçu", methodLabel: "Moyen de paiement", dateRowLabel: "Date" },
+    it: { title: "Conferma e paga", total: "Totale", today: "Oggi", now: "Subito", secure: "Pagamento sicuro con Stripe", min: "min", back: "Indietro", barber: "Il tuo barbiere", salonEyebrow: "Store", serviceEyebrow: "Servizio", walkinEyebrow: "Walk-in", openUntil: "Aperto fino alle", numberOnArrival: "Numero all'arrivo", ahead: "prima di te", payOnce: "Pagamento unico, confermato subito", wait: "di attesa", paymentEyebrow: "Pagamento", vat: "IVA {rate}% inclusa", terminLabel: "Quando", afterPayment: "Numero dopo il pagamento", paidTitle: "Sei in coda", yourNumber: "Il tuo numero", showInStore: "Mostra questo codice allo store", addressLabel: "Indirizzo", phoneLabel: "Telefono", walkOut: "Puoi uscire. Ti avviseremo quando è il tuo turno.", cancelPolicy: "Cancellazione gratuita fino alla chiamata", cancelBtn: "Annulla", payVerb: "paga", confirmFailed: "Conferma non riuscita", cancelFailed: "Annullamento non riuscito. Riprova.", salonNotFound: "Store non trovato", serviceNotFound: "Servizio non trovato", loadFailed: "Impossibile caricare store / servizio", payAtCounter: "Questo store non può ancora accettare pagamenti walk-in online. Paga allo sportello.", blockedCounterTitle: "Pagamento online non disponibile", blockedCounterBody: "Questo store accetta questo appuntamento solo di persona. Paga allo sportello all'arrivo.", blockedPausedTitle: "Walk-in in pausa", blockedPausedBody: "Questo store non accetta nuovi walk-in al momento. Riprova più tardi o scegli un altro store.", chooseAnotherSalon: "Scegli un altro store", viewSalon: "Vai allo store", verifyFailed: "Verifica del token non riuscita", noTokenOrSalon: "Nessun token o store fornito", stepNext: "A breve", cancelled: "Annullato", cancelledDesc: "Il tuo walk-in è stato annullato. Il pagamento sarà rimborsato.", cancelledRefunded: "Il tuo walk-in è stato annullato. Il pagamento sarà rimborsato.", cancelledReleased: "Il tuo walk-in è stato annullato. Il blocco sulla carta è stato rilasciato.", paid: "Pagamento riuscito", paidDesc: "Il pagamento è stato elaborato. Puoi chiudere questa finestra.", invalid: "Link non valido o scaduto", noToken: "Nessun token fornito", errorEyebrow: "Errore", paidEyebrow: "Pagamento", receiptTitle: "Ricevuta", methodLabel: "Metodo di pagamento", dateRowLabel: "Data" },
   };
   const l = labels[locale as keyof typeof labels] ?? labels.de;
   const tag = LOCALE_TAG[locale] ?? "de-CH";
 
   // Payment surface → always 2 decimals + locale-correct symbol position
   // (de-CH renders "CHF 45.00"). `amount` is CHF gross (incl. VAT), not Rappen.
-  // Swiss consumer prices are shown incl. 8.1% MwSt; we surface the VAT portion
-  // for transparency: vat = gross × rate / (1 + rate).
-  const VAT_RATE = 0.081;
+  // The payment response owns the payable total; a later salon-info response cannot overwrite it.
+  const summary = paymentSummary ?? booking;
+  const vatRate = summary?.salon_vat_rate;
+  const showVat = summary?.salon_vat_registered === true && typeof vatRate === "number" && Number.isFinite(vatRate) && vatRate >= 0;
+  const vat = summary && showVat ? computeVat(Math.round(summary.amount * 100), { registered: true, ratePercent: vatRate }) : null;
+  const vatRateLabel = vat ? new Intl.NumberFormat(tag, { maximumFractionDigits: 20 }).format(vat.ratePercent) : "";
   const fmtChf = (chf: number) =>
     new Intl.NumberFormat(tag, { style: "currency", currency: "CHF", minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(chf);
-  const amountStr = booking ? fmtChf(booking.amount) : "";
-  const vatStr = booking ? fmtChf((booking.amount * VAT_RATE) / (1 + VAT_RATE)) : "";
+  const amountStr = summary ? fmtChf(summary.amount) : "";
+  const vatStr = vat ? fmtChf(vat.vatRappen / 100) : "";
   const payCta = locale === "en" ? `Pay ${amountStr}` : locale === "fr" ? `Payer ${amountStr}` : locale === "it" ? `Paga ${amountStr}` : `${amountStr} bezahlen`;
   const paidLabel = locale === "en" ? "Paid" : locale === "fr" ? "Payé" : locale === "it" ? "Pagato" : "Bezahlt";
   const routeLabel = locale === "en" ? "Route" : locale === "fr" ? "Itinéraire" : locale === "it" ? "Percorso" : "Route";
@@ -540,10 +550,12 @@ export default function WalkInPayPage() {
                   <span className="truncate text-s-ink">{booking.service_name}</span>
                   <span className="shrink-0 font-body tabular-nums text-s-ink">{amountStr}</span>
                 </div>
-                <div className="flex items-baseline justify-between gap-3 text-[13px]">
-                  <span className="text-s-ink-2">{l.vat}</span>
-                  <span className="shrink-0 tabular-nums text-s-ink-2">{vatStr}</span>
-                </div>
+                {showVat && (
+                  <div className="flex items-baseline justify-between gap-3 text-[13px]">
+                    <span className="text-s-ink-2">{l.vat.replace("{rate}", vatRateLabel)}</span>
+                    <span className="shrink-0 tabular-nums text-s-ink-2">{vatStr}</span>
+                  </div>
+                )}
               </div>
               <div className="mt-2.5 flex items-baseline justify-between gap-3 border-t border-s-border pt-2.5">
                 <span className="self-center font-heading text-[15px] font-semibold text-s-ink">{l.total}</span>
@@ -558,7 +570,7 @@ export default function WalkInPayPage() {
               <div className="mt-3 rounded-2xl bg-white p-4 shadow-[0_1px_2px_rgba(20,18,16,.04),0_6px_18px_rgba(20,18,16,.05)]">
                 <WalkInPaymentForm
                   clientSecret={clientSecret}
-                  amount={booking.amount}
+                  amount={summary?.amount ?? booking.amount}
                   locale={locale}
                   onPaid={onPaid}
                   payLabel={l.payVerb}

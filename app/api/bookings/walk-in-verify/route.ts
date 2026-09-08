@@ -6,6 +6,7 @@ import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { getServerEnv } from "@/lib/env";
 import { mintTrackingToken } from "@/lib/walkin/authz";
 import crypto from "crypto";
+import { localizedField } from "@/lib/i18n/localized-field";
 
 // Reopen debounce. A reopened booking link mints a fresh ticket token (the stored one is a hash),
 // and without this a double tap would rotate twice and invalidate the tab that is already loading.
@@ -48,7 +49,9 @@ export async function GET(req: NextRequest) {
   const rateLimited = await applyRateLimit(generalLimiter, { ip: getClientIp(req) });
   if (rateLimited) return rateLimited;
 
-  const token = new URL(req.url).searchParams.get("token");
+  const searchParams = new URL(req.url).searchParams;
+  const token = searchParams.get("token");
+  const locale = searchParams.get("locale") || "de";
   if (!token) return NextResponse.json({ error: "Token required" }, { status: 400 });
 
   const { bookingId, valid } = verifyHmacToken(token);
@@ -60,7 +63,7 @@ export async function GET(req: NextRequest) {
   const admin = createAdminSupabaseClient();
   const { data: booking } = await admin
     .from("bookings")
-    .select("id, salon_id, service_id, staff_member_id, walkin_queue_id, starts_at, price_paid, payment_status, paid_via, salons(name, slug, stripe_account_id, cover_photo_url, average_rating, review_count, address, phone), services(name_de, duration_minutes), staff_members(name, avatar_url)")
+    .select("id, salon_id, service_id, staff_member_id, walkin_queue_id, starts_at, price_paid, payment_status, paid_via, salons(name, slug, stripe_account_id, cover_photo_url, average_rating, review_count, address, phone, vat_registered, vat_rate), services(name_de, name_en, name_fr, name_it, duration_minutes), staff_members(name, avatar_url)")
     .eq("id", bookingId)
     .eq("paid_via", "walk_in")
     .single();
@@ -131,8 +134,10 @@ export async function GET(req: NextRequest) {
       salon_address: salon?.address ?? null,
       salon_phone: salon?.phone ?? null,
       salon_slug: salon?.slug ?? null,
+      salon_vat_registered: salon?.vat_registered,
+      salon_vat_rate: salon?.vat_rate,
       barber_id: booking.staff_member_id ?? null,
-      service_name: service?.name_de,
+      service_name: service ? localizedField(service, "name", locale) : undefined,
       service_duration: service?.duration_minutes ?? null,
       barber_name: staff?.name ?? null,
       barber_avatar: staff?.avatar_url ?? null,

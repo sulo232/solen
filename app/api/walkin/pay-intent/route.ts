@@ -6,6 +6,7 @@ import { stripe, toRappen } from "@/lib/stripe";
 import { applyRateLimit, paymentLimiter, getClientIp } from "@/lib/ratelimit";
 import { checkFeatureEnabled } from "@/lib/feature-flags";
 import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
+import { localizedField } from "@/lib/i18n/localized-field";
 import { validateBody, walkinPayIntentSchema } from "@/lib/validations";
 
 // POST /api/walkin/pay-intent
@@ -27,7 +28,7 @@ export async function POST(req: NextRequest) {
   if (valError) {
     return NextResponse.json({ error: "salon_id and service_id are required", message: valError.message, code: "VALIDATION_ERROR" }, { status: 400 });
   }
-  const { salon_id, service_id } = validated;
+  const { salon_id, service_id, locale = "de" } = validated;
   const customer_name = (validated.customer_name ?? "").trim();
   const customer_phone = (validated.customer_phone ?? "").trim();
   // booking_id: present when paying an existing walk-in booking (SMS payment-link flow).
@@ -39,7 +40,7 @@ export async function POST(req: NextRequest) {
   // Salon must be a barbershop that accepts online payment.
   const { data: salon } = await admin
     .from("salons")
-    .select("name, walkin_enabled, walkin_paused, stripe_account_id, accepts_online_payment")
+    .select("name, walkin_enabled, walkin_paused, stripe_account_id, accepts_online_payment, vat_registered, vat_rate")
     .eq("id", salon_id)
     .single();
   if (!salon) return NextResponse.json({ error: "Salon not found", code: "NOT_FOUND" }, { status: 404 });
@@ -77,7 +78,7 @@ export async function POST(req: NextRequest) {
   // Server-trusted price — from the service row, NEVER the client.
   const { data: service } = await admin
     .from("services")
-    .select("price, salon_id, is_active, name_de")
+    .select("price, salon_id, is_active, name_de, name_en, name_fr, name_it")
     .eq("id", service_id)
     .single();
   if (!service || service.salon_id !== salon_id || service.is_active === false) {
@@ -167,6 +168,8 @@ export async function POST(req: NextRequest) {
     client_secret: paymentIntent.client_secret,
     payment_intent_id: paymentIntent.id,
     amount: priceChf,
-    service_name: service.name_de,
+    service_name: localizedField(service, "name", locale),
+    salon_vat_registered: salon.vat_registered,
+    salon_vat_rate: salon.vat_rate,
   });
 }

@@ -671,6 +671,7 @@ export const walkinJoinSchema = z.object({
 // flow; salon_id/service_id/booking_id are server-trusted UUIDs, price is NEVER read from the
 // body (the route always recomputes it from the services row).
 export const walkinPayIntentSchema = z.object({
+  locale: z.enum(["de", "en", "fr", "it"]).optional(),
   salon_id: z.string().uuid(),
   service_id: z.string().uuid(),
   customer_name: z.string().max(100).optional(),

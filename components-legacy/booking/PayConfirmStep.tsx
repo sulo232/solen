@@ -182,10 +182,11 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn, salonHasRedee
   // VAT (legal): only a vat_registered salon charges MwSt, so the "included VAT" line is shown
   // for them ONLY , a non-registered salon must not display a tax line (it collects none). Mirrors
   // the booking-record gate in /api/bookings (vat_registered + computeVat). vat_rate is a PERCENT
-  // (8.1); null/undefined -> the standard 8.1 (route.ts uses `?? 8.1`), but a stored 0 stays 0 so
-  // a registered-but-zero-rate salon shows no line. Uses the salon's own rate, not a hardcoded 8.1.
+  // (8.1). Missing or invalid display data does not establish a rate; omit the line.
+  // A stored zero also keeps the existing no-line treatment. The payable total is unchanged.
   const salonVatRegistered = salonExt.vat_registered === true;
-  const vatRatePercent = salonExt.vat_rate == null ? 8.1 : Number(salonExt.vat_rate);
+  const vatRatePercent = typeof salonExt.vat_rate === 'number' && Number.isFinite(salonExt.vat_rate) && salonExt.vat_rate >= 0
+    ? salonExt.vat_rate : 0;
   const vatFraction = vatRatePercent / 100;
   const vatIncludedAmount = vatFraction > 0 ? (totalPrice * vatFraction) / (1 + vatFraction) : 0;
 
@@ -492,7 +493,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn, salonHasRedee
           ))}
           {salonVatRegistered && vatIncludedAmount > 0 && (
             <div className="flex items-baseline justify-between gap-3 text-[13px]">
-              <span className="text-s-ink-2">{tp('vatIncl')}</span>
+              <span className="text-s-ink-2">{tp('vatIncl', { rate: new Intl.NumberFormat(localeCode, { maximumFractionDigits: 20 }).format(vatRatePercent) })}</span>
               <span className="shrink-0 tabular-nums text-s-ink-2">{formatPrice(vatIncludedAmount, localeCode)}</span>
             </div>
           )}

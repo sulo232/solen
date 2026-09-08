@@ -539,7 +539,12 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
 
 function VatRegistrationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon>) => Promise<void> }) {
   const t = useTranslations("dashboard.settings");
-  const ext = salon as Salon & { vat_registered?: boolean; vat_number?: string | null };
+  const locale = useLocale();
+  const ext = salon as Salon & { vat_registered?: boolean; vat_number?: string | null; vat_rate?: number | null };
+  const rate = ext.vat_rate;
+  const vatRateLabel = typeof rate === "number" && Number.isFinite(rate) && rate >= 0
+    ? new Intl.NumberFormat(resolveSwissLocale(locale), { maximumFractionDigits: 20 }).format(rate)
+    : null;
   const [registered, setRegistered] = useState<boolean>(ext.vat_registered ?? false);
   const [vatNumber, setVatNumber] = useState(ext.vat_number ?? "");
   const [saving, setSaving] = useState(false);
@@ -559,12 +564,12 @@ function VatRegistrationTab({ salon, onSave }: { salon: Salon; onSave: (d: Parti
   };
 
   const options: { id: boolean; label: string; desc: string }[] = [
-    { id: true, label: t("vatRegisteredLabel"), desc: t("vatRegisteredDesc") },
+    { id: true, label: t("vatRegisteredLabel"), desc: vatRateLabel === null ? "" : t("vatRegisteredDesc", { rate: vatRateLabel }) },
     { id: false, label: t("vatSmallBusinessLabel"), desc: t("vatSmallBusinessDesc") },
   ];
 
   const previewText = registered
-    ? t("vatPreviewRegistered")
+    ? (vatRateLabel === null ? "" : t("vatPreviewRegistered", { rate: vatRateLabel }))
     : t("vatPreviewSmallBusiness");
 
   return (
