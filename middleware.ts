@@ -1,7 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { isAuthSessionMissingError } from "@supabase/supabase-js";
 import { locales, defaultLocale } from "./i18n";
 import { getPublicEnv } from "@/lib/env";
+import {
+  isPublicSalonRouteRow,
+  shouldBlockSalonRoute,
+  shouldBlockUnknownCity,
+  type SalonRouteRow,
+} from "@/lib/notfound-slug-guard";
 
 // notfound-404-b (2026-09-04): root cause is app/[locale]/loading.tsx's Suspense boundary
 // flushing a 200 shell before any leaf page's notFound() resolves, measured to affect EVERY
@@ -46,8 +53,9 @@ const CITY_CATEGORY_VALUES = new Set(["coiffeur", "nails", "barbershop", "spa"])
 // measured live before this change: (3) /{locale}/salon/{slug} for a slug absent from the
 // salons table (measured: /en/salon/nonexistent-slug-xyz -> 200), and (4)
 // /{locale}/bookings/{id}/(report|refund|upcharge) for a malformed (non-UUID) booking id.
-// Same render404() helper, same cached-lookup pattern as shape 1's activeCitySlugsCache
-// for (3). Shape (4) originally also ran a per-request existence query against the
+// Same render404() helper; Store visibility is resolved per request because the salons
+// SELECT policy depends on the verified viewer. Shape (4) originally also ran a
+// per-request existence query against the
 // `bookings` table on the request's anon Supabase client; removed here (2026-09-05, see
 // the comment at that check below) because `bookings` carries row-level security and
 // these are the guest refund/report/upcharge pages, so the anon query came back null for
@@ -64,59 +72,29 @@ const CITY_CATEGORY_VALUES = new Set(["coiffeur", "nails", "barbershop", "spa"])
 // same `cities WHERE is_active` table with the client already constructed below for the auth
 // check instead. Cost: one extra DB query per city/category-shaped request, at most once per
 // 5 minutes per running server instance (cache hit otherwise); falls back to the last-good
-// cached set (or an empty set, passing the request through unblocked) on a DB error.
+// cached set (or `null`, passing the request through unblocked) on a DB error.
 let activeCitySlugsCache: { slugs: Set<string>; fetchedAt: number } | null = null;
 const ACTIVE_CITY_SLUGS_TTL_MS = 5 * 60 * 1000;
 
-async function getActiveCitySlugsForMiddleware(supabase: any): Promise<Set<string>> {
+async function getActiveCitySlugsForMiddleware(supabase: any): Promise<Set<string> | null> {
   if (activeCitySlugsCache && Date.now() - activeCitySlugsCache.fetchedAt < ACTIVE_CITY_SLUGS_TTL_MS) {
     return activeCitySlugsCache.slugs;
   }
   const { data, error } = await supabase.from("cities").select("slug").eq("is_active", true);
   if (error) {
     console.error("[middleware] active-city lookup failed:", error.message);
-    return activeCitySlugsCache?.slugs ?? new Set<string>();
+    return activeCitySlugsCache?.slugs ?? null;
   }
   const slugs = new Set<string>((data ?? []).map((row: { slug: string }) => row.slug));
   activeCitySlugsCache = { slugs, fetchedAt: Date.now() };
   return slugs;
 }
 
-// notfound-404-c: same 5-minute in-memory TTL cache pattern as activeCitySlugsCache above,
-// for the salon PDP's slug. app/[locale]/salon/[slug]/page.tsx resolves a slug via
-// lib/salon-detail.ts's loadSalonDetailWithAccess, which ALSO gates on
-// is_active/listed_on_marketplace/frozen (isSalonHidden) after the row is found, returning
-// null (today rendered as a 200 not-found body via the same Suspense-boundary bug this
-// file's module comment describes) for a hidden-but-existing salon. This cache
-// deliberately holds EVERY row's slug regardless of that visibility gate, so a hidden
-// salon's slug still passes this check and falls through to the page's own (still-buggy)
-// notFound() unchanged; only a slug ABSENT from the table gets the new hard 404 here.
-// Live count checked 2026-09-05 (_inventory/_db-snapshot.json): 28 rows in `salons`.
-let salonSlugsCache: { slugs: Set<string>; fetchedAt: number } | null = null;
-
-async function getSalonSlugsForMiddleware(supabase: any): Promise<Set<string>> {
-  if (salonSlugsCache && Date.now() - salonSlugsCache.fetchedAt < ACTIVE_CITY_SLUGS_TTL_MS) {
-    return salonSlugsCache.slugs;
-  }
-  const { data, error } = await supabase.from("salons").select("slug");
-  if (error) {
-    console.error("[middleware] salon-slug lookup failed:", error.message);
-    return salonSlugsCache?.slugs ?? new Set<string>();
-  }
-  const slugs = new Set<string>(
-    (data ?? [])
-      .map((row: { slug: string | null }) => row.slug)
-      .filter((slug: string | null): slug is string => Boolean(slug))
-  );
-  salonSlugsCache = { slugs, fetchedAt: Date.now() };
-  return slugs;
-}
-
-// notfound-404-c: bookings.id is a UUID column (same format check
+// Staff and booking route IDs use UUID columns (same format check
 // lib/salon-detail.ts's loadSalonDetailWithAccess already uses for its own slug-or-uuid
 // branch), so a malformed id on the report/refund/upcharge shape is answered 404 with no
 // DB round trip at all.
-const BOOKING_ID_UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const ROUTE_ID_UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**
  * notfound-404-e (2026-09-05): rewrites instead of self-fetching the same URL. That
@@ -194,6 +172,7 @@ function getLocaleFromRequest(request: NextRequest): string {
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const isApiPath = pathname === "/api" || pathname.startsWith("/api/");
 
   // A1-html-lang (2026-07-26): stamp the pathname onto a request header so the root
   // layout (app/layout.tsx, which sits ABOVE the [locale] segment and has no route
@@ -206,7 +185,7 @@ export async function middleware(request: NextRequest) {
   // Skip static files, Next.js internals
   if (
     pathname.startsWith("/_next") ||
-    pathname.includes(".") // static files
+    (!isApiPath && pathname.includes(".")) // static files outside the exact API boundary
   ) {
     return NextResponse.next();
   }
@@ -235,7 +214,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // CORS headers for API routes
-  if (pathname.startsWith("/api")) {
+  if (isApiPath) {
     const origin = request.headers.get("origin") ?? "";
     const allowedOrigins = [
       "https://solen.ch",
@@ -243,23 +222,14 @@ export async function middleware(request: NextRequest) {
       ...(process.env.NODE_ENV === "development" ? ["http://localhost:3000"] : []),
     ];
 
-    // Handle preflight OPTIONS requests
-    if (request.method === "OPTIONS") {
-      const preflight = new NextResponse(null, { status: 204 });
-      if (allowedOrigins.includes(origin)) {
-        preflight.headers.set("Access-Control-Allow-Origin", origin);
-        preflight.headers.set("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS");
-        preflight.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
-        preflight.headers.set("Access-Control-Max-Age", "86400");
-      }
-      return preflight;
-    }
-
-    const response = NextResponse.next();
+    const response = NextResponse.next({ request });
     if (allowedOrigins.includes(origin)) {
       response.headers.set("Access-Control-Allow-Origin", origin);
-      response.headers.set("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS");
+      response.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
       response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+      if (request.method === "OPTIONS") {
+        response.headers.set("Access-Control-Max-Age", "86400");
+      }
     }
     return response;
   }
@@ -332,6 +302,34 @@ export async function middleware(request: NextRequest) {
       }
     );
 
+    type MiddlewareAuthResult = { user: { id: string } | null; verified: boolean };
+    const userPromise: Promise<MiddlewareAuthResult> = supabase.auth.getUser()
+      .then(({ data, error }) => ({
+        user: data.user ? { id: data.user.id } : null,
+        // Supabase returns AuthSessionMissingError for an ordinary request with no auth
+        // cookie. That is a definitive anonymous viewer, not an uncertain auth lookup.
+        // Invalid tokens, transient auth failures and thrown requests still defer to the
+        // server access owner so middleware cannot falsely deny a valid owner preview.
+        verified: !error || isAuthSessionMissingError(error),
+      }))
+      .catch(() => ({ user: null, verified: false }));
+    const timeoutPromise = new Promise<MiddlewareAuthResult>((resolve) =>
+      setTimeout(() => resolve({ user: null, verified: false }), 4000)
+    );
+    const { user, verified: viewerVerified } = await Promise.race([userPromise, timeoutPromise]);
+
+    // /{locale}/{city} alone uses the same active-city source as the category route.
+    const citySoloMatch = pathname.match(/^\/(de|en|fr|it)\/([^/]+)$/);
+    if (citySoloMatch) {
+      const [, , citySeg] = citySoloMatch;
+      if (!RESERVED_TOP_SEGMENTS.has(citySeg)) {
+        const activeCitySlugs = await getActiveCitySlugsForMiddleware(supabase);
+        if (shouldBlockUnknownCity(activeCitySlugs, citySeg)) {
+          return render404(request);
+        }
+      }
+    }
+
     // notfound-404-b, shape 1: /{locale}/{city}/{category} with an unknown city or category.
     // Only fires when the first segment isn't a known static route (RESERVED_TOP_SEGMENTS),
     // i.e. only when Next's own router would otherwise fall through to the [city]/[category]
@@ -341,21 +339,72 @@ export async function middleware(request: NextRequest) {
       const [, , citySeg, categorySeg] = cityCategoryMatch;
       if (!RESERVED_TOP_SEGMENTS.has(citySeg)) {
         const activeCitySlugs = await getActiveCitySlugsForMiddleware(supabase);
-        if (!activeCitySlugs.has(citySeg) || !CITY_CATEGORY_VALUES.has(categorySeg)) {
+        if (shouldBlockUnknownCity(activeCitySlugs, citySeg) || !CITY_CATEGORY_VALUES.has(categorySeg)) {
           return render404(request);
         }
       }
     }
 
-    // notfound-404-c, shape 3: /{locale}/salon/{slug} for a slug absent from the salons
-    // table entirely. See the comment above getSalonSlugsForMiddleware for what "absent"
-    // does and does not cover (a hidden-but-existing salon is left untouched here).
-    const salonSlugMatch = pathname.match(/^\/(de|en|fr|it)\/salon\/([^/]+)$/);
+    // Storefront children share the PDP access decision. This is deliberately per-request:
+    // salons SELECT visibility depends on the verified viewer, so a module-global result
+    // would let one session determine another session's route.
+    const salonSlugMatch = pathname.match(
+      /^\/(de|en|fr|it)\/salon\/([^/]+)(?:\/team|\/reviews|\/staff\/([^/]+))?$/
+    );
     if (salonSlugMatch) {
-      const [, , salonSlug] = salonSlugMatch;
-      const salonSlugs = await getSalonSlugsForMiddleware(supabase);
-      if (!salonSlugs.has(salonSlug)) {
+      const [, , salonSlug, staffId] = salonSlugMatch;
+      // A malformed UUID is a definitive bad route, not database lookup uncertainty.
+      if (staffId && !ROUTE_ID_UUID_RE.test(staffId)) return render404(request);
+      const { data, error } = await supabase
+        .from("salons")
+        .select("id, owner_id, is_active, listed_on_marketplace, is_test")
+        .eq("slug", salonSlug)
+        .maybeSingle();
+      const row = (data ?? null) as (SalonRouteRow & { id: string }) | null;
+      let viewerLookupFailed = !viewerVerified;
+      let isAdmin = false;
+
+      if (
+        !error &&
+        viewerVerified &&
+        user &&
+        !isPublicSalonRouteRow(row) &&
+        row?.owner_id !== user.id
+      ) {
+        const { data: viewerProfile, error: viewerError } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .maybeSingle();
+        viewerLookupFailed = Boolean(viewerError);
+        isAdmin = viewerProfile?.role === "admin";
+      }
+
+      if (shouldBlockSalonRoute({
+        row,
+        salonLookupFailed: Boolean(error),
+        viewerId: user?.id ?? null,
+        viewerLookupFailed,
+        isAdmin,
+      })) {
         return render404(request);
+      }
+
+      // A Store-specific staff URL must bind the child id to the exact Store before the
+      // locale loading boundary can stream a 200 shell. This only runs once the request
+      // client has established a concrete, authorized Store row (public or owner-visible).
+      // An RLS-hidden admin Store and any lookup error still defer to the server loader.
+      if (staffId && row) {
+        const { data: staffRow, error: staffError } = await supabase
+          .from("staff_members")
+          .select("id")
+          .eq("id", staffId)
+          .eq("salon_id", row.id)
+          .eq("is_active", true)
+          .maybeSingle();
+        if (!staffError && !staffRow) {
+          return render404(request);
+        }
       }
     }
 
@@ -377,21 +426,10 @@ export async function middleware(request: NextRequest) {
     );
     if (bookingSubpageMatch) {
       const [, , bookingId] = bookingSubpageMatch;
-      if (!BOOKING_ID_UUID_RE.test(bookingId)) {
+      if (!ROUTE_ID_UUID_RE.test(bookingId)) {
         return render404(request);
       }
     }
-
-    // SECURITY: Use getUser() for proper JWT verification, getSession() is not safe for auth decisions.
-    // Defensive 4s timeout via Promise.race, guards against any edge runtime network hang.
-    // A REJECTED getUser() (thrown, not just slow) must resolve to the same "no user" shape
-    // as the timeout branch, otherwise the rejection falls through to the outer catch below
-    // and previously fell back to the pass-through response (an auth bypass on a transient error).
-    const userPromise = supabase.auth.getUser().catch(() => ({ data: { user: null } }));
-    const timeoutPromise = new Promise<{ data: { user: null }, error: Error }>((resolve) =>
-      setTimeout(() => resolve({ data: { user: null }, error: new Error("Auth timeout") }), 4000)
-    );
-    const { data: { user } } = await Promise.race([userPromise, timeoutPromise]);
 
     // ── Auth guards for dashboard routes ──
     const currentLocale = locales.find(

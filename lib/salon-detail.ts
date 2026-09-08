@@ -6,9 +6,13 @@ import {
   type SalonDetail,
   type OpenStatus,
   type DayKey,
+  publicReply,
 } from "@/app/[locale]/_components/salon/_shared";
 
 const DAY_ORDER: DayKey[] = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+
+const SALON_DETAIL_COLUMNS =
+  "id, owner_id, is_active, listed_on_marketplace, is_test, name, slug, description_de, description_en, about_text_de, about_text_en, about_text_fr, about_text_it, categories, quartier, address, postal_code, city_id, cities(name_de, name_en, name_fr, name_it), latitude, longitude, phone, website_url, instagram_url, tiktok_url, cover_photo_url, gallery_urls, opening_hours, average_rating, review_count, last_minute_discount_percent, accepts_online_payment, free_cancel_hours, booking_confirmation_mode, instant_booking_enabled, pet_friendly, kid_friendly, wheelchair_accessible, near_public_transport, lgbtq_friendly, woman_owned, family_owned, student_discount, wifi_friendly, is_featured, parent_salon_id, walkin_enabled, timezone, verification_warnings, warning_count, frozen_at, frozen_reason";
 
 /**
  * The single three-column visibility gate (security review, 2026-09-04): a salon is HIDDEN
@@ -54,14 +58,16 @@ export interface SalonDetailWithStatus {
  * owner's own privileged view (moderation fields exposed, and/or a hidden salon
  * (inactive, unlisted, or test) that a public visitor would get a 404 for instead).
  * GET /api/salons/[slug] uses
- * `isOwnerView` to decide CDN caching: only the non-owner (public) response is safe to
+ * `isOwnerView` to decide CDN caching: only the public response is safe to
  * edge-cache, because Netlify's cache key is the slug URL alone and that same URL can
  * otherwise return two very different payloads depending on who's asking (see the
- * caching note in app/api/salons/[slug]/route.ts).
+ * caching note in app/api/salons/[slug]/route.ts). The historical property name is kept
+ * for that route contract, but it is true for an admin's hidden-Store view as well. Use
+ * `canModerate` for owner-only review controls.
  */
 export async function loadSalonDetailWithAccess(
   slug: string,
-): Promise<{ salon: SalonDetail; isOwnerView: boolean } | null> {
+): Promise<{ salon: SalonDetail; isOwnerView: boolean; canModerate: boolean } | null> {
   const supabase = await createServerSupabaseClient();
   // Cheap cookie-presence guard (same pattern as /api/bookings/user and
   // /api/discovery/feed): a real session always carries an "sb-" prefixed cookie
@@ -89,18 +95,36 @@ export async function loadSalonDetailWithAccess(
   // the set the PDP consumers read (SalonDetail type + section components), not the
   // full 98-column select("*") which would ship stripe_account_id / search_doc /
   // score_details etc. to anonymous PDP visitors.
-  const { data: salon, error } = await supabase
+  const { data: sessionSalon, error: sessionSalonError } = await supabase
     .from("salons")
-    .select(
-      // city_id + cities(...) added for A6-address-locality (2026-07-27): the
-      // salon's real city, joined via the salons.city_id -> cities.id FK, so
-      // lib/seo.ts generateSalonSchema can stop hardcoding "Basel".
-      "id, owner_id, is_active, listed_on_marketplace, is_test, name, slug, description_de, description_en, about_text_de, about_text_en, about_text_fr, about_text_it, categories, quartier, address, postal_code, city_id, cities(name_de, name_en, name_fr, name_it), latitude, longitude, phone, website_url, instagram_url, tiktok_url, cover_photo_url, gallery_urls, opening_hours, average_rating, review_count, last_minute_discount_percent, accepts_online_payment, free_cancel_hours, booking_confirmation_mode, instant_booking_enabled, pet_friendly, kid_friendly, wheelchair_accessible, near_public_transport, lgbtq_friendly, woman_owned, family_owned, student_discount, wifi_friendly, is_featured, parent_salon_id, walkin_enabled, timezone, verification_warnings, warning_count, frozen_at, frozen_reason"
-    )
+    // city_id + cities(...) supplies the salon's real city to lib/seo.ts.
+    .select(SALON_DETAIL_COLUMNS)
     .eq(isUuid ? "id" : "slug", slug)
     .single();
 
-  if (error || !salon) return null;
+  let salon = sessionSalon;
+  let adminClient: ReturnType<typeof createAdminSupabaseClient> | null = null;
+  let isAdminViewerFlag = false;
+
+  // `salons_select_active` exposes inactive rows only to their owner. A verified admin
+  // therefore gets no row from the session query and cannot be authorized by inspecting
+  // that result. Verify the viewer's role first, then use the server-only client for the
+  // exact slug/id. Anonymous and ordinary viewers never reach this privileged read.
+  if ((!salon || sessionSalonError) && user?.id) {
+    isAdminViewerFlag = await isViewerAdmin(user.id);
+    if (isAdminViewerFlag) {
+      adminClient = createAdminSupabaseClient();
+      const { data: adminSalon, error: adminSalonError } = await adminClient
+        .from("salons")
+        .select(SALON_DETAIL_COLUMNS)
+        .eq(isUuid ? "id" : "slug", slug)
+        .single();
+      if (adminSalonError || !adminSalon) return null;
+      salon = adminSalon;
+    }
+  }
+
+  if (!salon) return null;
 
   // Regular users can only see active, listed, non-test salons. Owner/Admin can see
   // hidden ones (pending, unlisted, or frozen). Same three-column visibility gate the
@@ -118,22 +142,29 @@ export async function loadSalonDetailWithAccess(
   // fastest way to judge a signup, and the owner's ask on 2026-07-27 ("as admin we can see
   // all details n stuff"). One extra query, and only for a signed-in user looking at a
   // salon that is not theirs and not currently visible, so the public path is untouched.
-  let isAdminViewerFlag = false;
   if (!isOwner && isHidden && user?.id) {
-    isAdminViewerFlag = await isViewerAdmin(user.id);
+    isAdminViewerFlag = isAdminViewerFlag || await isViewerAdmin(user.id);
   }
   if (!isOwner && !isAdminViewerFlag && isHidden) return null;
 
+  // A hidden admin view must use server-only reads because row policies intentionally
+  // hide the Store and its related rows from that non-owner session. Authorization is
+  // already established above. Every public payload still uses explicit projections and
+  // active-row filters before data crosses the server boundary.
+  const relationClient = isHidden && isAdminViewerFlag
+    ? (adminClient ?? createAdminSupabaseClient())
+    : supabase;
+
   // Fetch related data in parallel
   const [servicesRes, staffRes, reviewsRes] = await Promise.all([
-    supabase
+    relationClient
       .from("services")
       .select(
         "id, salon_id, name_de, name_en, name_fr, name_it, description_de, description_en, description_fr, description_it, price, duration_minutes, category, subcategory, is_active, sort_order, photo_urls, suitable_for, suitable_gender, buffer_minutes, curing_minutes, processing_minutes, finishing_minutes, material_type, station_required, daily_limit_per_staff, reminder_cycle_days, created_at"
       )
       .eq("salon_id", salon.id)
       .eq("is_active", true),
-    supabase
+    relationClient
       .from("staff_members")
       .select("id, name, avatar_url, specialties, languages")
       .eq("salon_id", salon.id)
@@ -142,11 +173,10 @@ export async function loadSalonDetailWithAccess(
     // which nulled every reviewer name for logged-out visitors. The server exposes
     // ONLY display_name + avatar_url through this select, no broader profile access.
     // review_replies IS embedded (round 10 Y3: the owner's public reply now renders
-    // inline on the PDP too, not only on the dedicated reviews page) , is_public is
-    // selected so the UI can gate rendering (this query runs on the service-role
-    // client, which bypasses the review_replies RLS, so the app layer must do that
-    // filtering itself, same pattern the dedicated reviews page already uses). No
-    // review_photos embed: only the dedicated reviews page shows photos.
+    // inline on the PDP too, not only on the dedicated reviews page). This service-role
+    // query bypasses review_replies RLS, so is_public is selected and private drafts are
+    // removed below before the result can enter client props. No review_photos embed:
+    // only the dedicated reviews page shows photos.
     createAdminSupabaseClient()
       .from("reviews")
       .select("id, rating, comment, created_at, profiles(display_name, avatar_url), review_replies(reply_text, is_public, created_at)")
@@ -166,9 +196,9 @@ export async function loadSalonDetailWithAccess(
   if (staff.length > 0) {
     const staffIds = staff.map((s) => s.id);
     const [linksResult, ratingsResult] = await Promise.all([
-      supabase.from("staff_services").select("staff_member_id, service_id")
+      relationClient.from("staff_services").select("staff_member_id, service_id")
         .in("staff_member_id", staffIds),
-      supabase.from("staff_ratings_view").select("staff_id, average_rating, review_count")
+      relationClient.from("staff_ratings_view").select("staff_id, average_rating, review_count")
         .in("staff_id", staffIds),
     ]);
     const links = linksResult.data;
@@ -189,7 +219,15 @@ export async function loadSalonDetailWithAccess(
     }));
   }
 
-  const reviews = reviewsRes.data ?? [];
+  // The service-role read can see private owner drafts. Strip them before this
+  // server result can be serialized into public client props; a render-only
+  // is_public check still leaves the private text in the RSC payload.
+  const reviews = (reviewsRes.data ?? []).map((review) => ({
+    ...review,
+    review_replies: publicReply(
+      review.review_replies as Parameters<typeof publicReply>[0],
+    ),
+  }));
 
   // Moderation fields (verification_warnings, warning_count, frozen_at,
   // frozen_reason) ship ONLY to the owner's own session; public callers
@@ -217,7 +255,8 @@ export async function loadSalonDetailWithAccess(
       staff: staffWithServices,
       reviews,
     } as unknown as SalonDetail,
-    isOwnerView: isOwner,
+    isOwnerView: isOwner || (isHidden && isAdminViewerFlag),
+    canModerate: isOwner,
   };
 }
 

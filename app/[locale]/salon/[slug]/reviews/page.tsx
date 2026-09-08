@@ -20,19 +20,20 @@ import { notFound } from "next/navigation";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { getTranslations } from "next-intl/server";
 import SalonReviews from "@/components-legacy/salon/SalonReviews";
+import { loadSalonDetailWithAccess } from "@/lib/salon-detail";
+import { publicReply } from "@/app/[locale]/_components/salon/_shared";
 
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string; slug: string }>;
 }) {
-  const { locale, slug } = await params;
-  const supabase = await createServerSupabaseClient();
-  const { data: salon } = await supabase
-    .from("salons")
-    .select("name")
-    .eq("slug", slug)
-    .single();
+  const { slug } = await params;
+  // Use the same request-aware access owner as the page body. A raw salons-name query
+  // can see active-but-unlisted or test rows under RLS when middleware defers on a lookup
+  // error, leaking the hidden Store name through metadata while the body correctly 404s.
+  const result = await loadSalonDetailWithAccess(slug);
+  const salon = result?.salon ?? null;
   return {
     title: salon ? `Bewertungen ${salon.name}` : "Bewertungen",
     description: "Alle Bewertungen für diesen Salon",
@@ -48,35 +49,27 @@ export default async function SalonReviewsPage({
   const supabase = await createServerSupabaseClient();
   // Admin (service-role) client for the PUBLIC reviews read: the anon client + `profiles`
   // RLS made the reviewer-name join return null, so the page rendered every review as
-  // "Anonym"/empty (same bug the featured-reviews endpoint had). Only public review fields
-  // are selected, and SalonReviews already gates replies on is_public, so no private data
-  // leaks. User-scoped data (session + the viewer's bookings) stays on the anon client.
+  // "Anonym"/empty (same bug the featured-reviews endpoint had). The explicit projection
+  // is narrowed again below: private reply drafts visible to this server-only client are
+  // removed before client props are built. User-scoped data (session + the viewer's
+  // bookings) stays on the anon client.
   const admin = createAdminSupabaseClient();
 
-  // Resolve the salon first — reviews are keyed by salon_id, not slug, so we
-  // need the id before we can fetch the review rows.
-  const salonRes = await supabase
-    .from("salons")
-    .select("id, slug, name, average_rating, review_count, owner_id")
-    .eq("slug", slug)
-    .single();
+  // Reuse the PDP access owner so inactive, unlisted, and test Stores follow the
+  // same public/owner/admin decision on this child route.
+  const result = await loadSalonDetailWithAccess(slug);
 
-  if (!salonRes.data) {
+  if (!result) {
     notFound();
   }
 
-  // Hint TS that salon is non-null after the notFound() throw above
-  const salon = salonRes.data!;
+  const { salon, canModerate: isOwner } = result;
 
   // Fetch reviews + the viewer's completed bookings in parallel.
   const {
     data: { user },
   } = await supabase.auth.getUser();
   const userId = user?.id ?? null;
-  // Gates which report affordance SalonReviews shows per row (owner-only internal
-  // flag vs the generic customer ReportButton). owner_id itself never reaches the
-  // client, same discipline as lib/salon-detail.ts's isOwner gate.
-  const isOwner = userId != null && userId === salon.owner_id;
 
   const [reviewsRes, completedRes] = await Promise.all([
     // Ring 2b: narrowed from the prior .limit(50) (bfa385699, 2026-06-30) to the
@@ -186,7 +179,10 @@ export default async function SalonReviewsPage({
     created_at: r.created_at,
     profiles: r.profiles ?? null,
     review_photos: r.review_photos ?? [],
-    review_replies: r.review_replies ?? [],
+    // The admin read bypasses review_replies RLS. Remove private drafts before
+    // passing reviews to the client; filtering only during render still leaks
+    // their text in the serialized RSC payload.
+    review_replies: publicReply(r.review_replies),
     guestName: r.bookings?.guest_name ?? null,
   }));
 

@@ -106,7 +106,9 @@ export default function StaffProfilePage({
     let active = true;
     (async () => {
       try {
-        const res = await fetch(`/api/staff/${staffId}/profile`);
+        const res = await fetch(
+          `/api/staff/${staffId}/profile?salon_slug=${encodeURIComponent(salonSlug)}`,
+        );
         if (res.ok) {
           const d = await res.json();
           if (!active) return;
@@ -124,7 +126,7 @@ export default function StaffProfilePage({
     return () => {
       active = false;
     };
-  }, [staffId]);
+  }, [staffId, salonSlug]);
 
   const tabs: Tab[] = [
     "about",
