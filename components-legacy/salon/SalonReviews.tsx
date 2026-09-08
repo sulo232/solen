@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, Star, MessageSquare, ChevronDown, Flag } from "lucide-react";
+import { ArrowLeft, Star, MessageSquare, ChevronDown } from "lucide-react";
 import EmptyState from "@/components-legacy/ui/EmptyState";
 import { motion, AnimatePresence } from "motion/react";
 import { useTranslations } from "next-intl";
@@ -12,7 +12,6 @@ import { TabPill } from "@/app/[locale]/_components/primitives/TabPill";
 import ReviewForm from "@/components-legacy/ReviewForm";
 import { RatingStars } from "@/app/[locale]/_components/primitives/RatingStars";
 import { formatReviewDate, publicReply } from "@/app/[locale]/_components/salon/_shared";
-import ReportButton from "@/components-legacy/discovery/ReportButton";
 import type { Review } from "@/lib/types";
 
 // ─────────────────────────────────────────────────
@@ -85,15 +84,7 @@ interface SalonReviewsProps {
   locale: string;
   onLightbox?: (photoUrl: string) => void;
   onReviewSubmitted?: () => void;
-  /** True only for the reviewed salon's own owner (server-computed). Gates which
-   *  report affordance a viewer sees on each review row (see the header Flag icon
-   *  below): the owner keeps the existing internal moderation-flag tool
-   *  (POST /api/reviews/[id]/flag, owner-only per app/api/reviews/[id]/flag/route.ts),
-   *  everyone else gets the generic customer ReportButton (POST /api/reports). Before
-   *  this, the Flag icon rendered for every viewer but 403'd for non-owners (BACKEND.md
-   *  section 14 gotcha, "an ordinary customer... has no report affordance"). Defaults to
-   *  false so any caller that doesn't pass it explicitly gets the safe (non-owner) path.
-   */
+  /** Retained for callers; per-review reporting was removed by owner decision on 2026-08-15. */
   isOwner?: boolean;
 }
 
@@ -117,7 +108,6 @@ export default function SalonReviews({
   locale,
   onLightbox,
   onReviewSubmitted,
-  isOwner = false,
 }: SalonReviewsProps) {
   const t = useTranslations("salonDetail");
   const tCommon = useTranslations("common");
@@ -138,13 +128,6 @@ export default function SalonReviews({
   // Fresha-style rating filter + sort sheet (structure source: Fresha reviews page).
   const [ratingFilter, setRatingFilter] = useState<Set<number>>(new Set());
   const [sortSheetOpen, setSortSheetOpen] = useState(false);
-
-  // Flag state
-  const [flaggingReviewId, setFlaggingReviewId] = useState<string | null>(null);
-  const [flagReason, setFlagReason] = useState("");
-  const [flagLoading, setFlagLoading] = useState(false);
-  const [flagSuccess, setFlagSuccess] = useState(false);
-  const [flagError, setFlagError] = useState(false);
 
   const sortedReviews = [...loadedReviews].sort((a, b) => {
     if (reviewSort === "highest") return b.rating - a.rating;
@@ -168,35 +151,6 @@ export default function SalonReviews({
     });
   };
   const sortLabel = reviewSort === "highest" ? t("sortHighest") : reviewSort === "lowest" ? t("sortLowest") : t("sortNewest");
-
-  const handleFlagReview = (reviewId: string) => {
-    setFlaggingReviewId(reviewId);
-    setFlagReason("");
-    setFlagSuccess(false);
-  };
-
-  const submitFlag = async () => {
-    if (!flaggingReviewId || flagReason.trim().length < 5) return;
-    setFlagLoading(true);
-    try {
-      const res = await fetch(`/api/reviews/${flaggingReviewId}/flag`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reason: flagReason.trim() }),
-      });
-      if (!res.ok) throw new Error("Error");
-      setFlagSuccess(true);
-      setTimeout(() => {
-        setFlaggingReviewId(null);
-        setFlagSuccess(false);
-      }, 2000);
-    } catch (err) {
-      console.error("[SalonReviews] flag error:", err);
-      setFlagError(true);
-    } finally {
-      setFlagLoading(false);
-    }
-  };
 
   const toggleExpanded = (reviewId: string) => {
     const next = new Set(expandedReviews);
@@ -393,9 +347,7 @@ export default function SalonReviews({
 
                 return (
                   <div key={rev.id}>
-                    {/* Header - avatar + name/date stacked, flag icon top-right (measured Fresha
-                        anatomy: avatar 56px; no trailing action row - that lone flag row left
-                        ~60px of dead space per card). */}
+                    {/* Header: avatar with name and date. */}
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex min-w-0 items-center gap-3">
                         <div className="grid h-14 w-14 shrink-0 place-items-center overflow-hidden rounded-full bg-s-accent-pale text-[17px] font-semibold text-s-accent">
@@ -422,26 +374,6 @@ export default function SalonReviews({
                           </div>
                         </div>
                       </div>
-                      {isOwner ? (
-                        // Owner-only internal moderation flag (POST /api/reviews/[id]/flag),
-                        // unchanged. Non-owners get the generic ReportButton below instead:
-                        // this route 403s for anyone but the reviewed salon's own owner
-                        // (app/api/reviews/[id]/flag/route.ts), so showing it to every
-                        // viewer regardless of ownership was a dead end for a normal
-                        // customer (BACKEND.md section 14).
-                        flaggingReviewId !== rev.id && (
-                          <button
-                            onClick={() => handleFlagReview(rev.id)}
-                            aria-label={t("flagReview")}
-                            title={t("flagReview")}
-                            className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-s-ink-2 transition-[colors,transform] duration-150 hover:bg-s-bg-sunken hover:text-s-ink-2 active:scale-[0.94] active:duration-[80ms] active:ease-glide"
-                          >
-                            <Flag size={15} strokeWidth={1.9} aria-hidden />
-                          </button>
-                        )
-                      ) : (
-                        <ReportButton type="review" targetId={rev.id} variant="row" />
-                      )}
                     </div>
 
                     {/* Measured Fresha rhythm: header→stars 14px, stars→text 16px */}
@@ -467,51 +399,6 @@ export default function SalonReviews({
                       </p>
                     )}
 
-                    {/* Flag form - only while flagging (the icon lives in the header) */}
-                    {flaggingReviewId === rev.id && (
-                      <div className="mt-3">
-                        <div className="w-full rounded-[12px] border border-s-border bg-s-bg-sunken p-3">
-                          {flagSuccess ? (
-                            <p className="text-xs text-s-success font-heading py-1">
-                              ✓ {t("flagSuccess")}
-                            </p>
-                          ) : (
-                            <>
-                              <p className="text-[12px] font-heading text-s-ink-2 mb-2">
-                                {t("flagReasonLabel")}
-                              </p>
-                              <textarea
-                                value={flagReason}
-                                onChange={(e) => setFlagReason(e.target.value)}
-                                placeholder={t("flagReasonPlaceholder")}
-                                rows={2}
-                                className="w-full text-xs font-body text-s-ink px-2.5 py-2 resize-none outline-none placeholder:text-s-ink/30 transition-colors duration-150" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
-                              />
-                              <div className="flex gap-2 mt-2 justify-end">
-                                <button
-                                  onClick={() => setFlaggingReviewId(null)}
-                                  className="text-xs text-s-ink-2 hover:text-s-ink-2 font-heading px-3 py-1.5 transition-[colors,transform] duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide"
-                                >
-                                  {t("flagCancel")}
-                                </button>
-                                {/* primary submit action - ink fill is the commit CTA treatment, selected-ok */}
-                                <button
-                                  onClick={submitFlag}
-                                  disabled={flagLoading || flagReason.trim().length < 5}
-                                  className="text-xs text-white font-body font-semibold px-4 py-1.5 rounded-btn bg-s-ink hover:brightness-[1.06] disabled:opacity-50 transition-[transform,filter] duration-150 active:scale-[0.97] active:duration-[80ms] active:ease-glide"
-                                >
-                                  {flagLoading ? "…" : t("flagSubmit")}
-                                </button>
-                              </div>
-                              {flagError && (
-                                <p className="text-xs text-[color:var(--color-error)] mt-1">{t("flagError")}</p>
-                              )}
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
                     {/* Review photos */}
                     {rev.review_photos && rev.review_photos.length > 0 && (
                       <div className="flex gap-2 mt-3">
@@ -530,9 +417,7 @@ export default function SalonReviews({
 
                     {/* mockup-ok: owner reply (round 10 Y3, explicit spec , indented, neutral
                         tokens, never a coloured callout). Reuses this file's OWN existing
-                        rounded-[12px]/border-s-border/bg-s-bg-sunken recipe byte-for-byte
-                        (the flag-reason box a few lines up), just swapping content, so no new
-                        appearance is introduced. */}
+                        rounded-[12px]/border-s-border/bg-s-bg-sunken recipe. */}
                     {(() => {
                       const reply = publicReply(rev.review_replies);
                       if (!reply) return null;
