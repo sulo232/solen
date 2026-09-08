@@ -11,6 +11,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { makeFromSequence, type StubResult } from "../../helpers/supabase-stub";
 
+vi.mock("@/lib/env", () => ({
+  getServerEnv: () => ({ UPSTASH_REDIS_REST_URL: undefined, UPSTASH_REDIS_REST_TOKEN: undefined }),
+}));
+
 const getUserMock = vi.fn();
 vi.mock("@/lib/supabase", () => ({
   createAdminSupabaseClient: () => adminStub,
