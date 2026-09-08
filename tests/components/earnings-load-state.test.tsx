@@ -1,0 +1,42 @@
+import React from 'react';
+import { act, create } from 'react-test-renderer';
+import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import en from '@/messages/en.json';
+const h = vi.hoisted(() => ({ fetch: vi.fn() }));
+vi.mock('next-intl', async () => { const actual = await vi.importActual<any>('next-intl'); return { ...actual, useLocale: () => 'en', useTranslations: (namespace:string) => actual.createTranslator({locale:'en',messages:en,namespace}) }; });
+vi.mock('next/image',()=>({default:(props:any)=><img {...props}/> }));
+vi.mock('motion/react',()=>({motion:new Proxy({},{get:(_,name)=>name}),useReducedMotion:()=>true}));
+vi.mock('@/components-legacy/dashboard/DashboardLayout',()=>({default:({children}:any)=><main>{children}</main>}));
+import EarningsPage from '@/app/[locale]/dashboard/earnings/page';
+let tree:any;
+const response=(payload:unknown,status=200)=>({ok:status>=200&&status<300,status,json:async()=>payload});
+const profile=(salon='store-a')=>response({id:'operator',salon_id:salon});
+const payout=()=>response({total_earnings:0,pending_balance:45,payouts:[]});
+const earning=(name='Staff Fixture',is_active=true)=>({id:name,name,avatar_url:null,commission_rate:30,gross:45,staff_share:13.5,house_share:31.5,is_active});
+const text=(n:any):string=>typeof n==='string'||typeof n==='number'?String(n):Array.isArray(n)?n.map(text).join(' '):n?.children!=null?text(n.children):n?.props?.children!=null?text(n.props.children):'';
+const alerts=()=>tree.root.findAllByProps({role:'alert'});
+const mount=async()=>{await act(async()=>{tree=create(<EarningsPage/>);});};
+const retry=async()=>{await act(async()=>tree.root.findAllByType('button').find((b:any)=>text(b).includes(en.common.retry)).props.onClick());};
+const deferred=()=>{let resolve!:(v:any)=>void;const promise=new Promise<any>(r=>{resolve=r;});return {promise,resolve};};
+function loaded(staff:any[]=[],salon='store-a'){h.fetch.mockResolvedValueOnce(profile(salon)).mockResolvedValueOnce(payout()).mockResolvedValueOnce(response({staff}));}
+beforeEach(()=>{h.fetch.mockReset();vi.stubGlobal('fetch',h.fetch);vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT',true);vi.spyOn(console,'error').mockImplementation(()=>{});});
+afterEach(async()=>{if(tree)await act(async()=>tree.unmount());tree=null;vi.restoreAllMocks();vi.unstubAllGlobals();});
+test('staff HTTP500 displays ErrorState; Retry reads current Store and captured earnings',async()=>{
+ h.fetch.mockResolvedValueOnce(profile()).mockResolvedValueOnce(payout()).mockResolvedValueOnce(response({error:'Could not load staff earnings'},500));
+ await mount();expect(alerts()).toHaveLength(1);expect(text(tree.toJSON())).not.toContain(en.dashboard.earningsPage.noStaffCommission);
+ loaded([earning('Recovered',false)],'store-b');await retry();expect(alerts()).toHaveLength(0);expect(text(tree.toJSON())).toContain('Recovered');expect(text(tree.toJSON())).toContain(en.dashboard.staffPage.filterInactive);expect(text(tree.toJSON())).toContain('45');
+ expect(h.fetch.mock.calls.map(([url])=>url)).toEqual(['/api/profile','/api/salon/earnings','/api/earnings/staff?salon_id=store-a','/api/profile','/api/salon/earnings','/api/earnings/staff?salon_id=store-b']);
+});
+test('true empty success keeps original empty table message',async()=>{loaded();await mount();expect(alerts()).toHaveLength(0);expect(text(tree.toJSON())).toContain(en.dashboard.earningsPage.noStaffCommission);});
+test('populated success retains table amounts and only inactive rows get factual label',async()=>{loaded([earning('Active'),earning('Former',false)]);await mount();expect(alerts()).toHaveLength(0);expect(text(tree.toJSON())).toContain('Active');expect(text(tree.toJSON())).toContain('Former');expect(text(tree.toJSON()).split(en.dashboard.staffPage.filterInactive)).toHaveLength(2);expect(tree.root.findAllByType('table')).toHaveLength(1);});
+test.each([401,403,500])('profile failure %i refuses dependent reads and Retry works',async status=>{h.fetch.mockResolvedValueOnce(response({error:'no profile'},status));await mount();expect(alerts()).toHaveLength(1);expect(h.fetch).toHaveBeenCalledTimes(1);loaded([earning()]);await retry();expect(alerts()).toHaveLength(0);});
+test.each([{id:'operator'}, {salon_id:'store-a'}])('missing active identity refuses population',async body=>{h.fetch.mockResolvedValueOnce(response(body));await mount();expect(alerts()).toHaveLength(1);expect(h.fetch).toHaveBeenCalledTimes(1);});
+test.each([401,403,500])('staff failure %i cannot render even a populated error body',async status=>{h.fetch.mockResolvedValueOnce(profile()).mockResolvedValueOnce(payout()).mockResolvedValueOnce(response({staff:[earning('Forbidden')]},status));await mount();expect(alerts()).toHaveLength(1);expect(text(tree.toJSON())).not.toContain('Forbidden');});
+test('malformed staff array is an error',async()=>{h.fetch.mockResolvedValueOnce(profile()).mockResolvedValueOnce(payout()).mockResolvedValueOnce(response({}));await mount();expect(alerts()).toHaveLength(1);});
+test('salon earnings failure is not successful no-payment-data',async()=>{h.fetch.mockResolvedValueOnce(profile()).mockResolvedValueOnce(response({error:'failed'},500)).mockResolvedValueOnce(response({staff:[]}));await mount();expect(alerts()).toHaveLength(1);expect(text(tree.toJSON())).not.toContain(en.dashboard.earningsPage.noPaymentData);loaded();await retry();expect(alerts()).toHaveLength(0);});
+test.each([200,500])('obsolete staff %i cannot overwrite retried Store',async status=>{
+ const old=deferred();h.fetch.mockResolvedValueOnce(profile()).mockResolvedValueOnce(response({error:'failed'},500)).mockReturnValueOnce(old.promise);await mount();expect(alerts()).toHaveLength(1);
+ loaded([earning('Current')],'store-b');await retry();await act(async()=>old.resolve(response({staff:[earning('Obsolete')]},status)));expect(text(tree.toJSON())).toContain('Current');expect(text(tree.toJSON())).not.toContain('Obsolete');expect(alerts()).toHaveLength(0);
+});
+test('unmounted profile completion cannot launch dependent reads',async()=>{const old=deferred();h.fetch.mockReturnValueOnce(old.promise);await mount();await act(async()=>tree.unmount());tree=null;await act(async()=>old.resolve(profile()));expect(h.fetch).toHaveBeenCalledTimes(1);expect(h.fetch.mock.calls[0][1].signal.aborted).toBe(true);});
+test('network error is visible and recoverable',async()=>{h.fetch.mockRejectedValueOnce(new Error('fixture network error'));await mount();expect(alerts()).toHaveLength(1);loaded();await retry();expect(alerts()).toHaveLength(0);});

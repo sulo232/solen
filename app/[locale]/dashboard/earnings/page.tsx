@@ -6,6 +6,7 @@ import { DollarSign, Wallet, FileText, Calendar, Clock, Users } from "lucide-rea
 import { useLocale, useTranslations } from "next-intl";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import Spinner from "@/components-legacy/ui/Spinner";
+import ErrorState from "@/components-legacy/ui/ErrorState";
 import { formatCurrency } from "@/lib/format-currency";
 import { resolveSwissLocale } from "@/lib/format";
 
@@ -27,6 +28,7 @@ interface EarningsData {
 }
 
 interface StaffEarning {
+  is_active: boolean;
   id: string;
   name: string;
   avatar_url: string | null;
@@ -48,35 +50,69 @@ function getStatusBadge(status: string, t: (key: "statusPaid" | "statusPending" 
 export default function SalonEarningsPage() {
   const locale = useLocale();
   const t = useTranslations("dashboard.earningsPage");
+  const tStaff = useTranslations("dashboard.staffPage");
+  const tCommon = useTranslations("common");
   const [data, setData] = useState<EarningsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [staffEarnings, setStaffEarnings] = useState<StaffEarning[]>([]);
   const [staffLoading, setStaffLoading] = useState(true);
-  const [salonId, setSalonId] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState(false);
+  const [staffError, setStaffError] = useState(false);
+  const [retryVersion, setRetryVersion] = useState(0);
 
   useEffect(() => {
-    fetch("/api/profile")
-      .then(r => r.json())
-      .then(p => {
-        const sid = p?.salon_id ?? null;
-        setSalonId(sid);
-        return fetch("/api/salon/earnings").then(res => res.json());
-      })
-      .then(d => {
-        if (!d.error) setData(d);
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, []);
-
-  useEffect(() => {
-    if (!salonId) return;
-    fetch(`/api/earnings/staff?salon_id=${salonId}`)
-      .then(r => r.json())
-      .then(d => setStaffEarnings(d.staff ?? []))
-      .catch((err) => console.error("[DashboardEarnings] failed to fetch staff earnings:", err))
-      .finally(() => setStaffLoading(false));
-  }, [salonId]);
+    const controller = new AbortController();
+    let current = true;
+    setLoading(true);
+    setStaffLoading(true);
+    setLoadError(false);
+    setStaffError(false);
+    async function load() {
+      try {
+        const profileResponse = await fetch("/api/profile", { signal: controller.signal });
+        if (!profileResponse.ok) throw new Error(`Profile request failed (${profileResponse.status})`);
+        const profile = await profileResponse.json();
+        if (!profile?.id || !profile.salon_id) throw new Error("Active Store unavailable");
+        if (!current) return;
+        await Promise.all([
+          (async () => {
+            try {
+              const response = await fetch("/api/salon/earnings", { signal: controller.signal });
+              if (!response.ok) throw new Error(`Earnings request failed (${response.status})`);
+              const result = await response.json();
+              if (!Array.isArray(result.payouts) || !Number.isFinite(result.total_earnings) || !Number.isFinite(result.pending_balance)) throw new Error("Earnings response unavailable");
+              if (current) setData(result);
+            } catch (error) {
+              if (!current) return;
+              console.error("[DashboardEarnings] earnings read failed:", error);
+              setLoadError(true);
+            } finally { if (current) setLoading(false); }
+          })(),
+          (async () => {
+            try {
+              const response = await fetch(`/api/earnings/staff?salon_id=${encodeURIComponent(profile.salon_id)}`, { signal: controller.signal });
+              if (!response.ok) throw new Error(`Staff earnings request failed (${response.status})`);
+              const result = await response.json();
+              if (!Array.isArray(result.staff)) throw new Error("Staff earnings response unavailable");
+              if (current) setStaffEarnings(result.staff);
+            } catch (error) {
+              if (!current) return;
+              console.error("[DashboardEarnings] staff earnings read failed:", error);
+              setStaffError(true);
+            } finally { if (current) setStaffLoading(false); }
+          })(),
+        ]);
+      } catch (error) {
+        if (!current) return;
+        console.error("[DashboardEarnings] active Store read failed:", error);
+        setLoadError(true);
+        setLoading(false);
+        setStaffLoading(false);
+      }
+    }
+    void load();
+    return () => { current = false; controller.abort(); };
+  }, [retryVersion]);
 
   return (
     <DashboardLayout>
@@ -89,6 +125,8 @@ export default function SalonEarningsPage() {
 
       {loading ? (
         <div className="flex justify-center py-20"><Spinner size="lg" /></div>
+      ) : loadError ? (
+        <ErrorState title={tCommon("errorLoading")} retryLabel={tCommon("retry")} onRetry={() => setRetryVersion(value => value + 1)} />
       ) : !data ? (
         <div className="text-center py-20 text-s-ink/30 text-sm">{t("noPaymentData")}</div>
       ) : (
@@ -186,6 +224,8 @@ export default function SalonEarningsPage() {
             </div>
             {staffLoading ? (
               <div className="flex justify-center py-8"><Spinner size="md" /></div>
+            ) : staffError ? (
+              <ErrorState title={tCommon("errorLoading")} retryLabel={tCommon("retry")} onRetry={() => setRetryVersion(value => value + 1)} />
             ) : staffEarnings.length === 0 ? (
               <div className="p-8 text-center text-s-ink/40 text-sm">
                 {t("noStaffCommission")}
@@ -211,6 +251,7 @@ export default function SalonEarningsPage() {
                               {s.avatar_url ? <Image src={s.avatar_url} alt="" fill className="object-cover" unoptimized /> : s.name[0]}
                             </div>
                             <span className="font-medium">{s.name}</span>
+                            {s.is_active === false && <span className="text-s-ink-2 text-[12px]">{tStaff("filterInactive")}</span>}
                           </div>
                         </td>
                         <td className="px-5 py-4 text-right data-text text-s-ink-2">{s.commission_rate}%</td>

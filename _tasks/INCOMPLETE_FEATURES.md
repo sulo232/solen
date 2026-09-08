@@ -352,3 +352,10 @@ IMPACT: none on the product. Nothing was applied to any real screen.
 - Observed: the isolated production server logged an unhandled NEXT_HTTP_ERROR_FALLBACK404 from this module. The file calls notFound at module scope. Public staff and browse routes continued rendering; no whole-server failure is claimed.
 - Blocker: an actual production import can throw outside a request error boundary. No guard weakening is authorized.
 - Next step: move the development-only refusal into its proper route execution owner, preserve production404, and distinguish a direct dev-route request from unrelated page loading in an isolated build.
+
+## Earnings table exceeds phone viewport (inherited, 2026-09-08)
+
+- File: `app/[locale]/dashboard/earnings/page.tsx`, staff earnings table and its shared dashboard flex container.
+- Observed at 390px: accepted main baseline document width545px/table510.75px; recovered factual inactive-staff annotation gives document574px/table540.60px. Existing overflow wrapper and table layout classes are unchanged. The inactive annotation must remain because completed work is still owed representation.
+- Blocker: current shared container permits the table to expand the page. The earnings money/read recovery does not establish a phone-layout pass or authorize a broader visual redesign.
+- Next step: measure the table's flex ancestors in the actual populated route, preview a bounded containment correction and verify horizontal scrolling stays inside the table while inactive staff and their earnings remain visible.
