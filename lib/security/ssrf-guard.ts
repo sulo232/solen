@@ -142,3 +142,31 @@ export async function assertSafeFetchUrl(rawUrl: string): Promise<void> {
     if (isBlockedIp(address)) throw new UnsafeFetchUrlError();
   }
 }
+
+/** Fetch public image bytes, checking each redirect before issuing its request.
+ * The caller's signal bounds the whole chain; response/body checks remain with the caller.
+ * Only GET options are accepted so credentials or request bodies cannot cross origins.
+ */
+export async function fetchSafeImage(
+  rawUrl: string,
+  options: Pick<RequestInit, "signal" | "cache"> = {},
+): Promise<Response> {
+  let url = rawUrl;
+  const maxRedirects = 5;
+  for (let redirects = 0; ; redirects++) {
+    options.signal?.throwIfAborted();
+    await assertSafeFetchUrl(url);
+    options.signal?.throwIfAborted();
+    const response = await fetch(url, { ...options, redirect: "manual" });
+    if (![301, 302, 303, 307, 308].includes(response.status)) return response;
+
+    const location = response.headers.get("location");
+    await response.body?.cancel();
+    if (!location || redirects >= maxRedirects) throw new UnsafeFetchUrlError();
+    try {
+      url = new URL(location, url).href;
+    } catch {
+      throw new UnsafeFetchUrlError();
+    }
+  }
+}

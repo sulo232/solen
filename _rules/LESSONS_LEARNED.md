@@ -376,10 +376,32 @@ Copying UI from a component file into a mockup reproduced a discount badge that 
 
 ### A customer's session client silently no-ops on owner-only RLS writes
 - **Date**: 2026-07-07
-- **File(s)**: `app/api/bookings/route.ts:CAS`, `app/api/bookings/[id]/reschedule/route.ts`, `app/api/bookings/express-rebook/confirm/route.ts`
+- **File(s)**: `app/api/bookings/route.ts:CAS`, `app/api/bookings/[id]/reschedule/route.ts`, `app/api/bookings/express-rebook/confirm/route.ts`, `app/api/bookings/recurring/route.ts`
 - **What happened**: `availability_slots` UPDATE/DELETE is owner-only under RLS and `bookings` has no DELETE policy. A CAS slot-claim fix run through the logged-in customer's session client matched 0 rows on every write (not an error, just 0 affected rows), so the fix returned a false 409 on 100% of real bookings and left orphaned rows on rollback. The logic was correct, the client was wrong.
 - **Why it happened**: RLS denials on `.update()`/`.delete()` are silent no-ops (0 rows), not thrown errors, so a typecheck + logic review sees nothing wrong; only a live non-owner run exposes it.
 - **Fix / What to do instead**: Any customer-initiated write to `availability_slots` (claim/free/reschedule) or a `bookings` row delete MUST go through the service-role/admin client, never the session client. Plain `bookings` UPDATEs can stay on the session client (`bookings_update_own` permits the owner). Booking-critical fixes must be LIVE-VERIFIED as a real non-owner customer (`GET /api/dev/login?to=<path>` mints one), not just typechecked.
+- **2026-09-08 recurrence**: Recurring creation still used an unchecked session-client slot update. Recovering an older fix required keeping current `claimSlot`, validating service and optional staff ownership first, and observing returned IDs from both new-booking deletion and new-rule deactivation. A rollback error or zero-row result must surface as `ROLLBACK_FAILED`, not a normal slot conflict. Actual-handler tests with mocked external boundaries exercise those cases; they do not replace the live RLS check above.
+
+### A safe initial image URL does not make its redirects safe
+- **Date**: 2026-09-08
+- **File(s)**: `lib/security/ssrf-guard.ts`, `app/api/admin/discovery/backfill/route.ts`, `app/api/admin/discovery/staging/route.ts`, `app/api/admin/nail/generate/route.ts`, `app/api/discovery/thumb/[id]/route.ts`
+- **What happened**: These image readers validated the first URL, then ordinary fetch followed redirects without validating each destination.
+- **Why it happened**: Validation and fetching had separate owners, so a checked public URL could redirect the server to a blocked destination.
+- **Fix / What to do instead**: Use the existing guard's `fetchSafeImage` for manual, bounded, per-hop validation with one abort signal. The explicitly constructed same-origin backfill proxy rejects redirects. Test direct public success, a permitted redirect and a blocked destination through every actual caller. This does not establish DNS rebinding protection between validation and fetch.
+
+### Validate the storable category before uploading bytes
+- **Date**: 2026-09-08
+- **File(s)**: `app/api/admin/discovery/upload/route.ts`, `lib/validations.ts:adminDiscoveryBulkImportSchema`
+- **What happened**: Multipart category input was cast to string and storage upload occurred before a category constraint could reject the row.
+- **Why it happened**: Type assertions do not validate FormData; it can contain a File, an invalid category or the feed-only `all` value.
+- **Fix / What to do instead**: Parse with the current shared storable-category enum before storage. Keep all valid categories, including beard, and the established missing-value default. Actual multipart tests must prove invalid inputs never reach storage or row insertion.
+
+### Account suppression must precede the welcome send queue
+- **Date**: 2026-09-08
+- **File(s)**: `app/api/cron/welcome-series/route.ts`
+- **What happened**: The welcome profile projection omitted banned and suspended state, so those accounts could reach the send queue.
+- **Why it happened**: Promotional opt-in and account eligibility were treated as if they were the same condition.
+- **Fix / What to do instead**: Select the actual account-state columns and exclude banned or suspended profiles before enqueueing. Independently preserve and test day0 transactional behavior and explicit day3/day7 promotional opt-in through the real task runner with delivery mocked.
 
 ---
 

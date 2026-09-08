@@ -3,6 +3,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, discoveryAdminLimiter } from "@/lib/ratelimit";
 import { logAuditEvent } from "@/lib/audit";
+import { adminDiscoveryBulkImportSchema } from "@/lib/validations";
 import { requireUploadHeader } from "@/lib/upload-security";
 
 export async function POST(req: NextRequest) {
@@ -32,7 +33,9 @@ export async function POST(req: NextRequest) {
 
   const formData = await req.formData();
   const file = formData.get("file") as File | null;
-  const category = formData.get("category") as string | null;
+  const parsedCategory = adminDiscoveryBulkImportSchema.shape.category.safeParse(formData.get("category") ?? "hair");
+  if (!parsedCategory.success) return NextResponse.json({ error: "Invalid category" }, { status: 400 });
+  const category = parsedCategory.data;
 
   if (!file) return NextResponse.json({ error: "No file provided" }, { status: 400 });
   if (!file.type.startsWith("image/")) return NextResponse.json({ error: "Only images allowed" }, { status: 400 });
@@ -54,7 +57,7 @@ export async function POST(req: NextRequest) {
 
     // Insert directly as published
     const { data: item, error: insertError } = await admin.from("discovery_items").insert({
-      category: category ?? "hair",
+      category,
       content_type: "curated",
       image_url: publicUrl.publicUrl,
       media_type: "photo",

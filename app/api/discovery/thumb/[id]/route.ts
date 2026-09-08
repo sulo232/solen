@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
-import { assertSafeFetchUrl, UnsafeFetchUrlError } from "@/lib/security/ssrf-guard";
+import { fetchSafeImage } from "@/lib/security/ssrf-guard";
 
 // V3-D160 (2026-05-26): TikTok thumbnail refresh proxy.
 //
@@ -161,17 +161,8 @@ export async function GET(req: NextRequest, ctx: RouteContext) {
   // input-abuse-04 (2026-07-27): freshUrl is TikTok's own oEmbed response, not a
   // hardcoded host, so guard against SSRF before the server-side fetch fires.
   try {
-    await assertSafeFetchUrl(freshUrl);
-  } catch (err) {
-    if (err instanceof UnsafeFetchUrlError) {
-      console.error("[thumb proxy] blocked unsafe thumbnail URL");
-      return new NextResponse("unsafe url", { status: 502 });
-    }
-    throw err;
-  }
-  try {
     // 8000ms: image-bytes fetch, same bound as lib/ai-vision.ts and the tiktok import
-    const imgRes = await fetch(freshUrl, { signal: AbortSignal.timeout(8000) });
+    const imgRes = await fetchSafeImage(freshUrl, { signal: AbortSignal.timeout(8000) });
     if (!imgRes.ok) {
       console.error("[thumb proxy] image fetch status", imgRes.status);
       return new NextResponse("image fetch failed", { status: 502 });

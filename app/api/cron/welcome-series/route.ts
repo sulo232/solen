@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
 
     const { data: profiles } = await admin
       .from("profiles")
-      .select("id, display_name, locale, email")
+      .select("id, display_name, locale, email, banned_at, is_suspended")
       .gte("created_at", `${dateStr}T00:00:00Z`)
       .lt("created_at", `${dateStr}T23:59:59Z`)
       .eq("role", "customer");
@@ -68,6 +68,7 @@ export async function GET(request: NextRequest) {
     const alreadySent = new Set((alreadySentRows ?? []).map((r) => r.user_id));
 
     for (const profile of profiles) {
+      if (profile.banned_at || profile.is_suspended) continue;
       // seo-comms-11 (defect-1 fix, 2026-09-04): day 3 and day 7 are promotional nudges
       // (discover salons / book your first appointment), so they require an explicit
       // OPT-IN on notification_preferences.deals_enabled, mirrored from the same

@@ -4,7 +4,7 @@ import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, discoveryAdminLimiter } from "@/lib/ratelimit";
 import { validateBody, discoveryStagingSchema } from "@/lib/validations";
 import { logAuditEvent } from "@/lib/audit";
-import { assertSafeFetchUrl } from "@/lib/security/ssrf-guard";
+import { fetchSafeImage } from "@/lib/security/ssrf-guard";
 
 export async function GET(req: NextRequest) {
   const disabled = await checkFeatureEnabled("discovery");
@@ -80,10 +80,9 @@ export async function PUT(req: NextRequest) {
       // input-abuse-04 (2026-07-27): image_url is a discovery_staging column populated
       // by the import/ingest pipeline, not a hardcoded host. Guard before the fetch.
       try {
-        await assertSafeFetchUrl(item.image_url);
         const sharp = (await import("sharp")).default;
         // 8000ms: image-bytes fetch, same bound as lib/ai-vision.ts and the tiktok import
-        const imgRes = await fetch(item.image_url, { signal: AbortSignal.timeout(8000) });
+        const imgRes = await fetchSafeImage(item.image_url, { signal: AbortSignal.timeout(8000) });
         const buffer = await imgRes.arrayBuffer();
         const webp = await sharp(Buffer.from(buffer)).webp({ quality: 85 }).toBuffer();
         const fileName = `curated/${crypto.randomUUID()}.webp`;

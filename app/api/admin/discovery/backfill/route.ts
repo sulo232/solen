@@ -7,7 +7,7 @@ import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
 import { analyzeDiscoveryImage, analyzeDiscoveryTikTok, translateDiscoveryI18n } from "@/lib/ai-vision";
 import { validateBody, adminDiscoveryBackfillSchema } from "@/lib/validations";
 import { getServerEnv } from "@/lib/env";
-import { assertSafeFetchUrl } from "@/lib/security/ssrf-guard";
+import { fetchSafeImage } from "@/lib/security/ssrf-guard";
 
 /**
  * POST /api/admin/discovery/backfill
@@ -131,18 +131,12 @@ export async function POST(req: NextRequest) {
       // proxy route (already SSRF-guarded at app/api/discovery/thumb/[id]/route.ts); the
       // non-TikTok branch is item.image_url/tiktok_thumbnail_url, a DB column populated by
       // the import pipeline, so guard it here before the fetch fires.
-      if (!isTikTok) {
-        try {
-          await assertSafeFetchUrl(imageUrl);
-        } catch (guardErr) {
-          results.push({ id: item.id, style_name: null, status: `image_fetch_error: ${String(guardErr)}` });
-          errors++;
-          continue;
-        }
-      }
       let imageRes;
       try {
-        imageRes = await fetch(imageUrl, { signal: AbortSignal.timeout(10000) });
+        // The same-origin proxy is allowed locally, but may never redirect elsewhere.
+        imageRes = isTikTok
+          ? await fetch(imageUrl, { signal: AbortSignal.timeout(10000), redirect: "error" })
+          : await fetchSafeImage(imageUrl, { signal: AbortSignal.timeout(10000) });
       } catch (fetchErr) {
         results.push({ id: item.id, style_name: null, status: `image_fetch_error: ${String(fetchErr)}` });
         errors++;

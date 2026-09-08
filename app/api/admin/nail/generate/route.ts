@@ -8,7 +8,7 @@ import { buildNailPrompt, type NailShotType } from "@/lib/nail/ai-prompts";
 import { checkBudget, recordGeneration, getBudgetStatus } from "@/lib/nail/ai-budget";
 import { validateBody, adminNailGenerateSchema } from "@/lib/validations";
 import { getServerEnv } from "@/lib/env";
-import { assertSafeFetchUrl } from "@/lib/security/ssrf-guard";
+import { fetchSafeImage } from "@/lib/security/ssrf-guard";
 
 // POST /api/admin/nail/generate — Admin-only AI nail art generation with budget tracking
 export async function POST(req: NextRequest) {
@@ -134,11 +134,10 @@ export async function POST(req: NextRequest) {
     try {
       // input-abuse-04 (2026-07-27): imageUrl is fal.ai's own generation-response URL, not
       // a hardcoded host, so guard against SSRF before the server-side fetch fires.
-      await assertSafeFetchUrl(imageUrl);
       // 8000ms: matches this codebase's existing timeout for fetching image bytes,
       // same value the fal.ai call above uses via its own sibling pattern (25000ms
       // there is for generation itself, not a byte download).
-      const imgRes = await fetch(imageUrl, { signal: AbortSignal.timeout(8000) });
+      const imgRes = await fetchSafeImage(imageUrl, { signal: AbortSignal.timeout(8000) });
       if (imgRes.ok) {
         const imgBuffer = Buffer.from(await imgRes.arrayBuffer());
         const fileName = `${stagingSourceId}.webp`;
