@@ -338,3 +338,17 @@ IMPACT: none on the product. Nothing was applied to any real screen.
 - Observed boundary: if Stripe creates an intent but the database refuses its pointer publication, a confirmed/card_saved booking can remain eligible with a null pointer. A later attempt beyond Stripe idempotency retention is not guaranteed to reuse the original intent. Baseline comparison confirms the preceding synchronous charged path has the same create-before-publication shape.
 - Blocker: no persisted pre-create claim protects this existing pre-charge path during a database publication outage. Successful pending-pointer persistence and normal webhook order tests do not establish that missing guarantee.
 - Next step: separately scope and review durable pre-charge reservation/reconciliation against creation, failed publication and an expired retry, using an isolated payment fixture before activation. No live duplicate charge or database outage was demonstrated during consolidation.
+
+## Returning visitors cannot reopen cookie settings (inherited, 2026-09-08)
+
+- Files: `app/[locale]/_components/layout/Footer.tsx`, `app/[locale]/_components/primitives/CookieConsent.tsx:510`.
+- Observed: the settings dialog promises a footer Cookie Settings link, but the actual footer has none. The only live openSettings callers are in the banner, which disappears after consent. Current-source search detects the known banner callers; no separate returning-visitor control was found. The localization recovery preserves this existing behavior and does not establish a completed withdrawal path.
+- Blocker: a connected return control needs a scoped visible footer/privacy treatment. No deliberate removal entry or historical Footer openSettings implementation was found. The active customer-journey mockup task has this exact baseline evidence; no new footer action has been silently shipped.
+- Next step: show a real-component footer/privacy return control, then connect the existing openSettings owner after the visible choice is approved and prove consent change/withdrawal through the actual returning-visitor path.
+
+## Production dev-route module throws during import (inherited, 2026-09-08)
+
+- File: `app/[locale]/dev/motion-recipe/page.tsx:27`.
+- Observed: the isolated production server logged an unhandled NEXT_HTTP_ERROR_FALLBACK404 from this module. The file calls notFound at module scope. Public staff and browse routes continued rendering; no whole-server failure is claimed.
+- Blocker: an actual production import can throw outside a request error boundary. No guard weakening is authorized.
+- Next step: move the development-only refusal into its proper route execution owner, preserve production404, and distinguish a direct dev-route request from unrelated page loading in an isolated build.
