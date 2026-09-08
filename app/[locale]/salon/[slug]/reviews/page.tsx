@@ -21,7 +21,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { getTranslations } from "next-intl/server";
 import SalonReviews from "@/components-legacy/salon/SalonReviews";
 import { loadSalonDetailWithAccess } from "@/lib/salon-detail";
-import { publicReply } from "@/app/[locale]/_components/salon/_shared";
+import { publicReply, publicReviewStylist } from "@/app/[locale]/_components/salon/_shared";
 
 export async function generateMetadata({
   params,
@@ -80,10 +80,11 @@ export default async function SalonReviewsPage({
       .from("reviews")
       .select(`
         id, rating, comment, created_at,
+        staff_member_id, staff_members(id, name, salon_id, is_active),
         profiles(display_name, avatar_url),
         review_photos(id, photo_url),
         review_replies(id, reply_text, is_public, created_at),
-        bookings(guest_name)
+        bookings(guest_name, salon_id, staff_member_id)
       `)
       .eq("salon_id", salon.id)
       .eq("is_hidden", false)
@@ -177,6 +178,7 @@ export default async function SalonReviewsPage({
     rating: r.rating,
     comment: r.comment,
     created_at: r.created_at,
+    ...publicReviewStylist(r, salon.id),
     profiles: r.profiles ?? null,
     review_photos: r.review_photos ?? [],
     // The admin read bypasses review_replies RLS. Remove private drafts before

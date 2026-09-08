@@ -5342,11 +5342,12 @@
     "testimonial7": "Meine Kollegin hat mir Solen empfohlen — jetzt benutze ich nichts anderes mehr.",
     "testimonial8": "Sogar Last-Minute Angebote mit Rabatt gefunden. Mega!",
     "whatUsersSay": "Was unsere Nutzer sagen",
-    "translatedFrom": "Aus dem Deutschen übersetzt",
+    "translatedFrom": "Übersetzt",
     "showOriginal": "Original anzeigen",
     "showTranslation": "Übersetzung anzeigen",
     "replyFrom": "Antwort von {salon}",
-    "replyFromSalon": "Antwort vom Salon"
+    "replyFromSalon": "Antwort vom Salon",
+    "withStylist": "mit {name}"
   },
   "reviewsPage": {
     "metaTitle": "Bewertungen · Solen",

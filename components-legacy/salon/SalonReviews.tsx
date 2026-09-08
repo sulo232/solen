@@ -37,6 +37,7 @@ interface ReviewReply {
 
 type EnrichedReview = Review & {
   profiles?: { display_name: string; avatar_url: string | null };
+  staff_members?: { id: string; name: string } | null;
   review_photos?: ReviewPhoto[];
   // review_id is UNIQUE on review_replies, so PostgREST returns this embed as a
   // single OBJECT when a reply exists, not an array , read it via publicReply(),
@@ -111,6 +112,7 @@ export default function SalonReviews({
 }: SalonReviewsProps) {
   const t = useTranslations("salonDetail");
   const tCommon = useTranslations("common");
+  const tReviews = useTranslations("reviews");
   const [reviewSort, setReviewSort] = useState<"newest" | "highest" | "lowest">("newest");
   const [reviewPage, setReviewPage] = useState(1);
   // Ring 2b: the parent page now loads only the first page of reviews (was
@@ -185,6 +187,8 @@ export default function SalonReviews({
         rating: number;
         comment: string | null;
         created_at: string;
+        staff_member_id?: string | null;
+        staff_members?: { id: string; name: string } | null;
         profiles?: { display_name: string; avatar_url: string | null } | null;
         // Same to-one embed as everywhere else: PostgREST returns an object, not
         // an array, when the review has a reply.
@@ -195,6 +199,8 @@ export default function SalonReviews({
         rating: r.rating,
         comment: r.comment,
         created_at: r.created_at,
+        staff_member_id: r.staff_member_id ?? null,
+        staff_members: r.staff_members ?? null,
         profiles: r.profiles ?? undefined,
         review_photos: r.review_photos ?? [],
         review_replies: r.review_replies ?? [],
@@ -372,6 +378,21 @@ export default function SalonReviews({
                               </span>
                             )}
                           </div>
+                          {/* Approved review attribution, decision G (2026-09-06). */}
+                          {rev.staff_member_id && rev.staff_members?.id === rev.staff_member_id && rev.staff_members.name && (() => {
+                            const [before, after] = (tReviews.raw("withStylist") as string).split("{name}");
+                            return (
+                              <div className="mt-0.5 text-[13px] text-s-ink-2">
+                                {before}
+                                <Link href={`/${locale}/salon/${salonSlug}/staff/${rev.staff_member_id}`} className="relative text-s-accent hover:underline">
+                                  {rev.staff_members.name}
+                                  {/* Extend into the clear gap beside the stars, preserving the text geometry. */}
+                                  <span aria-hidden className="absolute left-1 top-0 h-11 min-w-11 w-full" />
+                                </Link>
+                                {after}
+                              </div>
+                            );
+                          })()}
                         </div>
                       </div>
                     </div>

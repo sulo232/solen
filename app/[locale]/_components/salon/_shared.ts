@@ -54,6 +54,8 @@ export interface Review {
   comment_en?: string | null;
   created_at: string;
   profiles?: { display_name: string; avatar_url: string | null };
+  staff_member_id?: string | null;
+  staff_members?: { id: string; name: string } | null;
   // Round 10 Y3: the salon owner's reply, embedded so ReviewCard (SalonReviews.tsx)
   // can render it inline. PostgREST returns this as an OBJECT (to-one embed,
   // review_replies.review_id is UNIQUE) when present, not an array. Read it
@@ -76,6 +78,27 @@ export function publicReply(
 ): ReviewReply | null {
   const candidate = Array.isArray(raw) ? raw[0] : raw;
   return candidate && candidate.is_public ? candidate : null;
+}
+
+/** Only expose a stylist when the review and its booking agree within this Store.
+ * The write route historically accepted staff_member_id from the client. Never
+ * turn that unchecked value, a moved stylist or an inactive profile into a link.
+ * The private booking embed and Store IDs stay at the read boundary.
+ */
+export function publicReviewStylist(raw: {
+  staff_member_id?: string | null;
+  bookings?: { salon_id?: string; staff_member_id?: string | null } | null;
+  staff_members?: { id: string; name: string; salon_id?: string; is_active?: boolean } | null;
+}, salonId: string): { staff_member_id: string | null; staff_members: { id: string; name: string } | null } {
+  const staff = raw.staff_members;
+  const booking = raw.bookings;
+  if (!raw.staff_member_id || !booking || !staff ||
+      booking.salon_id !== salonId || staff.salon_id !== salonId ||
+      booking.staff_member_id !== raw.staff_member_id || staff.id !== raw.staff_member_id ||
+      staff.is_active !== true || !staff.name?.trim()) {
+    return { staff_member_id: null, staff_members: null };
+  }
+  return { staff_member_id: staff.id, staff_members: { id: staff.id, name: staff.name } };
 }
 
 export interface SiblingSalon {

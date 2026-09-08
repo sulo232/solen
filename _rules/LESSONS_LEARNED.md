@@ -981,3 +981,11 @@ Bindings: `components-legacy/booking/BookingCard.tsx`, `tests/components/booking
 Observed: round2 put each open card at z30, but two adjacent open menus shared that stacking level. The later card's Store overlay could intercept the earlier menu's calendar link. Raising every open container does not impose a single current disclosure.
 
 Applied prevention: reuse current outside pointer/focus dismissal and Escape handling so the previous popup closes as another control receives interaction. Test two actual mounted cards, not only one popup, and verify both neighbor directions with real elementFromPoint while hover/press transforms are active. A small visible pill can retain its geometry inside a transparent44px real button, whose invisible edges need hit testing as well as a DOM height check.
+
+### A review's stored stylist ID is not proof of booked attribution
+
+Bindings: `app/api/reviews/route.ts` (existing writer), `lib/salon-detail.ts`, `app/api/reviews/salon/[salon_id]/route.ts`, `app/[locale]/salon/[slug]/reviews/page.tsx`, `app/[locale]/_components/salon/_shared.ts`, both SalonReviews components.
+
+Observed: source c88 adds a link directly from reviews.staff_member_id, but the current write route accepts that value from the client and checks booking owner/Store without checking the stylist. A mismatched or foreign stored ID would become a false attribution. Browser RLS also hides other customers' bookings, so a direct browser join cannot prove it.
+
+Prevention applied: verify the attached booking and joined active stylist both belong to the review's Store and both IDs equal the stored attribution. On mismatch or absent data omit the attribution, preserve the review, and never substitute the booking's different stylist. Strip booking relations and private staff fields before serialization. The PDP fallback reuses the server API. Actual handler/loader/page and mounted consumer controls cover this boundary. The existing writer is unchanged; this recovery does not claim to correct its historical write contract.

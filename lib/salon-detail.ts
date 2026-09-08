@@ -7,6 +7,7 @@ import {
   type OpenStatus,
   type DayKey,
   publicReply,
+  publicReviewStylist,
 } from "@/app/[locale]/_components/salon/_shared";
 
 const DAY_ORDER: DayKey[] = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
@@ -179,7 +180,7 @@ export async function loadSalonDetailWithAccess(
     // only the dedicated reviews page shows photos.
     createAdminSupabaseClient()
       .from("reviews")
-      .select("id, rating, comment, created_at, profiles(display_name, avatar_url), review_replies(reply_text, is_public, created_at)")
+      .select("id, rating, comment, created_at, staff_member_id, bookings(salon_id, staff_member_id), staff_members(id, name, salon_id, is_active), profiles(display_name, avatar_url), review_replies(reply_text, is_public, created_at)")
       .eq("salon_id", salon.id)
       // Filter out auto-moderated (hidden) reviews: the admin client bypasses
       // RLS, so without this an automod-hidden review would ship to the PDP.
@@ -222,12 +223,16 @@ export async function loadSalonDetailWithAccess(
   // The service-role read can see private owner drafts. Strip them before this
   // server result can be serialized into public client props; a render-only
   // is_public check still leaves the private text in the RSC payload.
-  const reviews = (reviewsRes.data ?? []).map((review) => ({
-    ...review,
-    review_replies: publicReply(
-      review.review_replies as Parameters<typeof publicReply>[0],
-    ),
-  }));
+  const reviews = (reviewsRes.data ?? []).map((review) => {
+    const { bookings, staff_members, staff_member_id, ...publicReview } = review;
+    return {
+      ...publicReview,
+      ...publicReviewStylist(review as unknown as Parameters<typeof publicReviewStylist>[0], salon.id),
+      review_replies: publicReply(
+        review.review_replies as Parameters<typeof publicReply>[0],
+      ),
+    };
+  });
 
   // Moderation fields (verification_warnings, warning_count, frozen_at,
   // frozen_reason) ship ONLY to the owner's own session; public callers

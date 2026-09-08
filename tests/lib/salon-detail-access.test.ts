@@ -73,7 +73,8 @@ vi.mock("next/headers", () => ({
   }),
 }));
 vi.mock("next-intl/server", () => ({ getTranslations: async () => () => "" }));
-vi.mock("@/app/[locale]/_components/salon/_shared", () => ({
+vi.mock("@/app/[locale]/_components/salon/_shared", async (importOriginal) => ({
+  ...await importOriginal<typeof import("@/app/[locale]/_components/salon/_shared")>(),
   computeOpenStatus: () => ({ isOpen: false, label: "" }),
   nowInTimezone: () => new Date("2026-09-08T12:00:00Z"),
   publicReply: (reply: any) => {

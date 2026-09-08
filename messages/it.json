@@ -5342,11 +5342,12 @@
     "testimonial7": "La mia collega mi ha raccomandato Solen — ora non uso altro.",
     "testimonial8": "Ho trovato anche offerte last-minute con sconti. Fantastico!",
     "whatUsersSay": "Cosa dicono i nostri utenti",
-    "translatedFrom": "Tradotto dal tedesco",
+    "translatedFrom": "Tradotto",
     "showOriginal": "Mostra l'originale",
     "showTranslation": "Mostra la traduzione",
     "replyFrom": "Risposta di {salon}",
-    "replyFromSalon": "Risposta dello store"
+    "replyFromSalon": "Risposta dello store",
+    "withStylist": "con {name}"
   },
   "reviewsPage": {
     "metaTitle": "Recensioni · Solen",

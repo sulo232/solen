@@ -1,15 +1,15 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { Star, MessageSquare } from "lucide-react";
+import { Star, MessageSquare, Languages } from "lucide-react";
 import type { Review } from "./_shared";
 import { formatReviewDate, publicReply } from "./_shared";
 import { formatNumber } from "@/lib/format";
 import { Avatar, RatingStars, SeeAllButton } from "@/app/[locale]/_components/primitives";
 import { TabPill } from "../primitives/TabPill";
 import { cn } from "@/lib/utils";
-import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 
 /**
  * SalonReviews, D3 "Segmented" (2026-07-24 PORT, owner "I love this D3 segmented
@@ -67,16 +67,13 @@ export function SalonReviews({
     let cancelled = false;
     (async () => {
       try {
-        const supabase = createBrowserSupabaseClient();
-        const { data, error } = await supabase
-          .from("reviews")
-          .select("id, rating, comment, created_at, profiles(display_name, avatar_url), review_replies(reply_text, is_public, created_at)")
-          .eq("salon_id", salonId)
-          .eq("is_hidden", false)
-          .order("created_at", { ascending: false })
-          .limit(50);
-        if (error) throw error;
-        if (!cancelled) setFetched((data ?? []) as unknown as Review[]);
+        // The API verifies booking-backed attribution server-side; browser RLS
+        // correctly prevents reading other customers' bookings. Match the PDP's
+        // initial 20-review window and keep the visible three-review cap below.
+        const res = await fetch(`/api/reviews/salon/${encodeURIComponent(salonId)}`);
+        if (!res.ok) throw new Error(`reviews ${res.status}`);
+        const data = await res.json();
+        if (!cancelled) setFetched((data.items ?? []) as Review[]);
       } catch (err) {
         console.error("[SalonReviews] review fetch failed:", err);
         if (!cancelled) setFetched([]);
@@ -263,7 +260,7 @@ export function SalonReviews({
                   // the grouping on its own (FLOORS LAW 5: a deletion names what it keeps, and the
                   // surviving cue has to pass a measured floor).
                   <div key={r.id} className="[&+&]:mt-7">
-                    <ReviewCard review={r} salonName={salonName} locale={locale} />
+                    <ReviewCard review={r} salonName={salonName} locale={locale} salonSlug={salonSlug} />
                   </div>
                 ))
               )}
@@ -289,7 +286,7 @@ export function SalonReviews({
   );
 }
 
-function ReviewCard({ review, salonName, locale }: { review: Review; salonName?: string; locale?: string }) {
+function ReviewCard({ review, salonName, locale, salonSlug }: { review: Review; salonName?: string; locale?: string; salonSlug?: string }) {
   const t = useTranslations("reviews");
   const tCommon = useTranslations("common");
   const original = review.comment ?? review.comment_de ?? review.comment_en ?? "";
@@ -356,6 +353,21 @@ function ReviewCard({ review, salonName, locale }: { review: Review; salonName?:
           <div className="font-body mt-0.5 text-[13px] text-s-ink-2">
             {formatReviewDate(review.created_at, locale)}
           </div>
+          {/* Approved review attribution, decision G (2026-09-06). */}
+          {review.staff_member_id && review.staff_members?.id === review.staff_member_id && review.staff_members.name && salonSlug && locale && (() => {
+            const [before, after] = (t.raw("withStylist") as string).split("{name}");
+            return (
+              <div className="font-body mt-0.5 text-[13px] text-s-ink-2">
+                {before}
+                <Link href={`/${locale}/salon/${salonSlug}/staff/${review.staff_member_id}`} className="relative text-s-accent hover:underline">
+                  {review.staff_members.name}
+                  {/* Extend into the clear gap beside the stars, preserving the text geometry. */}
+                  <span aria-hidden className="absolute left-1 top-0 h-11 min-w-11 w-full" />
+                </Link>
+                {after}
+              </div>
+            );
+          })()}
         </div>
         {/* The per-row report Flag that used to sit here is GONE (owner 2026-08-15: "the report
             button, we need to remove that because, you know, customer is not gonna report it.
@@ -407,6 +419,9 @@ function ReviewCard({ review, salonName, locale }: { review: Review; salonName?:
               bit of metadata, which is exactly what s-accent is reserved for. */}
           {translated && (
             <p className="font-body mt-1.5 text-[12px] text-s-ink-2">
+              {showingTranslation && (
+                <Languages size={14} strokeWidth={1.9} aria-hidden className="mr-1 inline-block align-[-2px]" />
+              )}
               {showingTranslation ? t("translatedFrom") : null}{" "}
               <button
                 type="button"
