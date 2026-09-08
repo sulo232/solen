@@ -54,18 +54,6 @@ export function matchesSearch(candidate: string, query: string): boolean {
 }
 
 /**
- * Format a price in CHF.
- * Example: formatPrice(45.5) → "CHF 45.50"
- */
-export function formatPrice(amount: number, locale = "de-CH"): string {
-  return new Intl.NumberFormat(locale, {
-    style: "currency",
-    currency: "CHF",
-    minimumFractionDigits: 2,
-  }).format(amount);
-}
-
-/**
  * Split text on the first case-insensitive occurrence of a query substring, for the P13
  * search-overlay match highlight (owner-approved 2026-07-16, TASTE_LOG.md "reference-probe
  * picks round 1"). Plain data (no JSX here, this file stays framework-agnostic) , each
