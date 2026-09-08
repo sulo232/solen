@@ -1,5 +1,30 @@
 # 40 unmerged branches: what is in them, what to merge, what to delete (2026-08-14)
 
+## Current continuation, 2026-09-08
+
+The owner reopened branch consolidation in a separate task while the harness task continues. Current request: "analyze each of them", "merge them all into one, like main", "be careful about any ... stuff that's old ... designs", provide "a Cloudflare tunnel" for design review, check "duplicates" and "contradictions", choose the best technical implementation for "backend, APIs, security", and consider how booking companies handle the same problems. This supersedes the branch pause for this task only. Historical decisions below remain evidence, subject to current instructions and current source.
+
+Target: one authoritative local main with useful unique work recovered, obsolete implementations excluded with reasons, and recoverable source history. Harness files and the other task's uncommitted work have a separate active owner. Do not overwrite them. Design approval and individual cleanup decisions remain required where not already settled; prepare the specific preview or preservation result before asking.
+
+Current acceptance ledger:
+
+- [x] B1. Account for every local branch and registered worktree, including uncommitted and untracked useful artifacts, saved changes, detached work and the current remote head. Compare content and ancestry; commit counts and dates alone do not establish redundancy. Evidence: current report and inventory linked below; 25 branches, 19 worktrees, 13 stashes.
+- [x] B2. Give each branch a supported keep, recover selectively, already integrated, or obsolete disposition. Identify duplicates, contradicting behavior and later owner decisions. Preserve every unique useful artifact before any approved cleanup. Evidence: every-branch disposition report, previous full archive plus verified history delta, and 11,116 current working files copied and hash-checked with zero errors. No cleanup has occurred.
+- [ ] B3. Integrate justified technical recoveries on current code with focused independent review and behavior checks. Never replace a newer route wholesale because an old branch contains one useful guard.
+- [ ] B4. Preserve approved design decisions and show genuinely unresolved choices through verified live Cloudflare links. Keep the September 6 home and code sign-in rejections settled. A new visible treatment remains blocked on its specific approval.
+- [x] B5. Compare relevant booking-company practices using primary sources; distinguish useful behavioral evidence from visual imitation and from a new product-policy choice. Official Booking.com order preview/create, Fresha fee collection and Airbnb booking-state sources are linked with bounded implications in the current report.
+- [ ] B6. Reconcile the final combined result, report every remaining precise dependency and carry out authorized, verified cleanup. Do not claim local integration as a deployment or delete unresolved work.
+
+Initial verified state: local main `3c54e43d134c7b52075a4460734b15b319200874`, 25 local branches including main, 19 worktrees, and 13 stashes. Six non-main branch tips are ancestors of main. Remote main was independently read with `git ls-remote` as `4dd8bc15fbc7e1a812294f2c5acdcba903e6299e`; its difference from the merge base has no file changes, so the one remote-only commit is a history difference, not missing product code. Main has three modified tracked files and three untracked files from other work. Inventory evidence is being collected under [the current audit directory](/Users/sulo/Documents/Codex/solen-consolidation/2026-09-08/branches/).
+
+Current work and evidence: [all branch dispositions and detailed reports](/Users/sulo/Documents/Codex/solen-consolidation/2026-09-08/branches/REPORT.md). The first four technical recoveries passed independent review and were committed to local main as `fcc62e4bd94f348ce7f43993025ae38364d39fd9`: recurring claim/compensation, per-hop image redirect protection, upload category validation and welcome account suppression. Five test files / 52 tests pass on main; full `npx tsc --noEmit --incremental false` passes. External boundaries were mocked; no live RLS, payment, email or deployment is claimed. The existing RLS lesson retains its live non-owner verification requirement.
+
+Remaining technical recovery uses an isolated candidate at [integration](/Users/sulo/Documents/Codex/solen-consolidation/2026-09-08/integration), based on initial main. Permissions and existing-form progress are active owned slices. The complete recent-branch ledger accounts for all 120 unique commits, including 59 product commits. Do not mark the broader B3 complete after the first accepted batch. Fee-payment intent races and metadata mismatch remain a required repair before that approved direction can enter main; current diagnostic evidence is preserved.
+
+The existing live design server remains in the design-system-consolidation worktree on port 3470. [The review page](https://governing-walter-ian-fighting.trycloudflare.com/_mockups/branch-review-20260908/index.html) links six preserved proposals. Their copied wrapper removes historical before-images and the hidden-phone-calendar loading state; source proposal subtrees remain unchanged. Phone screenshots and final font measurements were inspected. Independent visual review remains pending. The calendar fixtures are explicitly historical June data and controls are static. Signup and calendar choices were asked together through the popup; unanswered choices remain pending. No product design, worktree removal, branch deletion or push occurred in this continuation.
+
+The remainder of this document is the historical reconciliation record.
+
 Owner: "alr look in deeep theres gnna be alot of conflicts etf ask me alot of questions u can stop
 and stuff and ask yk go carefully and merge them or delete but ask me alot", then "and there might
 be like same work or smth and we might need to decide between n stuff makebmockup to compare

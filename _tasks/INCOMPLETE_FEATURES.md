@@ -4,6 +4,14 @@
 
 ---
 
+## Branch recovery: live verification and deferred source, 2026-09-08
+
+- **Recurring booking recovery**: [route](/Users/sulo/Documents/solen/app/api/bookings/recurring/route.ts:30). The missing claim and compensation checks are committed on local main with actual-handler tests using mocked external boundaries. **Remaining**: the existing RLS lesson requires a non-owner transaction in the target runtime; that live check has not run. **Next step**: use an authorized isolated customer fixture, suppress outbound delivery through an approved test setup, and verify competing slot claims and returned compensation rows. Do not describe mocked tests as live RLS proof.
+- **Approved fee-payment direction on the unmerged recent branch**: [source intent route](/Users/sulo/Documents/solen/.claude/worktrees/design-system-consolidation-10167f/app/api/bookings/[id]/fee-pay-intent/route.ts:1). Actual-route tests with external services mocked demonstrate concurrent sibling intents, replacement of an in-flight or succeeded intent, late pointer overwrite and legacy metadata mismatch. **Blocker**: those failures must be repaired before the flow enters main. **Next step**: preserve one payable intent per fee obligation, compatible settlement metadata and observed state transitions; rerun the named failure scenarios. No real duplicate charge was demonstrated. Evidence: [accepted diagnosis](/Users/sulo/Documents/Codex/solen-consolidation/2026-09-07/candidates/recent-branches/fee-diagnosis/findings.md).
+- **Remaining unique branch work and design choices**: [current reconciliation](/Users/sulo/Documents/solen/_plans/BRANCH_RECONCILIATION_2026-08-14.md:3) owns the active recovery order, source identities and pending signup/calendar choice. These items are in progress, not silently dropped or treated as merged. Worktrees remain preserved until integration or an explicit retention/cleanup decision.
+
+---
+
 ## Netlify Migration: Cron Jobs — RESOLVED via GitHub Actions (2026-05-06)
 
 - **Context**: Migrated deploy from Vercel to Netlify on 2026-05-06 (Vercel account blocked). `netlify.toml` covers build + headers; `vercel.json` had 19 cron jobs that do **not** transfer.
