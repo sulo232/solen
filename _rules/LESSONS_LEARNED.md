@@ -21,6 +21,14 @@ Before a change, search the ledger by affected paths, component or feature and s
 
 ## DB / Supabase
 
+### Store CRM segments require the complete eligible booking population
+- **Date**: 2026-09-08
+- **File(s)**: `app/api/salon/clients/route.ts`, `tests/api/salon/clients-rfm.test.ts`, `app/[locale]/dashboard/clients/page.tsx`, `tests/components/clients-load-state.test.tsx`, `supabase/migrations/20260328_create_rfm_materialized_view.sql`
+- **Observed failure**: the client route queried absent client_rfm_segments and defaulted every customer to regular. The proposed inline replacement classified canceled/future bookings as visits and used one capped response as the complete population. The actual dashboard consumer also parsed HTTP500 as an empty client array, displaying five zero segment counts and the no-clients message.
+- **Supported cause**: the original migration targets absent clients/bookings.client_id and is guarded off. The live model is bookings.user_id. Public booking counts and recorded-price totals describe a different population/value than completed-past segment visits and actual retained online charges.
+- **Prevention**: keep public response semantics separate from the segment aggregate. Use completed past starts, the original whole-day thresholds and recorded Rappen less refunds, with an explicitly documented legacy price proxy where no online amount exists. Paginate every booking/profile/tag read with deterministic identities and exact counts; advance by returned rows and fail on errors, missing counts, no progress or identity/count drift rather than emitting partial totals. Test an actual handler above the server cap, a lower configured cap, terminal/future rows, null versus settled-zero amounts, refund/threshold boundaries and denied Store access. The consumer must check both profile and population response status and distinguish an unavailable active Store or failed read from a successful empty array. Use the registered ErrorState and Retry, re-read the active Store profile on retry, and ignore obsolete request completions before publishing a Store/population pair. Exercise the actual mounted 500-to-Retry path, true-empty and populated controls, denied/profile failures and competing request completions. REST page reads do not establish transaction snapshot isolation.
+
+
 ### Selecting non-existent columns crashes the entire SSR query
 - **Date**: 2026-03-30
 - **File(s)**: `app/[locale]/page.tsx:42`

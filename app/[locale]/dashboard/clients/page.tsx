@@ -7,6 +7,7 @@ import { Search, Tag, StickyNote, ChevronLeft, Calendar, Beaker, Camera, Clipboa
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import { DashStatusPill } from "@/app/[locale]/_components/dashboard/DashboardUI";
 import Spinner from "@/components-legacy/ui/Spinner";
+import ErrorState from "@/components-legacy/ui/ErrorState";
 import FormulaTab from "@/components-legacy/dashboard/FormulaTab";
 import ClientPhotosTab from "@/components-legacy/dashboard/ClientPhotosTab";
 import IntakeFormTab from "@/components-legacy/dashboard/IntakeFormTab";
@@ -59,9 +60,12 @@ const initials = (n: string) => {
 
 export default function ClientsPage() {
   const t = useTranslations("dashboard.clientsPage");
+  const tCommon = useTranslations("common");
   const locale = useLocale();
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const [loadAttempt, setLoadAttempt] = useState(0);
   const [search, setSearch] = useState("");
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [salonId, setSalonId] = useState<string | null>(null);
@@ -76,19 +80,46 @@ export default function ClientsPage() {
   ];
 
   useEffect(() => {
-    fetch("/api/profile")
-      .then((r) => r.json())
-      .then((p) => {
-        setSalonId(p?.salon_id ?? null);
-        if (p?.salon_id) {
-          return fetch(`/api/salon/clients?salon_id=${p.salon_id}`).then((r) => r.json());
+    let current = true;
+    const controller = new AbortController();
+    setLoading(true);
+    setLoadError(false);
+    setClients([]);
+    setSalonId(null);
+    setSelectedClient(null);
+
+    async function loadClients() {
+      try {
+        const profileResponse = await fetch("/api/profile", { signal: controller.signal });
+        if (!profileResponse.ok) throw new Error(`Profile request failed (${profileResponse.status})`);
+        const profile = await profileResponse.json();
+        if (!current) return;
+        if (typeof profile?.id !== "string" || !profile.id || typeof profile.salon_id !== "string" || !profile.salon_id) {
+          throw new Error("Authenticated profile or active Store unavailable");
         }
-        return { clients: [] };
-      })
-      .then((d) => setClients(d.clients ?? d.items ?? []))
-      .catch((err) => console.error("[DashboardClients] failed to fetch clients:", err))
-      .finally(() => setLoading(false));
-  }, []);
+        const response = await fetch(`/api/salon/clients?salon_id=${encodeURIComponent(profile.salon_id)}`, { signal: controller.signal });
+        if (!response.ok) throw new Error(`Clients request failed (${response.status})`);
+        const data = await response.json();
+        const population = data?.clients ?? data?.items;
+        if (!Array.isArray(population)) throw new Error("Client population unavailable");
+        if (!current) return;
+        setSalonId(profile.salon_id);
+        setClients(population);
+      } catch (err) {
+        if (!current) return;
+        console.error("[DashboardClients] failed to fetch clients:", err);
+        setLoadError(true);
+      } finally {
+        if (current) setLoading(false);
+      }
+    }
+
+    void loadClients();
+    return () => {
+      current = false;
+      controller.abort();
+    };
+  }, [loadAttempt]);
 
   const filtered = useMemo(() => {
     let list = clients;
@@ -117,6 +148,12 @@ export default function ClientsPage() {
         <p className="text-[12.5px] text-s-ink-2 mt-1">{t("subtitle")}</p>
       </div>
 
+      {loading ? (
+        <div className="flex justify-center py-10"><Spinner size="md" /></div>
+      ) : loadError ? (
+        <ErrorState title={tCommon("errorLoading")} retryLabel={tCommon("retry")} onRetry={() => setLoadAttempt((attempt) => attempt + 1)} />
+      ) : (
+      <>
       {/* Segment filter tabs */}
       <div className="flex gap-1.5 mb-4 overflow-x-auto pb-1 -mx-px [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {SEGMENTS.map((s) => {
@@ -153,9 +190,7 @@ export default function ClientsPage() {
         />
       </div>
 
-      {loading ? (
-        <div className="flex justify-center py-10"><Spinner size="md" /></div>
-      ) : filtered.length === 0 ? (
+      {filtered.length === 0 ? (
         <p className="text-sm text-s-ink/30 text-center py-10">
           {search ? t("noClientsFound") : t("noClientsYet")}
         </p>
@@ -213,6 +248,8 @@ export default function ClientsPage() {
             );
           })}
         </div>
+      )}
+      </>
       )}
     </DashboardLayout>
   );
