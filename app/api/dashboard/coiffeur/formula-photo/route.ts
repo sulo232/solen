@@ -30,8 +30,9 @@ export async function POST(req: NextRequest) {
 
   const admin = createAdminSupabaseClient();
 
-  // Resolve salon ownership
-  const salon = await getActiveSalon<{ id: string }>(admin, user.id, "id");
+  // Resolve salon ownership. P9-2: area composes the staff fallback (clients)
+  // onto the owner resolution. Owner path is unchanged.
+  const salon = await getActiveSalon<{ id: string }>(admin, user.id, "id", "clients");
   if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   // Parse multipart FormData

@@ -7,6 +7,7 @@ import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { validateBody, barberReminderSendSchema } from "@/lib/validations";
 import { getServerEnv } from "@/lib/env";
 import { sendEmail } from "@/lib/email";
+import { requireSalonAccess } from "@/lib/auth/require";
 
 // POST /api/dashboard/barber-reminders/send: send a reminder to a client
 export async function POST(req: NextRequest) {
@@ -28,11 +29,18 @@ export async function POST(req: NextRequest) {
   if (validationError) return NextResponse.json({ error: validationError.message }, { status: 400 });
   const { client_id, salon_id } = validated;
 
+  // P9-2: requireSalonAccess composes the owner check with the staff
+  // area-permission check (marketing) instead of the old owner-only query
+  // filter. The owner path is unchanged.
+  const accessResult = await requireSalonAccess(salon_id, "marketing");
+  if (accessResult instanceof NextResponse) return accessResult;
+
   const admin = createAdminSupabaseClient();
 
-  // Verify salon ownership
+  // Access is already verified above; this just fetches the `name` field the
+  // gate doesn't carry, for the email below.
   const { data: salon } = await admin
-    .from("salons").select("id, name").eq("id", salon_id).eq("owner_id", user.id).single();
+    .from("salons").select("id, name").eq("id", salon_id).single();
   if (!salon) return NextResponse.json({ error: "Not your salon" }, { status: 403 });
 
   // Verify client_id has actually been a customer of THIS salon, otherwise any

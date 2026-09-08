@@ -18,6 +18,7 @@ import { reportError } from "@/lib/error-report";
 import { resolveSwissLocale } from "@/lib/format";
 import { localizedField } from "@/lib/i18n/localized-field";
 import { zurichYmd } from "@/lib/time/zurich";
+import { requireSalonAccess } from "@/lib/auth/require";
 import { resolveRequestUser } from "@/lib/auth/request-user";
 import { isSalonHidden, isViewerAdmin } from "@/lib/salon-detail";
 // Ties a completed booking back to the search that led to it, which is what feeds the personal row.
@@ -54,13 +55,9 @@ export async function GET(request: NextRequest) {
   //    first; salon owners can read their salon's bookings under RLS (same policy the
   //    /api/salon/clients reader relies on).
   if (salonId) {
-    const [{ data: salon }, { data: prof }] = await Promise.all([
-      supabase.from("salons").select("owner_id").eq("id", salonId).single(),
-      supabase.from("profiles").select("role").eq("id", user.id).single(),
-    ]);
-    if (salon?.owner_id !== user.id && prof?.role !== "admin") {
-      return NextResponse.json({ message: "Forbidden", code: "FORBIDDEN" }, { status: 403 });
-    }
+    const access = await requireSalonAccess(salonId, "calendar", { user, supabase });
+    if (access instanceof NextResponse) return access;
+    const admin = createAdminSupabaseClient();
 
     // Ring 2d: `*` shipped all ~63 booking columns (Stripe ids, access tokens, fee-charge
     // internals, VAT/tier-discount breakdowns, reschedule/price-increase workflow fields) to
@@ -69,7 +66,7 @@ export async function GET(request: NextRequest) {
     // dashboard/upcharge/page.tsx) plus the server's own enrichment reads (user_id, guest_name
     // below) and a small id/status/times/price/payment safety margin. No mobile consumer (the
     // iOS app queries `bookings` directly via Supabase, never this route).
-    let q = supabase
+    let q = admin
       .from("bookings")
       .select(
         "id, user_id, starts_at, ends_at, status, price_paid, paid_amount, payment_status, is_first_visit, is_recurring, cancellation_reason, guest_name, reference_code, services(name_de, name_en), staff_members(name)",
@@ -88,7 +85,7 @@ export async function GET(request: NextRequest) {
     const userIds = [...new Set((data ?? []).map((b) => b.user_id).filter(Boolean) as string[])];
     const nameMap = new Map<string, string | null>();
     if (userIds.length) {
-      const { data: profs } = await supabase.from("public_profiles").select("id, display_name").in("id", userIds);
+      const { data: profs } = await admin.from("public_profiles").select("id, display_name").in("id", userIds);
       (profs ?? []).forEach((p) => { if (p.id) nameMap.set(p.id, p.display_name); });
     }
     // Ring 2d: the explicit multi-column select above (vs the old `*, services(...)`) makes

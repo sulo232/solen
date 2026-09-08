@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, paymentLimiter } from "@/lib/ratelimit";
 import { salonRespondsByDeadline, salonResponseOverdue, type DisputeStatus } from "@/lib/bookings/dispute-engine";
+import { getActiveSalonId } from "@/lib/active-salon";
 
 // SP-5 Endpoint 1 — Salon-scoped refund/complaint REVIEW QUEUE (list only).
 //
@@ -39,15 +40,27 @@ export async function GET(req: NextRequest) {
 
   const admin = createAdminSupabaseClient();
 
-  // Resolve the caller's salon(s). A user may own more than one.
+  // Resolve the caller's salon(s). A user may own more than one. This is a
+  // bespoke case for the area-gating sweep (P9-2): the route lists ALL of an
+  // OWNER's salons at once (no salon_id param), which requireSalonAccess
+  // can't express (it checks exactly one salon id). The owner path is
+  // unchanged below; a caller who owns none falls back to the single salon
+  // their active staff row grants "finance" on, same refuse-by-default
+  // composition getActiveSalonId already does for other routes in this sweep.
   const { data: ownedSalons } = await admin
     .from("salons")
     .select("id, name, slug")
     .eq("owner_id", user.id);
-  if (!ownedSalons || ownedSalons.length === 0) {
-    return NextResponse.json({ error: "No salon" }, { status: 403 });
+  let salonIds: string[];
+  if (ownedSalons && ownedSalons.length > 0) {
+    salonIds = ownedSalons.map((s) => s.id);
+  } else {
+    const staffSalonId = await getActiveSalonId(admin, user.id, "finance");
+    if (!staffSalonId) {
+      return NextResponse.json({ error: "No salon" }, { status: 403 });
+    }
+    salonIds = [staffSalonId];
   }
-  const salonIds = ownedSalons.map((s) => s.id);
 
   // Parse filters.
   const sp = req.nextUrl.searchParams;

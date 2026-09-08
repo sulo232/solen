@@ -1,7 +1,8 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { createAdminSupabaseClient } from "@/lib/supabase";
+import { requireSalonAccess } from "@/lib/auth/require";
 import { fetchPostHogProfileViews } from "@/lib/posthog-api";
 import { computeDashboardAdvice, ADVICE_WINDOW_WEEKS, type DashboardAdvice } from "@/lib/dashboard-advice";
 import type { OpeningHours } from "@/lib/salon-hours";
@@ -20,33 +21,10 @@ export async function GET(
   const { searchParams } = new URL(request.url);
   const period = searchParams.get("period") ?? "month";
 
-  const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (!user) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-  }
-
-  // Check ownership or admin role
+  const access = await requireSalonAccess(id, "finance");
+  if (access instanceof NextResponse) return access;
   const admin = createAdminSupabaseClient();
-  const { data: profile } = await admin
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  const { data: salon } = await admin
-    .from("salons")
-    .select("owner_id, opening_hours")
-    .eq("id", id)
-    .single();
-
-  const isOwner = salon?.owner_id === user.id;
-  const isAdmin = profile?.role === "admin";
-
-  if (!isOwner && !isAdmin) {
-    return NextResponse.json({ message: "Forbidden" }, { status: 403 });
-  }
+  const { data: salon } = await admin.from("salons").select("opening_hours").eq("id", id).single();
 
   // Determine period date range — support explicit from/to params OR named period
   const fromParam = searchParams.get("from");
@@ -191,10 +169,7 @@ export async function GET(
     : 0;
 
   // PostHog Insights
-  let profileViews = 0;
-  if (isOwner || isAdmin) {
-    profileViews = await fetchPostHogProfileViews(id, days);
-  }
+  const profileViews = await fetchPostHogProfileViews(id, days);
   const conversionRate = profileViews > 0 ? (totalBookings / profileViews) * 100 : 0;
 
   // Prior period bookings for trends_vs_prior delta percentages

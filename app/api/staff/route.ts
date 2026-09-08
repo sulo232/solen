@@ -1,5 +1,6 @@
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { getActiveSalon } from "@/lib/active-salon";
+import { requireSalonAccess } from "@/lib/auth/require";
 import { validateBody, staffCreateSchema } from "@/lib/validations";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkUserBanned } from "@/lib/feature-flags";
@@ -13,20 +14,22 @@ export async function GET(request: Request) {
     const salonId = searchParams.get("salon_id");
     if (!salonId) return NextResponse.json({ error: "salon_id required" }, { status: 400 });
 
-    const supabase = await createServerSupabaseClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    // P9-2: requireSalonAccess composes the owner check with the staff
+    // area-permission check (team = invite teammates + change their access)
+    // instead of the old owner-or-admin compare. The owner path is
+    // unchanged: same owner_id === user.id comparison, just made inside the
+    // shared gate.
+    const accessResult = await requireSalonAccess(salonId, "team");
+    if (accessResult instanceof NextResponse) return accessResult;
 
+    // Resource reads go through the admin client, scoped by the gated salonId:
+    // staff_manage_owner (staff_members) and bookings_select_own (bookings) are
+    // both owner-only RLS, so a "team"-granted staff caller (via: "staff") would
+    // see empty results through the session-scoped client despite passing the
+    // gate above.
     const admin = createAdminSupabaseClient();
-    const { data: salon } = await admin.from("salons").select("owner_id").eq("id", salonId).single();
-    if (salon?.owner_id !== user.id) {
-      const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single();
-      if (profile?.role !== "admin") {
-        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-      }
-    }
 
-    const { data, error } = await supabase
+    const { data, error } = await admin
       .from("staff_members")
       .select("id, name, avatar_url, specialties, languages, is_active, commission_rate, permissions, access_role")
       .eq("salon_id", salonId)
@@ -39,7 +42,7 @@ export async function GET(request: Request) {
     const staffMembers = data ?? [];
     let futureCounts: Record<string, number> = {};
     if (staffMembers.length > 0) {
-      const { data: upcoming, error: bookingsError } = await supabase
+      const { data: upcoming, error: bookingsError } = await admin
         .from("bookings")
         .select("staff_member_id")
         .eq("salon_id", salonId)
@@ -78,14 +81,19 @@ export async function POST(request: Request) {
     const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
     if (rateLimited) return rateLimited;
 
-    const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
+    const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id", "team");
     if (!salon) return NextResponse.json({ error: "No salon found for this owner" }, { status: 403 });
 
     const body = await request.json();
     const { data: validated, error: valError } = validateBody(staffCreateSchema, body);
     if (valError) return NextResponse.json({ error: valError.message }, { status: 400 });
 
-    const { data: staff, error } = await supabase
+    // Resource write goes through the admin client: staff_manage_owner RLS on
+    // staff_members is owner-only, so a "team"-granted staff caller resolved
+    // through getActiveSalon's staff fallback would 500 through the session
+    // client. salon.id above is trusted (resolved server-side, never from body).
+    const admin = createAdminSupabaseClient();
+    const { data: staff, error } = await admin
       .from("staff_members")
       .insert({
         // salon_id always comes from getActiveSalon, never from the request body: the client

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { createAdminSupabaseClient } from "@/lib/supabase";
+import { requireSalonAccess } from "@/lib/auth/require";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -10,12 +11,11 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "salon_id is required" }, { status: 400 });
   }
 
-  const supabase = await createServerSupabaseClient();
-  const { data: userData, error: authError } = await supabase.auth.getUser();
-
-  if (authError || !userData?.user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  // P9-2: requireSalonAccess composes the owner check with the staff
+  // area-permission check (finance) instead of the old owner-or-admin
+  // compare. The owner path is unchanged.
+  const accessResult = await requireSalonAccess(salonId, "finance");
+  if (accessResult instanceof NextResponse) return accessResult;
 
   // Get current date range based on period
   const now = new Date();
@@ -30,17 +30,15 @@ export async function GET(request: Request) {
 
   const admin = createAdminSupabaseClient();
 
-  // Verify ownership or admin BEFORE any admin-client (RLS-bypassing) query.
-  const { data: salon } = await admin.from("salons").select("owner_id").eq("id", salonId).single();
-  const { data: profile } = await admin.from("profiles").select("role").eq("id", userData.user.id).single();
-  if (salon?.owner_id !== userData.user.id && profile?.role !== "admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
-
-  // 1. Fetch staff members
+  // 1. Fetch staff members. P9-2 (2026-09-05): staff_select_public only
+  // covers is_active = true rows and staff_manage_owner (the ALL policy
+  // covering inactive rows) is owner-only, so a staff member granted
+  // "finance" above would see a partial roster (any inactive staff row
+  // silently missing) through the session client. Admin client, scoped to
+  // the same gated salonId, for the full roster.
   // NOTE: staff_members has no `display_name` column, the real column is `name`
   // (checked lib/database.types.ts); switched below.
-  const { data: staffMembers, error: staffError } = await supabase
+  const { data: staffMembers, error: staffError } = await admin
     .from("staff_members")
     .select("id, user_id, name")
     .eq("salon_id", salonId);

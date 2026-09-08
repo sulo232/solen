@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { createAdminSupabaseClient } from "@/lib/supabase";
 import { recentAvgServiceMinutes } from "@/lib/barber/walkin-ticket";
+import { requireSalonAccess } from "@/lib/auth/require";
 
 // Real walk-in analytics, computed from the live queue (barber_walkin_queue) — the single
 // source of truth for ALL walk-ins. No fabricated values: every metric below is derived from
@@ -14,12 +15,11 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "salon_id is required" }, { status: 400 });
   }
 
-  const supabase = await createServerSupabaseClient();
-  const { data: userData, error: authError } = await supabase.auth.getUser();
-
-  if (authError || !userData?.user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  // P9-2: requireSalonAccess composes the owner check with the staff
+  // area-permission check (calendar) instead of the old owner-or-admin
+  // compare. The owner path is unchanged.
+  const accessResult = await requireSalonAccess(salonId, "calendar");
+  if (accessResult instanceof NextResponse) return accessResult;
 
   // Date range for the requested period.
   const now = new Date();
@@ -33,14 +33,6 @@ export async function GET(request: Request) {
   }
 
   const admin = createAdminSupabaseClient();
-
-  // Verify ownership or admin BEFORE any admin-client (RLS-bypassing) query. Covers every
-  // branch below, including ?breakdown=hourly.
-  const { data: salon } = await admin.from("salons").select("owner_id").eq("id", salonId).single();
-  const { data: profile } = await admin.from("profiles").select("role").eq("id", userData.user.id).single();
-  if (salon?.owner_id !== userData.user.id && profile?.role !== "admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
 
   // Walk-ins in period — the live queue, scoped to this salon + joined_at window.
   const { data: queue, error: queueError } = await admin

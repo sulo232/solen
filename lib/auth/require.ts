@@ -121,7 +121,14 @@ export async function requireSalonOwner(
   if (authResult instanceof NextResponse) return authResult;
   const { user, supabase } = authResult;
 
-  const { data: salon, error: salonError } = await supabase
+  // RLS FIX (verify-auth-rollout): `salons_select_active` only allows a row
+  // through when `is_active = true OR auth.uid() = owner_id`, so on the
+  // session client a non-owner caller checking an INACTIVE salon got a false
+  // "not found" here before ever reaching the owner_id comparison below.
+  // Admin client bypasses RLS for this existence lookup only; the owner_id
+  // check right after still runs against the real row either way.
+  const admin = createAdminSupabaseClient();
+  const { data: salon, error: salonError } = await admin
     .from("salons")
     .select("id, owner_id")
     .eq("id", salonId)
@@ -145,13 +152,48 @@ export async function requireSalonOwner(
 }
 
 /**
+ * Whether a user carries the global platform admin role (`profiles.role ===
+ * "admin"`). Exported so the route sweep replacing the inline
+ * `salon.owner_id === user.id || profile.role === "admin"` checks (about
+ * twelve routes under app/api/dashboard and app/api/salon) can reuse this
+ * instead of re-deriving it. Same table/column/value as those inline checks,
+ * e.g. app/api/dashboard/activity-feed/route.ts:38 and
+ * app/api/analytics/salon/[id]/route.ts:40 (both `profile?.role === "admin"`
+ * off a `.from("profiles").select("role").eq("id", user.id)` lookup), and the
+ * same client choice (the request-scoped `supabase`, not the service-role
+ * admin client those two routes happen to use) as `requireAdmin` above in
+ * this file.
+ */
+export async function isPlatformAdmin(
+  supabase: SupabaseClient,
+  userId: string
+): Promise<boolean> {
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", userId)
+    .maybeSingle<{ role: UserRole }>();
+
+  if (error) {
+    console.error("[isPlatformAdmin] failed to load profile:", error, { userId });
+    return false;
+  }
+
+  return profile?.role === "admin";
+}
+
+/**
  * Requires the authenticated user to have access to one area of a salon's staff
- * dashboard, either as the salon's owner (always full access) or as an active
- * staff member whose `staff_members.permissions` grants that specific area.
+ * dashboard, either as the salon's owner (always full access), the global
+ * platform admin role, or as an active staff member whose
+ * `staff_members.permissions` grants that specific area.
  *
  * Returns `{ user, supabase, salon, via }` OR 404/403 NextResponse. `via` says
- * which case matched ("owner" or "staff"), and carries `staffId` for the staff
- * case so a caller can scope a query to that specific staff row.
+ * which case matched ("owner", "admin" or "staff"), and carries `staffId` for
+ * the staff case so a caller can scope a query to that specific staff row.
+ *
+ * Global admins retain full access even when they also have a staff row. A
+ * denied staff grant cannot override the platform role's existing access.
  *
  * DEFAULT IS REFUSE: an absent grant for `area` refuses access. This is the
  * opposite default from `canEditOwnSchedule` in
@@ -164,7 +206,8 @@ export async function requireSalonOwner(
  */
 export async function requireSalonAccess(
   salonId: string,
-  area: PermissionKey
+  area: PermissionKey,
+  verifiedAuth?: { user: User; supabase: SupabaseClient },
 ): Promise<
   | {
       user: User;
@@ -176,17 +219,33 @@ export async function requireSalonAccess(
       user: User;
       supabase: SupabaseClient;
       salon: { id: string; owner_id: string };
+      via: "admin";
+    }
+  | {
+      user: User;
+      supabase: SupabaseClient;
+      salon: { id: string; owner_id: string };
       via: "staff";
       staffId: string;
     }
   | NextResponse
 > {
-  const authResult = await requireAuth();
+  const authResult = verifiedAuth ?? await requireAuth();
   if (authResult instanceof NextResponse) return authResult;
   const { user, supabase } = authResult;
 
+  // RLS FIX (verify-auth-rollout): all three lookups below (salon existence,
+  // the caller's own staff row, the platform-admin role check) used to run on
+  // the session client, so `salons_select_active`
+  // (`is_active = true OR auth.uid() = owner_id`) 404'd a real staff member
+  // out of an INACTIVE salon before permissions were ever read. Admin client
+  // bypasses RLS for these lookups only; every permission decision below is
+  // unchanged (owner_id / user_id / permissions comparisons still run against
+  // the real rows).
+  const admin = createAdminSupabaseClient();
+
   // Same query shape as requireSalonOwner, reused rather than re-derived.
-  const { data: salon, error: salonError } = await supabase
+  const { data: salon, error: salonError } = await admin
     .from("salons")
     .select("id, owner_id")
     .eq("id", salonId)
@@ -203,7 +262,7 @@ export async function requireSalonAccess(
     return { user, supabase, salon: { id: salon.id, owner_id: salon.owner_id }, via: "owner" };
   }
 
-  const { data: staff, error: staffError } = await supabase
+  const { data: staff, error: staffError } = await admin
     .from("staff_members")
     .select("id, permissions")
     .eq("salon_id", salonId)
@@ -211,20 +270,31 @@ export async function requireSalonAccess(
     .eq("is_active", true)
     .maybeSingle<{ id: string; permissions: StaffPermissions | null }>();
 
-  if (staffError || !staff || !hasPermission(staff.permissions, area)) {
-    return NextResponse.json(
-      { error: "Forbidden", code: "NOT_AUTHORIZED_FOR_AREA" },
-      { status: 403 }
-    );
+  // Preserve the owner-or-platform-admin contract of the replaced gates.
+  if (await isPlatformAdmin(admin, user.id)) {
+    return {
+      user,
+      supabase,
+      salon: { id: salon.id, owner_id: salon.owner_id! },
+      via: "admin",
+    };
   }
 
-  return {
-    user,
-    supabase,
-    salon: { id: salon.id, owner_id: salon.owner_id! },
-    via: "staff",
-    staffId: staff.id,
-  };
+  if (!staffError && staff && hasPermission(staff.permissions, area)) {
+    return {
+      user,
+      supabase,
+      salon: { id: salon.id, owner_id: salon.owner_id! },
+      via: "staff",
+      staffId: staff.id,
+    };
+  }
+
+
+  return NextResponse.json(
+    { error: "Forbidden", code: "NOT_AUTHORIZED_FOR_AREA" },
+    { status: 403 }
+  );
 }
 
 /**

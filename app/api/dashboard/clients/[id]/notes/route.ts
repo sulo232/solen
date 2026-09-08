@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { clientBelongsToSalon } from "@/lib/verify-salon-client";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { requireSalonAccess } from "@/lib/auth/require";
 import { z } from "zod";
 
 const noteSchema = z.object({
@@ -16,20 +17,13 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   const salonId = req.nextUrl.searchParams.get("salon_id");
   if (!salonId) return NextResponse.json({ error: "salon_id is required" }, { status: 400 });
 
-  const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // P9-2: requireSalonAccess composes the owner check with the staff
+  // area-permission check (clients) instead of the old owner-or-admin
+  // compare. The owner path is unchanged.
+  const accessResult = await requireSalonAccess(salonId, "clients");
+  if (accessResult instanceof NextResponse) return accessResult;
 
   const admin = createAdminSupabaseClient();
-
-  // Verify salon ownership or admin (same check POST/DELETE below already use).
-  const { data: salon } = await admin.from("salons").select("owner_id").eq("id", salonId).single();
-  if (salon?.owner_id !== user.id) {
-    const { data: userProfile } = await admin.from("profiles").select("role").eq("id", user.id).single();
-    if (userProfile?.role !== "admin") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
-  }
 
   const { data: notes, error } = await admin
     .from("client_notes")
@@ -57,15 +51,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const validated = noteSchema.parse(body);
 
     const admin = createAdminSupabaseClient();
-    
-    // Verify salon ownership or admin
-    const { data: salon } = await admin.from("salons").select("owner_id").eq("id", validated.salon_id).single();
-    if (salon?.owner_id !== user.id) {
-      const { data: userProfile } = await admin.from("profiles").select("role").eq("id", user.id).single();
-      if (userProfile?.role !== "admin") {
-        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-      }
-    }
+
+    // P9-2: requireSalonAccess composes the owner check with the staff
+    // area-permission check (clients) instead of the old owner-or-admin
+    // compare. The owner path is unchanged.
+    const accessResult = await requireSalonAccess(validated.salon_id, "clients");
+    if (accessResult instanceof NextResponse) return accessResult;
 
     const belongs = await clientBelongsToSalon(admin, validated.salon_id, customerId);
     if (!belongs) return NextResponse.json({ error: "Client not found for this salon" }, { status: 404 });
@@ -107,16 +98,13 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
 
-  const admin = createAdminSupabaseClient();
+  // P9-2: requireSalonAccess composes the owner check with the staff
+  // area-permission check (clients) instead of the old owner-or-admin
+  // compare. The owner path is unchanged.
+  const accessResult = await requireSalonAccess(salonId, "clients");
+  if (accessResult instanceof NextResponse) return accessResult;
 
-  // Verify ownership
-  const { data: salon } = await admin.from("salons").select("owner_id").eq("id", salonId).single();
-  if (salon?.owner_id !== user.id) {
-    const { data: userProfile } = await admin.from("profiles").select("role").eq("id", user.id).single();
-    if (userProfile?.role !== "admin") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
-  }
+  const admin = createAdminSupabaseClient();
 
   // Parity with POST above (pure defense-in-depth: the delete below is already
   // triple-scoped by id + customer_id + salon_id, this just matches the explicit

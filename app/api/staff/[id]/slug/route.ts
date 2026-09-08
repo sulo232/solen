@@ -5,6 +5,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { validateBody, barberProfileSchema } from "@/lib/validations";
+import { requireSalonAccess } from "@/lib/auth/require";
 import type { Database } from "@/lib/database.types";
 
 // PUT /api/staff/[id]/slug — Set barber vanity URL slug
@@ -34,11 +35,12 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     .from("staff_members").select("id, salon_id").eq("id", staffId).single();
   if (!staff) return NextResponse.json({ error: "Staff not found" }, { status: 404 });
 
-  const { data: salon } = await admin
-    .from("salons").select("owner_id").eq("id", staff.salon_id).single();
-  if (salon?.owner_id !== user.id) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
+  // P9-2: requireSalonAccess composes the owner check with the staff
+  // area-permission check (catalog = services & pricing, the slug/cover
+  // photo/accent color are the public profile a catalog-granted staff member
+  // manages) instead of the old owner-only compare.
+  const access = await requireSalonAccess(staff.salon_id, "catalog");
+  if (access instanceof NextResponse) return access;
 
   // Check slug uniqueness
   const { data: existing } = await admin

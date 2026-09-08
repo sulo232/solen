@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
   if (rateLimited) return rateLimited;
 
   const admin = createAdminSupabaseClient();
-  const salon = await getActiveSalon<{ id: string; categories: string[] | null }>(admin, user.id, "id, categories");
+  const salon = await getActiveSalon<{ id: string; categories: string[] | null }>(admin, user.id, "id, categories", "catalog");
 
   if (!salon?.categories?.includes("barbershop")) {
     return NextResponse.json({ error: "Not a barbershop" }, { status: 403 });
@@ -60,7 +60,7 @@ export async function PUT(req: NextRequest) {
   if (valError) return NextResponse.json({ message: valError.message, code: "VALIDATION_ERROR" }, { status: 400 });
 
   const admin = createAdminSupabaseClient();
-  const salon = await getActiveSalon<{ id: string; categories: string[] | null }>(admin, user.id, "id, categories");
+  const salon = await getActiveSalon<{ id: string; categories: string[] | null }>(admin, user.id, "id, categories", "catalog");
 
   if (!salon?.categories?.includes("barbershop")) {
     return NextResponse.json({ error: "Not a barbershop" }, { status: 403 });

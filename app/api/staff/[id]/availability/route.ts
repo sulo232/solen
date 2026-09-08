@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
-import { requireAuth } from "@/lib/auth/require";
+import { requireAuth, requireSalonAccess } from "@/lib/auth/require";
 
 export async function GET(
   req: NextRequest,
@@ -9,6 +9,7 @@ export async function GET(
   try {
     const auth = await requireAuth();
     if (auth instanceof NextResponse) return auth;
+    const { user } = auth;
 
     const { id: staffId } = await params;
     if (!staffId) {
@@ -16,6 +17,22 @@ export async function GET(
     }
 
     const supabase = createAdminSupabaseClient();
+
+    // P9-2: gate with "schedule" (edit rota / staff working hours), unless
+    // the caller IS this staff member viewing their own row, which stays
+    // open the same way GET /api/staff/my-schedule's own-view is unrestricted.
+    const { data: targetStaff } = await supabase
+      .from("staff_members")
+      .select("salon_id, user_id, is_active")
+      .eq("id", staffId)
+      .maybeSingle();
+    if (!targetStaff) {
+      return NextResponse.json({ error: "Staff not found" }, { status: 404 });
+    }
+    if (targetStaff.user_id !== user.id || targetStaff.is_active !== true) {
+      const access = await requireSalonAccess(targetStaff.salon_id, "schedule");
+      if (access instanceof NextResponse) return access;
+    }
 
     // Fetch the raw schedules
     const { data: schedules, error: scheduleError } = await supabase

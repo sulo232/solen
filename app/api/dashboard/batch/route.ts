@@ -5,6 +5,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { validateBody, dashboardBatchSchema } from "@/lib/validations";
+import { requireSalonAccess } from "@/lib/auth/require";
+import { hasPermission, type StaffPermissions } from "@/lib/staff-permissions";
 
 /**
  * Dashboard batch endpoint — runs multiple sub-requests in parallel instead of
@@ -17,6 +19,13 @@ import { validateBody, dashboardBatchSchema } from "@/lib/validations";
 
 // input-abuse-07 (2026-07-27): the key enum + array-length bound now live in
 // lib/validations.ts's dashboardBatchSchema (DASHBOARD_BATCH_KEYS), not here.
+
+// P9-2 punch (round 2): the whole call is gated "calendar" below, but
+// "revenue_month" is the one key in the switch that returns money
+// (booking_revenue_sum). The other four ("bookings_today", "reviews_pending",
+// "walkin_queue", "activity_feed") return counts/lists, no CHF amounts, so
+// they stay under the calendar gate alone.
+const MONEY_KEYS = new Set(["revenue_month"]);
 
 export async function POST(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
@@ -33,13 +42,30 @@ export async function POST(request: NextRequest) {
   }
   const { salonId, requests } = validated;
 
+  // P9-2: gates the WHOLE batch call with "calendar" (the dashboard home is a
+  // calendar-area screen); a calendar-only staff member (the "staff" preset,
+  // lib/staff-permissions.ts) reaches this point, but see the finance
+  // check below for the one key that is not calendar data.
+  const accessResult = await requireSalonAccess(salonId, "calendar");
+  if (accessResult instanceof NextResponse) return accessResult;
+
   const admin = createAdminSupabaseClient();
 
-  // Verify ownership
-  const { data: salon } = await admin.from("salons").select("owner_id").eq("id", salonId).single();
-  const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single();
-  if (salon?.owner_id !== user.id && profile?.role !== "admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  // Owner/admin always carry finance (requireSalonAccess's own model: those
+  // two "via" values are always full access). A "staff" caller passed the
+  // calendar check above but may not have "finance" too, so re-check their
+  // permissions row directly (requireSalonAccess doesn't expose it, only
+  // staffId) before letting them read revenue_month below.
+  let hasFinance: boolean;
+  if (accessResult.via === "staff") {
+    const { data: staffRow } = await admin
+      .from("staff_members")
+      .select("permissions")
+      .eq("id", accessResult.staffId)
+      .maybeSingle<{ permissions: StaffPermissions | null }>();
+    hasFinance = hasPermission(staffRow?.permissions, "finance");
+  } else {
+    hasFinance = true;
   }
 
   const today = new Date().toISOString().split("T")[0];
@@ -49,6 +75,10 @@ export async function POST(request: NextRequest) {
 
   await Promise.all(
     requests.map(async (key) => {
+      if (MONEY_KEYS.has(key) && !hasFinance) {
+        results[key] = { error: "NOT_AUTHORIZED_FOR_AREA" };
+        return;
+      }
       try {
         switch (key) {
           case "bookings_today": {

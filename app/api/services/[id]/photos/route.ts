@@ -7,6 +7,7 @@ import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { requireUploadHeader, verifyAndStripImage } from "@/lib/upload-security";
 import { removeObjectForUrl } from "@/lib/storage";
 import { validateBody, serviceDeletePhotoSchema } from "@/lib/validations";
+import { requireSalonAccess } from "@/lib/auth/require";
 
 // Build a Postgres array-literal string for a text[] compare-and-set filter (the
 // DELETE handler below). postgrest-js's own .eq()/.filter() interpolate the value
@@ -39,17 +40,23 @@ export async function POST(
   const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
 
-  // Verify service belongs to user's salon
-  const { data: service } = await supabase
+  // G22: read via the admin client, scoped by the service id, so this can be
+  // gated by requireSalonAccess below instead of an inline owner compare; a
+  // catalog-granted staff caller is not the row's owner_id, so the session
+  // client's services_manage_owner RLS would otherwise 404/empty this read.
+  const admin = createAdminSupabaseClient();
+  const { data: service } = await admin
     .from("services")
-    .select("id, salon_id, photo_urls, salons(owner_id)")
+    .select("id, salon_id, photo_urls")
     .eq("id", serviceId)
     .single();
 
   if (!service) return NextResponse.json({ error: "Service not found" }, { status: 404 });
 
-  const owner = (service.salons as unknown as { owner_id: string })?.owner_id;
-  if (owner !== user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  // G22: requireSalonAccess composes the owner check with the staff
+  // area-permission check (catalog) instead of the old owner-only compare.
+  const access = await requireSalonAccess(service.salon_id, "catalog");
+  if (access instanceof NextResponse) return access;
 
   const banned = await checkUserBanned(user.id);
   if (banned) return banned;
@@ -84,15 +91,20 @@ export async function POST(
 
   const path = `${service.salon_id}/${serviceId}/${Date.now()}.${processed.ext}`;
 
-  const { error: uploadError } = await supabase.storage
+  // G22: admin client for the upload and the row write too. The live
+  // storage.objects policy for "service-photos" grants INSERT to the salon
+  // OWNER only, and services_manage_owner RLS is the same owner-only shape,
+  // so a catalog-granted staff caller's session client would silently fail
+  // (or write nothing) on both of these even though the gate above let them in.
+  const { error: uploadError } = await admin.storage
     .from("service-photos")
     .upload(path, processed.buffer, { contentType: processed.contentType, upsert: false });
 
   if (uploadError) return NextResponse.json({ error: uploadError.message }, { status: 500 });
 
-  const { data: urlData } = supabase.storage.from("service-photos").getPublicUrl(path);
+  const { data: urlData } = admin.storage.from("service-photos").getPublicUrl(path);
 
-  const { error: updateError } = await supabase
+  const { error: updateError } = await admin
     .from("services")
     .update({ photo_urls: [...currentUrls, urlData.publicUrl] })
     .eq("id", serviceId);
@@ -117,17 +129,21 @@ export async function DELETE(
   const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
 
-  // Same ownership check as POST above: reused, not re-implemented.
-  const { data: service } = await supabase
+  // G22: admin client, same reasoning as the POST handler above: a
+  // catalog-granted staff caller is not the row's owner_id.
+  const admin = createAdminSupabaseClient();
+  const { data: service } = await admin
     .from("services")
-    .select("id, salon_id, photo_urls, salons(owner_id)")
+    .select("id, salon_id, photo_urls")
     .eq("id", serviceId)
     .single();
 
   if (!service) return NextResponse.json({ error: "Service not found" }, { status: 404 });
 
-  const owner = (service.salons as unknown as { owner_id: string })?.owner_id;
-  if (owner !== user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  // G22: requireSalonAccess composes the owner check with the staff
+  // area-permission check (catalog) instead of the old owner-only compare.
+  const access = await requireSalonAccess(service.salon_id, "catalog");
+  if (access instanceof NextResponse) return access;
 
   const banned = await checkUserBanned(user.id);
   if (banned) return banned;
@@ -154,7 +170,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Photo not found" }, { status: 404 });
     }
     const nextUrls = currentUrls.filter((u) => u !== url);
-    const { data: casRow, error: updateError } = await supabase
+    const { data: casRow, error: updateError } = await admin
       .from("services")
       .update({ photo_urls: nextUrls })
       .eq("id", serviceId)
@@ -172,7 +188,7 @@ export async function DELETE(
     // 0 rows matched: a concurrent delete on this service already changed
     // photo_urls between our read and this write. Re-read the row's current array
     // and retry against the fresh value rather than the stale one we started with.
-    const { data: refreshed, error: refreshError } = await supabase
+    const { data: refreshed, error: refreshError } = await admin
       .from("services")
       .select("photo_urls")
       .eq("id", serviceId)
@@ -199,8 +215,8 @@ export async function DELETE(
   // Service-role client on purpose, same as the sibling DELETE in app/api/services/[id]/route.ts:
   // the live storage.objects policies for service-photos grant salon owners INSERT only (no
   // DELETE), so a session-client remove silently deletes nothing and the file stays forever.
-  // Ownership was already proven above (owner_id === user.id) before this line can run.
-  const removal = await removeObjectForUrl(createAdminSupabaseClient(), url, "service-photos", service.salon_id, "[services photos DELETE]");
+  // Access was already proven above (requireSalonAccess) before this line can run.
+  const removal = await removeObjectForUrl(admin, url, "service-photos", service.salon_id, "[services photos DELETE]");
   if (removal.error) console.error("[services photos DELETE] storage remove failed:", removal.error, { serviceId, url });
 
   return NextResponse.json({ data: { photo_urls: updatedUrls } });

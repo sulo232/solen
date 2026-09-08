@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { validateBody, closureSchema } from "@/lib/validations";
 import { getActiveSalon } from "@/lib/active-salon";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
@@ -12,11 +12,16 @@ export async function GET(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
+  // P9-2 RLS fix: closures_owner_manage is owner-only, so a granted staff
+  // caller past the "settings" gate got a silent-empty read on the session
+  // client. getActiveSalon and the resource query both run on the admin
+  // client from here on (same pattern as app/api/salon/chairs/route.ts).
+  const admin = createAdminSupabaseClient();
+  const salon = await getActiveSalon<{ id: string }>(admin, user.id, "id", "settings");
 
   if (!salon) return NextResponse.json({ error: "No salon found" }, { status: 403 });
 
-  const { data, error } = await supabase
+  const { data, error } = await admin
     .from("salon_closures")
     .select("*")
     .eq("salon_id", salon.id)
@@ -39,11 +44,13 @@ export async function POST(req: NextRequest) {
   const { data: validated, error: valError } = validateBody(closureSchema, body);
   if (valError) return NextResponse.json({ error: valError.message }, { status: 400 });
 
-  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
+  // P9-2 RLS fix: same admin-client pattern as GET above.
+  const admin = createAdminSupabaseClient();
+  const salon = await getActiveSalon<{ id: string }>(admin, user.id, "id", "settings");
 
   if (!salon) return NextResponse.json({ error: "No salon found" }, { status: 403 });
 
-  const { data: closure, error } = await supabase
+  const { data: closure, error } = await admin
     .from("salon_closures")
     .insert({
       salon_id: salon.id,
@@ -70,16 +77,25 @@ export async function DELETE(req: NextRequest) {
   const closureId = new URL(req.url).searchParams.get("id");
   if (!closureId) return NextResponse.json({ error: "id required" }, { status: 400 });
 
-  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
+  // P9-2 RLS fix: same admin-client pattern as GET above.
+  const admin = createAdminSupabaseClient();
+  const salon = await getActiveSalon<{ id: string }>(admin, user.id, "id", "settings");
 
   if (!salon) return NextResponse.json({ error: "No salon found" }, { status: 403 });
 
-  const { error } = await supabase
+  const { data: deleted, error } = await admin
     .from("salon_closures")
     .delete()
     .eq("id", closureId)
-    .eq("salon_id", salon.id);
+    .eq("salon_id", salon.id)
+    .select("id");
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  // A wrong id, or one that belongs to a different salon, matches zero rows;
+  // .delete() reports success either way, so a real row count is the only
+  // way to tell "removed" from "nothing matched".
+  if (!deleted || deleted.length === 0) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
   return NextResponse.json({ message: "Deleted" });
 }

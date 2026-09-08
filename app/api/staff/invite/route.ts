@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, staffInviteSchema } from "@/lib/validations";
@@ -15,10 +15,16 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
+  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id", "team");
   if (!salon) return NextResponse.json({ error: "No salon found for this owner" }, { status: 403 });
 
-  const { data, error } = await supabase
+  // P9-2 (2026-09-05): invites_owner_manage (supabase/migrations/
+  // 20260530150000_staff_accounts_permissions.sql:34) is owner-only RLS, so a
+  // staff member granted "team" by getActiveSalon above would still read an
+  // empty invite list through the session client. Admin client, scoped to the
+  // same gated salon.id, so a staff caller sees the same invites an owner does.
+  const admin = createAdminSupabaseClient();
+  const { data, error } = await admin
     .from("staff_invites")
     .select("id, email, name:staff_name, status, created_at")
     .eq("salon_id", salon.id)
@@ -50,12 +56,19 @@ export async function POST(req: NextRequest) {
   if (valError) return NextResponse.json({ error: valError.message }, { status: 400 });
 
   // Verify user owns a salon
-  const salon = await getActiveSalon<{ id: string; name: string }>(supabase, user.id, "id, name");
+  const salon = await getActiveSalon<{ id: string; name: string }>(supabase, user.id, "id, name", "team");
 
   if (!salon) return NextResponse.json({ error: "No salon found for this owner" }, { status: 403 });
 
+  // P9-2 (2026-09-05): invites_owner_manage is owner-only RLS (same policy as
+  // GET above), so a staff member granted "team" would silently pass the
+  // duplicate-invite check (empty result, never actually duplicate) and, on
+  // insert, hit the WITH CHECK and get an RLS error. Admin client, scoped to
+  // the same gated salon.id, for both the check and the insert below.
+  const admin = createAdminSupabaseClient();
+
   // Check for existing pending invite
-  const { data: existing } = await supabase
+  const { data: existing } = await admin
     .from("staff_invites")
     .select("id")
     .eq("salon_id", salon.id)
@@ -69,7 +82,7 @@ export async function POST(req: NextRequest) {
   const token = crypto.randomBytes(32).toString("hex");
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(); // 7 days
 
-  const { data: invite, error } = await supabase
+  const { data: invite, error } = await admin
     .from("staff_invites")
     .insert({
       salon_id: salon.id,

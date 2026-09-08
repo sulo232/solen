@@ -1,9 +1,11 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { validateBody, staffServicesSchema } from "@/lib/validations";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { getActiveSalonId } from "@/lib/active-salon";
+import { requireSalonAccess } from "@/lib/auth/require";
 import type { Database } from "@/lib/database.types";
 
 // GET /api/staff/services — Get staff-service assignments for a salon
@@ -16,53 +18,34 @@ export async function GET(req: NextRequest) {
   const salonId = searchParams.get("salon_id");
   const staffMemberId = searchParams.get("staff_member_id");
 
-  // User must own the salon or be a staff member there
-  const { data: salon } = await supabase
-    .from("salons")
-    .select("id")
-    .eq("id", salonId ?? "")
-    .eq("owner_id", user.id)
-    .single();
-
-  const { data: staffSelf } = !salon
-    ? await supabase
-        .from("staff_members")
-        .select("id, salon_id")
-        .eq("user_id", user.id)
-        .eq("is_active", true)
-        .single()
-    : { data: null };
-
-  const effectiveSalonId = salon?.id ?? staffSelf?.salon_id;
+  const admin = createAdminSupabaseClient();
+  const effectiveSalonId = salonId ?? await getActiveSalonId(admin, user.id, "any");
   if (!effectiveSalonId) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  const { data: staffSelf } = await admin.from("staff_members").select("id, salon_id")
+    .eq("user_id", user.id).eq("salon_id", effectiveSalonId).eq("is_active", true).maybeSingle();
 
-  // Phantom-column fix: staff_services has no "salon_id" column (only staff_member_id,
-  // service_id, price_override, tier_label; confirmed against the live schema and
-  // lib/database.types.ts), so this filter always 400'd the whole query before this fix. Salon
-  // scoping only exists transitively through staff_member_id -> staff_members.salon_id, so
-  // resolve this salon's staff ids first, then filter on the real column (computed-filter
-  // pattern, see app/api/salons/route.ts).
-  let query = supabase
-    .from("staff_services")
-    .select("*, services(name_de, name_en, category, duration_minutes, price), staff_members(name)");
+  const access = await requireSalonAccess(effectiveSalonId, "catalog", { user, supabase });
+  const selfOnly = access instanceof NextResponse;
+  if (selfOnly && (!staffSelf || (staffMemberId && staffMemberId !== staffSelf.id))) return access;
 
-  const { data: salonStaff } = await supabase
-    .from("staff_members")
-    .select("id")
-    .eq("salon_id", effectiveSalonId);
-  const salonStaffIds = (salonStaff ?? []).map((s) => s.id);
-
-  if (staffMemberId) {
-    // Mirror the original double-scoped intent (salon_id AND staff_member_id together):
-    // staffMemberId must belong to this caller's effectiveSalonId, otherwise reject before
-    // querying, so a caller can't pass another salon's staff_member_id to read its rows.
-    if (!salonStaffIds.includes(staffMemberId)) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
-    query = query.eq("staff_member_id", staffMemberId);
+  // staff_services has no salon_id. Resolve the authorized staff ids first,
+  // then scope the service-role read through that foreign key.
+  let allowedStaffIds: string[];
+  if (selfOnly) {
+    allowedStaffIds = [staffSelf!.id];
   } else {
-    query = query.in("staff_member_id", salonStaffIds);
+    const { data: salonStaff, error } = await admin.from("staff_members")
+      .select("id").eq("salon_id", effectiveSalonId);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    allowedStaffIds = (salonStaff ?? []).map((staff) => staff.id);
   }
+  if (staffMemberId && !allowedStaffIds.includes(staffMemberId)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+  if (!allowedStaffIds.length) return NextResponse.json({ items: [] });
+  const query = admin.from("staff_services")
+    .select("*, services(name_de, name_en, category, duration_minutes, price), staff_members(name)")
+    .in("staff_member_id", staffMemberId ? [staffMemberId] : allowedStaffIds);
 
   const { data, error } = await query;
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
@@ -84,30 +67,33 @@ export async function POST(req: NextRequest) {
   if (validationError) return NextResponse.json({ error: validationError.message }, { status: 400 });
   const { staff_member_id, service_ids } = validated;
 
-  // Verify salon ownership
-  const { data: staffMember } = await supabase
+  const admin = createAdminSupabaseClient();
+  // Resolve only the target identity before checking its Store permission.
+  const { data: staffMember } = await admin
     .from("staff_members")
-    .select("id, salon_id, salons(owner_id)")
+    .select("id, salon_id")
     .eq("id", staff_member_id)
     .single();
 
   if (!staffMember) return NextResponse.json({ error: "Staff member not found" }, { status: 404 });
 
-  const salonOwner = (staffMember.salons as unknown as { owner_id: string })?.owner_id;
-  if (salonOwner !== user.id) {
-    return NextResponse.json({ error: "Only salon owners can assign services" }, { status: 403 });
-  }
+  // P9-2: requireSalonAccess composes the owner check with the staff
+  // area-permission check (catalog = services & pricing) instead of the old
+  // owner-only compare.
+  const access = await requireSalonAccess(staffMember.salon_id, "catalog", { user, supabase });
+  if (access instanceof NextResponse) return access;
 
   // Verify every service_id actually belongs to this staff member's salon, so a
   // caller can't cross-reference another salon's service (name/price/duration
   // would then leak onto this salon's public staff profile).
   if (service_ids.length > 0) {
-    const { data: ownServices } = await supabase
+    const { data: ownServices, error: servicesError } = await admin
       .from("services")
       .select("id")
       .in("id", service_ids)
       .eq("salon_id", staffMember.salon_id);
 
+    if (servicesError) return NextResponse.json({ error: servicesError.message }, { status: 500 });
     const ownIds = new Set((ownServices ?? []).map((s) => s.id));
     const foreignIds = service_ids.filter((sid: string) => !ownIds.has(sid));
     if (foreignIds.length > 0) {
@@ -115,11 +101,16 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // Resource write via the admin client: staff_services_salon_write RLS is
+  // owner-only, so a "catalog"-granted staff caller's delete+insert would
+  // silently remove nothing / 500 through the session client. staff_member_id
+  // is already verified above to belong to the gated salon.
   // Delete existing assignments and re-insert
-  await supabase
+  const { error: deleteError } = await admin
     .from("staff_services")
     .delete()
     .eq("staff_member_id", staff_member_id);
+  if (deleteError) return NextResponse.json({ error: deleteError.message }, { status: 500 });
 
   if (service_ids.length > 0) {
     // Phantom-column fix: staff_services has no "salon_id" column (see the GET handler above),
@@ -130,7 +121,7 @@ export async function POST(req: NextRequest) {
       service_id: sid,
     }));
 
-    const { error } = await supabase.from("staff_services").insert(rows);
+    const { error } = await admin.from("staff_services").insert(rows);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   }
 

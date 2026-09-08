@@ -1,11 +1,12 @@
 export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
 import { checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
+import { createAdminSupabaseClient } from "@/lib/supabase";
+import { requireSalonAccess } from "@/lib/auth/require";
 
-// GET — list services for a salon (for dropdowns like package manager)
+// GET: list services for a salon (for dropdowns like package manager)
 export async function GET(req: NextRequest) {
   const rateLimited = await applyRateLimit(generalLimiter, { ip: getClientIp(req) });
   if (rateLimited) return rateLimited;
@@ -15,34 +16,26 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "salon_id is required" }, { status: 400 });
   }
 
-  const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  // P9-2: requireSalonAccess composes the owner check with the staff
+  // area-permission check (catalog = services & pricing) instead of the old
+  // owner-only compare, so a staff member granted "catalog" can reach this
+  // route too. The owner path is unchanged: same owner_id === user.id
+  // comparison, just made inside the shared gate.
+  const accessResult = await requireSalonAccess(salonId, "catalog");
+  if (accessResult instanceof NextResponse) return accessResult;
+  const { user } = accessResult;
 
   const banned = await checkUserBanned(user.id);
   if (banned) return banned;
 
-  // Verify salon ownership (basic security for dashboard fetches)
-  const { data: salon } = await supabase
-    .from("salons")
-    .select("id")
-    .eq("id", salonId)
-    .eq("owner_id", user.id)
-    .single();
-
-  if (!salon) {
-    return NextResponse.json({ error: "Salon not found or not owned by user" }, { status: 403 });
-  }
-
-  const { data: services, error } = await supabase
+  const management = req.nextUrl.searchParams.get("mode") === "management";
+  let query = createAdminSupabaseClient()
     .from("services")
-    .select("id, name:name_de, name_de, name_en, duration_minutes, price, is_active")
-    .eq("salon_id", salonId)
-    .eq("is_active", true)
-    .order("name_de", { ascending: true });
+    .select("id, name:name_de, salon_id, name_de, name_en, name_fr, name_it, description_de, description_en, category, duration_minutes, price, is_active, buffer_minutes, processing_minutes, finishing_minutes, suitable_for, suitable_gender, photo_urls, sort_order, created_at")
+    .eq("salon_id", salonId);
+  if (!management) query = query.eq("is_active", true);
+  const { data: services, error } = await query
+    .order(management ? "sort_order" : "name_de", { ascending: true });
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

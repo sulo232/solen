@@ -159,7 +159,7 @@ export async function GET(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
       const admin = createAdminSupabaseClient();
-      const salon = await getActiveSalon<{ id: string }>(admin, user.id, "id");
+      const salon = await getActiveSalon<{ id: string }>(admin, user.id, "id", "catalog");
       // Owner branch only serves the caller's OWN active salon , a mismatched
       // salon_id (someone else's) silently falls through to the public read below.
       if (salon && salon.id === salonId) {
@@ -178,7 +178,7 @@ export async function GET(req: NextRequest) {
 // -- shared owner-auth resolution (session, ban check, rate limit, active salon) --
 async function resolveOwnerSalon(userId: string) {
   const admin = createAdminSupabaseClient();
-  const salon = await getActiveSalon<{ id: string }>(admin, userId, "id");
+  const salon = await getActiveSalon<{ id: string }>(admin, userId, "id", "catalog");
   return { admin, salon };
 }
 

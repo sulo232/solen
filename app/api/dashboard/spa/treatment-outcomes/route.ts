@@ -8,6 +8,7 @@ import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { getActiveSalon } from "@/lib/active-salon";
 import { validateBody, treatmentOutcomeSchema } from "@/lib/validations";
 import { clientBelongsToSalon } from "@/lib/verify-salon-client";
+import { requireSalonAccess } from "@/lib/auth/require";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -19,12 +20,13 @@ export async function GET(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  // P9-2: requireSalonAccess composes the owner check with the staff
+  // area-permission check (clients) instead of the old owner-or-admin
+  // compare. The owner path is unchanged.
+  const accessResult = await requireSalonAccess(salonId, "clients");
+  if (accessResult instanceof NextResponse) return accessResult;
+
   const admin = createAdminSupabaseClient();
-  const { data: salon } = await admin.from("salons").select("owner_id").eq("id", salonId).single();
-  const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single();
-  if (salon?.owner_id !== user.id && profile?.role !== "admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
 
   const { data: outcomes } = await admin
     .from("spa_treatment_outcomes")
@@ -49,7 +51,9 @@ export async function POST(request: NextRequest) {
   if (rateLimited) return rateLimited;
 
   const admin = createAdminSupabaseClient();
-  const salon = await getActiveSalon<{ id: string }>(admin, user.id, "id");
+  // P9-2: area composes the staff fallback (clients) onto the owner
+  // resolution. Owner path is unchanged.
+  const salon = await getActiveSalon<{ id: string }>(admin, user.id, "id", "clients");
   if (!salon) return NextResponse.json({ error: "No salon" }, { status: 404 });
 
   const body = await request.json();

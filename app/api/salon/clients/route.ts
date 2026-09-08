@@ -2,28 +2,30 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { requireSalonAccess } from "@/lib/auth/require";
+import { createAdminSupabaseClient } from "@/lib/supabase";
 
-// GET /api/salon/clients?salon_id=xxx — List clients who have booked at this salon
+// GET /api/salon/clients?salon_id=xxx: List clients who have booked at this salon
 export async function GET(req: NextRequest) {
   const salonId = req.nextUrl.searchParams.get("salon_id");
   if (!salonId) return NextResponse.json({ error: "salon_id required" }, { status: 400 });
 
-  const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // P9-2: requireSalonAccess composes the owner check with the staff
+  // area-permission check (clients = clients & CRM) instead of the old
+  // owner-or-admin compare. The owner path is unchanged: same owner_id
+  // === user.id comparison, just made inside the shared gate.
+  const accessResult = await requireSalonAccess(salonId, "clients");
+  if (accessResult instanceof NextResponse) return accessResult;
+  const { user } = accessResult;
 
-  // Verify ownership or admin
-  const { data: salon } = await supabase.from("salons").select("id, owner_id").eq("id", salonId).single();
-  if (!salon) return NextResponse.json({ error: "Salon not found" }, { status: 404 });
-
-  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
-  if (salon.owner_id !== user.id && profile?.role !== "admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
+  // P9-2 RLS fix: bookings_select_own is owner-only, so a granted staff
+  // caller reading through the session client got silently empty results
+  // past the gate. Resource I/O runs on the admin client from here on,
+  // every query still scoped to the gated salonId.
+  const admin = createAdminSupabaseClient();
 
   // Get unique customers from bookings with their last visit and count
-  const { data: bookings, error } = await supabase
+  const { data: bookings, error } = await admin
     .from("bookings")
     .select("user_id, starts_at, price_paid, status")
     .eq("salon_id", salonId)
@@ -52,13 +54,13 @@ export async function GET(req: NextRequest) {
   if (clientIds.length === 0) return NextResponse.json({ clients: [] });
 
   // Fetch profiles
-  const { data: profiles } = await supabase
+  const { data: profiles } = await admin
     .from("public_profiles")
     .select("id, display_name, avatar_url")
     .in("id", clientIds);
 
   // Fetch tags
-  const { data: allTags } = await supabase
+  const { data: allTags } = await admin
     .from("client_tags")
     .select("customer_id, tag, color")
     .eq("salon_id", salonId)
@@ -77,7 +79,7 @@ export async function GET(req: NextRequest) {
   // can't express this select; the untyped client keeps the existing try/catch fallback behavior.
   let rfmMap = new Map<string, { segment_tag: string; total_spent: number }>();
   try {
-    const untyped: SupabaseClient = supabase;
+    const untyped: SupabaseClient = admin;
     const { data: rfm } = await untyped
       .from("client_rfm_segments")
       .select("client_id, segment_tag, total_spent")

@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { validateBody, servicesReorderSchema } from "@/lib/validations";
+import { requireSalonAccess } from "@/lib/auth/require";
 
 // PATCH /api/services/reorder — Bulk update sort_order for services
 export async function PATCH(req: NextRequest) {
@@ -21,14 +22,12 @@ export async function PATCH(req: NextRequest) {
   }
   const { salon_id, order } = validated;
 
-  // Verify ownership
+  // G22: requireSalonAccess composes the owner check with the staff
+  // area-permission check (catalog) instead of the old owner-or-admin compare.
+  const access = await requireSalonAccess(salon_id, "catalog");
+  if (access instanceof NextResponse) return access;
+
   const admin = createAdminSupabaseClient();
-  const { data: salon } = await admin.from("salons").select("id, owner_id").eq("id", salon_id).single();
-  if (!salon) return NextResponse.json({ error: "Salon not found" }, { status: 404 });
-  if (salon.owner_id !== user.id) {
-    const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single();
-    if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
 
   // Batch update sort_order — throttled as a single RPC-style call
   const updates = order.map((item) =>

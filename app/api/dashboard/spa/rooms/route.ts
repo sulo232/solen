@@ -30,7 +30,9 @@ async function authenticate() {
   if (rateLimited) return { error: rateLimited };
 
   const admin = createAdminSupabaseClient();
-  const salon = await getActiveSalon<{ id: string }>(admin, user.id, "id");
+  // P9-2: area composes the staff fallback (catalog) onto the owner
+  // resolution. Owner path is unchanged.
+  const salon = await getActiveSalon<{ id: string }>(admin, user.id, "id", "catalog");
   if (!salon) return { error: NextResponse.json({ error: "No salon" }, { status: 404 }) };
 
   return { user, salon, admin };

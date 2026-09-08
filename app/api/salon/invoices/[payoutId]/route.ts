@@ -1,6 +1,14 @@
 import { NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { requireAuth, requireSalonAccess } from "@/lib/auth/require";
+import { createAdminSupabaseClient } from "@/lib/supabase";
 import { BRAND_HTML_COLORS, BRAND_HTML_FONT_STACK } from "@/lib/brand-html-constants";
+
+// Store-authored text is also rendered to finance-granted staff. Keep it text.
+function escapeHtml(value: unknown): string {
+  return String(value ?? "").replace(/[&<>"']/g, (character) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+  })[character]!);
+}
 
 // GET /api/salon/invoices/[payoutId]
 export async function GET(
@@ -8,29 +16,26 @@ export async function GET(
   { params }: { params: Promise<{ payoutId: string }> }
 ) {
   const { payoutId } = await params;
-  const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const auth = await requireAuth();
+  if (auth instanceof NextResponse) return auth;
 
-  // Get the payout and ensure user owns the salon. salons has no zip_code or city column
-  // (phantom, caught by strict typing): the real columns are postal_code and city_id (a FK to
-  // cities), so city name comes via the cities relation (same pattern noted in
-  // app/api/admin/seed-test-salons/route.ts: "city is not a column on salons, only city_id").
-  const { data: payout } = await supabase
+  // Resolve only the Store identity before checking access to financial data.
+  const admin = createAdminSupabaseClient();
+  const { data: identity } = await admin.from("salon_payouts")
+    .select("salon_id").eq("id", payoutId).maybeSingle();
+  if (!identity) return NextResponse.json({ error: "Payout not found" }, { status: 404 });
+  const access = await requireSalonAccess(identity.salon_id, "finance", auth);
+  if (access instanceof NextResponse) return access;
+
+  const { data: payout } = await admin
     .from("salon_payouts")
-    .select("*, salons(owner_id, name, address, postal_code, cities(name_de), stripe_account_id), bookings(starts_at)")
+    .select("salon_id, gross_amount, commission_percent, commission_amount, net_amount, stripe_payment_intent_id, created_at, salons(owner_id, name, address, postal_code, cities(name_de), stripe_account_id), bookings(starts_at)")
     .eq("id", payoutId)
+    .eq("salon_id", access.salon.id)
     .single();
 
   if (!payout) {
     return NextResponse.json({ error: "Payout not found" }, { status: 404 });
-  }
-
-  if (payout.salons?.owner_id !== user.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }
 
   // Generate a simple HTML printable invoice
@@ -75,10 +80,10 @@ export async function GET(
       <div style="margin-bottom: 40px;">
         <h3>Leistungsempfänger:</h3>
         <p>
-          <strong>${payout.salons.name}</strong><br>
-          ${payout.salons.address || ""}<br>
-          ${payout.salons.postal_code || ""} ${payout.salons.cities?.name_de || ""}<br>
-          Stripe ID: ${payout.salons.stripe_account_id || "N/A"}
+          <strong>${escapeHtml(payout.salons.name)}</strong><br>
+          ${escapeHtml(payout.salons.address || "")}<br>
+          ${escapeHtml(payout.salons.postal_code || "")} ${escapeHtml(payout.salons.cities?.name_de || "")}<br>
+          Stripe ID: ${escapeHtml(payout.salons.stripe_account_id || "N/A")}
         </p>
       </div>
 
@@ -94,7 +99,7 @@ export async function GET(
             <td>
               Kundenzahlung für Termin am 
               ${payout.bookings?.starts_at ? new Date(payout.bookings.starts_at).toLocaleDateString("de-CH") : "N/A"}<br>
-              <small>Transaktion: ${payout.stripe_payment_intent_id}</small>
+              <small>Transaktion: ${escapeHtml(payout.stripe_payment_intent_id)}</small>
             </td>
             <td style="text-align: right;">${payout.gross_amount.toFixed(2)}</td>
           </tr>

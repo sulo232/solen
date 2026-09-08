@@ -426,7 +426,7 @@ export default function ServicesPage() {
     fetch("/api/profile").then((r) => r.json()).then((p) => {
       setSalonId(p?.salon_id ?? null);
       setSalonCategories(p?.salon_categories ?? []);
-      return fetch(`/api/services?salon_id=${p?.salon_id}`).then((r) => r.json());
+      return fetch(`/api/salon/services?salon_id=${p?.salon_id}&mode=management`).then((r) => r.json());
     }).then((d) => setServices(d?.services ?? [])).catch((err) => console.error("[DashboardServices] Failed to fetch services:", err)).finally(() => setLoading(false));
   };
 

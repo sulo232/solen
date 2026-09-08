@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { validateBody, createPromoSchema } from "@/lib/validations";
@@ -30,24 +30,33 @@ export async function GET(req: NextRequest) {
     .single();
 
   if (profile?.role === "admin") {
-    // Admin sees all codes
+    // Admin sees all codes. Explicit column list (not `select("*")`) per the
+    // sensitive-table select gate, same columns as the salon-scoped branch below.
     const { data: codes } = await supabase
       .from("promo_codes")
-      .select("*")
+      .select("id, code, discount_type, discount_value, min_booking_amount, max_uses, current_uses, per_user_limit, salon_id, valid_from, valid_until, is_active, created_by, created_at")
       .order("created_at", { ascending: false });
     return NextResponse.json({ codes: codes ?? [] });
   }
 
   // Salon owner sees their salon's codes
-  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
+  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id", "marketing");
 
   if (!salon) {
     return NextResponse.json({ error: "Kein Salon gefunden" }, { status: 403 });
   }
 
-  const { data: codes } = await supabase
+  // P9-2 (2026-09-05): promo_codes_public_read only shows is_active = true
+  // rows and there is no owner/staff SELECT policy at all, so a staff member
+  // granted "marketing" above would still read a partial list (any of the
+  // salon's inactive/expired codes missing) through the session client.
+  // Admin client, scoped to the same gated salon.id, for the full list.
+  // Explicit column list (not `select("*")`) per the sensitive-table select
+  // gate: these are exactly the columns promo_codes carries.
+  const admin = createAdminSupabaseClient();
+  const { data: codes } = await admin
     .from("promo_codes")
-    .select("*")
+    .select("id, code, discount_type, discount_value, min_booking_amount, max_uses, current_uses, per_user_limit, salon_id, valid_from, valid_until, is_active, created_by, created_at")
     .eq("salon_id", salon.id)
     .order("created_at", { ascending: false });
 
@@ -82,7 +91,7 @@ export async function POST(req: NextRequest) {
 
   // Salon owners must attach their salon_id
   if (profile?.role !== "admin") {
-    const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
+    const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id", "marketing");
 
     if (!salon) {
       return NextResponse.json({ error: "Kein Salon gefunden" }, { status: 403 });
@@ -92,8 +101,17 @@ export async function POST(req: NextRequest) {
     data.salon_id = salon.id;
   }
 
+  // P9-2 (2026-09-05): promo_codes_salon_owner_insert requires the salon's
+  // owner_id, not just any active staff row, so a staff member granted
+  // "marketing" above would fail this INSERT's RLS check outright (and the
+  // duplicate-code lookup below would silently miss any inactive code, since
+  // promo_codes_public_read only shows is_active = true rows). Admin client
+  // for both, same as the GET handler above; `data.salon_id` is already
+  // forced to the gated salon.id for non-admin callers, never body-supplied.
+  const admin = createAdminSupabaseClient();
+
   // Check for duplicate code
-  const { data: existing } = await supabase
+  const { data: existing } = await admin
     .from("promo_codes")
     .select("id")
     .eq("code", data.code.toUpperCase())
@@ -103,13 +121,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Dieser Code existiert bereits" }, { status: 409 });
   }
 
-  const { data: promo, error: insertError } = await supabase
+  const { data: promo, error: insertError } = await admin
     .from("promo_codes")
     .insert({
       ...data,
       created_by: user.id,
     })
-    .select()
+    .select("id, code, discount_type, discount_value, min_booking_amount, max_uses, current_uses, per_user_limit, salon_id, valid_from, valid_until, is_active, created_by, created_at")
     .single();
 
   if (insertError) {

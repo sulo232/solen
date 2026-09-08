@@ -7,6 +7,7 @@ import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import type { Database } from "@/lib/database.types";
 import { translateToLocales } from "@/lib/ai/translate";
 import { removeObjectForUrl } from "@/lib/storage";
+import { requireSalonAccess } from "@/lib/auth/require";
 
 // GET /api/services/[id] — Get a single service
 export async function GET(
@@ -50,13 +51,10 @@ export async function PATCH(
 
   if (!service) return NextResponse.json({ error: "Service not found" }, { status: 404 });
 
-  const ownerIdRaw = service.salons as unknown as { owner_id: string } | null;
-  if (ownerIdRaw?.owner_id !== user.id) {
-    const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single();
-    if (profile?.role !== "admin") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
-  }
+  // G22: requireSalonAccess composes the owner check with the staff
+  // area-permission check (catalog) instead of the old owner-or-admin compare.
+  const access = await requireSalonAccess(service.salon_id, "catalog");
+  if (access instanceof NextResponse) return access;
 
   const body = await req.json();
   const { data: validated, error: validationError } = validateBody(serviceUpdateSchema, body);
@@ -124,13 +122,10 @@ export async function DELETE(
 
   if (!service) return NextResponse.json({ error: "Service not found" }, { status: 404 });
 
-  const ownerIdRaw = service.salons as unknown as { owner_id: string } | null;
-  if (ownerIdRaw?.owner_id !== user.id) {
-    const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single();
-    if (profile?.role !== "admin") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
-  }
+  // G22: requireSalonAccess composes the owner check with the staff
+  // area-permission check (catalog) instead of the old owner-or-admin compare.
+  const access = await requireSalonAccess(service.salon_id, "catalog");
+  if (access instanceof NextResponse) return access;
 
   const { error } = await admin.from("services").delete().eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { getActiveSalon } from "@/lib/active-salon";
 import { isStripeReady } from "@/lib/salon/stripe-ready";
 
@@ -23,26 +23,29 @@ export async function GET(req: NextRequest) {
     cancellation_fee_type: string | null;
     approved_at: string | null;
     rejection_reason: string | null;
-  }>(supabase, user.id, "id, name, description_de, phone, cover_photo_url, opening_hours, stripe_account_id, cancellation_fee_type, approved_at, rejection_reason");
+  }>(supabase, user.id, "id, name, description_de, phone, cover_photo_url, opening_hours, stripe_account_id, cancellation_fee_type, approved_at, rejection_reason", "settings");
 
   if (!salon) return NextResponse.json({ error: "No salon found" }, { status: 403 });
 
+  // Resource counts use the same gated Store after staff access is resolved.
+  const admin = createAdminSupabaseClient();
+
   // Check services
-  const { count: serviceCount } = await supabase
+  const { count: serviceCount } = await admin
     .from("services")
     .select("id", { count: "exact", head: true })
     .eq("salon_id", salon.id)
     .eq("is_active", true);
 
   // Check staff members
-  const { count: staffCount } = await supabase
+  const { count: staffCount } = await admin
     .from("staff_members")
     .select("id", { count: "exact", head: true })
     .eq("salon_id", salon.id)
     .eq("is_active", true);
 
   // Check staff schedules
-  const { count: scheduleCount } = await supabase
+  const { count: scheduleCount } = await admin
     .from("staff_schedules")
     .select("id", { count: "exact", head: true })
     .eq("salon_id", salon.id);

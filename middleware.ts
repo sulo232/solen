@@ -429,9 +429,33 @@ export async function middleware(request: NextRequest) {
       // Admin-only paths stay closed to them: that check below tests role === "admin" separately.
       const isInvitedStaff = Boolean(profile?.staff_salon_id);
 
+      // P9-2 fix (2026-09-05): `profiles.staff_salon_id` only ever tracks the OLD single-column
+      // invite flow described above, which has zero rows live. The CURRENT staff grant system is
+      // a `staff_members` row with per-area `permissions` (calendar, finance, clients, team,
+      // marketing, catalog, settings, schedule), unrelated to that column, so every real granted
+      // staff member (role stays "customer") fell through both checks below and got redirected
+      // to the homepage before ever reaching a dashboard route or its own area gate. Only an
+      // existence check runs here (id, is_active, salon_id are public-select columns per
+      // 20260703170000_lock_staff_members_sensitive_columns_POSTDEPLOY.sql; `permissions` is not
+      // and is never read here), so the actual per-area refusal still happens downstream, in
+      // each API route's requireSalonAccess/getActiveSalon(area) gate. Only run when the role
+      // check has already failed, so an owner or admin (the overwhelming majority of dashboard
+      // hits) never pays this extra query.
+      let isGrantedStaff = false;
+      if (role !== "salon_owner" && role !== "admin" && !isInvitedStaff) {
+        const { data: staffRow } = await supabase
+          .from("staff_members")
+          .select("id")
+          .eq("user_id", user.id)
+          .eq("is_active", true)
+          .limit(1)
+          .maybeSingle();
+        isGrantedStaff = Boolean(staffRow);
+      }
+
       // If role is not salon_owner/admin, check if user owns a salon anyway
       // (role update may have failed during onboarding)
-      if (role !== "salon_owner" && role !== "admin" && !isInvitedStaff) {
+      if (role !== "salon_owner" && role !== "admin" && !isInvitedStaff && !isGrantedStaff) {
         const { data: ownedSalon } = await supabase
           .from("salons")
           .select("id")
@@ -449,7 +473,7 @@ export async function middleware(request: NextRequest) {
         }
       }
 
-      if (role !== "salon_owner" && role !== "admin" && !isInvitedStaff) {
+      if (role !== "salon_owner" && role !== "admin" && !isInvitedStaff && !isGrantedStaff) {
         const url = request.nextUrl.clone();
         url.pathname = `/${currentLocale}`;
         const redirect = NextResponse.redirect(url);

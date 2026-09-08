@@ -22,7 +22,9 @@ export async function GET(req: NextRequest) {
   if (rateLimited) return rateLimited;
 
   const admin = createAdminSupabaseClient();
-  const salon = await getActiveSalon<{ id: string }>(admin, user.id, "id");
+  // P9-2: area composes the staff fallback (marketing) onto the owner
+  // resolution. Owner path is unchanged.
+  const salon = await getActiveSalon<{ id: string }>(admin, user.id, "id", "marketing");
   if (!salon) return NextResponse.json({ error: "No salon" }, { status: 404 });
 
   // Get system notes with reminder info (created by the smart-reminders cron)

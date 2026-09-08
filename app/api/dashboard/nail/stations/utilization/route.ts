@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { createAdminSupabaseClient } from "@/lib/supabase";
+import { requireSalonAccess } from "@/lib/auth/require";
 
 export const dynamic = "force-dynamic";
 
@@ -7,20 +8,13 @@ export async function GET(req: NextRequest) {
   const salonId = req.nextUrl.searchParams.get("salon_id");
   if (!salonId) return NextResponse.json({ error: "salon_id is required" }, { status: 400 });
 
-  const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // P9-2: requireSalonAccess composes the owner check with the staff
+  // area-permission check (catalog) instead of the old owner-or-admin
+  // compare. The owner path is unchanged.
+  const accessResult = await requireSalonAccess(salonId, "catalog");
+  if (accessResult instanceof NextResponse) return accessResult;
 
   const admin = createAdminSupabaseClient();
-  
-  // Verify ownership
-  const { data: salon } = await admin.from("salons").select("owner_id").eq("id", salonId).single();
-  if (salon?.owner_id !== user.id) {
-    const { data: userProfile } = await admin.from("profiles").select("role").eq("id", user.id).single();
-    if (userProfile?.role !== "admin") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
-  }
 
   const now = new Date().toISOString();
 

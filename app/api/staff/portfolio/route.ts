@@ -5,6 +5,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { validateBody, nailPortfolioTagsSchema } from "@/lib/validations";
+import { requireSalonAccess } from "@/lib/auth/require";
 import type { Database } from "@/lib/database.types";
 
 // POST /api/staff/portfolio — Upload portfolio image with optional nail metadata
@@ -35,9 +36,14 @@ export async function POST(req: NextRequest) {
 
   const { data: salon } = await admin
     .from("salons").select("id, owner_id, categories").eq("id", staff.salon_id).single();
-  if (!salon || salon.owner_id !== user.id) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
+  if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  // P9-2: requireSalonAccess composes the owner check with the staff
+  // area-permission check (catalog = services & pricing, portfolio images
+  // are part of the public profile a catalog-granted staff member manages)
+  // instead of the old owner-only compare.
+  const access = await requireSalonAccess(staff.salon_id, "catalog");
+  if (access instanceof NextResponse) return access;
 
   // Build insert data. Phantom-column fix: the live column is "staff_id", never
   // "staff_member_id" (see supabase/migrations/032_staff_portfolio_images.sql), and there is

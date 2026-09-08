@@ -7,6 +7,7 @@ import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { z } from "zod";
 import { validateBody } from "@/lib/validations";
 import { clientBelongsToSalon } from "@/lib/verify-salon-client";
+import { requireSalonAccess } from "@/lib/auth/require";
 
 const fadeBlueprintSchema = z.object({
   salon_id: z.string().uuid(),
@@ -43,16 +44,13 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "salon_id and client_id required" }, { status: 400 });
   }
 
-  const admin = createAdminSupabaseClient();
+  // P9-2: requireSalonAccess composes the owner check with the staff
+  // area-permission check (clients) instead of the old owner-only query
+  // filter. The owner path is unchanged.
+  const accessResult = await requireSalonAccess(salonId, "clients");
+  if (accessResult instanceof NextResponse) return accessResult;
 
-  // Verify salon ownership
-  const { data: salon } = await admin
-    .from("salons")
-    .select("id")
-    .eq("id", salonId)
-    .eq("owner_id", user.id)
-    .single();
-  if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  const admin = createAdminSupabaseClient();
 
   // Get latest blueprint for this client
   const { data } = await admin
@@ -83,16 +81,13 @@ export async function POST(req: NextRequest) {
   const { data: validated, error: valError } = validateBody(fadeBlueprintSchema, body);
   if (valError) return NextResponse.json({ message: valError.message, code: "VALIDATION_ERROR" }, { status: 400 });
 
-  const admin = createAdminSupabaseClient();
+  // P9-2: requireSalonAccess composes the owner check with the staff
+  // area-permission check (clients) instead of the old owner-only query
+  // filter. The owner path is unchanged.
+  const accessResult = await requireSalonAccess(validated.salon_id, "clients");
+  if (accessResult instanceof NextResponse) return accessResult;
 
-  // Verify salon ownership
-  const { data: salon } = await admin
-    .from("salons")
-    .select("id")
-    .eq("id", validated.salon_id)
-    .eq("owner_id", user.id)
-    .single();
-  if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  const admin = createAdminSupabaseClient();
 
   const belongs = await clientBelongsToSalon(admin, validated.salon_id, validated.client_id);
   if (!belongs) return NextResponse.json({ error: "Client not found for this salon" }, { status: 404 });

@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
   if (valError) return NextResponse.json({ message: valError.message, code: "VALIDATION_ERROR" }, { status: 400 });
 
   const admin = createAdminSupabaseClient();
-  const salon = await getActiveSalon<{ id: string; categories: string[] | null }>(admin, user.id, "id, categories");
+  const salon = await getActiveSalon<{ id: string; categories: string[] | null }>(admin, user.id, "id, categories", "marketing");
   if (!salon?.categories?.includes("barbershop")) {
     return NextResponse.json({ error: "Not a barbershop" }, { status: 403 });
   }

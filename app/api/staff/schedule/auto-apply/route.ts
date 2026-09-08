@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { validateBody, staffScheduleAutoApplySchema } from "@/lib/validations";
+import { requireSalonAccess } from "@/lib/auth/require";
 
 // POST /api/staff/schedule/auto-apply — Auto-create staff schedules from salon opening hours
 export async function POST(req: NextRequest) {
@@ -21,10 +22,14 @@ export async function POST(req: NextRequest) {
 
   const admin = createAdminSupabaseClient();
 
-  // Verify ownership
+  // P9-2: requireSalonAccess composes the owner check with the staff
+  // area-permission check (schedule = edit rota / staff working hours)
+  // instead of the old owner-only compare.
+  const access = await requireSalonAccess(salon_id, "schedule");
+  if (access instanceof NextResponse) return access;
+
   const { data: salon } = await admin.from("salons").select("id, owner_id, opening_hours").eq("id", salon_id).single();
   if (!salon) return NextResponse.json({ error: "Salon not found" }, { status: 404 });
-  if (salon.owner_id !== user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   // Get all active staff
   const { data: staffMembers } = await admin

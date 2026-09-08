@@ -1,7 +1,8 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { createAdminSupabaseClient } from "@/lib/supabase";
+import { requireSalonAccess } from "@/lib/auth/require";
 
 // GET /api/dashboard/activity-feed?salon_id=...&limit=20
 export async function GET(request: NextRequest) {
@@ -13,32 +14,13 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "salon_id required" }, { status: 400 });
   }
 
-  const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  // P9-2: requireSalonAccess composes the owner check with the staff
+  // area-permission check (calendar) instead of the old owner-or-admin
+  // compare. The owner path is unchanged.
+  const accessResult = await requireSalonAccess(salonId, "calendar");
+  if (accessResult instanceof NextResponse) return accessResult;
 
   const admin = createAdminSupabaseClient();
-
-  // Verify ownership or admin
-  const { data: profile } = await admin
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  const { data: salon } = await admin
-    .from("salons")
-    .select("owner_id")
-    .eq("id", salonId)
-    .single();
-
-  const isOwner = salon?.owner_id === user.id;
-  const isAdmin = profile?.role === "admin";
-  if (!isOwner && !isAdmin) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
 
   const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 

@@ -5,6 +5,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { validateBody, serviceCreateSchema } from "@/lib/validations";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { translateToLocales } from "@/lib/ai/translate";
+import { requireSalonAccess } from "@/lib/auth/require";
 
 // GET /api/services?salon_id=xxx — List services for a salon
 export async function GET(req: NextRequest) {
@@ -37,22 +38,14 @@ export async function POST(req: NextRequest) {
   if (validationError) return NextResponse.json({ error: validationError.message }, { status: 400 });
   const { salon_id, name_de, name_en, category, duration_minutes, price, description_de, buffer_minutes, processing_minutes, finishing_minutes, suitable_for, suitable_gender, is_active, photos } = validated;
 
-  // Verify user owns this salon
-  const admin = createAdminSupabaseClient();
-  const { data: salon } = await admin
-    .from("salons")
-    .select("id, owner_id")
-    .eq("id", salon_id)
-    .single();
+  // G22: requireSalonAccess composes the owner check with the staff
+  // area-permission check (catalog = services & pricing) instead of the old
+  // owner-or-admin compare, so a staff member granted "catalog" can create a
+  // service too. The owner path is unchanged.
+  const access = await requireSalonAccess(salon_id, "catalog");
+  if (access instanceof NextResponse) return access;
 
-  if (!salon) return NextResponse.json({ error: "Salon not found" }, { status: 404 });
-  if (salon.owner_id !== user.id) {
-    // Check if admin
-    const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single();
-    if (profile?.role !== "admin") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
-  }
+  const admin = createAdminSupabaseClient();
 
   // AUTO-TRANSLATE (owner 2026-07-27: "salon cant rlly translte every service they have").
   // A salon writes the German name once; French and Italian customers would otherwise read

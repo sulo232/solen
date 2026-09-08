@@ -12,7 +12,7 @@ export async function GET(_req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const salon = await getActiveSalon<{ id: string; is_active: boolean; stripe_account_id: string | null; cover_photo_url: string | null; approved_at: string | null; rejection_reason: string | null }>(supabase, user.id, "id, is_active, stripe_account_id, cover_photo_url, approved_at, rejection_reason");
+  const salon = await getActiveSalon<{ id: string; is_active: boolean; stripe_account_id: string | null; cover_photo_url: string | null; approved_at: string | null; rejection_reason: string | null }>(supabase, user.id, "id, is_active, stripe_account_id, cover_photo_url, approved_at, rejection_reason", "settings");
 
   if (!salon) return NextResponse.json({ error: "No salon found" }, { status: 403 });
 

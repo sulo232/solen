@@ -15,7 +15,8 @@ export const dynamic = "force-dynamic";
 export const runtime = "edge";
 
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { requireSalonAccess } from "@/lib/auth/require";
 import { getActiveSalon } from "@/lib/active-salon";
 
 export async function GET(_request: NextRequest) {
@@ -29,26 +30,16 @@ export async function GET(_request: NextRequest) {
     );
   }
 
-  // Find the salon this user owns (or admin-preview salon). `profile` and
-  // `salon` each only need user.id, so run them together (stage 1) instead
-  // of the old serial profile -> getActiveSalon awaits.
-  const [{ data: profile }, salon] = await Promise.all([
-    supabase.from("profiles").select("id, role").eq("id", user.id).single(),
-    getActiveSalon<{ id: string; average_rating: number | null }>(supabase, user.id, "id, average_rating"),
-  ]);
-
-  if (!profile || (profile.role !== "salon_owner" && profile.role !== "admin")) {
-    // Non-salon users see empty payload (TodayLiveCard renders fallback)
-    return NextResponse.json({
-      now: null,
-      today_count: 0,
-      today_revenue: 0,
-      walk_in_count: 0,
-      inbox_unread: 0,
-      avg_rating: 0,
-      up_next: [],
-    });
-  }
+  // Find the salon this user owns (or admin-preview salon), or a
+  // "calendar"-granted staff row. P9-2: the old role-based short-circuit here
+  // ("must be salon_owner or admin", read off profiles.role BEFORE this gate)
+  // refused every granted staff caller outright, since staff carry
+  // profiles.role = "customer". `getActiveSalon` already composes owner OR
+  // admin-preview OR staff (lib/active-salon.ts); a null salon (checked
+  // below) is the single refuse signal now, no separate profile read needed.
+  const salon = await getActiveSalon<{ id: string; average_rating: number | null }>(
+    supabase, user.id, "id, average_rating", "calendar"
+  );
 
   if (!salon) {
     return NextResponse.json({
@@ -70,9 +61,22 @@ export async function GET(_request: NextRequest) {
 
   /* ─── Today's bookings (count + revenue) + walk-in queue ─────
    * walk_in_count doesn't depend on todayBookings (both only need salon.id),
-   * so run stage 2 together instead of the old serial awaits. */
+   * so run stage 2 together instead of the old serial awaits.
+   *
+   * P9-2 (2026-09-05): both tables carry owner-only RLS (bookings_select_own,
+   * walkin_salon_all in supabase/migrations/014_new_schema.sql:255 and
+   * 073_barber_foundation.sql:34), so a staff member granted the "calendar"
+   * area by the gate above would still read a silently-empty result set
+   * through the session client. Run them on the admin client instead, still
+   * scoped to the gated `salon.id`, so a staff caller sees the same data an
+   * owner does. */
+  const admin = createAdminSupabaseClient();
+
+  const financeAccess = await requireSalonAccess(salon.id, "finance", { user, supabase });
+  const hasFinance = !(financeAccess instanceof NextResponse);
+
   const [{ data: todayBookings }, { count: walk_in_count }] = await Promise.all([
-    supabase
+    admin
       .from("bookings")
       .select("id, starts_at, total_price:price_paid, status, services(name_de), profiles!user_id(display_name)")
       .eq("salon_id", salon.id)
@@ -80,7 +84,7 @@ export async function GET(_request: NextRequest) {
       .lte("starts_at", endOfDay.toISOString())
       .in("status", ["confirmed", "completed", "in_progress"])
       .order("starts_at", { ascending: true }),
-    supabase
+    admin
       .from("barber_walkin_queue")
       .select("id", { count: "exact", head: true })
       .eq("salon_id", salon.id)
@@ -88,10 +92,10 @@ export async function GET(_request: NextRequest) {
   ]);
 
   const today_count = todayBookings?.length ?? 0;
-  const today_revenue = (todayBookings ?? []).reduce(
+  const today_revenue = hasFinance ? (todayBookings ?? []).reduce(
     (sum, b: any) => sum + (Number(b.total_price) || 0),
     0
-  );
+  ) : null;
 
   /* ─── Find current/next booking ─────────────────────────────── */
   let nowBooking: any = null;
@@ -129,7 +133,7 @@ export async function GET(_request: NextRequest) {
         }
       : null,
     today_count,
-    today_revenue: Math.round(today_revenue),
+    today_revenue: today_revenue === null ? null : Math.round(today_revenue),
     walk_in_count: walk_in_count ?? 0,
     inbox_unread: inbox_unread ?? 0,
     avg_rating: salon.average_rating ?? 0,

@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { getActiveSalon } from "@/lib/active-salon";
 
 export async function GET(req: NextRequest) {
@@ -12,16 +12,24 @@ export async function GET(req: NextRequest) {
   }
 
   // Find user's salon
-  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");
+  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id", "finance");
 
   if (!salon) {
     return NextResponse.json({ error: "Salon not found" }, { status: 404 });
   }
 
-  // Fetch all payouts for this salon
-  const { data: payouts, error } = await supabase
+  // P9-2 (2026-09-05): salon_payouts_owner_select (supabase/migrations/
+  // 20260601132922_salon_payouts.sql:40) is owner-only RLS, so a staff member
+  // granted "finance" by the gate above would still read an empty payouts
+  // list through the session client. Admin client, scoped to the same gated
+  // salon.id, so a staff caller sees the same earnings an owner does.
+  //
+  // Explicit column list (not `select("*")`) per the sensitive-table select
+  // gate: these are exactly the columns salon_payouts carries.
+  const admin = createAdminSupabaseClient();
+  const { data: payouts, error } = await admin
     .from("salon_payouts")
-    .select("*, bookings(starts_at, user_id)")
+    .select("id, booking_id, salon_id, stripe_payment_intent_id, gross_amount, commission_percent, commission_amount, net_amount, status, created_at, bookings(starts_at, user_id)")
     .eq("salon_id", salon.id)
     .order("created_at", { ascending: false });
 

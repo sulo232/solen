@@ -1,7 +1,9 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { createAdminSupabaseClient } from "@/lib/supabase";
+
+import { requireSalonAccess } from "@/lib/auth/require";
 
 // GET /api/earnings/staff?salon_id=xxx&from=YYYY-MM-DD&to=YYYY-MM-DD
 export async function GET(req: NextRequest) {
@@ -11,18 +13,9 @@ export async function GET(req: NextRequest) {
 
   if (!salonId) return NextResponse.json({ error: "salon_id required" }, { status: 400 });
 
-  const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-  // Verify ownership
+  const access = await requireSalonAccess(salonId, "finance");
+  if (access instanceof NextResponse) return access;
   const admin = createAdminSupabaseClient();
-  const { data: salon } = await admin.from("salons").select("id, owner_id").eq("id", salonId).single();
-  if (!salon) return NextResponse.json({ error: "Salon not found" }, { status: 404 });
-  if (salon.owner_id !== user.id) {
-    const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single();
-    if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
 
   // Get staff members with commission_rate
   const { data: staffMembers } = await admin

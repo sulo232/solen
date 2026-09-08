@@ -1,8 +1,9 @@
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { validateBody, lastMinuteSettingsSchema } from "@/lib/validations";
+import { requireSalonAccess } from "@/lib/auth/require";
 import type { Database } from "@/lib/database.types";
 
 /**
@@ -19,43 +20,36 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const supabase = await createServerSupabaseClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    // P9-2: requireSalonAccess composes the owner check with the staff
+    // area-permission check (settings = business settings) instead of the
+    // old owner-or-admin compare. The owner path is unchanged: same
+    // owner_id === user.id comparison, just made inside the shared gate.
+    // This also picks up the admin-role bypass the old inline check already
+    // had (requireSalonAccess falls back to isPlatformAdmin), so nothing is
+    // lost by converting this handler too.
+    const accessResult = await requireSalonAccess(salonId, "settings");
+    if (accessResult instanceof NextResponse) return accessResult;
 
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    // Fetch the salon to check ownership. `salons` has no `user_id` column and
-    // there is no `salon_admins` table live, the real ownership column is
-    // `owner_id`, matching every other salon-management route.
-    const { data: salon, error: salonError } = await supabase
-      .from("salons")
-      .select("id, owner_id")
-      .eq("id", salonId)
-      .single();
-
-    if (salonError || !salon) {
-      return NextResponse.json({ error: "Salon not found" }, { status: 404 });
-    }
-
-    // Check if user owns the salon (or is admin)
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single();
-
-    if (salon.owner_id !== user.id && profile?.role !== "admin") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
-
-    // Fetch last-minute settings
-    const { data: settings } = await supabase
+    // P9-2 RLS fix: the two "Users can read/insert their salon last-minute
+    // settings" policies are owner-only, so a granted staff caller reading
+    // through the session client got a silently-swallowed error mapped to
+    // the "not configured" default. The admin client bypasses that RLS gap
+    // (scoped to the gated salonId below); maybeSingle distinguishes a real
+    // query error (logged, 500) from a genuine no-row result (the default).
+    const admin = createAdminSupabaseClient();
+    const { data: settings, error: settingsError } = await admin
       .from("salon_last_minute_settings")
       .select("*")
       .eq("salon_id", salonId)
-      .single();
+      .maybeSingle();
+
+    if (settingsError) {
+      console.error("[last-minute-settings] GET query failed:", settingsError);
+      return NextResponse.json(
+        { error: "Internal server error" },
+        { status: 500 }
+      );
+    }
 
     if (!settings) {
       return NextResponse.json({
@@ -105,19 +99,20 @@ export async function POST(req: NextRequest) {
     const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
     if (rateLimited) return rateLimited;
 
-    // Verify ownership (owner_id is the live column, see GET above)
-    const { data: salon } = await supabase
-      .from("salons")
-      .select("owner_id")
-      .eq("id", salon_id)
-      .single();
+    // P9-2: requireSalonAccess composes the owner check with the staff
+    // area-permission check (settings = business settings) instead of the
+    // old owner-only compare. The owner path is unchanged: same owner_id
+    // === user.id comparison, just made inside the shared gate. GET above
+    // is now converted too (same admin-client fix), so both handlers read
+    // and write this table the same way.
+    const accessResult = await requireSalonAccess(salon_id, "settings");
+    if (accessResult instanceof NextResponse) return accessResult;
 
-    if (salon?.owner_id !== user.id) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
-
-    // Upsert settings
-    const { error } = await supabase
+    // RLS fix: "Users can update/insert their salon last-minute settings" is
+    // owner-only, so a granted staff caller upserting through the session
+    // client got a silent write failure. Admin client, scoped to salon_id.
+    const admin = createAdminSupabaseClient();
+    const { error } = await admin
       .from("salon_last_minute_settings")
       .upsert({
         salon_id,

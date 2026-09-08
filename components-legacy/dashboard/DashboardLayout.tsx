@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 import { Skeleton } from "@/app/[locale]/_components/primitives";
+import { hasPermission, type PermissionKey, type StaffPermissions } from "@/lib/staff-permissions";
 import type { Profile, UserRole } from "@/lib/types";
 import { useMemo } from "react";
 import { getCategoryNavGroups } from "@/lib/dashboard/category-nav";
@@ -114,22 +115,25 @@ const STAFF_NAV = [
 // for BOTH the desktop icon-rail AND the mobile slide-out sidebar (the rail renders these
 // flat as icons; the sidebar renders them grouped by `group`). Keeps PC + mobile in sync.
 const RAIL_NAV = [
-  { key: "overview",  href: "/dashboard",           icon: LayoutGrid, label: "Übersicht",       group: "Betrieb" },
-  { key: "calendar",  href: "/dashboard/calendar",  icon: Calendar,   label: "Kalender",        group: "Betrieb" },
+  { key: "overview", area: null,  href: "/dashboard",           icon: LayoutGrid, label: "Übersicht",       group: "Betrieb" },
+  { key: "calendar", area: "calendar",  href: "/dashboard/calendar",  icon: Calendar,   label: "Kalender",        group: "Betrieb" },
   // V3-D421 (G11): walk-in queue rail item, barbershop-only (filtered at render).
-  { key: "queue",     href: "/dashboard/barber-ops", icon: UsersRound, label: "Warteschlange", barbershopOnly: true, group: "Betrieb" },
-  { key: "catalog",   href: "/dashboard/services",  icon: Scissors,   label: "Katalog",         group: "Verkauf & Kunden" },
-  { key: "bundles",   href: "/dashboard/bundles",   icon: Layers,     label: "Combos",          group: "Verkauf & Kunden" },
-  { key: "clients",   href: "/dashboard/clients",   icon: Users,         label: "Kund:innen",    group: "Verkauf & Kunden" },
+  { key: "queue", area: "calendar",     href: "/dashboard/barber-ops", icon: UsersRound, label: "Warteschlange", barbershopOnly: true, group: "Betrieb" },
+  { key: "catalog", area: "catalog",   href: "/dashboard/services",  icon: Scissors,   label: "Katalog",         group: "Verkauf & Kunden" },
+  { key: "bundles", area: "catalog",   href: "/dashboard/bundles",   icon: Layers,     label: "Combos",          group: "Verkauf & Kunden" },
+  { key: "clients", area: "clients",   href: "/dashboard/clients",   icon: Users,         label: "Kund:innen",    group: "Verkauf & Kunden" },
   // messaging turned off for now (owner 2026-06-13) — nav entry removed
-  { key: "marketing", href: "/dashboard/marketing", icon: Megaphone,     label: "Marketing",     group: "Business" },
-  { key: "sales",     href: "/dashboard/bookings",  icon: DollarSign, label: "Verkäufe",        group: "Verkauf & Kunden" },
-  { key: "team",      href: "/dashboard/staff",     icon: UserCheck,  label: "Team",            group: "Business" },
-  { key: "reports",   href: "/dashboard/analytics", icon: BarChart3,  label: "Berichte",        group: "Business" },
-  { key: "refunds",   href: "/dashboard/refunds",   icon: RotateCcw,  label: "Rückerstattungen", group: "Abrechnung" },
-  { key: "upcharge",  href: "/dashboard/upcharge",  icon: TrendingUp, label: "Mehrbelastung",   group: "Abrechnung" },
-  { key: "cases",     href: "/dashboard/cases",     icon: Scale,      label: "Fälle", adminOnly: true, group: "Abrechnung" },
-  { key: "settings",  href: "/dashboard/settings",  icon: Settings,   label: "Einstellungen",   group: "Mehr" },
+  { key: "marketing", area: "marketing", href: "/dashboard/marketing", icon: Megaphone,     label: "Marketing",     group: "Business" },
+  { key: "sales", area: "calendar",     href: "/dashboard/bookings",  icon: DollarSign, label: "Verkäufe",        group: "Verkauf & Kunden" },
+  { key: "team", area: "team",      href: "/dashboard/staff",     icon: UserCheck,  label: "Team",            group: "Business" },
+  { key: "reports", area: "finance",   href: "/dashboard/analytics", icon: BarChart3,  label: "Berichte",        group: "Business" },
+  { key: "refunds", area: "finance",   href: "/dashboard/refunds",   icon: RotateCcw,  label: "Rückerstattungen", group: "Abrechnung" },
+  { key: "upcharge", area: "finance",  href: "/dashboard/upcharge",  icon: TrendingUp, label: "Mehrbelastung",   group: "Abrechnung" },
+  { key: "cases", area: "finance",     href: "/dashboard/cases",     icon: Scale,      label: "Fälle", adminOnly: true, group: "Abrechnung" },
+  { key: "settings", area: "settings",  href: "/dashboard/settings",  icon: Settings,   label: "Einstellungen",   group: "Mehr" },
+  { key: "products", area: "catalog", href: "/dashboard/products", icon: Package, label: "Produkte", ownerOnly: true, group: "Verkauf & Kunden" },
+  { key: "earnings", area: "finance", href: "/dashboard/earnings", icon: DollarSign, label: "", group: "Abrechnung" },
+  { key: "helpEditor", area: null, href: "/dashboard/help-editor", icon: FileEdit, label: "", adminOnly: true, group: "Mehr" },
 ] as const;
 
 const NAV_GROUP_ORDER = ["Betrieb", "Verkauf & Kunden", "Business", "Abrechnung", "Mehr"] as const;
@@ -160,6 +164,11 @@ export default function DashboardLayout({
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [isStaff, setIsStaff] = useState(false);
+  const [staffPermissions, setStaffPermissions] = useState<StaffPermissions | null>(null);
+  const earningsT = useTranslations("dashboard.earningsPage");
+  const helpEditorT = useTranslations("dashboard.helpEditorPage");
+  const navLabel = (key: string, label: string) => key === "earnings" ? earningsT("title") : key === "helpEditor" ? helpEditorT("title") : label;
+  const canSeeArea = (area: PermissionKey | null) => role === "admin" || staffPermissions === null || area === null || hasPermission(staffPermissions, area);
   const [isPreviewing, setIsPreviewing] = useState(false);
   const [previewSalonName, setPreviewSalonName] = useState<string | null>(null);
   const [fetchedSalonName, setFetchedSalonName] = useState<string | null>(null);
@@ -239,7 +248,8 @@ export default function DashboardLayout({
           // salon name instead of "Dein Salon").
           setFetchedSalonName((p as any).salon_name ?? null);
           setFetchedSalonId((p as any).salon_id ?? (p as any).staff_salon_id ?? null);
-          setIsStaff(!!(p as any).staff_salon_id && p.role !== "salon_owner" && p.role !== "admin");
+          setStaffPermissions((p as any).staff_permissions ?? null);
+          setIsStaff(!!(p as any).staff_salon_id && (p as any).staff_permissions == null && p.role !== "salon_owner" && p.role !== "admin");
           if ((p as any).is_previewing) {
             setIsPreviewing(true);
             setPreviewSalonName((p as any).preview_salon_name ?? null);
@@ -279,20 +289,27 @@ export default function DashboardLayout({
       ? pathname === `/${locale}/dashboard`
       : pathname.startsWith(`/${locale}${href}`);
 
+  const desktopNav = isStaff
+    ? STAFF_NAV.map((item) => ({ ...item, label: t(item.key) }))
+    : RAIL_NAV.filter((it) => canSeeArea(it.area)
+        && (!("ownerOnly" in it) || staffPermissions === null || role === "admin")
+        && (!("barbershopOnly" in it) || salonCategories?.includes("barbershop"))
+        && (!("adminOnly" in it) || role === "admin"));
+
   return (
     <div data-surface="dashboard" className="min-h-screen bg-s-bg-sunken flex">
       {/* ── Desktop icon rail (V3-D347 W1 — Fresha structure) ── */}
       <aside className="hidden md:flex fixed left-0 top-0 h-full w-[64px] bg-white border-r border-s-border flex-col items-center py-3 z-30">
         <Link href={`/${locale}/dashboard`} aria-label="Solen" className="w-9 h-9 grid place-items-center text-[20px] font-bold tracking-[-0.04em] text-s-ink mb-2">S</Link>
         <nav aria-label="Dashboard-Navigation" className="flex-1 flex flex-col gap-1 items-center w-full">
-          {RAIL_NAV.filter((it) => (!("barbershopOnly" in it) || salonCategories?.includes("barbershop")) && (!("adminOnly" in it) || role === "admin")).map(({ key, href, icon: Icon, label }) => {
+          {desktopNav.map(({ key, href, icon: Icon, label }) => {
             const active = isActive(href);
             return (
               <Link key={key} href={`/${locale}${href}`} aria-current={active ? "page" : undefined}
-                className={`group relative w-10 h-10 rounded-xl grid place-items-center transition-colors ${active ? "bg-s-border text-s-ink" : "text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink"}`}>
+                className={`group relative w-10 h-10 after:absolute after:-inset-0.5 after:content-[''] rounded-xl grid place-items-center transition-colors ${active ? "bg-s-border text-s-ink" : "text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink"}`}>
                 <Icon size={20} strokeWidth={2.2} />
                 {/* messaging unread badge removed — feature off (owner 2026-06-13) */}
-                <span className="pointer-events-none absolute left-[52px] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-s-ink px-2 py-1 text-[12px] font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity z-50">{label}</span>
+                <span className="pointer-events-none absolute left-[52px] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-s-ink px-2 py-1 text-[12px] font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity z-50">{navLabel(key, label)}</span>
               </Link>
             );
           })}
@@ -303,7 +320,7 @@ export default function DashboardLayout({
                 const active = isActive(href);
                 return (
                   <Link key={key} href={`/${locale}${href}`} aria-current={active ? "page" : undefined}
-                    className={`group relative w-10 h-10 rounded-xl grid place-items-center transition-colors ${active ? "bg-s-border text-s-ink" : "text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink"}`}>
+                    className={`group relative w-10 h-10 after:absolute after:-inset-0.5 after:content-[''] rounded-xl grid place-items-center transition-colors ${active ? "bg-s-border text-s-ink" : "text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink"}`}>
                     <Icon size={19} strokeWidth={2.2} />
                     <span className="pointer-events-none absolute left-[52px] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-s-ink px-2 py-1 text-[12px] font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity z-50">{t(key)}</span>
                   </Link>
@@ -312,7 +329,7 @@ export default function DashboardLayout({
             </>
           )}
         </nav>
-        <Link href={`/${locale}`} className="group relative w-10 h-10 rounded-xl grid place-items-center text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink transition-colors mb-1.5">
+        <Link href={`/${locale}`} className="group relative w-10 h-10 after:absolute after:-inset-0.5 after:content-[''] rounded-xl grid place-items-center text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink transition-colors mb-1.5">
           <span aria-hidden className="text-[17px] leading-none">←</span>
           <span className="pointer-events-none absolute left-[52px] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-s-ink px-2 py-1 text-[12px] font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity z-50">{t("backToSite")}</span>
         </Link>
@@ -367,7 +384,9 @@ export default function DashboardLayout({
                     {/* Unified nav — SAME set as the desktop rail (RAIL_NAV), grouped for the sidebar */}
                     {NAV_GROUP_ORDER.map((groupLabel) => {
                       const items = RAIL_NAV.filter((it) =>
-                        (it as any).group === groupLabel
+                        it.group === groupLabel
+                        && canSeeArea(it.area)
+                        && (!("ownerOnly" in it) || (!isStaff && staffPermissions === null) || role === "admin")
                         && (!("barbershopOnly" in it) || salonCategories?.includes("barbershop"))
                         && (!("adminOnly" in it) || role === "admin"),
                       );
@@ -381,7 +400,7 @@ export default function DashboardLayout({
                               <Link key={key} href={`/${locale}${href}`} onClick={() => setMobileSidebarOpen(false)} aria-current={active ? "page" : undefined}
                                 className={`flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[15px] font-medium transition-colors ${active ? "bg-s-bg-sunken text-s-ink font-semibold" : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"}`}>
                                 <Icon size={20} strokeWidth={2.2} className={active ? "text-s-ink" : "text-s-ink-2"} />
-                                <span className="flex-1">{label}</span>
+                                <span className="flex-1">{navLabel(key, label)}</span>
                                 {/* messaging unread badge removed — feature off (owner 2026-06-13) */}
                               </Link>
                             );

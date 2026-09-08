@@ -5,6 +5,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { requireUploadHeader } from "@/lib/upload-security";
 import type { Database } from "@/lib/database.types";
+import { requireSalonAccess } from "@/lib/auth/require";
 
 // POST /api/services/import - CSV import for services
 export async function POST(req: NextRequest) {
@@ -30,14 +31,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "file and salon_id required" }, { status: 400 });
   }
 
-  // Verify ownership
+  // G22: requireSalonAccess composes the owner check with the staff
+  // area-permission check (catalog) instead of the old owner-or-admin compare.
+  const access = await requireSalonAccess(salonId, "catalog");
+  if (access instanceof NextResponse) return access;
+
   const admin = createAdminSupabaseClient();
-  const { data: salon } = await admin.from("salons").select("id, owner_id, categories").eq("id", salonId).single();
+  const { data: salon } = await admin.from("salons").select("id, categories").eq("id", salonId).single();
   if (!salon) return NextResponse.json({ error: "Salon not found" }, { status: 404 });
-  if (salon.owner_id !== user.id) {
-    const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single();
-    if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
 
   // Read CSV content (limit 2MB)
   if (file.size > 2 * 1024 * 1024) {

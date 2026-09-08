@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { requireSalonAccess } from "@/lib/auth/require";
 
 // GET /api/dashboard/nail/reminder-metrics?salon_id=...
 export async function GET(request: NextRequest) {
@@ -10,16 +10,11 @@ export async function GET(request: NextRequest) {
   const salonId = searchParams.get("salon_id");
   if (!salonId) return NextResponse.json({ error: "salon_id required" }, { status: 400 });
 
-  const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-  const admin = createAdminSupabaseClient();
-  const { data: salon } = await admin.from("salons").select("owner_id").eq("id", salonId).single();
-  const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single();
-  if (salon?.owner_id !== user.id && profile?.role !== "admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
+  // P9-2: requireSalonAccess composes the owner check with the staff
+  // area-permission check (marketing) instead of the old owner-or-admin
+  // compare. The owner path is unchanged.
+  const accessResult = await requireSalonAccess(salonId, "marketing");
+  if (accessResult instanceof NextResponse) return accessResult;
 
   // NOTE: reminder_log is not a real table (checked lib/database.types.ts; nail infill
   // reminders are currently written to client_notes, not a dedicated log), so both queries

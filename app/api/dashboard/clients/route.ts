@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
   if (rateLimited) return rateLimited;
 
   const admin = createAdminSupabaseClient();
-  const salon = await getActiveSalon<{ id: string; categories: string[] | null }>(admin, user.id, "id, categories");
+  const salon = await getActiveSalon<{ id: string; categories: string[] | null }>(admin, user.id, "id, categories", "clients");
   if (!salon) return NextResponse.json({ error: "No salon" }, { status: 404 });
 
   const category = req.nextUrl.searchParams.get("category");

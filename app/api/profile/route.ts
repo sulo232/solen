@@ -1,7 +1,8 @@
 export const dynamic = "force-dynamic";
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import type { StaffPermissions } from "@/lib/staff-permissions";
 import { validateBody, updateProfileSchema } from "@/lib/validations";
 import { getActiveSalon } from "@/lib/active-salon";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
@@ -44,23 +45,49 @@ export async function GET(request: NextRequest) {
         salon_categories: previewSalon.categories || [],
         is_previewing: true,
         preview_salon_name: previewSalon.name,
+        // An admin previewing a salon is still an admin, not a granted staff member.
+        staff_permissions: null,
       });
     }
   }
 
-  // Normal flow: look up the active owned salon (for DashboardLayout auth guard).
-  // Follows the salon switcher (solen_active_salon cookie) via getActiveSalon.
+  // Normal flow: look up the active salon (for DashboardLayout's auth guard and the
+  // dashboard pages that key their own reads off salon_id). `area: "any"` composes a
+  // granted-staff fallback onto the owned-salon lookup (lib/active-salon.ts): this call
+  // is "which salon does this person belong to", not "may they do X", so it must not
+  // gate on a specific permission area the way an API route's own getActiveSalon(area)
+  // call does. Follows the salon switcher (solen_active_salon cookie) via getActiveSalon.
   let salon_id: string | null = null;
   let salon_name: string | null = null;
   let salon_categories: string[] = [];
-  const ownedSalon = await getActiveSalon<{ id: string; name: string; categories: string[] | null }>(supabase, user.id, "id, name, categories");
+  const ownedSalon = await getActiveSalon<{ id: string; name: string; categories: string[] | null; owner_id: string }>(
+    supabase, user.id, "id, name, categories, owner_id", "any"
+  );
   if (ownedSalon) {
     salon_id = ownedSalon.id;
     salon_name = ownedSalon.name;
     salon_categories = ownedSalon.categories || [];
   }
 
-  return NextResponse.json({ ...data, salon_id, salon_name, salon_categories });
+  // The `permissions` column is revoked from the `authenticated` role
+  // (20260703170000_lock_staff_members_sensitive_columns_POSTDEPLOY.sql), so it can only be
+  // read on the admin client. Null for an admin (data.role) and for the owner of the resolved
+  // salon; populated only when this caller reached salon_id through the staff fallback above.
+  let staff_permissions: StaffPermissions | null = null;
+  if (ownedSalon && data.role !== "admin" && ownedSalon.owner_id !== user.id) {
+    staff_permissions = {};
+    const admin = createAdminSupabaseClient();
+    const { data: staffRow } = await admin
+      .from("staff_members")
+      .select("permissions")
+      .eq("salon_id", ownedSalon.id)
+      .eq("user_id", user.id)
+      .eq("is_active", true)
+      .maybeSingle<{ permissions: StaffPermissions | null }>();
+    if (staffRow) staff_permissions = staffRow.permissions ?? {};
+  }
+
+  return NextResponse.json({ ...data, salon_id, salon_name, salon_categories, staff_permissions });
 }
 
 export async function PATCH(request: NextRequest) {

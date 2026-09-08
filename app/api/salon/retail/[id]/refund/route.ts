@@ -8,6 +8,7 @@ import { validateBody, purchaseRefundSchema } from "@/lib/validations";
 import { issuePurchaseRefund, PurchaseRefundError } from "@/lib/purchases/issue-purchase-refund";
 import { notifyPurchaseRefundProcessed } from "@/lib/purchases/notify-purchase-refund";
 import { reportError } from "@/lib/error-report";
+import { requireSalonAccess } from "@/lib/auth/require";
 
 // POST /api/salon/retail/[id]/refund — Salon-triggered retail-purchase refund.
 // Mirrors /api/bookings/[id]/refund auth. Retail is amount-only (full/partial);
@@ -37,8 +38,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: "amount is required", code: "INVALID_AMOUNT" }, { status: 400 });
   }
 
-  // Ownership on the RLS request client; money write on the admin client inside the helper.
-  const { data: purchase } = await supabase
+  // P9-2 RLS fix: retail_purchases_salon_select is owner-only, so fetching
+  // this row on the session client returned nothing for a granted staff
+  // caller, 404ing before the gate below ever ran. The admin client fetches
+  // the row first (bypassing that RLS gap), the gate then runs on its
+  // salon_id, and only a genuinely missing row returns 404. Same admin
+  // client is reused below for the money write.
+  const admin = createAdminSupabaseClient();
+  const { data: purchase } = await admin
     .from("retail_purchases")
     .select("id, salon_id, salons(owner_id)")
     .eq("id", purchaseId)
@@ -46,12 +53,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   if (!purchase) return NextResponse.json({ error: "Purchase not found" }, { status: 404 });
 
-  const salonOwner = (purchase.salons as unknown as { owner_id: string })?.owner_id;
-  if (salonOwner !== user.id) {
-    return NextResponse.json({ error: "Only salon owners can issue refunds" }, { status: 403 });
-  }
+  // P9-2: requireSalonAccess composes the owner check with the staff
+  // area-permission check (finance, this touches money, not catalog) instead
+  // of the old owner-only compare, gated after this row lookup with its
+  // salon_id. The owner path is unchanged: same owner_id === user.id
+  // comparison, just made inside the shared gate.
+  const access = await requireSalonAccess(purchase.salon_id, "finance");
+  if (access instanceof NextResponse) return access;
 
-  const admin = createAdminSupabaseClient();
   try {
     const result = await issuePurchaseRefund({
       db: admin,
