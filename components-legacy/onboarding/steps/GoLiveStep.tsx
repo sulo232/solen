@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { Rocket, Check, X, PartyPopper, AlertTriangle, Clock } from "lucide-react";
 import { motion } from "motion/react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { useTranslations, useLocale } from "next-intl";
+import type { StepHandle } from "@/components-legacy/onboarding/SetupWizard";
 
 interface Step {
   key: string;
@@ -17,9 +18,10 @@ interface GoLiveStepProps {
   goTo: (index: number) => void;
 }
 
-export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
+const GoLiveStep = forwardRef<StepHandle, GoLiveStepProps>(function GoLiveStep({ onGoLive, steps, goTo }, ref) {
   const t = useTranslations("onboarding") as any;
   const [going, setGoing] = useState(false);
+  const activationInFlightRef = useRef(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [readiness, setReadiness] = useState<{
@@ -49,7 +51,9 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
       .catch((err) => console.error("[GoLiveStep] failed to fetch readiness:", err));
   }, []);
 
-  const handleGoLive = async () => {
+  const handleGoLive = async (): Promise<boolean> => {
+    if (activationInFlightRef.current || !canActivate) return false;
+    activationInFlightRef.current = true;
     setGoing(true);
     setErrorMsg(null);
     try {
@@ -59,20 +63,27 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
         // The route answers a stable code for the approval gate so it reads in the user's own
         // locale; every other message it returns is still a de-only literal (pre-existing).
         setErrorMsg(data.code === "AWAITING_APPROVAL" ? t("goLive.awaitingBody") : (data.error ?? "Unbekannter Fehler"));
-        setGoing(false);
-        return;
+        return false;
       }
+      setShowConfetti(true);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      return true;
     } catch (err) {
       console.error("[GoLiveStep] go-live POST failed:", err);
       setErrorMsg("Verbindungsfehler. Bitte erneut versuchen.");
+      return false;
+    } finally {
+      activationInFlightRef.current = false;
       setGoing(false);
-      return;
     }
-    setShowConfetti(true);
-    await new Promise((r) => setTimeout(r, 2000));
-    onGoLive();
   };
 
+  useImperativeHandle(ref, () => ({ save: handleGoLive }));
+
+  const handleControlGoLive = async () => {
+    const activated = await handleGoLive();
+    if (activated) onGoLive();
+  };
 
   return (
     <div className="space-y-6">
@@ -189,8 +200,9 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
       )}
 
       <button
-        onClick={handleGoLive}
+        onClick={handleControlGoLive}
         disabled={!canActivate || going}
+        aria-busy={going}
         className="w-full py-4 rounded-btn active:scale-[0.97] bg-s-ink text-white text-base font-bold disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] transition-[transform,filter] shadow-warm-sm"
       >
         {going ? <Spinner size="sm" invert /> : <PartyPopper size={18} strokeWidth={1.9} />}
@@ -198,4 +210,6 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
       </button>
     </div>
   );
-}
+});
+
+export default GoLiveStep;

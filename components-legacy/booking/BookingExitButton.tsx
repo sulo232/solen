@@ -24,9 +24,10 @@ import { useBooking } from '@/lib/booking-context';
  */
 export default function BookingExitButton({ slug }: { slug: string }) {
   const t = useTranslations('booking.leave');
+  const tCommon = useTranslations('common');
   const locale = useLocale();
   const router = useRouter();
-  const { formData } = useBooking();
+  const { formData, resetForm } = useBooking();
   const [confirming, setConfirming] = useState(false);
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -52,6 +53,7 @@ export default function BookingExitButton({ slug }: { slug: string }) {
         window.history.pushState({ bookingGuard: true }, '', window.location.href);
         setConfirming(true);
       } else {
+        resetForm();
         router.replace(exitTo);
       }
     };
@@ -77,7 +79,10 @@ export default function BookingExitButton({ slug }: { slug: string }) {
     // replace (not push): leaving the booking should REMOVE it from history, otherwise the
     // browser back button returns to the booking flow (the loop the user hit).
     if (formData.services.length > 0) setConfirming(true);
-    else router.replace(exitTo);
+    else {
+      resetForm();
+      router.replace(exitTo);
+    }
   };
 
   return (
@@ -85,7 +90,7 @@ export default function BookingExitButton({ slug }: { slug: string }) {
       <button
         type="button"
         onClick={handleX}
-        aria-label={t('exit')}
+        aria-label={tCommon('close')}
         className="grid h-11 w-11 shrink-0 place-items-center rounded-full transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.94] active:duration-[80ms] active:ease-glide"
       >
         <X size={20} strokeWidth={2.2} className="text-s-ink" />
@@ -110,7 +115,7 @@ export default function BookingExitButton({ slug }: { slug: string }) {
               <button
                 type="button"
                 onClick={() => setConfirming(false)}
-                aria-label={t('cancel')}
+                aria-label={tCommon('close')}
                 className="grid h-11 w-11 place-items-center rounded-full transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.94] active:duration-[80ms] active:ease-glide"
               >
                 <X size={20} strokeWidth={2.2} className="text-s-ink" />
@@ -132,7 +137,7 @@ export default function BookingExitButton({ slug }: { slug: string }) {
               </button>
               <button
                 type="button"
-                onClick={() => router.replace(exitTo)}
+                onClick={() => { resetForm(); router.replace(exitTo); }}
                 className="flex-1 rounded-btn bg-s-ink py-3.5 font-heading text-[15px] font-semibold text-white transition-[filter,transform] hover:brightness-[1.06] active:scale-[0.97] active:duration-[80ms] active:ease-glide"
               >
                 {t('exit')}

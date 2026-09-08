@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { CreditCard, ExternalLink, Loader2, Check } from "lucide-react";
 import { useTranslations } from "next-intl";
+import type { StepHandle } from "@/components-legacy/onboarding/SetupWizard";
 
 interface PaymentsStepProps {
   salonId: string;
@@ -11,7 +12,7 @@ interface PaymentsStepProps {
 
 type PaymentMode = "at_salon" | "deposit" | "prepay";
 
-export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
+const PaymentsStep = forwardRef<StepHandle, PaymentsStepProps>(function PaymentsStep({ salonId, onSaved }, ref) {
   const t = useTranslations("onboarding") as any;
   const tc = useTranslations("common");
   const [paymentMode, setPaymentMode] = useState<PaymentMode>("prepay");
@@ -19,6 +20,7 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
   const [connectLoading, setConnectLoading] = useState(false);
   const [connectError, setConnectError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/stripe/connect/status")
@@ -42,19 +44,28 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
     }
   };
 
-  const handleSave = async () => {
+  const handleSave = async (): Promise<boolean> => {
     setSaving(true);
+    setSaveError(null);
     try {
-      await fetch(`/api/salons/${salonId}`, {
+      const response = await fetch(`/api/salons/${salonId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ payment_mode: paymentMode }),
       });
+      if (!response.ok) throw new Error(`PATCH /api/salons/${salonId} returned ${response.status}`);
       onSaved();
-    } catch { /* ignore */ } finally {
+      return true;
+    } catch (err) {
+      console.error("[PaymentsStep] save failed:", err);
+      setSaveError(tc("errorGeneric"));
+      return false;
+    } finally {
       setSaving(false);
     }
   };
+
+  useImperativeHandle(ref, () => ({ save: handleSave }));
 
   const modeOptions = [
     { id: "prepay" as PaymentMode, labelKey: "payments.prepayLabel" as const, descKey: "payments.prepayDesc" as const },
@@ -145,6 +156,8 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
           )}
         </div>
 
+      {saveError && <p className="text-xs text-s-error" role="alert">{saveError}</p>}
+
       <button
         onClick={handleSave}
         disabled={saving}
@@ -156,4 +169,6 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
       </button>
     </div>
   );
-}
+});
+
+export default PaymentsStep;

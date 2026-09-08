@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { Clock } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { useTranslations } from "next-intl";
+import type { StepHandle } from "@/components-legacy/onboarding/SetupWizard";
 
 const DAY_KEYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as const;
 const DAYS_SHORT = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
@@ -13,9 +14,11 @@ interface OpeningHoursStepProps {
   onSaved: () => void;
 }
 
-export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepProps) {
+const OpeningHoursStep = forwardRef<StepHandle, OpeningHoursStepProps>(function OpeningHoursStep({ salonId, onSaved }, ref) {
   const t = useTranslations("onboarding") as any;
   const tc = useTranslations("common");
+  const genericError = tc("errorGeneric");
+  const [error, setError] = useState<string | null>(null);
   const dayLabels = DAY_KEYS.map((k) => t(`hours.days.${k}`));
   const [hours, setHours] = useState<Record<string, { open: string; close: string; break_start?: string; break_end?: string } | null>>(() => {
     const h: Record<string, { open: string; close: string; break_start?: string; break_end?: string } | null> = {};
@@ -29,15 +32,30 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
 
   useEffect(() => {
     if (!salonId) return;
+    let isCurrentLoad = true;
+    setLoaded(false);
+    setError(null);
     fetch(`/api/salons/${salonId}`)
-      .then((r) => r.json())
+      .then((response) => {
+        if (!response.ok) throw new Error(`GET /api/salons/${salonId} returned ${response.status}`);
+        return response.json();
+      })
       .then((s) => {
+        if (!isCurrentLoad) return;
         if (s?.opening_hours && Object.keys(s.opening_hours).length > 0) {
           setHours(s.opening_hours);
         }
+        setLoaded(true);
       })
-      .finally(() => setLoaded(true));
-  }, [salonId]);
+      .catch((err) => {
+        if (!isCurrentLoad) return;
+        console.error("[OpeningHoursStep] load failed:", err);
+        setError(genericError);
+      });
+    return () => {
+      isCurrentLoad = false;
+    };
+  }, [genericError, salonId]);
 
   const toggle = (key: string) => {
     setHours((h) => ({ ...h, [key]: h[key] ? null : { open: "09:00", close: "18:00" } }));
@@ -63,19 +81,32 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
     });
   };
 
-  const handleSave = async () => {
+  const handleSave = async (): Promise<boolean> => {
+    if (!loaded) {
+      setError(genericError);
+      return false;
+    }
     setSaving(true);
+    setError(null);
     try {
-      await fetch(`/api/salons/${salonId}`, {
+      const response = await fetch(`/api/salons/${salonId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ opening_hours: hours }),
       });
+      if (!response.ok) throw new Error(`PATCH /api/salons/${salonId} returned ${response.status}`);
       onSaved();
-    } catch { /* ignore */ } finally {
+      return true;
+    } catch (err) {
+      console.error("[OpeningHoursStep] save failed:", err);
+      setError(genericError);
+      return false;
+    } finally {
       setSaving(false);
     }
   };
+
+  useImperativeHandle(ref, () => ({ save: handleSave }));
 
   const hasAnyOpen = Object.values(hours).some((v) => v !== null);
 
@@ -164,9 +195,11 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
         })}
       </div>
 
+      {error && <p className="text-xs text-s-error" role="alert">{error}</p>}
+
       <button
         onClick={handleSave}
-        disabled={!hasAnyOpen || saving}
+        disabled={!loaded || !hasAnyOpen || saving}
         // mockup-ok: hook-enforced no-caps compliance fix (CLAUDE.md rule 10), ported from reviewed commit 37e703762
         className="w-full py-3 rounded-btn active:scale-[0.97] bg-s-ink text-white text-[13px] font-semibold disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
       >
@@ -175,4 +208,6 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
       </button>
     </div>
   );
-}
+});
+
+export default OpeningHoursStep;

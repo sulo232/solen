@@ -1,19 +1,71 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { cloneElement, isValidElement, useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Check, ChevronRight, ArrowLeft } from "lucide-react";
 import { useTranslations } from "next-intl";
+import Spinner from "@/components-legacy/ui/Spinner";
 
 export interface Step {
   key: string;
   complete: boolean;
 }
 
+export interface StepHandle {
+  save: () => Promise<boolean>;
+}
+
+export interface SetupWizardRenderProps {
+  goNext: () => Promise<void>;
+  markComplete: (key: string) => void;
+  goTo: (index: number) => void;
+  steps: Step[];
+  salonId: string;
+  stepRef: (instance: StepHandle | null) => void;
+}
+
+export async function saveCurrentSetupStep(handle: StepHandle | null): Promise<boolean> {
+  if (!handle) return false;
+  try {
+    return await handle.save();
+  } catch (err) {
+    console.error("[SetupWizard] step save failed:", err);
+    return false;
+  }
+}
+
+export async function saveAndAdvanceSetupStep(
+  handle: StepHandle | null,
+  advance: () => void,
+): Promise<boolean> {
+  const saved = await saveCurrentSetupStep(handle);
+  if (!saved) return false;
+  advance();
+  return true;
+}
+
+function StepMountSignal({
+  index,
+  onMount,
+  onUnmount,
+  children,
+}: {
+  index: number;
+  onMount: (index: number) => void;
+  onUnmount: (index: number) => void;
+  children: React.ReactNode;
+}) {
+  useEffect(() => {
+    onMount(index);
+    return () => onUnmount(index);
+  }, [index, onMount, onUnmount]);
+  return <>{children}</>;
+}
+
 interface SetupWizardProps {
   salonId: string;
   initialSteps: Step[];
-  children: (React.ReactNode | Function)[];
+  children: (React.ReactNode | ((props: SetupWizardRenderProps) => React.ReactNode))[];
   locale: string;
   onComplete: () => void;
 }
@@ -22,6 +74,10 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
   const [currentStep, setCurrentStep] = useState(0);
   const [steps, setSteps] = useState(initialSteps);
   const [direction, setDirection] = useState(1);
+  const [advancing, setAdvancing] = useState(false);
+  const stepRefs = useRef<(StepHandle | null)[]>([]);
+  const displayedStepRef = useRef<number | null>(null);
+  const actionInFlightRef = useRef(false);
   const t = useTranslations("onboarding") as any;
 
   // Sync when parent re-fetches progress (e.g. after onSaved callbacks)
@@ -32,21 +88,47 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
   const totalSteps = children.length;
   const isLast = currentStep === totalSteps - 1;
 
-  const goNext = () => {
-    if (isLast) {
-      onComplete();
-      return;
+  const markDisplayed = useCallback((index: number) => {
+    displayedStepRef.current = index;
+  }, []);
+
+  const clearDisplayed = useCallback((index: number) => {
+    if (displayedStepRef.current === index) displayedStepRef.current = null;
+  }, []);
+
+  const goNext = async () => {
+    if (actionInFlightRef.current || displayedStepRef.current !== currentStep) return;
+    actionInFlightRef.current = true;
+    setAdvancing(true);
+    try {
+      const saved = await saveCurrentSetupStep(stepRefs.current[currentStep]);
+      if (!saved) return;
+      if (isLast) {
+        onComplete();
+        return;
+      }
+      setDirection(1);
+      setCurrentStep(Math.min(currentStep + 1, totalSteps - 1));
+    } finally {
+      actionInFlightRef.current = false;
+      setAdvancing(false);
     }
+  };
+
+  const skipStep = () => {
+    if (actionInFlightRef.current || displayedStepRef.current !== currentStep) return;
     setDirection(1);
-    setCurrentStep((s) => Math.min(s + 1, totalSteps - 1));
+    setCurrentStep((step) => Math.min(step + 1, totalSteps - 1));
   };
 
   const goPrev = () => {
+    if (actionInFlightRef.current || displayedStepRef.current !== currentStep) return;
     setDirection(-1);
     setCurrentStep((s) => Math.max(s - 1, 0));
   };
 
   const goTo = (index: number) => {
+    if (actionInFlightRef.current || displayedStepRef.current !== currentStep) return;
     setDirection(index > currentStep ? 1 : -1);
     setCurrentStep(index);
   };
@@ -128,9 +210,30 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
             exit={{ opacity: 0, y: direction * -20 }}
             transition={{ duration: 0.25, ease: "easeInOut" }}
           >
-            {typeof children[currentStep] === "function"
-              ? (children[currentStep] as Function)({ goNext, markComplete, goTo, steps, salonId })
-              : children[currentStep]}
+            <StepMountSignal
+              index={currentStep}
+              onMount={markDisplayed}
+              onUnmount={clearDisplayed}
+            >
+              {typeof children[currentStep] === "function"
+                ? children[currentStep]({
+                    goNext,
+                    markComplete,
+                    goTo,
+                    steps,
+                    salonId,
+                    stepRef: (instance) => {
+                      stepRefs.current[currentStep] = instance;
+                    },
+                  })
+                : isValidElement<{ ref?: (instance: StepHandle | null) => void }>(children[currentStep])
+                  ? cloneElement(children[currentStep], {
+                      ref: (instance: StepHandle | null) => {
+                        stepRefs.current[currentStep] = instance;
+                      },
+                    })
+                  : children[currentStep]}
+            </StepMountSignal>
           </motion.div>
         </AnimatePresence>
 
@@ -148,16 +251,20 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
           <div className="flex gap-2">
             {!isLast && (
               <button
-                onClick={goNext}
-                className="px-4 py-2.5 rounded-btn text-sm text-s-ink/40 hover:text-s-ink transition-colors"
+                onClick={skipStep}
+                disabled={advancing}
+                className="px-4 py-2.5 rounded-btn text-sm text-s-ink/40 hover:text-s-ink transition-colors disabled:opacity-50"
               >
                 {t("setup.skip")}
               </button>
             )}
             <button
               onClick={goNext}
-              className="flex items-center gap-1.5 px-6 py-2.5 rounded-btn active:scale-[0.97] bg-s-ink text-white text-sm font-medium hover:brightness-[1.06] transition-[transform,filter] shadow-warm-sm"
+              disabled={advancing}
+              aria-busy={advancing}
+              className="flex items-center gap-1.5 px-6 py-2.5 rounded-btn active:scale-[0.97] bg-s-ink text-white text-sm font-medium hover:brightness-[1.06] transition-[transform,filter] shadow-warm-sm disabled:opacity-50"
             >
+              {advancing && <Spinner size="sm" invert />}
               {isLast ? t("setup.goLive") : t("setup.next")}
               {!isLast && <ChevronRight size={16} strokeWidth={1.9} />}
             </button>

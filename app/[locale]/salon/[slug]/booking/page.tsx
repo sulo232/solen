@@ -269,7 +269,7 @@ export default async function BookingSalonPage({
   const bookingServices = services.map((s) => ({ ...s, is_active: s.is_active ?? true }));
 
   return (
-    <BookingProvider salonId={salon.id} initialStaffId={safeStaffId} initialService={initialService} initialServices={initialServices} initialStart={startParam} initialDate={initialDate} initialNote={noteParam} initialBundleId={initialBundleId}>
+    <BookingProvider salonId={salon.id} knownServices={bookingServices} knownStaffIds={staff.map((member) => member.id)} initialStaffId={safeStaffId} initialService={initialService} initialServices={initialServices} initialStart={startParam} initialDate={initialDate} initialNote={noteParam} initialBundleId={initialBundleId}>
       {/* Mockup 20 (owner-approved 2026-06-11): Fresha bones — sunken body,
           no salon-name header bar; nav (back + X) + the big task title live
           inside the wizard. */}

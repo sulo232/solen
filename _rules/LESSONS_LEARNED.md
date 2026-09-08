@@ -215,6 +215,22 @@ Before a change, search the ledger by affected paths, component or feature and s
 
 ---
 
+### Setup Next must await an already-started child mutation
+- **Date**: 2026-09-08
+- **File(s)**: `components-legacy/onboarding/SetupWizard.tsx`, `components-legacy/onboarding/steps/ServicesStep.tsx`, `components-legacy/onboarding/steps/TeamStep.tsx`, `tests/components/setup-wizard-mounted.test.tsx`
+- **What happened**: With an existing service, Next advanced while Add was unresolved; an eventual error belonged to the unmounted step. Team invitations had the same race.
+- **Why it happened**: The imperative save handle validated existing state without awaiting the child action's in-flight request.
+- **Fix / What to do instead**: Share one synchronous operation ref between the child action and save handle. Await that operation, retain the visible step and alert on failure, and evaluate current state before advancing once on success. Mounted actual-child tests cover both outcomes; browser checks used intercepted local responses and sent no mutation to the server.
+
+### Restored booking selections must be reconstructed from live identities
+- **Date**: 2026-09-08
+- **File(s)**: `lib/booking-context.tsx`, `components-legacy/booking/BookingExitButton.tsx`, `app/[locale]/salon/[slug]/booking/page.tsx`, `tests/lib/booking-context-draft.test.ts`
+- **What happened**: Recovery review exposed unguarded storage acquisition, malformed dates and repeated service IDs that a permissive saved-draft shape accepted.
+- **Why it happened**: A browser draft was treated as a trusted form object rather than untrusted selection hints.
+- **Fix / What to do instead**: Guard storage access itself; validate version, Store identity, canonical date, bounded values, unique IDs and the 45-minute expiry. Reconstruct active selections from current Store data so live price and duration win; explicit URL selections take precedence. Persist no slot, payment, capability-token or customer-note fields. Test malformed and valid counterparts. Confirmed exit and booking success clear the draft; canceled exit preserves it.
+
+---
+
 ## Translation Keys & Namespaces
 
 ### Missing translation keys in salonDetail namespace break build

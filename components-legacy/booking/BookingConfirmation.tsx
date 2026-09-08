@@ -16,6 +16,7 @@ import {
   Scissors,
 } from "lucide-react";
 import { FROST_GLASS } from "@/lib/frost-glass";
+import { buildBookingIcs } from "@/lib/ics";
 import { formatCurrency } from "@/lib/format-currency";
 import { Avatar } from "@/app/[locale]/_components/primitives/Avatar";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
@@ -353,21 +354,18 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
   }, []);
 
   const handleCalendar = useCallback(() => {
-    const end = new Date(start.getTime() + (props.durationMinutes ?? 60) * 60 * 1000);
-    const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
-    const ics = [
-      "BEGIN:VCALENDAR",
-      "VERSION:2.0",
-      "PRODID:-//Solen.ch//Booking//EN",
-      "BEGIN:VEVENT",
-      `DTSTART:${fmt(start)}`,
-      `DTEND:${fmt(end)}`,
-      `SUMMARY:${props.serviceName} @ ${props.salonName}`,
-      `DESCRIPTION:${t("calendarDescription")}`,
-      `LOCATION:${props.salonAddress || props.salonName}`,
-      "END:VEVENT",
-      "END:VCALENDAR",
-    ].join("\r\n");
+    const manageIcsUrl = manageHref.startsWith("http")
+      ? manageHref
+      : `${window.location.origin}${manageHref}`;
+    const ics = buildBookingIcs({
+      uid: props.bookingId,
+      title: `${props.serviceName} @ ${props.salonName}`,
+      description: t("calendarDescription"),
+      location: props.salonAddress || props.salonName,
+      startsAt: props.startsAt,
+      endsAt: props.endsAt,
+      url: manageIcsUrl,
+    });
     const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -375,7 +373,7 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
     a.download = `solen-${(code || "booking").toLowerCase()}.ics`;
     a.click();
     URL.revokeObjectURL(url);
-  }, [start, props.durationMinutes, props.serviceName, props.salonName, props.salonAddress, code, t]);
+  }, [props.bookingId, props.serviceName, props.salonName, props.salonAddress, props.startsAt, props.endsAt, code, t, manageHref]);
 
   const directionsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
     `${props.salonName} ${props.salonAddress}`.trim(),

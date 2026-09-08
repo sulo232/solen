@@ -25,6 +25,7 @@ export function buildBookingIcs(vars: {
   location: string;
   startsAt: string; // ISO
   endsAt: string; // ISO
+  url?: string;
 }): string {
   const now = toIcsUtc(new Date());
   const lines = [
@@ -42,6 +43,7 @@ export function buildBookingIcs(vars: {
     `DESCRIPTION:${escapeIcsText(vars.description)}`,
     `LOCATION:${escapeIcsText(vars.location)}`,
     "STATUS:CONFIRMED",
+    ...(vars.url ? [`URL:${escapeIcsText(vars.url)}`] : []),
     "END:VEVENT",
     "END:VCALENDAR",
   ];

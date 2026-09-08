@@ -1,46 +1,67 @@
 "use client";
 
-import { useState } from "react";
+import { forwardRef, useImperativeHandle, useRef, useState } from "react";
 import { Users, Mail, UserPlus, Check, Lightbulb } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { useTranslations } from "next-intl";
+import type { StepHandle } from "@/components-legacy/onboarding/SetupWizard";
 
 interface TeamStepProps {
   onSaved: () => void;
 }
 
-export default function TeamStep({ onSaved }: TeamStepProps) {
-  const t = useTranslations("onboarding") as any;
+const TeamStep = forwardRef<StepHandle, TeamStepProps>(function TeamStep({ onSaved }, ref) {
+  const t = useTranslations("onboarding");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [invites, setInvites] = useState<{ email: string; name: string }[]>([]);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const inviteInFlightRef = useRef<Promise<boolean> | null>(null);
 
-  const sendInvite = async () => {
-    if (!email) return;
-    setSending(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/staff/invite", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, name: name || undefined }),
-      });
-      if (!res.ok) {
-        const d = await res.json();
-        throw new Error(d.error ?? "Failed");
+  const sendInvite = (): Promise<boolean> => {
+    if (inviteInFlightRef.current) return inviteInFlightRef.current;
+    if (!email) return Promise.resolve(false);
+
+    const operation = (async () => {
+      setSending(true);
+      setError(null);
+      try {
+        const res = await fetch("/api/staff/invite", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, name: name || undefined }),
+        });
+        if (!res.ok) {
+          const d = await res.json();
+          throw new Error(d.error ?? "Failed");
+        }
+        setInvites((prev) => [...prev, { email, name }]);
+        setEmail("");
+        setName("");
+        return true;
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Fehler");
+        return false;
+      } finally {
+        setSending(false);
       }
-      setInvites((prev) => [...prev, { email, name }]);
-      setEmail("");
-      setName("");
-      // Removed onSaved() so user can add multiple members before advancing
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Fehler");
-    } finally {
-      setSending(false);
-    }
+    })();
+    inviteInFlightRef.current = operation;
+    void operation.finally(() => {
+      if (inviteInFlightRef.current === operation) inviteInFlightRef.current = null;
+    });
+    return operation;
   };
+
+  const handleContinue = async (): Promise<boolean> => {
+    const activeInvite = inviteInFlightRef.current;
+    if (activeInvite && !(await activeInvite)) return false;
+    onSaved();
+    return true;
+  };
+
+  useImperativeHandle(ref, () => ({ save: handleContinue }));
 
   return (
     <div className="space-y-6">
@@ -87,7 +108,7 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
           </div>
         </div>
 
-        {error && <p className="text-xs text-s-accent">{error}</p>}
+        {error && <p className="text-xs text-s-accent" role="alert">{error}</p>}
 
         <button
           onClick={sendInvite}
@@ -125,11 +146,13 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
       </div>
 
       <button
-        onClick={() => onSaved()}
+        onClick={handleContinue}
         className="w-full py-3 mt-6 rounded-btn active:scale-[0.97] bg-s-ink text-white text-[12px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
       >
         {t("setup.saveAndContinue")}
       </button>
     </div>
   );
-}
+});
+
+export default TeamStep;

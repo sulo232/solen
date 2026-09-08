@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { Store, Camera, Phone, Check } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import ImageUploader from "@/components-legacy/ui/ImageUploader";
 import { useTranslations } from "next-intl";
 import type { SalonCategory } from "@/lib/types";
+import type { StepHandle } from "@/components-legacy/onboarding/SetupWizard";
 
 import { CATEGORY_OPTIONS } from "@/lib/constants/categories";
 
@@ -14,7 +15,7 @@ interface SalonProfileStepProps {
   onSaved: () => void;
 }
 
-export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepProps) {
+const SalonProfileStep = forwardRef<StepHandle, SalonProfileStepProps>(function SalonProfileStep({ salonId, onSaved }, ref) {
   const t = useTranslations("onboarding") as any;
   const tc = useTranslations("common");
   const [form, setForm] = useState({
@@ -26,6 +27,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
   });
   const [categories, setCategories] = useState<SalonCategory[]>([]);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const toggleCat = (cat: SalonCategory) =>
     setCategories((prev) =>
@@ -50,20 +52,32 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
       });
   }, [salonId]);
 
-  const handleSave = async () => {
-    if (!form.name) return;
+  const handleSave = async (): Promise<boolean> => {
+    if (!form.name || !form.description_de || categories.length === 0) {
+      setError(tc("errorGeneric"));
+      return false;
+    }
     setSaving(true);
+    setError(null);
     try {
-      await fetch(`/api/salons/${salonId}`, {
+      const response = await fetch(`/api/salons/${salonId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...form, categories }),
       });
+      if (!response.ok) throw new Error(`PATCH /api/salons/${salonId} returned ${response.status}`);
       onSaved();
-    } catch { /* ignore */ } finally {
+      return true;
+    } catch (err) {
+      console.error("[SalonProfileStep] save failed:", err);
+      setError(tc("errorGeneric"));
+      return false;
+    } finally {
       setSaving(false);
     }
   };
+
+  useImperativeHandle(ref, () => ({ save: handleSave }));
 
   return (
     <div className="space-y-6">
@@ -166,6 +180,8 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
         </div>
       </div>
 
+      {error && <p className="text-xs text-s-error" role="alert">{error}</p>}
+
       <button
         onClick={handleSave}
         disabled={!form.name || !form.description_de || saving || categories.length === 0}
@@ -177,4 +193,6 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
       </button>
     </div>
   );
-}
+});
+
+export default SalonProfileStep;

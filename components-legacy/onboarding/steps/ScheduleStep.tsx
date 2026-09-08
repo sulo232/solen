@@ -1,17 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { Calendar, Check, Lightbulb, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import type { StepHandle } from "@/components-legacy/onboarding/SetupWizard";
 
 interface ScheduleStepProps {
   onSaved: () => void;
 }
 
-export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
+const ScheduleStep = forwardRef<StepHandle, ScheduleStepProps>(function ScheduleStep({ onSaved }, ref) {
   const t = useTranslations("onboarding") as any;
+  const tc = useTranslations("common");
   const [applied, setApplied] = useState(false);
   const [applying, setApplying] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Auto-apply default schedules on mount
   useEffect(() => {
@@ -32,25 +35,42 @@ export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
       .catch((err) => console.error("[ScheduleStep] failed to load salon schedule data:", err));
   }, []);
 
-  const handleApply = async () => {
+  const handleApply = async (): Promise<boolean> => {
     setApplying(true);
+    setError(null);
     try {
-      const res = await fetch("/api/salons/mine").then(r => r.json());
-      const salonId = res?.salon?.id;
-      if (!salonId) return;
+      const salonResponse = await fetch("/api/salons/mine");
+      if (!salonResponse.ok) throw new Error(`GET /api/salons/mine returned ${salonResponse.status}`);
+      const data = await salonResponse.json();
+      const salonId = data?.salon?.id;
+      if (!salonId) throw new Error("No Store id for current user");
 
       // Create default schedule from opening hours for all staff
-      await fetch("/api/staff/schedule/auto-apply", {
+      const response = await fetch("/api/staff/schedule/auto-apply", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ salon_id: salonId }),
       });
+      if (!response.ok) throw new Error(`POST /api/staff/schedule/auto-apply returned ${response.status}`);
       setApplied(true);
       onSaved();
-    } catch { /* ignore */ } finally {
+      return true;
+    } catch (err) {
+      console.error("[ScheduleStep] save failed:", err);
+      setError(tc("errorGeneric"));
+      return false;
+    } finally {
       setApplying(false);
     }
   };
+
+  const handleContinue = async (): Promise<boolean> => {
+    if (!applied) return handleApply();
+    onSaved();
+    return true;
+  };
+
+  useImperativeHandle(ref, () => ({ save: handleContinue }));
 
   return (
     <div className="space-y-6">
@@ -99,13 +119,15 @@ export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
 
         {applied && (
           <button
-            onClick={() => onSaved()}
+            onClick={handleContinue}
             // mockup-ok: hook-enforced no-caps compliance fix (CLAUDE.md rule 10), ported from reviewed commit 37e703762
             className="w-full py-3 mt-6 rounded-btn active:scale-[0.97] bg-s-ink text-white text-[13px] font-semibold disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
           >
             {t("setup.saveAndContinue")}
           </button>
         )}
+
+        {error && <p className="text-xs text-s-error" role="alert">{error}</p>}
 
         <div className="bg-s-bg-surface rounded-[12px] px-4 py-3 flex items-start gap-2">
           <Lightbulb size={14} strokeWidth={1.6} className="text-s-ink/30 mt-0.5 shrink-0" />
@@ -116,4 +138,6 @@ export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
       </div>
     </div>
   );
-}
+});
+
+export default ScheduleStep;

@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { Scissors, Plus, X, Trash2, Check } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
 import { useTranslations, useLocale } from "next-intl";
+import type { StepHandle } from "@/components-legacy/onboarding/SetupWizard";
 
 interface SimpleService {
   id?: string;
@@ -17,8 +18,9 @@ interface ServicesStepProps {
   onSaved: () => void;
 }
 
-export default function ServicesStep({ onSaved }: ServicesStepProps) {
-  const t = useTranslations("onboarding") as any;
+const ServicesStep = forwardRef<StepHandle, ServicesStepProps>(function ServicesStep({ onSaved }, ref) {
+  const t = useTranslations("onboarding");
+  const tc = useTranslations("common");
   const locale = useLocale();
   const [services, setServices] = useState<SimpleService[]>([]);
   const [salonId, setSalonId] = useState<string | null>(null);
@@ -27,6 +29,9 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
   const [newService, setNewService] = useState<SimpleService>({ name_de: "", duration_minutes: 60, price: 80 });
   const [suggestions, setSuggestions] = useState<SimpleService[]>([]);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const servicesRef = useRef<SimpleService[]>([]);
+  const mutationInFlightRef = useRef<Promise<boolean> | null>(null);
 
   useEffect(() => {
     fetch("/api/salons/mine")
@@ -39,7 +44,11 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
           // Fetch existing services
           fetch(`/api/services?salon_id=${id}`)
             .then((r) => r.json())
-            .then((res) => setServices(res?.services ?? []))
+            .then((res) => {
+              const loadedServices = res?.services ?? [];
+              servicesRef.current = loadedServices;
+              setServices(loadedServices);
+            })
             .finally(() => setLoading(false));
 
           // Fetch AI suggestions in parallel
@@ -52,36 +61,85 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
       });
   }, []);
 
-  const addService = async (svc: SimpleService = newService) => {
-    if (!svc.name_de || !salonId) return;
-    setSaving(true);
-    try {
-      const res = await fetch("/api/services", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...svc, salon_id: salonId }),
-      });
-      if (res.ok) {
+  const addService = (svc: SimpleService = newService): Promise<boolean> => {
+    if (mutationInFlightRef.current) return mutationInFlightRef.current;
+    if (!svc.name_de || !salonId) return Promise.resolve(false);
+
+    const operation = (async () => {
+      setSaving(true);
+      setError(null);
+      try {
+        const res = await fetch("/api/services", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...svc, salon_id: salonId }),
+        });
+        if (!res.ok) throw new Error(`POST /api/services returned ${res.status}`);
         const d = await res.json();
-        setServices((prev) => [...prev, { ...svc, id: d?.service?.id ?? d?.id }]);
+        const next = [...servicesRef.current, { ...svc, id: d?.service?.id ?? d?.id }];
+        servicesRef.current = next;
+        setServices(next);
         if (svc === newService) {
           setNewService({ name_de: "", duration_minutes: 60, price: 80 });
           setShowAdd(false);
         }
         setSuggestions((prev) => prev.filter((s) => s.name_de !== svc.name_de));
-        // Removed onSaved() so user can add multiple services before advancing
+        return true;
+      } catch (err) {
+        console.error("[ServicesStep] add service failed:", err);
+        setError(tc("errorGeneric"));
+        return false;
+      } finally {
+        setSaving(false);
       }
-    } catch { /* ignore */ } finally {
-      setSaving(false);
-    }
+    })();
+    mutationInFlightRef.current = operation;
+    void operation.finally(() => {
+      if (mutationInFlightRef.current === operation) mutationInFlightRef.current = null;
+    });
+    return operation;
   };
 
-  const removeService = async (id: string) => {
-    try {
-      await fetch(`/api/services/${id}`, { method: "DELETE" });
-      setServices((prev) => prev.filter((s) => s.id !== id));
-    } catch { /* ignore */ }
+  const removeService = (id: string): Promise<boolean> => {
+    if (mutationInFlightRef.current) return mutationInFlightRef.current;
+
+    const operation = (async () => {
+      setSaving(true);
+      setError(null);
+      try {
+        const response = await fetch(`/api/services/${id}`, { method: "DELETE" });
+        if (!response.ok) throw new Error(`DELETE /api/services/${id} returned ${response.status}`);
+        const next = servicesRef.current.filter((service) => service.id !== id);
+        servicesRef.current = next;
+        setServices(next);
+        return true;
+      } catch (err) {
+        console.error("[ServicesStep] remove service failed:", err);
+        setError(tc("errorGeneric"));
+        return false;
+      } finally {
+        setSaving(false);
+      }
+    })();
+    mutationInFlightRef.current = operation;
+    void operation.finally(() => {
+      if (mutationInFlightRef.current === operation) mutationInFlightRef.current = null;
+    });
+    return operation;
   };
+
+  const handleContinue = async (): Promise<boolean> => {
+    const activeMutation = mutationInFlightRef.current;
+    if (activeMutation && !(await activeMutation)) return false;
+    if (servicesRef.current.length === 0) {
+      setError(tc("errorGeneric"));
+      return false;
+    }
+    onSaved();
+    return true;
+  };
+
+  useImperativeHandle(ref, () => ({ save: handleContinue }));
 
   return (
     <div className="space-y-6">
@@ -112,7 +170,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
                     <p className="text-xs text-s-ink/40 data-text">{s.duration_minutes} min {formatCurrency(Number(s.price), locale)}</p>
                   </div>
                   {s.id && (
-                    <button onClick={() => removeService(s.id!)} className="p-1.5 text-s-ink/20 hover:text-s-accent transition-colors">
+                    <button onClick={() => removeService(s.id!)} disabled={saving} className="p-1.5 text-s-ink/20 hover:text-s-accent transition-colors disabled:opacity-50">
                       <Trash2 size={14} strokeWidth={1.6} />
                     </button>
                   )}
@@ -214,8 +272,10 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
             </div>
           )}
 
+          {error && <p className="text-xs text-s-error" role="alert">{error}</p>}
+
           <button
-            onClick={() => onSaved()}
+            onClick={handleContinue}
             disabled={services.length === 0}
             className="w-full py-3 mt-6 rounded-btn active:scale-[0.97] bg-s-ink text-white text-[12px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
           >
@@ -225,4 +285,6 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
       )}
     </div>
   );
-}
+});
+
+export default ServicesStep;

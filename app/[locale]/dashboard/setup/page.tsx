@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Store } from "lucide-react";
-import SetupWizard from "@/components-legacy/onboarding/SetupWizard";
+import SetupWizard, { type SetupWizardRenderProps } from "@/components-legacy/onboarding/SetupWizard";
 import SalonProfileStep from "@/components-legacy/onboarding/steps/SalonProfileStep";
 import OpeningHoursStep from "@/components-legacy/onboarding/steps/OpeningHoursStep";
 import ServicesStep from "@/components-legacy/onboarding/steps/ServicesStep";
@@ -100,7 +100,9 @@ export default function SetupPage() {
       {/* Step 6: Payments */}
       <PaymentsStep salonId={salonId} onSaved={refreshProgress} />
       {/* Step 7: Go Live */}
-      {({ steps, goTo }: any) => <GoLiveStep onGoLive={handleComplete} steps={steps} goTo={goTo} />}
+      {({ steps, goTo, stepRef }: SetupWizardRenderProps) => (
+        <GoLiveStep ref={stepRef} onGoLive={handleComplete} steps={steps} goTo={goTo} />
+      )}
     </SetupWizard>
   );
 }
