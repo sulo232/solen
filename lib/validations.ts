@@ -97,6 +97,7 @@ export const createBookingSchema = z
     promo_code: z.string().min(1).max(30).regex(/^[A-Za-z0-9_-]+$/).transform((v) => v.toUpperCase().trim()).optional().nullable(),
     gift_card_code: z.string().min(1).max(30).regex(/^[A-Za-z0-9_-]+$/).transform((v) => v.toUpperCase().trim()).optional().nullable(),
     total_price: z.number().nonnegative().optional().nullable(),
+    locale: z.enum(["de", "en", "fr", "it"]).optional(),
   })
   .refine((d) => Boolean(d.slot_id) || Boolean(d.salon_id && d.starts_at), {
     message: "Either slot_id or (salon_id + starts_at) is required",

@@ -17,19 +17,19 @@ export function salonCancelledBooking(
   locale: EmailLocale = "de"
 ) {
   const subjects: Record<EmailLocale, string> = {
-    de: `Leider wurde dein Termin bei ${vars.salon} abgesagt`,
+    de: `Leider wurde Ihr Termin bei ${vars.salon} abgesagt`,
     en: `Unfortunately your appointment at ${vars.salon} was cancelled`,
     fr: `Malheureusement votre rendez-vous chez ${vars.salon} a été annulé`,
-    it: `Purtroppo il tuo appuntamento da ${vars.salon} è stato cancellato`,
+    it: `Purtroppo il Suo appuntamento da ${vars.salon} è stato cancellato`,
   };
   const reasonLine: Record<EmailLocale, string> = vars.reason
     ? { de: `<p><strong>Grund:</strong> ${vars.reason}</p>`, en: `<p><strong>Reason:</strong> ${vars.reason}</p>`, fr: `<p><strong>Raison :</strong> ${vars.reason}</p>`, it: `<p><strong>Motivo:</strong> ${vars.reason}</p>` }
     : { de: "", en: "", fr: "", it: "" };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Hallo,</p><p>Leider wurde dein Termin für <strong>${vars.service}</strong> bei <strong>${vars.salon}</strong> am ${vars.date} abgesagt.</p>${reasonLine.de}<p>Du kannst jederzeit einen neuen Termin buchen.</p><p><a href="https://solen.ch/de">Neuen Termin buchen →</a></p>`,
+    de: `<p>Hallo,</p><p>Leider wurde Ihr Termin für <strong>${vars.service}</strong> bei <strong>${vars.salon}</strong> am ${vars.date} abgesagt.</p>${reasonLine.de}<p>Sie können jederzeit einen neuen Termin buchen.</p><p><a href="https://solen.ch/de">Neuen Termin buchen →</a></p>`,
     en: `<p>Hello,</p><p>Unfortunately, your appointment for <strong>${vars.service}</strong> at <strong>${vars.salon}</strong> on ${vars.date} has been cancelled.</p>${reasonLine.en}<p>You can book a new appointment anytime.</p><p><a href="https://solen.ch/en">Book new appointment →</a></p>`,
     fr: `<p>Bonjour,</p><p>Votre rendez-vous pour <strong>${vars.service}</strong> chez <strong>${vars.salon}</strong> le ${vars.date} a été annulé.</p>${reasonLine.fr}<p><a href="https://solen.ch/fr">Prendre un nouveau rendez-vous →</a></p>`,
-    it: `<p>Ciao,</p><p>Purtroppo il tuo appuntamento per <strong>${vars.service}</strong> da <strong>${vars.salon}</strong> il ${vars.date} è stato cancellato.</p>${reasonLine.it}<p><a href="https://solen.ch/it">Prenota un nuovo appuntamento →</a></p>`,
+    it: `<p>Buongiorno,</p><p>Purtroppo il Suo appuntamento per <strong>${vars.service}</strong> da <strong>${vars.salon}</strong> il ${vars.date} è stato cancellato.</p>${reasonLine.it}<p><a href="https://solen.ch/it">Prenota un nuovo appuntamento →</a></p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -41,16 +41,16 @@ export function paymentFailedNotification(
   locale: EmailLocale = "de"
 ) {
   const subjects: Record<EmailLocale, string> = {
-    de: `Zahlung fehlgeschlagen – Termin bei ${vars.salon} nicht bestätigt`,
-    en: `Payment failed – Appointment at ${vars.salon} not confirmed`,
-    fr: `Paiement échoué – Rendez-vous chez ${vars.salon} non confirmé`,
-    it: `Pagamento fallito – Appuntamento da ${vars.salon} non confermato`,
+    de: `Zahlung fehlgeschlagen: Termin bei ${vars.salon} nicht bestätigt`,
+    en: `Payment failed: Appointment at ${vars.salon} not confirmed`,
+    fr: `Paiement échoué : rendez-vous chez ${vars.salon} non confirmé`,
+    it: `Pagamento fallito: appuntamento da ${vars.salon} non confermato`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Hallo,</p><p>Leider konnte die Zahlung für deinen Termin für <strong>${vars.service}</strong> bei <strong>${vars.salon}</strong> am ${vars.date} nicht verarbeitet werden.</p><p>Dein Termin wurde daher nicht bestätigt. Bitte versuche es erneut oder wähle eine andere Zahlungsmethode.</p><p><a href="https://solen.ch/de">Erneut buchen →</a></p>`,
+    de: `<p>Hallo,</p><p>Leider konnte die Zahlung für Ihren Termin für <strong>${vars.service}</strong> bei <strong>${vars.salon}</strong> am ${vars.date} nicht verarbeitet werden.</p><p>Ihr Termin wurde daher nicht bestätigt. Bitte versuchen Sie es erneut oder wählen Sie eine andere Zahlungsmethode.</p><p><a href="https://solen.ch/de">Erneut buchen →</a></p>`,
     en: `<p>Hello,</p><p>Unfortunately, the payment for your appointment for <strong>${vars.service}</strong> at <strong>${vars.salon}</strong> on ${vars.date} could not be processed.</p><p>Your appointment was not confirmed. Please try again or choose a different payment method.</p><p><a href="https://solen.ch/en">Book again →</a></p>`,
     fr: `<p>Bonjour,</p><p>Le paiement pour votre rendez-vous pour <strong>${vars.service}</strong> chez <strong>${vars.salon}</strong> le ${vars.date} n'a pas pu être traité.</p><p>Votre rendez-vous n'a pas été confirmé. Veuillez réessayer.</p><p><a href="https://solen.ch/fr">Réserver à nouveau →</a></p>`,
-    it: `<p>Ciao,</p><p>Purtroppo il pagamento per il tuo appuntamento per <strong>${vars.service}</strong> da <strong>${vars.salon}</strong> il ${vars.date} non è stato elaborato.</p><p>Il tuo appuntamento non è stato confermato. Riprova o scegli un altro metodo di pagamento.</p><p><a href="https://solen.ch/it">Prenota di nuovo →</a></p>`,
+    it: `<p>Buongiorno,</p><p>Purtroppo il pagamento per il Suo appuntamento per <strong>${vars.service}</strong> da <strong>${vars.salon}</strong> il ${vars.date} non è stato elaborato.</p><p>Il Suo appuntamento non è stato confermato. Riprovi o scelga un altro metodo di pagamento.</p><p><a href="https://solen.ch/it">Prenota di nuovo →</a></p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -74,10 +74,10 @@ export function preChargeDeclinedNotification(
     it: `Pagamento fallito: ${vars.salon}`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Die Vorab-Belastung für deinen Termin am ${vars.date} konnte nicht durchgeführt werden. Dein Termin bleibt bestätigt.</p><p>Bitte aktualisiere deine Zahlungsmethode oder kontaktiere den Salon.</p>`,
+    de: `<p>Die Vorab-Belastung für Ihren Termin am ${vars.date} konnte nicht durchgeführt werden. Ihr Termin bleibt bestätigt.</p><p>Bitte aktualisieren Sie Ihre Zahlungsmethode oder kontaktieren Sie den Salon.</p>`,
     en: `<p>The advance charge for your appointment on ${vars.date} could not be processed. Your appointment is still confirmed.</p><p>Please update your payment method or contact the salon.</p>`,
     fr: `<p>Le prélèvement anticipé pour votre rendez-vous du ${vars.date} n'a pas pu être effectué. Votre rendez-vous reste confirmé.</p><p>Veuillez mettre à jour votre moyen de paiement ou contacter le salon.</p>`,
-    it: `<p>L'addebito anticipato per il tuo appuntamento del ${vars.date} non è andato a buon fine. Il tuo appuntamento resta confermato.</p><p>Aggiorna il tuo metodo di pagamento o contatta il salone.</p>`,
+    it: `<p>L'addebito anticipato per il Suo appuntamento del ${vars.date} non è andato a buon fine. Il Suo appuntamento resta confermato.</p><p>Aggiorni il Suo metodo di pagamento o contatti il salone.</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }

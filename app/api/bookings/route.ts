@@ -194,7 +194,7 @@ export async function POST(request: NextRequest) {
 
   const { slot_id, salon_id, service_id, staff_member_id, starts_at, is_first_visit,
           referral_code, payment_method, guest_name, guest_phone, guest_email, extra_service_ids, customer_note,
-          promo_code, gift_card_code, bundle_id } = validated;
+          promo_code, gift_card_code, bundle_id, locale: bodyLocale } = validated;
   const isOnlinePay = payment_method === "online";
 
   // gift_card_code is accepted by the schema (so the FE field is not a 400) but the
@@ -670,7 +670,7 @@ export async function POST(request: NextRequest) {
   // SP-G2: skip for online-pay bookings — they aren't confirmed/paid yet. The
   // Stripe webhook sends the confirmation once the full-prepay PI succeeds.
   // SP-1: a guest has no session email — use guest_email when given, else SKIP (no address).
-  const locale = (profile?.locale ?? "de") as "de" | "en" | "fr" | "it";
+  const locale = (profile?.locale ?? bodyLocale ?? "de") as "de" | "en" | "fr" | "it";
   // Shared de->en fallback picker (lib/i18n/localized-field.ts), not a de/en-only ternary:
   // that ternary showed fr/it customers the German name with no fr/it branch to notice.
   const serviceName = localizedField(slot.services as Record<string, unknown> | null, "name", locale) || "Service";

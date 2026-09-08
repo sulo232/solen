@@ -931,3 +931,19 @@ Observed: the hook did not send the selected language, and changing language alo
 Repair: send the active locale and include it in the existing effect dependencies; skip the label query only for exact de/en. Retain full lookup and existing null fallbacks for fr/it/missing/unknown locales.
 
 Prevention: test both the request parameter and a locale-only rerender, with a contrasting retained-label case. Do not infer that an anonymous-accessible GET can use shared public caching: this route's cookie-auth client passes viewer identity into search_suggest, whose current migration ranks with auth.uid()/user_style_affinity. The recovered source's ANON_CACHE_HEADERS addition was excluded; existing response cache behavior is unchanged. Migration/source evidence establishes that exclusion, not a claim about live deployment state.
+
+## Booking notification locale must cross the client/server boundary
+
+Bindings: `components-legacy/booking/PayConfirmStep.tsx`, `lib/validations.ts`, `app/api/bookings/route.ts`, `lib/email.ts`, `lib/email-templates/*.ts`
+
+Observed failure: a guest has no profile locale, so a booking created from a French, Italian, or English page fell through to the route's German default even though the client knew the active locale. Locale-aware builders alone cannot fix a missing boundary value.
+
+Prevention: send the active locale in the booking body, validate it against the four supported locales, and resolve confirmation locale as signed-in profile first, validated body second, German compatibility default last. Exercise the mounted client body and the actual route for all four locales, missing input, invalid input, and profile precedence. When a source copy change shares a hunk with URL or data-shape edits, test the actual builder output and retain the current destination/data owner unless that additional behavior is separately authorized.
+
+## Locale register and punctuation checks must render every touched variant
+
+Bindings: `lib/email.ts`, `lib/email-templates/booking-notifications.ts`, `tests/lib/email-formal-register.test.ts`
+
+Observed failure: a DE/IT source recovery left an informal Italian infinitive in a subject, while source-touched French barber variants and cross-locale punctuation still violated the current copy law. Testing only German and Italian pronoun fragments did not exercise these adjacent outputs.
+
+Prevention: render every locale of each touched builder, assert exact clitics where a generic pronoun regex is ambiguous, and scan the rendered subject plus body for prohibited emoji and long dashes. Keep the assertion limited to the touched builders so it does not silently broaden a recovery into an unrelated catalog rewrite.

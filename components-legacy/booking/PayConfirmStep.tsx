@@ -282,6 +282,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn, salonHasRedee
           total_price: totalPrice,
           is_first_visit: true,
           customer_note: formData.customerNote || null,
+          locale,
           // SP-1: send guest fields only when logged out. The route ignores them for a session
           // user; for a guest it requires name + phone (email optional).
           ...(!isLoggedIn && resolvedGuest
