@@ -1317,3 +1317,12 @@ recommendation and shows the same screen three times, stacked, one plain line of
 
 **Where it goes:** `_plans/DIRECTIONS_0905_R3.md` (boxes), `_design-system/REMOVED.md` (seven lines, same
 turn), `_plans/R3_ONE_SYSTEM.md` (the one system, once written).
+
+
+## 2026-09-08: Branch consolidation signup and calendar decisions
+
+Owner: "Sign up. I want it to be B. And then calendar. Probably you can choose."
+
+Signup B, the email-first proposal preserved at `.claude/worktrees/design-system-consolidation-10167f/public/_mockups/r2-signup-b-email-first/index.html` (source branch `claude/agent-flow-design-overhaul-2af2c2`), is selected for implementation through the existing sign-up flow. Preserve its required account, role and authentication behavior. This is a new signup decision; the September6 code-sign-in and homepage rejections remain separate settled decisions.
+
+Calendar selection is delegated to the working assistant. Choose from the reviewed existing proposals using actual operator usability, preserve useful day/week and staff views where they coexist, and provide the chosen rendered result through the live comparison tunnel. No repeat A/B/C approval question is required. Selection, implementation and verification remain tracked in `_plans/BRANCH_RECONCILIATION_2026-08-14.md`.
