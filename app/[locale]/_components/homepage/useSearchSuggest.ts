@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useLocale } from "next-intl";
 
 /**
  * Debounced search-suggest hook for the hero SearchBar (V2-D51 Path C).
@@ -82,6 +83,8 @@ export function useSearchSuggest(
     loading: false,
     error: null,
   });
+  // The route only needs the extra service translations for locales other than de/en.
+  const locale = useLocale();
 
   React.useEffect(() => {
     const trimmed = query.trim();
@@ -96,7 +99,7 @@ export function useSearchSuggest(
 
     const timer = setTimeout(async () => {
       try {
-        const params = new URLSearchParams({ q: trimmed });
+        const params = new URLSearchParams({ q: trimmed, locale });
         if (opts?.city) params.set("city", opts.city);
         if (opts?.category) params.set("category", opts.category);
         const res = await fetch(`/api/search/suggest?${params.toString()}`, {
@@ -123,7 +126,7 @@ export function useSearchSuggest(
       clearTimeout(timer);
       ac.abort();
     };
-  }, [query, opts?.city, opts?.category, opts?.debounceMs]);
+  }, [query, locale, opts?.city, opts?.category, opts?.debounceMs]);
 
   return state;
 }

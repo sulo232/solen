@@ -921,3 +921,13 @@ When a new grouped selection depends on an old manual action overlay, its focus 
 - Cause: independent label literals and missing projections detached displayed tax from Store data. A nullable SQL column with an insertion default does not prove a missing response value equals that default. Parallel display and payment responses can also arrive in either order.
 - Prevention: project registration and rate through both existing entry paths; gate tax claims on explicit registration and a finite nonnegative stored rate; preserve zero and omit missing/invalid-rate claims. Use the same rate for the label and calculation, keeping the server payable total and fee math unchanged. Preserve the payment response separately so a slower display response cannot replace its amount or VAT. Keep a tokenless booking-state update from creating another PaymentIntent while the original request is pending. Use actual handlers and mounted components with projection-aware fixtures, both response orders, four locales, and a fake Stripe boundary that counts requests and amounts. A new projection belongs only to its source table; a populated staff control and scoped TypeScript catch accidental cross-table fields.
 - Focused reproduction: `tests/components/vat-recovery.test.tsx` and `tests/lib/vat-loader-recovery.test.ts`. These isolate external services; they do not authorize a live payment request or establish live database state.
+
+### Suggestion locale requests and personalized caching
+
+Bindings: app/[locale]/_components/homepage/useSearchSuggest.ts; app/api/search/suggest/route.ts; supabase/migrations/20260809120000_search_suggest_matched_price_only.sql; lib/supabase.ts; lib/salons/cache-headers.ts.
+
+Observed: the hook did not send the selected language, and changing language alone did not invalidate its request. The endpoint therefore always fetched FR/IT service columns, including for DE/EN. Actual preimage checks reproduced both unnecessary reads and the missing locale request lifecycle.
+
+Repair: send the active locale and include it in the existing effect dependencies; skip the label query only for exact de/en. Retain full lookup and existing null fallbacks for fr/it/missing/unknown locales.
+
+Prevention: test both the request parameter and a locale-only rerender, with a contrasting retained-label case. Do not infer that an anonymous-accessible GET can use shared public caching: this route's cookie-auth client passes viewer identity into search_suggest, whose current migration ranks with auth.uid()/user_style_affinity. The recovered source's ANON_CACHE_HEADERS addition was excluded; existing response cache behavior is unchanged. Migration/source evidence establishes that exclusion, not a claim about live deployment state.

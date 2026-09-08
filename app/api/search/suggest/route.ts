@@ -18,6 +18,9 @@ export async function GET(req: NextRequest) {
   const query = q.slice(0, 100);
   const category = req.nextUrl.searchParams.get("category");
   const citySlug = req.nextUrl.searchParams.get("city");
+  // Unknown or missing locales keep the existing full translation lookup.
+  const locale = req.nextUrl.searchParams.get("locale");
+  const skipFrIt = locale === "de" || locale === "en";
 
   const supabase = await createServerSupabaseClient();
 
@@ -50,7 +53,9 @@ export async function GET(req: NextRequest) {
   // (supabase/migrations/20260701140000_search_suggest_treatment_from_price.sql:73-94), so a
   // fr/it customer got the German name from this endpoint. No migration needed: read the two
   // missing columns straight off `services` by id and merge them onto what the RPC returned.
-  if (Array.isArray(payload.services) && payload.services.length > 0) {
+  // Skipped for de/en (see skipFrIt above); the two keys stay on the shape as null, same as
+  // any id that didn't come back from the label query below, so the response shape never changes.
+  if (!skipFrIt && Array.isArray(payload.services) && payload.services.length > 0) {
     const serviceIds = payload.services.map((s) => s.id).filter(Boolean);
     if (serviceIds.length > 0) {
       const { data: labels } = await supabase
@@ -64,6 +69,12 @@ export async function GET(req: NextRequest) {
         name_it: labelMap.get(s.id)?.name_it ?? null,
       }));
     }
+  } else if (skipFrIt && Array.isArray(payload.services)) {
+    payload.services = payload.services.map((s) => ({
+      ...s,
+      name_fr: null,
+      name_it: null,
+    }));
   }
 
   return NextResponse.json(payload);
