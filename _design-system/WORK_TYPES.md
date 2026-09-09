@@ -1,21 +1,23 @@
 # Work-type taxonomy
 
-**Why this exists:** sessions kept conflating "tiny surgical edit" with "ground-up rebuild" and budgeting + verifying them the same way. Each work-type has different effort, different risk, different verification requirement, different commit granularity. Pick the right type BEFORE starting — don't discover mid-session you're doing more than you scoped.
+**Why this exists:** sessions kept conflating "tiny surgical edit" with "ground-up rebuild" and budgeting + verifying them the same way. Work-types describe the shape of work; they do not determine risk or require a heavier process by themselves. Pick the right type BEFORE starting — don't discover mid-session you're doing more than you scoped.
 
 User flag 2026-05-28: "we also got waves or system for example like amazing rebuild or surgical fixes ig to existing sub sites like we've done yk there should be a system."
 
 ---
 
+Routine styling, copy and component edits, and deterministic small bug fixes with a known cause and bounded effect, use focused direct behavioral checks. This applies across multiple files and to ordinary delegated implementation using the existing brief. A one-line auth bypass, a payment calculation, a data-integrity change, or uncertain coupled behavior can be consequential. Name the concrete consequence or material uncertainty in the existing brief before invoking structured handoff and independent acceptance. Category, line count and file count alone are not risk. Preserve user design approval and main rendered fidelity checks; do not downgrade already-enrolled consequential work.
+
 ## The 6 work-types
 
-| # | Type | One-liner | Time (per unit) | Visual diff | Commit unit |
-|---|---|---|---|---|---|
-| 1 | **Surgical fix** | 1-3 line targeted edit, single concern | 5-15 min | Barely visible / invisible | 1 commit per fix |
-| 2 | **Route sweep** | Apply registry recipes across one existing route, same structure | 30-45 min | Noticeable but not transformative | 1 commit per route |
-| 3 | **Component sweep** | Apply registry to a shared primitive — cascades to N callers | 30-60 min | Cascading change visible across N routes | 1 commit + walk all consumers |
-| 4 | **Ground-up rebuild** | Compose a new page from primitives, fresh against registry | 1-2 hours | Major — new layout possible | 1 commit per page, often with iteration |
-| 5 | **New primitive** | Build a new shared component from scratch | Half-day to full day | New feature surface | Multi-commit with doc + registry entry |
-| 6 | **Major IA shift** | Restructure information architecture (fuse pages, add/drop routes, redirect) | Half-day to full day | Navigation changes + redirects | Multi-commit + link audit + 301s |
+| # | Type | One-liner | Visual diff | Commit unit |
+|---|---|---|---|---|
+| 1 | **Surgical fix** | Targeted edit, single concern | Barely visible / invisible | 1 commit per fix |
+| 2 | **Route sweep** | Apply registry recipes across one existing route, same structure | Noticeable but not transformative | 1 commit per route |
+| 3 | **Component sweep** | Apply registry to a shared primitive — cascades to N callers | Cascading change visible across N routes | 1 commit + walk all consumers |
+| 4 | **Ground-up rebuild** | Compose a new page from primitives, fresh against registry | Major — new layout possible | 1 commit per page, often with iteration |
+| 5 | **New primitive** | Build a new shared component from scratch | New feature surface | Multi-commit with doc + registry entry |
+| 6 | **Major IA shift** | Restructure information architecture (fuse pages, add/drop routes, redirect) | Navigation changes + redirects | Multi-commit + link audit + 301s |
 
 ---
 
@@ -23,7 +25,7 @@ User flag 2026-05-28: "we also got waves or system for example like amazing rebu
 
 ### 1. Surgical fix
 
-**Definition:** 1-3 lines of code, single concern, no structural visual change. The smallest unit of change.
+**Definition:** A bounded single-concern change with a known cause and effect. Classify its actual behavior and risk independently of line count.
 
 **Examples (from V3-D330/D331 sessions):**
 - Hex swap on a single element (`#F3A864` → `#FFC32B`)
@@ -31,8 +33,6 @@ User flag 2026-05-28: "we also got waves or system for example like amazing rebu
 - Comment rephrase to dodge a drift-check false-positive
 - Font-weight class swap on one element (`font-black` → `font-bold`)
 - Dropping one decorative dot span
-
-**Effort budget:** 5-15 min including verification.
 
 **Verification:**
 - Read the file → make edit → confirm no other unintended change in `git diff`
@@ -43,7 +43,7 @@ User flag 2026-05-28: "we also got waves or system for example like amazing rebu
 
 **Drift-check expectation:** ↓ 1-3 findings per fix. Should never INCREASE drift.
 
-**Anti-pattern:** Treating a sweep as "just a surgical fix." If you find yourself making the same surgical fix in >3 places in one session, stop and treat it as a route sweep or component sweep instead.
+**Anti-pattern:** Letting a bounded fix expand into unrelated work. Reclassify the work shape when the requested scope changes; repeating the same known fix across files does not itself require heavier review.
 
 ---
 
@@ -55,8 +55,6 @@ User flag 2026-05-28: "we also got waves or system for example like amazing rebu
 - V3-D330 /warum-solen sweep (124 INFO findings → 59, 7 eyebrows → 0, all decorative accent → ink-3)
 - V3-D330 /de homepage sweep (subtle refinements + SectionHeader eyebrow normalize)
 - V3-D331 /fuer-salons dot-eyebrow sweep
-
-**Effort budget:** 30-45 min per route including before/after screenshots.
 
 **Verification:**
 - Before screenshot at 375 mobile (always) + 1440 desktop (if route has desktop layout)
@@ -83,39 +81,36 @@ User flag 2026-05-28: "we also got waves or system for example like amazing rebu
 - V3-D331 BentoBusiness "Bereit dazuzukommen?" dot drop (cascades to all 3 usage variants)
 - V3-D331 SectionMeta primitive dot drop (cascades to homepage "FÜR SALONS" divider + any future use)
 
-**Effort budget:** 30-60 min including walking ALL consumers to confirm no visual breakage.
-
 **Verification:**
+Check every distinct affected consumer contract. Equivalent accepted instances may share evidence when their component inputs, state, layout context and expected result are the same.
 - `grep -rn ComponentName` to enumerate ALL callers
-- Before screenshot of EACH caller route
+- Before screenshot of each distinct affected caller contract; group equivalent accepted instances
 - Apply the component change
-- After screenshot of EACH caller route
-- Visual diff per route — confirm no unexpected regression in any consumer
+- After screenshot of each distinct affected caller contract using the same grouping
+- Visual diff per distinct contract — confirm no unexpected regression; do not repeat identical evidence for equivalent accepted instances
 - Component doc updated in `_design-system/components/<Name>.md` if signature changes
 
 **Commit granularity:** 1 commit covering the component + consumer-route updates if needed.
 
 **Drift-check expectation:** ↓ N × per-route findings (where N = number of consumers).
 
-**Anti-pattern:** Editing a shared component without checking all consumers. Component sweeps look surgical but their impact is multiplicative — a 3-line change can break 6 routes if you don't audit consumers.
+**Anti-pattern:** Editing a shared component without checking every distinct affected consumer contract. Component sweeps look surgical but their impact is multiplicative — a 3-line change can break 6 routes if you ignore different inputs, states, or layout contexts.
 
 ---
 
 ### 4. Ground-up rebuild
 
-**Definition:** Compose a NEW page from existing primitives, fresh against the registry. May invent new sections or reorganize IA. Not a copy of an old page.
+**Definition:** Compose a NEW page from existing primitives, fresh against the registry. May invent new sections or reorganize IA. Not a copy of an old page. When the owner explicitly commissions multiple genuinely different directions or net-new exploration, the mockup directions may vary product anatomy, layout, type, shape, hierarchy, decorative treatment, and responsive motion within that commission. Use actual data, behavior, and accessible primitives where useful; do not force every direction onto the same full-page copy, component anatomy, or one reference layout. Production locks remain unchanged until the owner explicitly approves implementation or adoption as design law.
 
 **Examples:**
 - V3-D330 /fuer-salons V1 build — fresh composition of Hero + Trust + How + Bento + Marketplace + Pricing + FAQ + JoinUsCard, all registry-compliant from line 1
 - V3-D220 /business V3 rebuild (earlier work — full page from scratch with Fresha bones + Solen skin)
 
-**Effort budget:** 1-2 hours per page including iteration + screenshots.
-
 **Verification:**
-- Spec out the section IA BEFORE writing code (8-10 sections enumerated)
-- Read all imported primitives to know what's available
+- Use the commissioned section and step scope in the existing brief; do not invent a fixed section count or extra infrastructure/polish prerequisite
+- Read the relevant primitive contracts; reuse unchanged accepted source and evidence rather than rereading every import
 - Write the page top-to-bottom in one Write call (acceptable for new files, NOT for existing-file edits)
-- Build verifies (no compile error)
+- Run the narrowest authorized compile or type check that proves the changed scope; run a full build only when the task authorizes it and it will not disturb shared services
 - Screenshot mobile + desktop
 - Apply the current consequence, uncertainty, and reach threshold. The working assistant always checks the rendered route directly; add one independent native verifier only when that threshold requires it, and let that reviewer cover all applicable visual, code, and security criteria.
 - User visual sign-off
@@ -135,8 +130,6 @@ User flag 2026-05-28: "we also got waves or system for example like amazing rebu
 **Examples (pending):**
 - MapView (Section H of master plan — Mapbox-based map for /search)
 - Future imagery primitives if Pattern 2 / Pattern 5 surface need wrapping
-
-**Effort budget:** Half-day to full day.
 
 **Verification:**
 - Component file written at correct location (`app/[locale]/_components/<area>/<Name>.tsx`)
@@ -167,8 +160,6 @@ User flag 2026-05-28: "we also got waves or system for example like amazing rebu
 - V3-D330 Section G fusion: /business + /partner → /fuer-salons (V1 done, V2 + redirects pending)
 - Future: /search/map carve-out (Section H if user picks separate route)
 
-**Effort budget:** Half-day to full day.
-
 **Verification:**
 - All old route content captured in new route OR explicitly dropped with reason
 - 301 redirects in place for old routes
@@ -192,7 +183,7 @@ User flag 2026-05-28: "we also got waves or system for example like amazing rebu
 ## Pick the right type — decision tree
 
 ```
-Is the change just 1-3 lines, single concern, single file?
+Is the change a bounded single concern with a known cause and effect?
 ├─ Yes → Surgical fix (type 1)
 └─ No
    │
@@ -219,8 +210,8 @@ Is the change just 1-3 lines, single concern, single file?
 ## Wave-planning rule
 
 When building a wave plan:
-1. **Tag each item with its work-type number.** This sets the effort budget + verification requirement upfront.
-2. **Order within a wave: smallest type first.** Surgical fixes ship first because they're cheapest to verify and lowest-risk to revert.
+1. **Identify the work shape in the existing plan when useful.** Choose verification from the actual consequence and affected behavior, without a new classification ledger or fixed effort budget.
+2. **Order within a wave by the requested useful milestone and its dependencies.** Preserve every requested item and count; do not substitute easier unrelated work for the requested outcome.
 3. **Major IA shifts get their own wave.** Don't mix a Wave 1 "Sweep + Fusion" — the fusion will dominate the verification cost.
 4. **New primitives get their own wave.** Same reason.
 5. **One wave = one shipping unit.** When the wave's items are all green + verified, that's a commit boundary.
@@ -235,7 +226,8 @@ See LOCKFILE §10.8d for the full script. Short version:
 
 ```
 Q1: AXIS?              (structure / aesthetic / both)
-Q2: SOURCE OF TRUTH?   (Fresha SPEC.md for structure, LOCKFILE §X.Y for aesthetic)
+Q2: SOURCE OF TRUTH?   (production: Fresha SPEC.md for structure and LOCKFILE §X.Y for aesthetic;
+                        commissioned exploration: the commission, grounded by applicable captures)
 Q3: IS THE SOURCE EVIDENCE CHANGED OR MISSING? (if yes → re-read the relevant owner now)
 Q4: EDIT MATCH SOURCE? (if no → revise OR surface conflict per §10.5)
 Q5: POST-EDIT VERIFY?  (targeted drift candidates / screenshot / Fresha comparison / Lighthouse as applicable)
@@ -245,8 +237,8 @@ If Q1-Q5 exposes a broader concern, reclassify or split the work under the decis
 
 **Drift signals — STOP the edit if any of these fire** (full list in LOCKFILE §10.8b):
 - Eyeballing a Fresha screenshot to "rebuild" instead of firing `fresha-section-capture`
-- Inventing a new design token not in LOCKFILE
-- Picking a layout pattern based on "what feels right" instead of "what does Fresha do"
+- Inventing or adopting a production design token not in LOCKFILE without owner approval; an explicit commissioned exploration may test scoped values in its mockups without adopting them as production law
+- Picking a production layout pattern based on "what feels right" instead of the applicable captured evidence; an explicit multi-direction exploration may vary layouts within its commission
 - Applying a LOCKFILE §11 aesthetic pattern as if it were structural
 - Marking a route done without screenshot diff
 
@@ -255,28 +247,27 @@ If Q1-Q5 exposes a broader concern, reclassify or split the work under the decis
 - At the close of a route sweep, when the current drift skill accepts the explicit touched targets → review its report-only candidates; check the Fresha SPEC when the change is structural
 - When source evidence changes, is missing, or a failure calls the premise into doubt → re-anchor on the relevant owner
 - When pivoting a mockup variant → ask "am I pivoting on data or on taste"
-- When sweep > 30 min → re-anchor mid-sweep
 - When console errors appear → trace to the last edit; if the cause remains uncertain, use the current reasoning procedure and the risk-appropriate native perspective
 
 ---
 
-## Per-wave verifier gates (V3-D332 — Opus's sharper framing, V3-D338 dual-axis added)
+## Per-wave evidence gates (V3-D332, V3-D338 dual-axis added)
 
-Every wave / route sweep / component sweep / ground-up rebuild must pass BOTH axes' verification gates before being marked done. Per LOCKFILE §10.0 dual-axis rule.
+Every wave / route sweep / component sweep / ground-up rebuild needs evidence for BOTH axes before being marked done. The working assistant performs the rendered direct checks. Add one independent verifier only when the current consequence, uncertainty, or reach threshold requires it; do not add a verifier layer merely because a work-type was selected. Per LOCKFILE §10.0 dual-axis rule.
 
 ### Axis 1 — STRUCTURE (Fresha) gates
 
 | Gate | Threshold | Tool |
 |---|---|---|
 | **Fresha capture exists for the section** | SPEC.md in `public/_pixel-refs/fresha/<section>/` is ≤30 days old OR explicitly skipped with justification | `fresha-section-capture` skill |
-| **Solen IA matches captured Fresha SPEC** | Section order, count, affordance set, hero pattern, copy density all match | Manual diff vs SPEC.md |
+| **Structure matches its authority** | A production candidate follows the captured Fresha structure unless an explicit owner decision changes it. An owner-commissioned multi-direction exploration may vary anatomy and layout within the commission; compare each direction with its stated intent and applicable captured evidence instead of forcing one shared reference layout. | Manual comparison vs current authority |
 | **No structural drift mid-sweep** | Aesthetic sweeps don't restructure (no new sections added, no sections moved, no affordances dropped without explicit user pick) | Visual diff of before/after screenshots |
 
 ### Axis 2 — AESTHETIC (Uber/LOCKFILE) gates
 
 | Gate | Threshold | Tool |
 |---|---|---|
-| **Senior Scorecard** (customer-facing screens) | **6/6 Pass** on Copy / Emphasis / Color / Type / Structure / Floors (Floors dim added 2026-07-27, hierarchy-density-02) | `_design-system/SENIOR_SCORECARD.md` — drift + `npm run check:floors` for the countable dims + a verifier-agent pass (with screenshot) for the judgment dims |
+| **Senior Scorecard** (customer-facing screens) | Production candidate: **6/6 Pass** on Copy / Emphasis / Color / Type / Structure / Floors. Explicit owner-commissioned exploration: diagnostic score and tradeoffs; aesthetic ceilings/floors do not reject authorized variation. | `_design-system/SENIOR_SCORECARD.md` — drift + `npm run check:floors` for countable dims + direct screenshot, DOM, interaction, accessibility, and real-data judgment; independent verifier only when risk warrants |
 | **Targeted drift candidates** | Review A/B candidates that apply to the touched files; a report does not prove rendered fidelity or broad cleanliness | `solen-drift-check` skill with explicit targets |
 | **Lighthouse accessibility** | ≥95 | Lighthouse CLI or Chrome DevTools |
 | **LCP (Largest Contentful Paint)** | ≤2.5s on mobile | Lighthouse / Web Vitals |
@@ -286,7 +277,7 @@ Every wave / route sweep / component sweep / ground-up rebuild must pass BOTH ax
 
 **Rationale (per user feedback 2026-05-28):** the dual-axis rule prevents the failure mode where a "drift sweep" silently restructures (because the agent eyeballed an aesthetic pattern as if it were structural), and where a "structure rebuild" ignores aesthetic rules (because the agent followed Fresha verbatim including Fresha's RoobertPRO + purple accent). Both axes verified before ship = no silent drift either direction.
 
-**Both axes must be resolved before shipping the wave.** Record the failed criterion and its evidence in the current work record. Repair authorized defects, diagnose failed methods, and ask the owner only for a material decision that remains after applying the current authority.
+**Both axes must be resolved before shipping the wave.** Exploration evidence does not authorize production implementation or adoption as design law; those require explicit owner approval, and a complaint is never approval. Record the failed production criterion or exploration tradeoff and its evidence in the current work record. Repair authorized defects, diagnose failed methods, and ask the owner only for a material decision that remains after applying the current authority.
 
 ---
 
@@ -333,7 +324,7 @@ Per Opus: **per-route commits inside wave-as-PR.**
 
 - `LOCKFILE.md` — the registries the sweeps/rebuilds apply
 - `COMPONENT_REGISTRY.md` — every shared primitive's status + Layer (1/2/3)
-- `AGENT_BRIEF_TEMPLATE.md` — Fresha-clone rebuild brief for sub-agents
+- `PROCESS.md` — current brief and evidence procedure
 - `QUESTIONS.md` — open questions + decisions
 - `_pending-migration.md` — drift findings queue for incremental sweeps
 - Project `CLAUDE.md` — Section "🎨 Design system" includes a pointer to this file

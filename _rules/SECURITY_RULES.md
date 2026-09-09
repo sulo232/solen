@@ -2,20 +2,24 @@
 
 > Re-reviewed 2026-07-07, content verified against live code.
 
-## 11. 🔒 SECURITY RULES (MANDATORY — ALL API ROUTES)
+## 11. 🔒 SECURITY RULES FOR API CONTRACTS
 
 > **CONTEXT**: A full security audit on 2026-03-17 found zero rate limiting, zero input validation, exposed credentials in git, and disabled RLS on critical tables. These rules exist to prevent security regressions.
 >
-> **NOTE**: All security utility files are implemented and mandatory. See `lib/ratelimit.ts`, `lib/feature-flags.ts`, `lib/validations.ts`, `lib/audit.ts`. Every API route MUST include all security layers — no exceptions, no TODOs.
+> **NOTE**: The shared security utilities are implemented in `lib/ratelimit.ts`, `lib/feature-flags.ts`, `lib/validations.ts`, and `lib/audit.ts`. Each route must preserve and verify the security behavior applicable to its existing protected, public, or internal contract. Do not add authentication to an existing public route or import unused layers merely to satisfy a universal stack.
 
-### Rule S1: EVERY NEW API ROUTE MUST HAVE THESE LAYERS
+### Rule S1: APPLY THE ROUTE'S REQUIRED SECURITY LAYERS
 
 > **UPDATED 2026-07-10**: `getSession()` is BANNED for any server-side identity/authz decision , it reads the client-supplied cookie WITHOUT verifying the JWT signature, so a forged cookie can set any `user.id`. Use the shared helpers: `requireAuth()` / `requireAdmin()` / `requireSalonOwner()` / `requireRole()` in `lib/auth/require.ts`, or `getSessionUser()` in `lib/supabase.ts`. Both call `supabase.auth.getUser()` under the hood (verifies the JWT against the Supabase Auth server, fails CLOSED with `user: null` on any failure). There is no edit-time hook that proves this rule. For a changed backend source, use `fable-backend`, run the explicitly targeted report-only `security-static` check, and verify the real authorization path; its `S4_SERVER_SESSION` finding is a candidate for review, not proof of authorization safety.
 
-When creating or modifying ANY API route in `app/api/`, you MUST include these checks **in this exact order**:
+When creating or modifying a route in `app/api/`, inspect its existing method, callers, actor,
+data, and protected, public, or internal contract. Preserve the applicable authentication and role,
+verified identity, feature or ban, rate-limit, input-validation, ownership, and audit behavior. A
+protected mutation commonly uses the following order; omit only a layer that does not belong to
+that route's contract. Do not weaken a protected route or turn an internal route public.
 
 ```typescript
-// ✅ CORRECT — Full security stack
+// ✅ CORRECT — Protected mutation stack
 export async function POST(req: NextRequest) {
   // 1. Feature flag check (is this feature enabled?)
   const disabled = await checkFeatureEnabled("bookings");
@@ -113,9 +117,9 @@ CREATE POLICY "bookings_yolo" ON public.bookings
 - **NEVER** pass raw user input directly into SQL or `.ilike()` without length limits
 - **NEVER** trust `req.json()` without schema validation
 
-### Rule S5: SECURITY UTILITIES — MANDATORY IMPORTS
+### Rule S5: USE THE SECURITY UTILITIES THAT IMPLEMENT THE ROUTE CONTRACT
 
-When writing API routes, these utilities MUST be available (created in the security roadmap):
+Use the shared utilities below when their behavior applies to the route:
 
 | Utility | Import | Purpose |
 |---|---|---|
@@ -124,7 +128,12 @@ When writing API routes, these utilities MUST be available (created in the secur
 | Validation | `import { validateBody, schemaName } from "@/lib/validations"` | Input validation |
 | Audit logging | `import { logAuditEvent } from "@/lib/audit"` | Admin action tracking |
 
-All four utility files exist and are mandatory in every API route. There are no exceptions.
+Import only the utilities the route uses. External public GET routes retain their applicable
+IP-keyed rate limit and input or parameter bounds without gaining authentication. Protected routes
+retain verified identity, actor or ownership checks, and the applicable rate limit. Validate every
+accepted body and untrusted parameter. Use feature and ban checks where the route's existing
+feature or actor contract requires them, and audit admin or other privileged actions where the
+existing audit contract requires it.
 
 ### Rule S6: ADMIN ROUTES MUST DOUBLE-CHECK ROLE
 

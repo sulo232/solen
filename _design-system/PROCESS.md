@@ -25,17 +25,21 @@ at the file that owns them. A literal copied into a second file is a value that 
 ## The brief, in full
 
 ```
-ROLE: [builder | verifier]
+ROLE: [main author | approved-design implementer | warranted verifier]
 ROUTE: [/de/salon/[slug]]
 SCOPE: [the sections this agent owns, listed]
 PROJECT ROOT: [run `pwd`. Never paste a path from any doc.]
 DEV SERVER: [inspect the current local server or browser state with the documented available tools. Never assume a port.]
 
-READ FIRST, in this order, before any other tool call:
-  1. _design-system/COMPONENT_REGISTRY.md      what already exists
-  2. _design-system/LOCKFILE.md                the frozen values
-  3. _design-system/TASTE_LOG.md               his settled verdicts on this surface
-  4. _design-system/QUESTIONS.md               what is still open
+SOURCE GROUNDING, after confirming the current checkout and before design judgment or edits:
+  - _design-system/COMPONENT_REGISTRY.md      what already exists
+  - _design-system/LOCKFILE.md                the frozen production values
+  - _design-system/TASTE_LOG.md               settled verdicts on this surface
+  - _design-system/QUESTIONS.md               what is still open
+  Read the applicable sections with enough surrounding contract to interpret them; read a whole
+  file when a partial read could change the decision. Reuse unchanged accepted evidence across
+  workers and phases. Re-read when the source or task evidence changed, is missing, or a failure
+  calls the premise into doubt.
 
 THE JOB: [one sentence]
 DONE MEANS: [a condition someone else could check, not "looks good"]
@@ -43,7 +47,8 @@ DONE MEANS: [a condition someone else could check, not "looks good"]
 CONSTRAINTS:
   - Reuse before you build. A new component needs a registry entry in the same turn.
   - No category branches (no `if category === 'X'`).
-  - Values come from LOCKFILE, never from this brief and never from memory.
+  - Production values come from LOCKFILE. An explicit exploration commission may authorize scoped
+    variation inside its mockups; it does not change the production locks.
   - Read-only if you are the verifier. Verifiers never edit.
 ```
 
@@ -54,12 +59,28 @@ lives in the file that owns it, so it cannot drift out of sync the way the old o
 
 ## The three steps
 
-**1. Ground.** Read the four files above. If the surface has a `TASTE_LOG` entry, it is settled and
-is not reopened. If `npm run exists <keyword>` finds it, extend it rather than building beside it.
+**1. Ground.** Identify the applicable owner among the four files above and read enough surrounding
+contract to make the decision. If the same accepted evidence and file identity remain current,
+reuse them rather than imposing another full reread on each worker or phase. If the surface has a
+`TASTE_LOG` entry, it is settled and is not reopened. If `npm run exists <keyword>` finds it, extend
+it rather than building beside it, except where an explicit exploration commission authorizes a
+separate mockup composition.
 
-**2. Build.** One section at a time. Values come from LOCKFILE. For an unlocked value, first apply
-`TASTE_AUTHORITY.md` and current authorization; ask only when a material owner decision remains,
-otherwise park the dependency and finish independent work.
+**2. Build.** The main assistant owns all design, from a button or component through a section, screen and journey: reference inspection, taste, composition, states, motion, the design artifact and final visual acceptance. Subagents may collect useful independent reference or asset evidence, research distinct hypotheses, faithfully implement a precisely approved design, or independently review consequential work. Missing creative choices return to the main assistant. Main implements directly when coupling makes a handoff cost more than it saves. Production design approval remains the user's decision. Faithful implementation uses the actual user-approved design and main checks rendered fidelity. Routine delegation uses the existing compact brief with relevant scope, widths, states and motion; no formal contract, separate evidence report or independent review is required merely because the change is visual. Consequential implementation retains the structured handoff and independent acceptance. Reuse existing approval and test evidence. Main creates the design artifact; an implementer does not fill missing creative decisions. For consequential implementation in an opted-in loop, fable-execution owns contract enrollment and independent acceptance. A mockup commission authorizes creating its proposal; it is not production approval. Keep the current reviewable simulated-payment mockup milestone; real payment/backend/font endpoints follow approval unless explicitly commissioned now.
+
+Production values come from LOCKFILE. For an unlocked
+production value, first apply `TASTE_AUTHORITY.md` and current authorization; ask only when a
+material owner decision remains, otherwise park the dependency and finish independent work.
+
+When the owner explicitly commissions multiple genuinely different directions or net-new
+exploration, that commission authorizes the mockups to vary product template anatomy, layout,
+type, shape, hierarchy, and decorative treatment without separate permission for every literal.
+Use actual data, behavior, and accessible primitives where useful, but do not force the same
+full-page copy, component anatomy, or one captured reference layout across every direction. Keep
+the commissioned calm palette, clean ordinary typography, and meaningful responsive reactions
+and motion. Production locks still govern shipping and uncommissioned redesign. Accessible
+interactions, data truth, money and terms, and security remain mandatory. Production implementation
+or adoption as design law still needs explicit owner approval; a complaint is never approval.
 
 **3. Check and grade.** The working assistant renders the real route at 390x844, inspects the
 screenshot, DOM, interaction, accessibility, and real data, and measures against the current project
@@ -82,4 +103,7 @@ Deliberate departures from any reference, so they are not re-flagged every round
   globally. If a brief or a doc says otherwise, reconcile it to the current focus owner before
   grading the surface.
 
-Everything else in the reference is fair game to flag.
+For production-directed work, everything else in the applicable reference is fair game to flag. In
+an explicit owner-commissioned multi-direction or net-new exploration, grade each direction against
+the commission and evidence; do not reject it merely for departing from another direction's layout
+or from the production template.

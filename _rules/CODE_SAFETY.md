@@ -1,4 +1,4 @@
-# Code Safety Rules (MANDATORY — ZERO EXCEPTIONS)
+# Code Safety Rules
 
 > RETIRED LAW WARNING (2026-07-03): any rule here saying to auto-push after commit or to check Vercel is RETIRED. Current law: NEVER push (the owner pushes manually), deploy is Netlify from main. References to _tasks/SOLEN_DESIGN.md are superseded by _design-system/SOURCE.md + LOCKFILE.md. The rest of this file stays live.
 
@@ -73,22 +73,20 @@ curl -s -o /dev/null -w "%{http_code}" https://www.solen.ch/de/
 # Must return 200 or 307
 ```
 
-## Rule 7: IF UNSURE, STOP AND ASK
-- If a roadmap step is ambiguous → STOP and ask the user
-- If you need a component that doesn't exist → STOP and ask if you should create it or use something else
-- If an API endpoint isn't available → STOP and note it in `_tasks/INCOMPLETE_FEATURES.md`
-- **NEVER** guess or improvise — broken production is worse than a paused task
+## Rule 7: INVESTIGATE AMBIGUITY, ASK ONLY FOR A MATERIAL OWNER DECISION
+- Apply current instructions, recorded decisions, and existing owners before asking.
+- If a roadmap step remains materially ambiguous after inspection, park that dependency, finish independent authorized work, and ask one focused question.
+- If a needed component or endpoint does not exist, search for the current owner or replacement first. Create it only when the authorized roadmap requires it; otherwise record the precise blocker in `_tasks/INCOMPLETE_FEATURES.md`.
+- Never guess across a product, security, data, or authorization decision.
 
-## Rule 8: NEVER REBUILD FROM SCRATCH
+## Rule 8: PRESERVE PRODUCTION PAGES; COMMISSIONED EXPLORATION FOLLOWS THE DESIGN OWNERS
 > **INCIDENT**: An AI agent was asked to modify existing pages but instead created entirely new pages/layouts, overwriting working UI with generic templates that didn't match the Solen design system.
 
-- **ALWAYS** read the existing file content FIRST before editing
-- **ALWAYS** use existing components (`DashboardLayout`, `SalonCard`, `Spinner`, etc.) — do NOT create replacements
-- **ALWAYS** match the existing styling patterns (read `_tasks/SOLEN_DESIGN.md` + look at existing pages like `dashboard/page.tsx` for reference)
-- **NEVER** replace a working page with a new one built from scratch
-- **NEVER** create a new layout component when `DashboardLayout` already exists
-- **NEVER** create a new card component when `SalonCard` or the dashboard card pattern already exists
-- If you think the existing component is wrong → STOP and ask the user before replacing it
+- For a production edit, read the existing file before editing and reuse current components and patterns from the applicable design owners.
+- **NEVER** replace a working production page with a new one built from scratch without explicit owner approval.
+- **NEVER** replace `DashboardLayout`, `SalonCard`, or another registered production owner without explicit authorization for that replacement.
+- An explicit owner-commissioned multi-direction or net-new mockup exploration follows project `AGENTS.md` and `_design-system/PROCESS.md`; this rule does not force every exploration direction onto the production page, component anatomy, or styling template. Exploration still does not authorize production implementation.
+- If a production replacement remains a material owner decision after applying the current authority, park that dependency, finish independent work, and ask one focused question.
 
 ## Rule 9: VERIFY PREVIEW ENVIRONMENTS
 > **INCIDENT (historical, pre-Netlify-migration)**: Preview deployments crashed because `NEXT_PUBLIC_SUPABASE_URL` was only set for Production in Vercel, not Preview. The middleware tried to init Supabase with `undefined` → instant `MIDDLEWARE_INVOCATION_FAILED`. Deploy is Netlify now; the same class of bug applies to Netlify's Production/Deploy Preview/Branch deploy contexts.
@@ -123,10 +121,10 @@ curl -s -o /dev/null -w "%{http_code}" https://www.solen.ch/de/
   ```
 - **NEVER** change an existing API's response structure without grepping for all `fetch("/api/that-route")` calls first
 
-## Rule 12: DESIGN SYSTEM — IN FLUX
-- The design system is being iterated. **Don't cite locked palette / fonts / patterns as authoritative.**
-- For current values, read `_tasks/SOLEN_DESIGN.md` (if it's been updated) or ask the user.
-- Previous V5 spec is archived at `_tasks/completed/rules-locked-design-tokens-2026-05-06.md` for restoration once a new system stabilizes.
+## Rule 12: USE THE CURRENT DESIGN OWNERS
+- The `_tasks/SOLEN_DESIGN.md` pointer is retired under this file's opening warning.
+- Apply project `AGENTS.md` and the current `_design-system/SOURCE.md`, `_design-system/LOCKFILE.md`, and dated design decisions in their stated precedence. Read the applicable owner rather than asking automatically.
+- Explicit owner-commissioned exploration follows the scoped exploration clauses in project `AGENTS.md` and `_design-system/PROCESS.md`; it does not change the production locks.
 
 ---
 
@@ -162,12 +160,9 @@ curl -s -o /dev/null -w "%{http_code}" https://www.solen.ch/de/
 - If `git branch --show-current` shows a DIFFERENT branch than what you intended, **DO NOT** continue working. Switch to the correct branch first.
 - **NEVER** assume you're on the right branch — always verify after checkout.
 
-## Rule 14: CODE REVIEW PROTOCOL
+## Rule 14: PROPORTIONAL VALIDATION PROTOCOL
 
-Before EVERY commit (this agent never pushes, see Rule 4):
-1. `npm run build` (must pass; only when explicitly asked to build)
-2. `npx tsc --noEmit` — zero type errors
-3. `git diff --stat` — review changed files, ensure no unintended changes
+Before every commit (this agent never pushes, see Rule 4), inspect the owned diff and run the narrowest validation that proves the changed behavior. Run `npx tsc --noEmit` when TypeScript behavior or contracts changed. Run `npm run build` only when the task authorizes a build and it will not disturb shared services. A documentation-only or other non-code change does not inherit a compile or build ritual.
 
 There is no "after every push" step for this agent (never pushes). Once the owner has pushed and Netlify has deployed, a plain live-site check is enough:
 1. `curl -s -o /dev/null -w "%{http_code}" https://www.solen.ch/de/` (must be 200 or 307)
@@ -215,11 +210,12 @@ The root layout already renders: `<Header>`, `<BottomNav>`, `<CookieBanner>`, `<
 
 Before writing `import type { Foo } from "@/lib/types"`, verify `Foo` is actually exported from `lib/types.ts`. If introducing a new type, define it FIRST, then import in later phases.
 
-## Rule 29: POST-EXECUTION SMOKE TEST (MANDATORY)
+## Rule 29: POST-EXECUTION CHECKS APPLY TO THE CHANGED FEATURE
 
-After completing ALL phases of any feature roadmap, you MUST perform:
-1. `npm run build` with 0 errors
-2. `npx tsc --noEmit` with 0 errors
+After completing all phases of a feature roadmap, apply the checks below only when they match the changed scope. Use the focused behavioral checks required by the current project instructions. A full build is not an automatic close condition; run it only when the task authorizes it and it will not disturb shared services.
+
+1. If authorized and applicable, `npm run build` with 0 errors
+2. If TypeScript behavior or contracts changed, `npx tsc --noEmit` with 0 errors
 3. Every new `.tsx` file is imported at least once
 4. No `has no exported member` errors
 5. New pages don't import Header/BottomNav (already in layout)
@@ -233,4 +229,4 @@ After completing ALL phases of any feature roadmap, you MUST perform:
     non-mutating helper (read-only, notification-only) and that's stated in one line.
     Silence on this point is not acceptable for a money-path change (testing-release-06).
 
-**A feature is NOT complete until all 10 checks pass.**
+**A feature is not complete until every applicable check passes and any inapplicable check is omitted or recorded as not applicable.**
