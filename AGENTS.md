@@ -4,7 +4,7 @@ Swiss beauty and wellness booking marketplace. Next.js App Router, Supabase, and
 
 ## Current decisions and boundaries
 
-This file applies within system and developer instructions. A later explicit user instruction wins. The precedence chain at the end orders Solen sources within that hierarchy.
+This file owns Solen product, design, repository and specialist workflow rules. General communication, questions, evidence, delegation, review and continuity are owned by [global instructions](/Users/sulo/.codex/AGENTS.md); do not duplicate them here. System/developer instructions and the current user instruction remain higher priority. The precedence chain below orders Solen sources.
 
 The current visual direction is settled: use Fresha as the base for structure and placement, and Airbnb for look and motion, within Solen's locked values, statutory floors, and dated decisions. Capture the exact reference surface; do not infer it from another screen or from memory.
 
@@ -31,9 +31,9 @@ Before creating or proposing a page, endpoint, component, migration, library uti
 
 ## Finish the job
 
-Finish an authorized multi-step task before reporting. Do not stop after each item for another "ok." Pause only for a blocking user-owned decision, a design or taste choice that requires a mockup, a credential, or an unauthorized destructive or irreversible effect.
+Follow global continuity for completion, pauses and changed scope. Keep Solen workstream decisions in `_plans/ACTIVE.md`; park a non-blocking decision under its current workstream, continue independent work and surface it at close.
 
-Park a non-blocking decision in `_plans/ACTIVE.md` under its current workstream, continue independent work, and surface it at close. "Ok," "continue," and "go" mean finish the authorized list.
+Migration-specific decisions and pauses belong to `_plans/EVERYTHING_TO_CODEX_2026-09-04.md` and its owning task. Verify their current scope before resuming that work; they are not a global prohibition on separately authorized product work.
 
 ## Taste rules
 
@@ -56,7 +56,7 @@ Name the screen class before applying these rules. Customer screens include disc
 
 Operator screens follow the current merchant rules in `_design-system/TASTE_LOG.md`: one carded hero per screen; remaining content is bare text on the canvas; gaps use 16 or 32; one pill specification per context; no colored edge bars; a person or event appears exactly once. A container is earned only when it does something whitespace cannot. Operator screens have no imagery, semantic-color, or sunken-tray floor. Their life source is live data.
 
-For every customer UI or mockup, the working assistant runs a measured check against the correct screen scope. Inspect the rendered screenshot, DOM, interaction, accessibility, and real data. Measure font sizes and weights, focus state, content density, container boundaries, and the scroll distance from the last required input to the commit action. Ordinary low-risk reversible visual work does not require a separate reviewer. Add one independent reviewer only when actual consequence, uncertainty, or reach requires it; that reviewer can cover all applicable visual, code, and security criteria. A customer UI that violates a floor is not ready.
+For every customer UI or mockup, the working assistant runs a measured check against the correct screen scope. Inspect the rendered screenshot, DOM, interaction, accessibility, and real data. Measure font sizes and weights, focus state, content density, container boundaries, and the scroll distance from the last required input to the commit action. The global review threshold applies; use `design-verifier` when independent Solen visual acceptance is warranted. A customer UI that violates a floor is not ready.
 
 For an explicit owner-commissioned multi-direction or net-new exploration, the aesthetic finished-screen floors and ceilings below diagnose each direction and expose tradeoffs; they do not reject an authorized alternative merely because it varies the production template. Accessible interactions, data truth, money and terms, security, and the approval boundary remain hard requirements.
 
@@ -145,7 +145,9 @@ Other current owners: `_design-system/CONTROL_ELEVATION.md` for elevation, `_des
 
 ## Mockup first
 
-The main assistant owns all design, from a button or component through a section, screen and journey: reference inspection, taste, composition, states, motion, the design artifact and final visual acceptance. Subagents may collect useful independent reference or asset evidence, research distinct hypotheses, faithfully implement a precisely approved design, or independently review consequential work. Missing creative choices return to the main assistant. Main implements directly when coupling makes a handoff cost more than it saves. Production design approval remains the user's decision. Faithful implementation uses the actual user-approved design and main checks rendered fidelity. Routine delegation uses the existing compact brief with relevant scope, widths, states and motion; no formal contract, separate evidence report or independent review is required merely because the change is visual. Consequential implementation retains the structured handoff and independent acceptance. Reuse existing approval and test evidence. Main creates the design artifact; an implementer does not fill missing creative decisions. For consequential implementation in an opted-in loop, fable-execution owns contract enrollment and independent acceptance. A mockup commission authorizes creating its proposal; it is not production approval. Keep the next useful milestone fixed in the existing plan: a reviewable mockup with simulated payment. Real payment/backend integration and font-serving endpoints follow approval unless explicitly commissioned for that milestone. Preserve requested directions, data truth, security/payment/accessibility checks and sufficient accepted evidence. Rejected or paused mockups remain paused.
+Main owns all Solen design: references, taste, composition, states, motion, the artifact and final rendered fidelity. Subagents may collect independent references/assets, research distinct hypotheses, faithfully implement a precisely approved design or review consequential work. Missing creative choices return to main. The global rule determines whether delegation and independent review are justified; `fable-execution` owns consequential contracts.
+
+The next useful design milestone is a reviewable mockup with simulated payment. Real payment/backend integration and font-serving endpoints follow approval unless explicitly commissioned for that milestone. Preserve requested directions, counts, data truth, security, payment and accessibility checks. Approval binds the actual artifact and its widths, states and motion; verify the same scenario after implementation. Rejected or paused mockups remain paused.
 
 Before any visual or design change reaches product code, show a mockup or preview and obtain approval. A complaint is input to a new round; it is never approval.
 
@@ -154,6 +156,8 @@ Before any visual or design change reaches product code, show a mockup or previe
 3. Match the mockup scope to the decision. One element or section uses real-size stacked variants in one viewport. Whole-page decisions use whole-page mockups. Preview routes carry no unrelated product chrome.
 4. Hardcoded mockup copy is English. Real components that render translated copy through i18n are exempt. Provide `/en/` review links.
 5. After approval, edit the real component within the authorized task, then verify the same scenario again.
+
+After a visual change, provide a clickable Cloudflare quick-tunnel URL to the real route. Reuse a live session tunnel; never provide a LAN address as the preview.
 
 ## Visual triggers
 
@@ -166,7 +170,7 @@ Use the named current skill before editing or offering an opinion:
 | Overlap, clipping, imbalance, mismatch, different heights, comparison, or "still wrong" | Measure the real UI through documented CUA controls and measure the reference before editing. Do not assume the recently changed element is the cause. |
 | Fresha-named structure rebuild | Read `fresha-section-capture`; capture the exact live surface. Use Fresha for structure/placement and Airbnb for look/motion within Solen rules. |
 | Any other named brand, platform, surface, or liked aspect | Read `reference-lock`; resolve the brand, platform, exact surface, and aspect; capture the real behavior and measurements; save the captured specification under `_design-system/references/<brand>--<surface>.md`; record that path in the existing brief or workstream and re-read it before building. |
-| Any visual change completed | The working assistant checks the rendered screenshots, measured DOM, interaction, accessibility, real-data scenario, relevant reference, and current design owners. Ordinary low-risk reversible visual work needs no separate reviewer. Add one native reviewer such as `design-verifier` only when actual consequence, uncertainty, or reach requires it; one reviewer can cover every applicable criterion. Do not add Gemini, an automatic external-provider fallback, or a renamed substitute. |
+| Any visual change completed | Perform the measured checks in Visual acceptance floors against the applicable reference and owners. Apply the global review threshold; no automatic Gemini critique, external-provider fallback or renamed substitute. |
 | Owner says the result looks bad without naming the cause | Read `solen-taste-diagnosis`; measure hierarchy, type, grouping, contrast, and applicable floors before proposing a fix. |
 
 Capture costs less than repeated correction. A named brand is a direction, not authority to copy a solution to a different problem.
@@ -214,11 +218,7 @@ A feature is complete only when its final path is connected:
 
 ## Surgical edits
 
-1. Change only the lines that cause the reported issue.
-2. Match the exact request scope.
-3. Read and confirm the target before editing.
-4. Run a build only when it is authorized by the task and will not disturb shared services. Use the narrowest adequate validation otherwise.
-5. Inspect only the owned diff and accommodate concurrent edits.
+Read and confirm the target, change only the lines required by the request, and inspect the owned diff while accommodating concurrent work. Use the narrowest adequate validation. A full build requires task authorization and must not disturb shared services.
 
 ## Silent no-ops
 
@@ -243,12 +243,17 @@ When the user says an image is in their screenshot folder, look first in `/Users
 
 ## Workflow rules
 
-The main assistant owns backend architecture, data ownership, API and authorization contracts, failure/retry/concurrency decisions, and causal diagnosis. Subagents may implement a bounded approved contract, research distinct hypotheses, or independently review consequential work. Keep tightly coupled implementation with main when that costs less overall; this is not a blanket solo-work or all-backend-Astra rule. Use fable-execution for consequential implementation contracts and independent acceptance, including main-authored changes.
+Main owns Solen backend architecture, data ownership, API/authorization contracts, failure/retry/concurrency decisions and causal diagnosis. A justified delegate may implement a bounded approved contract, research a distinct hypothesis or independently review consequential work. Apply global risk/delegation rules and `fable-execution` for consequential contracts, including main-authored changes.
 
 - Functional rules live in `_rules/*`. Read the relevant current rule before code safety, structure, i18n, security, database, or known-pitfall work.
 - Before changing a surface, search `_rules/LESSONS_LEARNED.md` by the affected paths, component or feature and symptom. Read the matching entries in full and follow current governing rules when historical advice conflicts. Reuse relevant entries already read when their source and task conditions are unchanged. In the same turn as fixing a non-obvious bug or footgun, update its existing entry or add the missing lesson with file bindings, the observed failure, supported cause and a concrete prevention step. Keep bindings current when files move. Routine typos and failures already fully explained by an existing compiler check do not need duplicate lessons.
 - Append incomplete features to `_tasks/INCOMPLETE_FEATURES.md` with file, line, blocker, and next step. Never delete an entry without a separately authorized resolution.
 - Never use an empty `.catch(() => {})`. Log errors with component and action context. Auth failures log and redirect to login. Payment failures log, show a user-visible error, and offer retry.
+
+
+## Specialist skills
+
+Use `fable-frontend` for Solen UI, visuals, interaction and mockups; `fable-backend` for API, database, auth, payment, jobs, security and performance; and `fable-psychology` for conversion, retention, onboarding, pricing display, social proof, notifications, loyalty, defaults and waiting feedback. Load only the applicable skill and follow its current contract. General execution/reasoning and current Codex documentation routing remain global.
 
 ## Solen precedence
 

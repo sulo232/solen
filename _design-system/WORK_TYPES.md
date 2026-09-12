@@ -1,14 +1,12 @@
 # Work-type taxonomy
 
-**Why this exists:** sessions kept conflating "tiny surgical edit" with "ground-up rebuild" and budgeting + verifying them the same way. Work-types describe the shape of work; they do not determine risk or require a heavier process by themselves. Pick the right type BEFORE starting — don't discover mid-session you're doing more than you scoped.
-
-User flag 2026-05-28: "we also got waves or system for example like amazing rebuild or surgical fixes ig to existing sub sites like we've done yk there should be a system."
-
----
+Work-types describe the shape of authorized work and its affected consumers. They do not set risk, spending, scanner quotas, mandatory wave boundaries or a second review. Global instructions own those decisions; this guide supplies Solen-specific verification.
 
 Routine styling, copy and component edits, and deterministic small bug fixes with a known cause and bounded effect, use focused direct behavioral checks. This applies across multiple files and to ordinary delegated implementation using the existing brief. A one-line auth bypass, a payment calculation, a data-integrity change, or uncertain coupled behavior can be consequential. Name the concrete consequence or material uncertainty in the existing brief before invoking structured handoff and independent acceptance. Category, line count and file count alone are not risk. Preserve user design approval and main rendered fidelity checks; do not downgrade already-enrolled consequential work.
 
 ## The 6 work-types
+
+Commit examples below describe possible organization; the shared Commit cadence rule determines the actual boundary. Historical examples are context, not new requirements for the current task.
 
 | # | Type | One-liner | Visual diff | Commit unit |
 |---|---|---|---|---|
@@ -36,12 +34,12 @@ Routine styling, copy and component edits, and deterministic small bug fixes wit
 
 **Verification:**
 - Read the file → make edit → confirm no other unintended change in `git diff`
-- For pure-CSS edits: visual eyeball in browser (no need for screenshot comparison)
+- For CSS edits: perform the project-required rendered checks and reference comparison appropriate to the approved change
 - For a string change (copy / hex / class), use the verification that proves the affected behavior; a static drift report alone is not visual proof
 
-**Commit granularity:** 1 commit per fix is fine for single-concern fixes. Batch multiple surgical fixes into one commit ONLY if they share a V3-D{n} marker (same intent).
+**Commit granularity:** one coherent verified outcome. Related fixes may share a commit; historical tracking markers are not required.
 
-**Drift-check expectation:** ↓ 1-3 findings per fix. Should never INCREASE drift.
+**Static evidence:** inspect applicable candidates on the touched scope. A correct fix need not change a scanner count; do not add unrelated edits to make a count fall.
 
 **Anti-pattern:** Letting a bounded fix expand into unrelated work. Reclassify the work shape when the requested scope changes; repeating the same known fix across files does not itself require heavier review.
 
@@ -57,16 +55,16 @@ Routine styling, copy and component edits, and deterministic small bug fixes wit
 - V3-D331 /fuer-salons dot-eyebrow sweep
 
 **Verification:**
-- Before screenshot at 375 mobile (always) + 1440 desktop (if route has desktop layout)
+- Before screenshots at the approved phone viewport and applicable desktop layout; retain those same viewports for comparison
 - Apply sweep
 - After screenshot at same viewports
 - Visual diff via eyeball — confirm transformation matches intent
-- Drift-check on the route to confirm findings dropped
+- Review applicable static candidates on the touched route; the count alone does not establish correctness
 - Show user the before/after screenshots; wait for visual sign-off
 
-**Commit granularity:** 1 commit per route. V3-D{n} marker in code comments + commit message body.
+**Commit granularity:** use the coherent change and rollback boundary described below; do not add tracking-marker comments solely for process.
 
-**Drift-check expectation:** ↓ 30-100+ findings depending on route size.
+**Static evidence:** resolve applicable defects within the authorized sweep. No fixed number of removed findings is required.
 
 **Anti-pattern:** Sweeping a route without first doing the role-recipe audit. Without the registry as the ground truth, "sweep" devolves into ad-hoc eyeballing — the original drift cause.
 
@@ -83,7 +81,7 @@ Routine styling, copy and component edits, and deterministic small bug fixes wit
 
 **Verification:**
 Check every distinct affected consumer contract. Equivalent accepted instances may share evidence when their component inputs, state, layout context and expected result are the same.
-- `grep -rn ComponentName` to enumerate ALL callers
+- Use `rg` to enumerate callers and identify distinct affected contracts
 - Before screenshot of each distinct affected caller contract; group equivalent accepted instances
 - Apply the component change
 - After screenshot of each distinct affected caller contract using the same grouping
@@ -92,7 +90,7 @@ Check every distinct affected consumer contract. Equivalent accepted instances m
 
 **Commit granularity:** 1 commit covering the component + consumer-route updates if needed.
 
-**Drift-check expectation:** ↓ N × per-route findings (where N = number of consumers).
+**Static evidence:** inspect applicable shared-component and consumer candidates; do not multiply expected finding reductions by caller count.
 
 **Anti-pattern:** Editing a shared component without checking every distinct affected consumer contract. Component sweeps look surgical but their impact is multiplicative — a 3-line change can break 6 routes if you ignore different inputs, states, or layout contexts.
 
@@ -109,13 +107,12 @@ Check every distinct affected consumer contract. Equivalent accepted instances m
 **Verification:**
 - Use the commissioned section and step scope in the existing brief; do not invent a fixed section count or extra infrastructure/polish prerequisite
 - Read the relevant primitive contracts; reuse unchanged accepted source and evidence rather than rereading every import
-- Write the page top-to-bottom in one Write call (acceptable for new files, NOT for existing-file edits)
 - Run the narrowest authorized compile or type check that proves the changed scope; run a full build only when the task authorizes it and it will not disturb shared services
 - Screenshot mobile + desktop
 - Apply the current consequence, uncertainty, and reach threshold. The working assistant always checks the rendered route directly; add one independent native verifier only when that threshold requires it, and let that reviewer cover all applicable visual, code, and security criteria.
 - User visual sign-off
 
-**Commit granularity:** 1 commit per page-rebuild. Often followed by 1-3 iteration commits as user gives feedback.
+**Commit granularity:** keep the approved page change coherent; group or split iterations according to the actual review and rollback boundary.
 
 **Targeted drift expectation:** review all applicable candidates on the new file; the report does not establish rendered fidelity or broad cleanliness.
 
@@ -132,21 +129,21 @@ Check every distinct affected consumer contract. Equivalent accepted instances m
 - Future imagery primitives if Pattern 2 / Pattern 5 surface need wrapping
 
 **Verification:**
-- Component file written at correct location (`app/[locale]/_components/<area>/<Name>.tsx`)
+- Component file placed according to the current component registry and neighboring source ownership
 - TypeScript public API typed
 - Per LOCKFILE §5 — primitive prop signature frozen
 - Component doc written at `_design-system/components/<Name>.md` IN THE SAME TURN
 - COMPONENT_REGISTRY.md updated with file path, Layer (1/2/3), public API, status
 - Per-consumer integration tested
 - Storybook-equivalent demo if applicable
-- Drift-check passes on the new file
+- Review applicable static candidates on the new file and consumer changes
 
-**Commit granularity:** Multi-commit:
+**Integration sequence, without mandatory separate commits:**
 1. Primitive + doc + registry entry
 2. First-consumer wiring
 3. Additional consumers if applicable
 
-**Drift-check expectation:** 0 on the new file. May surface new findings on consumer files if integration reveals gaps.
+**Static evidence:** resolve applicable findings and document valid exceptions; zero raw findings is not a substitute for acceptance.
 
 **Anti-pattern:** Building a new component without writing its doc + registry entry in the same turn. New components without docs become orphan drift sources.
 
@@ -168,13 +165,13 @@ Check every distinct affected consumer contract. Equivalent accepted instances m
 - Marketing emails / social bios / external links — surfaced as risk if can't be controlled
 - Per LOCKFILE §10 conflict resolution — if old route had unique semantic value, that must be preserved or explicitly killed
 
-**Commit granularity:** Multi-commit:
+**Integration sequence, without mandatory separate commits:**
 1. New canonical route built
 2. Redirects added
 3. Cross-link audit + updates
 4. Sitemap + SEO alternates update
 
-**Drift-check expectation:** May spike temporarily during transition (both old + new routes flagged), then drop as old routes are deprecated.
+**Static evidence:** distinguish active-route defects from transitional duplicates; prove final destinations and redirect behavior.
 
 **Anti-pattern:** Building a "fused" page without 301 redirects. Users land on old URLs from bookmarks / search engines / external links — without redirects, they 404 or hit a stale page.
 
@@ -192,7 +189,7 @@ Is the change a bounded single concern with a known cause and effect?
    └─ No
       │
       Is it editing a shared primitive that's imported by N routes?
-      ├─ Yes → Component sweep (type 3) — audit ALL N consumers
+      ├─ Yes → Component sweep (type 3) — check distinct affected consumer contracts
       └─ No
          │
          Are you building a new page (or rewriting an existing page top-to-bottom)?
@@ -212,9 +209,8 @@ Is the change a bounded single concern with a known cause and effect?
 When building a wave plan:
 1. **Identify the work shape in the existing plan when useful.** Choose verification from the actual consequence and affected behavior, without a new classification ledger or fixed effort budget.
 2. **Order within a wave by the requested useful milestone and its dependencies.** Preserve every requested item and count; do not substitute easier unrelated work for the requested outcome.
-3. **Major IA shifts get their own wave.** Don't mix a Wave 1 "Sweep + Fusion" — the fusion will dominate the verification cost.
-4. **New primitives get their own wave.** Same reason.
-5. **One wave = one shipping unit.** When the wave's items are all green + verified, that's a commit boundary.
+3. **Group by the useful milestone, dependencies and rollback boundary.** Split navigation changes or primitives when their independent risk or dependencies warrant it; do not create extra waves solely from the work-type label.
+4. **Commit verified coherent outcomes.** A wave is planning context, not automatic permission to merge, push or deploy.
 
 ---
 
@@ -263,7 +259,7 @@ Every wave / route sweep / component sweep / ground-up rebuild needs evidence fo
 | **Structure matches its authority** | A production candidate follows the captured Fresha structure unless an explicit owner decision changes it. An owner-commissioned multi-direction exploration may vary anatomy and layout within the commission; compare each direction with its stated intent and applicable captured evidence instead of forcing one shared reference layout. | Manual comparison vs current authority |
 | **No structural drift mid-sweep** | Aesthetic sweeps don't restructure (no new sections added, no sections moved, no affordances dropped without explicit user pick) | Visual diff of before/after screenshots |
 
-### Axis 2 — AESTHETIC (Uber/LOCKFILE) gates
+### Axis 2: AESTHETIC (Airbnb/current Solen owners) gates
 
 | Gate | Threshold | Tool |
 |---|---|---|
@@ -281,29 +277,23 @@ Every wave / route sweep / component sweep / ground-up rebuild needs evidence fo
 
 ---
 
-## Commit cadence rule (V3-D332)
+## Commit cadence rule
 
-Per Opus: **per-route commits inside wave-as-PR.**
+Commit each verified coherent outcome within current repository authorization. Use separate commits when they materially improve review or rollback; group related fixes when splitting would fragment one outcome. A route count or historical marker does not determine granularity.
 
-- Every route sweep / rebuild = its own commit (V3-D{n} marker in commit message)
-- Wave merged as single PR (squash optional for clean main; preserve commits if you want bisection history)
-- Stripe / Supabase mutations behind feature flag OR separate PR even within a single route
-- Commit overhead: ~5 min per route. Rollback overhead at wave-granularity: hours.
+Keep payment, database and other consequential changes reviewable with their relevant dependencies. Use a feature flag or separate change when the actual deployment/rollback contract requires it, not automatically because a provider name appears. A commit does not authorize a merge, push or deployment. Do not attach unsupported time estimates to committing or rollback.
 
-**Anti-pattern (was the V3-D331 default):** "1 wave = 1 commit." Bisection on a regression in a 5-route wave is impossible at wave-commit granularity.
+## Rollback procedure per work-type
 
----
+First inspect the exact diff, dependencies and current shared-tree state. Select a reversal that restores the intended behavior without discarding others' work. Do not blindly substitute a commit or merge commit into a generic command.
 
-## Rollback procedure per work-type (V3-D332)
+- **Surgical or route changes:** reverse the coherent change and recheck its actual scenario.
+- **Shared components:** include affected consumer contracts and check distinct inputs/states/layouts.
+- **New primitives:** keep component, consumer wiring and registry/docs consistent; do not leave an undocumented or misleading orphan.
+- **Navigation changes:** restore compatible destinations, redirects and links together; verify old and new URLs. Changing redirect configuration alone may not restore a removed page.
+- **Database/payment changes:** honor the actual data, migration and external-effect contract; a code revert is not evidence of data rollback.
 
-| Type | Rollback |
-|---|---|
-| 1 Surgical | `git revert <commit>` — single concern, low blast radius |
-| 2 Route sweep | `git revert <route-commit>` — other routes in wave keep their fixes (per-route commit granularity makes this safe) |
-| 3 Component sweep | `git revert <component-commit>` — note: consumers may render with stale styles for one commit, screenshot each consumer to confirm |
-| 4 Ground-up rebuild | `git revert <merge-commit>` — reopen wave branch, iterate, re-merge |
-| 5 New primitive | `git revert <primitive + consumer commits>` — component doc + registry entry can stay (zombie OK; registry forgiving) |
-| 6 Major IA shift | `git revert <redirect-config-commit>` + clear Netlify edge cache (`netlify deploy --prod --build`) + verify old URLs work again |
+Production deployment, cache changes, destructive data operations and other external effects require their own existing authorization. Never use a production deploy command as a generic cache-clear step.
 
 ---
 
@@ -311,12 +301,12 @@ Per Opus: **per-route commits inside wave-as-PR.**
 
 | Pattern | Failure mode | Type the work actually was |
 |---|---|---|
-| "Just dropping a few dots" → ended up sweeping 8 callsites across 5 files | Underestimated effort by 4× | Component sweep (type 3) |
+| A small shared-component edit reaches several callers | Missed distinct consumer contracts | Component sweep (type 3) |
 | "Copy /business with adjustments" → /fuer-salons V1 took an hour because of full registry application | Treated as ground-up rebuild (correctly), but initially scoped as a sweep | Ground-up rebuild (type 4) |
 | Adding a `{/* */}` JSX comment outside JSX → build break | "Surgical fix" had hidden compile failure | Still surgical (type 1), but verification step was skipped |
 | Phantom `#F3A864` finding in unused WhySolen — mockup overstated impact | Reported a "visible change" that wasn't visible | Audit step missed: confirm component is imported before counting findings |
 | **Spacing audit bundled with the fix (V3-D332 anti-pattern, predicted by Opus)** | Audit reopens already-swept routes mid-stream — momentum-damaging | Discovery is a separate work-type from fix. Make audits read-only, log to `_drift.md`, treat fixes as a SEPARATE wave/sweep |
-| **Optimistic estimates ignoring i18n + a11y + perf integration cost** | Wave slip → cascade slip on dependent waves | Multiply ideal-case estimates by 1.5-2× to absorb i18n; bake a11y + perf into per-wave gates so they don't compound |
+| **Optimistic estimates ignoring i18n + accessibility + performance** | Unexamined dependencies delay the requested result | Include applicable checks in the original scope and estimate from evidence; do not apply an unsupported multiplier. |
 
 ---
 
