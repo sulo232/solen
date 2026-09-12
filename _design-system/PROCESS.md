@@ -1,6 +1,6 @@
 # PROCESS.md , how design work is scoped, briefed and graded
 
-Solen `AGENTS.md` owns design responsibility, production versus exploration scope, mockup approval, preview delivery and measured acceptance. Global instructions own delegation decisions and review depth; `fable-execution` owns consequential contract mechanics. Use those owners rather than copying their full rules into each brief.
+Solen `AGENTS.md` owns design responsibility, production versus exploration scope, mockup approval and preview delivery; its pinned [scoped SOURCE.md contract](SOURCE.md#scoped-design-contract) owns detailed measured acceptance. Global instructions own delegation decisions and review depth; `fable-execution` owns consequential contract mechanics. Use those owners rather than copying their full rules into each brief.
 
 ## The brief, in full
 
@@ -20,6 +20,7 @@ EVIDENCE: [current reference, source and rendered checks]
 
 Identify the relevant source owner before judgment or edits:
 
+- [SOURCE.md, scoped design contract](SOURCE.md#scoped-design-contract): read the three pinned sections before visual decisions, then additional sections only as applicable.
 - `COMPONENT_REGISTRY.md`: existing components and their contracts.
 - `LOCKFILE.md`: frozen production values.
 - `TASTE_LOG.md`: dated decisions on this surface.

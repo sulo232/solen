@@ -1,14 +1,106 @@
 # Solen Design System — SOURCE.md (V3-D183, 2026-05-26)
 
-> **The canonical source of truth for Solen's V3 design system.**
-> Read this first. Every UI decision routes through here. When this doc conflicts with code, fix the doc OR ask — never silently desync.
->
-> **Companion files** (in priority order):
-> 1. `_design-system/components/<Name>.md` — per-component specifics (props, edge cases, motion details). Less broad than this, more specific.
-> 2. `_rules/SOLEN_UI.md` — universal UI/UX thinking principles (the "think before you output" checklist). Stays orthogonal to tokens.
-> 3. `_design-system/QUESTIONS.md` — open decisions still pending user input. Add to this; don't ask in chat.
+Use the current checkout's [project instructions](../AGENTS.md#solen-precedence) for precedence, current owner decisions and approval. This file owns detailed design rules; existing code establishes observed behavior, not permission to change design law. Read the scoped contract below for visual work, then the sections relevant to the affected surface. Open choices follow the project's question and parking rules.
 
----
+## Scoped design contract
+
+The next three sections were moved verbatim from project AGENTS.md: [Taste rules](#taste-rules), [Visual acceptance floors](#visual-acceptance-floors), and [Locked design contract](#locked-design-contract). Read all three before visual judgment or changes; this contract ends before §0. Project precedence explicitly preserves their pinned-rule authority. The rest of SOURCE.md remains subject to the current owners and dated decisions; it does not gain this contract's precedence.
+
+## Taste rules
+
+These rules are the compact in-context layer. `_design-system/SOURCE.md` owns the full system, `_design-system/LOCKFILE.md` owns frozen literals, and `_design-system/TASTE_LOG.md` owns dated screen decisions. On an aesthetic conflict, LOCKFILE wins unless a later owner decision explicitly supersedes it.
+
+1. **No fabricated data.** Never render a number or status without a live source. Omit it and name the wiring gap. Seeding the database is valid and expected when a real section is empty: data read through the normal query is sourced data. Hardcoded JSX or component values with no source remain fabrication.
+2. **No decorative artifacts.** Remove separator dots, status pips, duplicate price text, and filler. When color or weight already separates adjacent facts, do not add another separator.
+3. **Use neutral surfaces and sparse blue.** Aim for roughly 80 percent white or cool `#F4F4F5` surfaces, roughly 17 percent ink and supporting imagery, and sparse `#276EF1` only on small clickable accents such as text links, small buttons or chips, and tappable review counts. Big CTAs stay ink. See-all arrows stay ink. Secondary buttons are neutral outlines. Filters are neutral: selected is `bg-s-bg-sunken`, `text-s-ink`, semibold; never blue or ink-filled. Booking date and slot selections may use blue.
+4. **Use semantic color by role and contrast.** Against white and `#F4F4F5`, respectively: star `#FFC32B` is 1.60/1.46, warning `#F1AE27` is 1.94/1.77, success `#16A34A` is 3.30/3.00, heart `#FF3366` is 3.55/3.23, accent `#276EF1` is 4.58/4.17, and error `#DC2626` is 4.83/4.39. Star and warning need a stroke or darker companion when they carry meaning alone. Success and heart are icon colors, not body text. Accent and error fail AA body text on the sunken surface. Keep universal colors: yellow star, normal green success disc with white check, availability green, red error, and pink save heart.
+5. **Keep focal color vivid and emphasis coherent.** Never use dark `.text` tokens such as `#906309` or `#9A3412` as a focal fill. Use a vivid default token or surcharge orange `#EA580C` on a light tint. Apply emphasis to the complete meaningful unit. If a card has both an ink name and price, the name is larger.
+6. **Use refined pastel status treatments.** Inline chips use pastel backgrounds, ink text, and a saturated icon. The success disc is `#16A34A` with a white check, not deep green or a pale disc.
+7. **Elevation depends on context.** The one primary commit action uses ink fill. Controls over photos use `FROST_GLASS` from `lib/frost-glass.ts`. Calm controls on white or stone are flat with no shadow. Do not place a white shadowed control on a calm white surface.
+8. **Use the locked fonts.** Inter Tight for display and headings, Inter for body, and Inter Tight with tabular numbers for codes. Never use Geist.
+9. **Ground every value in the system.** Take size, affordance, selected state, copy, and tokens from a locked component or current owner. Refine an existing affordance instead of replacing it by eye. Ask when a required value remains unlocked after investigation.
+10. **No long dashes or product emoji.** Do not use em dash or en dash characters in UI copy, code, comments, or commits. Emoji and playful tone are chat-only.
+
+## Visual acceptance floors
+
+Name the screen class before applying these rules. Customer screens include discovery, search, PDP, booking, checkout, profile, and Inspo. Operator screens include `/dashboard/*`, merchant terminal, and queue display.
+
+Operator screens follow the current merchant rules in `_design-system/TASTE_LOG.md`: one carded hero per screen; remaining content is bare text on the canvas; gaps use 16 or 32; one pill specification per context; no colored edge bars; a person or event appears exactly once. A container is earned only when it does something whitespace cannot. Operator screens have no imagery, semantic-color, or sunken-tray floor. Their life source is live data.
+
+For every customer UI or mockup, the working assistant runs a measured check against the correct screen scope. Inspect the rendered screenshot, DOM, interaction, accessibility, and real data. Measure font sizes and weights, focus state, content density, container boundaries, and the scroll distance from the last required input to the commit action. The global review threshold applies; use `design-verifier` when independent Solen visual acceptance is warranted. A customer UI that violates a floor is not ready.
+
+For an explicit owner-commissioned multi-direction or net-new exploration, the aesthetic finished-screen floors and ceilings below diagnose each direction and expose tradeoffs; they do not reject an authorized alternative merely because it varies the production template. Accessible interactions, data truth, money and terms, security, and the approval boundary remain hard requirements.
+
+### Never-again floors
+
+1. **Web has one light theme.** No `prefers-color-scheme: dark`, `data-theme="dark"`, or dark-mode CSS in web files. iOS may retain dark mode.
+2. **Type budget:** use 3 to 4 distinct font sizes and no more than 2 weights on one rendered screen.
+3. **Empty state:** icon, message, and CTA form one vertically centered unit. Message-to-CTA gap is at most 24px. Trapped space below the primary action is less than 30 percent of the viewport.
+4. **Dense commit screen:** the primary commit action is sticky/fixed or appears within roughly one additional viewport height after the last required input is satisfied, regardless of preceding content.
+5. **Focal treatment:** use clean ink or a vivid default semantic token. Never use a washed-out gray disc or dark text-token fill as the focal.
+6. **Measured reference:** pixel-measure the exact supplied reference. Use `pixel-spec-auto`; if borderless geometry defeats detection, sample pixels directly. Match measured size, ratio, gutter, and type. Record a `measured:` note.
+
+### Customer finished-screen pass
+
+Every customer screen and mockup answers all six in a `floors:` note:
+
+1. A photographic focal is present unless the screen is an exempt form, checkout payment step, legal page, or receipt.
+2. Exactly one element is clearly the biggest.
+3. At least one real tabular number is present.
+4. At least one semantic-color moment is present.
+5. There is no dead-gray zone.
+6. The longest plausible salon name, full review, and longest service name do not break the two-ink-anchor card rule, the 28px display anchor, or load-bearing copy.
+
+### Customer density and hierarchy
+
+- Imagery is satisfied by real salon content, never by a decorative hardcoded hero or banner. At 390x844, customer browse, discovery, and PDP screens carry roughly one-third photographic area. A SalonCard photo is its largest element. Missing imagery uses the specified sunken background, category icon, and initial fallback rather than an empty gray box. Mockups use real seeded photography.
+- Design the populated state first. PDP gallery has at least 5 photos, reviews show at least 3, services show at least 6 rows, and home has at least 4 sections. A first viewport shows at least 4 content units on mobile or 6 on desktop plus a visibly cropped next item. Cards render their full data-backed information stack. Loading, empty, and error states derive from that layout.
+- A real thin salon may fall below count floors. It keeps no-fabrication, the missing-photo fallback, and one honest sub-state for each below-floor section.
+- Above roughly three times the floors, group and cap: 80 or more services by duration or category, more than 12 visible reviews behind recent-plus-distribution treatment, and more than 12 inline gallery photos behind a lightbox.
+- Every elevated container needs a visible boundary on its actual background: sunken tray, flush photo edge, hairline on white, or elevation 2. Grouped content on white with no photo anchor uses a sunken tray. Alternate gray and white for rhythm. Cool chrome needs photography or semantic color in the viewport.
+- A deletion must name the cue that remains. It is legal only when the survivor has a between-group gap at least twice the in-group gap or a full weight, size, or color step. Every new ceiling states its paired floor or states that none exists.
+- Every customer screen has a display anchor at least 28px unless photography is the focal. Card name is larger at weight 600; price is smaller, weight 600, and tabular; rating is ink-2 beside a yellow star. `#9CA3AF` is chart-only. Chevrons, placeholders, timestamps, and hints use `#6B6B6B`; load-bearing copy does not.
+- At most roughly 30 percent of visible text may be weight 600 or above. This is a house threshold with no external study; cite it as a Solen guardrail, not research. The anchor is at least 1.8 times body size, derived from the 28px anchor over the 16px body and rounded from 1.75. Count both type variety and total spread.
+- Every paid commit action shows the base, surcharge, and VAT where applicable; the cancellation or refund term in the DOM above the action; and the salon or stylist identity above the action.
+
+### Composition
+
+- The same entity uses the same component and anatomy across screens. Different densities are named variants of one component.
+- If `_design-system/COMPONENT_REGISTRY.md` owns an element, compose that component. Do not recreate it inline in a page or feature file.
+- Name the screen's one job and justify every element against it. Remove an element that serves another screen's job.
+
+## Locked design contract
+
+Do not reopen a frozen row without the owner naming it. `public/solen-styleguide.html` is the visual rulebook. `_design-system/LOCKFILE.md` is the current literal owner.
+
+| Axis | Current rule |
+|---|---|
+| Selected and active | Gray `bg-s-bg-sunken`, `text-s-ink`, semibold over white; menu/list options add a check. Content tabs use title plus 2px ink underline, active 600 ink, inactive 400 ink-2. Named exceptions: the one commit button stays ink; booking date/slot stays blue; `SelectedCheckBadge` stays ink over a photo; booking services-step category pills use ink fill. |
+| Mockup base | Follow `public/_mockups/_BASE.md`: 402 device constant, full bleed, no fake phone, fonts measured by word width, full-coverage box diff, `-webkit-text-size-adjust:100%`, `100dvh`, safe area for fixed bars, real self-hosted salon photos, and no remote dependencies. Final visual comparison uses a full screenshot diff at the owner's viewport. |
+| Links and buttons | Text links use `#276EF1` with underline on hover. See-all arrows and the primary CTA are ink. Secondary buttons are neutral outlines. |
+| Depth | SalonCard uses photo plus `shadow-whisper` and no border. Grouped list card uses whisper. PDP/booking sidebar uses hairline only. A tile on gray is white with no shadow. Overlays use elevation 2 or 3. A card has either elevation or border, never both. Over-photo controls use frost; sticky bars use gradient fade. |
+| Type | Name 14; meta 12; section H2 `clamp(18px,2vw,20px)`; body 14; CTA 14 on phone as the current working default and 15 on desktop while the phone value remains open; eyebrow 11; customer display anchor at least 28. For a fixed-height one-line control, measure the longest de/en/fr/it string against its maximum width; allow an intentional two-line design or prove it fits. |
+| Imagery | Customer browse/discovery/PDP at 390x844 is roughly one-third photographic. SalonCard photo is largest. Missing-photo fallback is sunken plus category icon plus initial. Mockups use seeded photos. Forms, payment checkout, legal pages, and receipts are exempt. |
+| Density | Populated target: gallery 5, reviews 3, services 6, home 4 sections; first viewport 4 mobile or 6 desktop plus cropped next item. Above roughly 80 services, 100 reviews, or 40 photos, group and cap. Real thin salons use honest below-floor substates. |
+| Hierarchy | Name leads by size. Price is bold ink but smaller. Rating uses a yellow star. Category, city, and distance recede. |
+| Availability | Plain ink text, never a green pill. |
+| Radius | Form/summary card 16 with `rounded-card` and `shadow-elevation-1`; grouped category-member list card 24 with `rounded-[24px]` and `shadow-whisper`; individual entity card 16, flat with border and gaps; input 12; sheet 28; image flush 0. Button/chip remains 16 except for the unresolved approved payment-screen capsule choice stated above. |
+| Spacing | 4px scale; card padding `p-4` or `p-3`; page maximum 1280px, PDP 1180px. |
+| Wrapping | Name and meta truncate; title wraps; body clamps; price and rating do not wrap. |
+| Icon button | `h-11 w-11`. |
+| Hairline | `border-s-border` is `#E4E4E7`. |
+| States | Loading uses `<Skeleton>` matching final geometry. Empty uses `<EmptyState>` with an 18/600 promise headline, gesture subline, filled ink CTA to the filling action, and a 3D category icon or ghost preview on a sunken tray. Error uses `<ErrorState>` inline or `ErrorFallback` for a route. Use registered components. |
+| Focus | Inputs rest on white with a 1px `#E4E4E7` line, height 48, radius 12. Pointer click and tap change nothing visible. Keyboard focus uses a visible ink indicator on inputs, buttons, links, and other interactive elements. No halo. This decision may be ahead of merged implementation; verify the current code and rendered behavior. |
+| Disabled | `opacity-50 cursor-not-allowed`. |
+| Touch target | At least 44px, normally `h-11`. |
+| Filter pill | Selected gray `bg-s-bg-sunken`, `text-s-ink`, semibold; unselected white with hairline; hover deepens text. Never blue-bordered or black. |
+| Category tag | Neutral `bg-s-bg-sunken` plus `text-s-ink-2`; no per-category color. On-photo eyebrow is white. |
+| Date/time | Use one `DateTimePicker` primitive with booking strip or search calendar layout. Do not build bespoke date UI. |
+| Navigation | Sub-page navigation is single. Do not stack home and back. The city/category breadcrumb replacement is incomplete: current code can suppress the global breadcrumb without rendering the passed local chain. A visible restoration requires a mockup first. |
+| Sticky CTA | A commit action is sticky/fixed or within roughly one viewport after the last required input. Reuse `SalonMobileBookBar` on PDP and the booking running-summary treatment where applicable. |
+| Theme | Web is light-only. iOS may keep dark mode. |
+
+States are componentized and locked. Use the registered components rather than hand-building equivalents.
 
 ## §0 · Source-of-truth reconciliation
 
@@ -25,15 +117,9 @@ This file consolidates four predecessor docs. To avoid ambiguity, here's exactly
 
 ### Precedence rule (what wins on conflict)
 
-When two docs disagree on a value:
+Follow [Solen precedence](../AGENTS.md#solen-precedence). Current explicit owner decisions, safety floors and LOCKFILE govern as specified there. Only the three named scoped contract sections above retain the moved AGENTS.md authority; this does not promote the rest of this document. A running implementation is evidence of what happens, not authority to overwrite a settled decision. Establish the cause of drift before changing code or its owner.
 
-1. **Code wins over docs** (the running app is the ground truth — fix the doc).
-2. **Among docs, this SOURCE.md wins.** It's the most recent, the most complete, the only one designed to be the canonical reference.
-3. **`_rules/SOLEN_UI.md` is orthogonal** — it covers principles, not tokens. If it mentions a specific hex value, prefer this file's value.
-4. **Per-component `.md` files override SOURCE.md only for their own component's specifics** (e.g. SaveHeart's 28px compact variant is documented in `components/HeartButton.md`, not here , pointer
-   corrected 2026-08-03: there is no `components/SaveHeart.md`; `SaveHeart` is a private variant of
-   `HeartButton` and lives in that file's Variants section). They never override systemic rules (tokens / type / motion / a11y).
-5. **Archived files** (`_tasks/archive/*`) are read-only history. Do NOT use as a reference for current state — they describe retired eras.
+Per-component documents own their component specifics within those higher rules. `_rules/SOLEN_UI.md` supplies general UI principles and cannot override current tokens or decisions. Archived files describe retired states and are historical evidence only.
 
 ### Drift between this doc and code
 
@@ -1490,11 +1576,9 @@ When tackling a new route class, raise these (extracted from SOLEN_PATTERNS Part
 
 ### Reading order for a new session
 
-1. **First read**: §0 (reconciliation), §1 (positioning), §2 (color tokens), §3 (type), §6 (motion). This is the foundation.
-2. **When building a component**: §8 (card grammar), §14 (authoring contract), §15 (provenance), plus the relevant `components/<Name>.md` JIT.
-3. **When building a route**: §21 (Fresha translation), pull Mobbin refs, then §10 (states), §11 (clickable contract), §16 (a11y), §17 (i18n).
-4. **When debugging visual issues**: §13 (mobile perf), §6.6 (GPU compositing).
-5. **When unsure if a decision is settled**: §20 (locked decisions). If not there, raise in QUESTIONS.md.
+Start with the current project's UI reading order and the three [scoped contract sections](#scoped-design-contract). Then select affected sections: color/type (§2/§3), components (§8/§14 and the registered component contract), states/controls (§10/§11), accessibility/i18n (§16/§17), or reference structure (§21). Motion and performance use their applicable current owners and §6/§13 when relevant. Read surrounding context when it changes interpretation and reuse unchanged accepted evidence. A new session does not require reading every section.
+
+Current LOCKFILE and dated owner decisions govern older examples here. Use the project's named-reference capture procedure; an old Mobbin example is not a substitute for an exact requested capture. Open choices route through TASTE_AUTHORITY and the existing decision record.
 
 ### When to update this doc
 
