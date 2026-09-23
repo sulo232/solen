@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { z } from 'zod';
 import { getServerEnv, getPublicEnv } from "@/lib/env";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
+import { sendEmail, adminPartnerLeadNotification } from "@/lib/email";
 
 const leadSchema = z.object({
   email: z.string().email(),
@@ -56,6 +57,22 @@ export async function POST(request: NextRequest) {
       if (insertError.code !== '42P01') { // 42P01 is "undefined_table"
         return NextResponse.json({ error: 'Database error' }, { status: 500 });
       }
+    }
+
+    // Alert the team only after the lead row committed (not on the 42P01 fallthrough, where
+    // nothing was stored). Recipient is the internal ADMIN_EMAIL, not the lead: an operational
+    // alert with no customer preference to consult (same class as
+    // app/api/admin/notify-new-salon). The lead's address is never emailed here. A failed
+    // send is logged and never fails lead capture.
+    const adminEmail = getServerEnv().ADMIN_EMAIL;
+    if (!insertError && adminEmail) {
+      try {
+        await sendEmail(adminPartnerLeadNotification(adminEmail, { salon: salon_name, email }));
+      } catch (err) {
+        console.error('[partner/leads] admin lead alert email failed:', err);
+      }
+    } else if (!adminEmail) {
+      console.warn('[partner/leads] ADMIN_EMAIL not configured, lead alert skipped');
     }
 
     return NextResponse.json({ success: true }, { status: 200 });

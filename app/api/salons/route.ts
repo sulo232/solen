@@ -6,7 +6,8 @@ import { SALON_CATEGORY_SLUGS } from "@/lib/validations";
 import { generalLimiter, authLimiter, applyRateLimit, getClientIp } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, createSalonSchema } from "@/lib/validations";
-import { sendEmail } from "@/lib/email";
+import { sendEmail, type EmailLocale } from "@/lib/email";
+import { locales, defaultLocale } from "@/lib/locale-constants";
 import { onboardingWelcome } from "@/lib/email-templates/salon-onboarding";
 import { autoTranslateDescription } from "@/lib/ai/translate";
 import { CURRENT_TOS_VERSION } from "@/lib/tos-version";
@@ -973,7 +974,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Update user profile with onboarding status, TOS tracking, and role upgrade (if applicable)
-    const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single();
+    // locale + notification_email are read here too, for the welcome email below.
+    const { data: profile, error: profileError } = await admin.from("profiles").select("role, locale, notification_email").eq("id", user.id).single();
     
     const updateData: Database["public"]["Tables"]["profiles"]["Update"] = {
       onboarding_completed: true,
@@ -987,10 +989,23 @@ export async function POST(request: NextRequest) {
     
     await admin.from("profiles").update(updateData).eq("id", user.id);
 
-    // Send welcome email (fire-and-forget)
+    // Welcome email, sent after the salon row committed, in the owner's stored locale (German
+    // fallback) instead of a hardcoded "de". Classification: the confirmation of an action the
+    // owner just performed (salon created), so it follows the confirmations opt-out
+    // profiles.notification_email; it is not a promotional offer (deals_enabled). Fails closed
+    // when the preference cannot be read. A failed send is logged and never fails creation.
     const ownerEmail = email || user.email;
-    if (ownerEmail) {
-      sendEmail(onboardingWelcome(ownerEmail, { salonName: name }, "de")).catch((err) => console.error("[SalonsRoute] failed to send onboarding welcome email:", err));
+    if (profileError || !profile) {
+      console.error("[SalonsRoute] owner preference lookup failed, welcome email skipped", { salonId, profileError });
+    } else if (ownerEmail && profile.notification_email !== false) {
+      const ownerLocale: EmailLocale = (locales as readonly string[]).includes(profile.locale ?? "")
+        ? (profile.locale as EmailLocale)
+        : defaultLocale;
+      try {
+        await sendEmail(onboardingWelcome(ownerEmail, { salonName: name }, ownerLocale));
+      } catch (err) {
+        console.error("[SalonsRoute] failed to send onboarding welcome email", { salonId, err });
+      }
     }
 
     return NextResponse.json({ id: salonId, slug });

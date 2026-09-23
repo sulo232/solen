@@ -6722,6 +6722,11 @@
     "salonRejected": {
       "title": "Store rifiutato",
       "body": "Il Suo store {salon} purtroppo non è stato approvato. Motivo: {reason}"
+    },
+    "loyaltyReward": {
+      "freeService": "Servizio gratuito",
+      "chfDiscount": "Sconto di {amount}",
+      "percentageDiscount": "Sconto del {percent}%"
     }
   },
   "profileFavorites": {

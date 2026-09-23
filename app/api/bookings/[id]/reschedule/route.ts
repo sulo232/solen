@@ -4,6 +4,10 @@ import { claimSlot } from "@/lib/bookings/claim-slot";
 import { resolveBookingActor } from "@/lib/bookings/authorize";
 import { validateBody, bookingRescheduleSchema } from "@/lib/validations";
 import { applyRateLimit, bookingLimiter, getClientIp } from "@/lib/ratelimit";
+import { sendEmail, bookingReschedule, type EmailLocale } from "@/lib/email";
+import { localizedField } from "@/lib/i18n/localized-field";
+import { locales, defaultLocale } from "@/lib/locale-constants";
+import type { Database } from "@/lib/database.types";
 
 // Reschedule is allowed up to this many hours before the appointment (platform rule).
 const RESCHEDULE_MIN_LEAD_HOURS = 24;
@@ -195,9 +199,76 @@ export async function POST(
     console.error("[Reschedule] Failed to free old slot (stale hold, no double-booking):", freeError);
   }
 
+  // Step 4: tell the booking's customer about the move. Reached only after the CAS update
+  // committed, so a lost race or failed write never sends. A retry of an applied reschedule is
+  // refused at the slot lookup/claim above (409) before reaching here, so it cannot send twice.
+  // Classification: booking lifecycle notice (same class as the confirmation and cancellation
+  // emails), so it honors the opt-out profiles.notification_email ("Confirmations, reminders,
+  // cancellations"), exactly as app/api/bookings/route.ts and lib/notifications.ts do. A guest
+  // (no user_id) has no profile or toggle, so guest_email always gets it, same as the guest
+  // confirmation; bookings has no locale column, so a guest falls back to German.
+  // Failures are logged and never change the response: the reschedule already committed.
+  await sendRescheduleEmail(admin, booking as RescheduleEmailBooking, new_starts_at);
+
   // Success - return updated booking
   return NextResponse.json({
     success: true,
     booking: updatedBooking,
   });
+}
+
+// resolveBookingActor returns the full row untyped (BookingRow = Record<string, any>); these
+// are the columns read here, all present on bookings per _inventory/_db-columns.json.
+type RescheduleEmailBooking = Pick<
+  Database["public"]["Tables"]["bookings"]["Row"],
+  "id" | "user_id" | "guest_email" | "salon_id" | "service_id" | "starts_at"
+>;
+
+async function sendRescheduleEmail(
+  admin: ReturnType<typeof createAdminSupabaseClient>,
+  booking: RescheduleEmailBooking,
+  newStartsAt: string
+): Promise<void> {
+  try {
+    let recipientEmail: string | null = null;
+    let locale: EmailLocale = defaultLocale;
+    if (booking.user_id) {
+      const { data: profile, error: preferenceError } = await admin
+        .from("profiles")
+        .select("locale, notification_email")
+        .eq("id", booking.user_id)
+        .maybeSingle();
+      if (preferenceError || !profile) {
+        // Fail closed: an unreadable preference is never treated as consent.
+        console.error("[Reschedule] notification preference lookup failed, email skipped", { bookingId: booking.id, preferenceError });
+        return;
+      }
+      if (profile.notification_email === false) return;
+      locale = (locales as readonly string[]).includes(profile.locale ?? "") ? (profile.locale as EmailLocale) : defaultLocale;
+      const { data: authUser } = await admin.auth.admin.getUserById(booking.user_id);
+      recipientEmail = authUser?.user?.email ?? null;
+    } else {
+      recipientEmail = booking.guest_email;
+    }
+    if (!recipientEmail) return;
+
+    const [{ data: service }, { data: salon }] = await Promise.all([
+      admin.from("services").select("name_de, name_en, name_fr, name_it").eq("id", booking.service_id).maybeSingle(),
+      admin.from("salons").select("name").eq("id", booking.salon_id).maybeSingle(),
+    ]);
+    await sendEmail(
+      bookingReschedule(
+        recipientEmail,
+        {
+          service: localizedField(service, "name", locale) || "Service",
+          salon: salon?.name ?? "Salon",
+          oldDate: booking.starts_at,
+          newDate: newStartsAt,
+        },
+        locale
+      )
+    );
+  } catch (err) {
+    console.error("[Reschedule] customer reschedule email failed", { bookingId: booking.id, err });
+  }
 }

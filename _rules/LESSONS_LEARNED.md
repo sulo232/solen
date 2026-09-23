@@ -992,6 +992,8 @@ Observed: appointment SMS was always German and used the server's timezone, alth
 
 Prevention applied: render the actual booking date and time with Europe/Zurich and a validated supported profile locale, defaulting to German. Keep copy in the existing four message owners, preserve real names and addresses, and omit a missing address. Exercise the actual handler under TZ=UTC across summer, winter and the Swiss date boundary; retain SMS opt-out, email independence, conditional send claims and failed-send retry. Local fixtures establish handler behavior, not live database or provider delivery.
 
+Follow-up (2026-09-23, `lib/email.ts` bookingReschedule, `app/api/bookings/[id]/reschedule/route.ts`, `app/api/slots/[id]/route.ts`, `tests/api/email-wiring.test.ts`): the reschedule email builder formatted old/new times with `toLocaleString("<l>-CH")` and no zone, so a UTC server shifted every time by one or two hours; a test run on a Zurich laptop passed anyway. The builder now passes `timeZone: "Europe/Zurich"`. Any builder that prints an appointment time needs the explicit zone, and its test must run under `TZ=UTC` (verified: removing the zone fails the wiring test under `TZ=UTC`).
+
 ### A review's stored stylist ID is not proof of booked attribution
 
 Bindings: `app/api/reviews/route.ts` (existing writer), `lib/salon-detail.ts`, `app/api/reviews/salon/[salon_id]/route.ts`, `app/[locale]/salon/[slug]/reviews/page.tsx`, `app/[locale]/_components/salon/_shared.ts`, both SalonReviews components.

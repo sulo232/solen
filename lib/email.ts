@@ -316,14 +316,17 @@ export function bookingReschedule(
     fr: `Réservation reprogrammée: ${vars.service} chez ${vars.salon}`,
     it: `Prenotazione riprogrammata: ${vars.service} presso ${vars.salon}`,
   };
+  // Appointment times are Swiss wall-clock times. Without an explicit zone the server's own
+  // zone applies (UTC in production), which printed a 10:00 appointment as 08:00 in summer.
+  const zurich: Intl.DateTimeFormatOptions = { timeZone: "Europe/Zurich" };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Ihre Buchung für ${escapeHtml(vars.service)} bei ${escapeHtml(vars.salon)} wurde von ${new Date(vars.oldDate).toLocaleString("de-CH")} auf den ${new Date(vars.newDate).toLocaleString("de-CH")} verschoben.</p>`,
+    de: `<p>Ihre Buchung für ${escapeHtml(vars.service)} bei ${escapeHtml(vars.salon)} wurde von ${new Date(vars.oldDate).toLocaleString("de-CH", zurich)} auf den ${new Date(vars.newDate).toLocaleString("de-CH", zurich)} verschoben.</p>`,
     // en-CH (not en-US, fixed 2026-07-26 de-CH sweep): every other locale here uses its Swiss
     // regional variant (de-CH/fr-CH/it-CH); en-US would show US date order + AM/PM to a Swiss
     // English-locale user, inconsistent with lib/format.ts's SWISS_DATE_LOCALES (en -> en-CH).
-    en: `<p>Your booking for ${escapeHtml(vars.service)} at ${escapeHtml(vars.salon)} has been rescheduled from ${new Date(vars.oldDate).toLocaleString("en-CH")} to ${new Date(vars.newDate).toLocaleString("en-CH")}.</p>`,
-    fr: `<p>Votre réservation pour ${escapeHtml(vars.service)} chez ${escapeHtml(vars.salon)} a été reprogrammée du ${new Date(vars.oldDate).toLocaleString("fr-CH")} au ${new Date(vars.newDate).toLocaleString("fr-CH")}.</p>`,
-    it: `<p>La Sua prenotazione per ${escapeHtml(vars.service)} presso ${escapeHtml(vars.salon)} è stata riprogrammata dal ${new Date(vars.oldDate).toLocaleString("it-CH")} al ${new Date(vars.newDate).toLocaleString("it-CH")}.</p>`,
+    en: `<p>Your booking for ${escapeHtml(vars.service)} at ${escapeHtml(vars.salon)} has been rescheduled from ${new Date(vars.oldDate).toLocaleString("en-CH", zurich)} to ${new Date(vars.newDate).toLocaleString("en-CH", zurich)}.</p>`,
+    fr: `<p>Votre réservation pour ${escapeHtml(vars.service)} chez ${escapeHtml(vars.salon)} a été reprogrammée du ${new Date(vars.oldDate).toLocaleString("fr-CH", zurich)} au ${new Date(vars.newDate).toLocaleString("fr-CH", zurich)}.</p>`,
+    it: `<p>La Sua prenotazione per ${escapeHtml(vars.service)} presso ${escapeHtml(vars.salon)} è stata riprogrammata dal ${new Date(vars.oldDate).toLocaleString("it-CH", zurich)} al ${new Date(vars.newDate).toLocaleString("it-CH", zurich)}.</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -616,6 +619,21 @@ export function adminNewSalonNotification(
     to,
     subject: `Neuer Salon wartet auf Genehmigung: ${vars.salon}`,
     html: `<p>Ein neuer Salon hat sich registriert und wartet auf Genehmigung:</p><ul><li><strong>Name:</strong> ${escapeHtml(vars.salon)}</li><li><strong>E-Mail:</strong> ${escapeHtml(vars.email)}</li><li><strong>Adresse:</strong> ${escapeHtml(vars.address)}</li></ul><p><a href="https://solen.ch/de/dashboard/approvals">Jetzt prüfen →</a></p>`,
+  };
+}
+
+/**
+ * Internal team alert for a new partner-page lead (app/api/partner/leads). Goes to
+ * ADMIN_EMAIL only, never to the lead, so like adminNewSalonNotification it is German-only.
+ */
+export function adminPartnerLeadNotification(
+  to: string,
+  vars: { salon: string; email: string }
+): EmailPayload {
+  return {
+    to,
+    subject: `Neuer Partner-Lead: ${vars.salon}`,
+    html: `<p>Über die Partnerseite ist ein neuer Lead eingegangen:</p><ul><li><strong>Salon:</strong> ${escapeHtml(vars.salon)}</li><li><strong>E-Mail:</strong> ${escapeHtml(vars.email)}</li></ul>`,
   };
 }
 

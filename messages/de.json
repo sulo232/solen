@@ -6722,6 +6722,11 @@
     "salonRejected": {
       "title": "Salon abgelehnt",
       "body": "Ihr Salon {salon} wurde leider nicht genehmigt. Grund: {reason}"
+    },
+    "loyaltyReward": {
+      "freeService": "Gratis Service",
+      "chfDiscount": "{amount} Rabatt",
+      "percentageDiscount": "{percent}% Rabatt"
     }
   },
   "profileFavorites": {
