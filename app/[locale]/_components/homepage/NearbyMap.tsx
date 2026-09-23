@@ -126,6 +126,16 @@ export default function NearbyMap({
       attributionControl: false,
     });
 
+    // a11y (G19-a11y): the holder div below is no longer aria-hidden, because Mapbox
+    // always injects a focusable logo link (ToS-required, cannot be removed) and a
+    // container may never aria-hide a focusable descendant. Take the logo itself out
+    // of the tab order instead; the outer `<a>`'s aria-label still describes the tile.
+    const hideLogoFromTabOrder = () => {
+      const logo = holder.current?.querySelector<HTMLAnchorElement>(".mapboxgl-ctrl-logo");
+      if (logo) logo.tabIndex = -1;
+    };
+    hideLogoFromTabOrder();
+
     // The teaser sits below the fold, so on first mount the container can measure 0px
     // high and Mapbox then renders a degenerate viewport: one tile, nothing but the land
     // colour, markers pushed outside the clip (measured: holder 396x0). Re-fit AFTER a
@@ -161,6 +171,7 @@ export default function NearbyMap({
       decollide();
     };
     map.on("load", fit);
+    map.on("load", hideLogoFromTabOrder);
     // Owner reference (2026-07-24): POI icons + labels, street names, place labels, grey
     // buildings — this style ships those flags off by default (lib/map-style.ts). Must run
     // after "load" (style is ready by then), never before.
@@ -187,7 +198,7 @@ export default function NearbyMap({
           on this node once the map mounts, which beats the absolute utility and collapses the
           element to 0px (measured: anchor 398x156 but this node 396x0, markers pushed below the
           clip). An explicit height is immune to that override. */}
-      <div ref={holder} className="h-full w-full" aria-hidden />
+      <div ref={holder} className="h-full w-full" />
       {/* A5 (owner dictation 2026-08-05, _plans/HOME_FIXES_2026-08-05.md): the count badge
           becomes liquid glass, the SAME treatment as the card heart overlay he pointed at.
           He dictated the recipe by measuring the live heart; those exact values already ARE
