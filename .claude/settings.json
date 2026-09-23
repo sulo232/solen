@@ -3,5 +3,8 @@
     "allow": [
       "Bash(*)"
     ]
+  },
+  "enabledPlugins": {
+    "stripe@claude-plugins-official": true
   }
 }
