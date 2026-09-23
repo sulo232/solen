@@ -1394,3 +1394,7 @@ Shown: the seven round-3 screens as A (thin outlines), B (soft-shadow boxes), C 
 ## 2026-09-23: The picked look, confirmed ("yes")
 
 Shown one image of only the parts he picked (B's search bar; C's bookings buttons, pay button and booking box) with the corner rule they imply, he answered "yes". The look: search bar and filter pills fully round with a soft shadow on the search bar; buttons are 12px rounded rectangles (primary ink, secondary grey fill, no outline); boxes that hold content are 20px with a soft ambient shadow (`rgba(0,0,0,.02) 0 0 0 1px, rgba(0,0,0,.10) 0 8px 24px`); photos 20px inside a page, edge to edge at the top. This supersedes "button/chip 16px" and the capsule CTA for buttons (pills stay round). Mockup-level approval only: production still needs the applied screens approved.
+
+## 2026-09-23: Buttons are capsules everywhere (owner, on the real salon page with the picked look)
+
+On "today vs picked look" for the real salon page: he wants the fully round pill shape for Book appointment, View all "and everywhere, most of all". This supersedes the 12px rounded-rectangle button in the entry above; the 20px shadowed boxes stay ("salon page 2 and 3 look good"). The short "All" category pill looked warped as a near-circle in grey; short pills get a minimum width and the selected state (grey / ink / outline) is shown as a one-change comparison. Parked as their own rounds: category icons, bottom-nav icons, and the bottom-nav design. Next: research his X.com bookmarks phase by phase (plan: `_plans/DESIGN_RESET_2026-09-23.md`, Step B).

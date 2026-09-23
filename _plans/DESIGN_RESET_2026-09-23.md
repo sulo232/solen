@@ -56,6 +56,58 @@ Owner answer: the direction is **Fresha layout + Airbnb look and motion**. That 
 4. **Binding throughout:** calm colour, clean typography, the 44px touch floor, WCAG AA, and the keyboard-only ink focus.
 5. **Delivery:** one `/en/dev/direction` preview on a Cloudflare tunnel link, one question per screen. Before sending, verify it in the browser (screenshots, measured DOM, recorded motion).
 
+## Update 2026-09-23 (later): owner feedback on the applied look, and the X.com research ask
+
+### Owner verdicts on the real salon and search pages ("today" vs "picked look")
+- **Buttons are fully round (capsule) everywhere.** This covers Book appointment, View all and the small Book buttons, and it reverses the 12px rounded rectangle from the C picks.
+- **Salon page screens 2 and 3 look good otherwise:** 20px boxes with a soft shadow and no outline.
+- **The category pill row on the salon page (screen 1) looks wrong.**
+  - The short "All" pill with its grey selected fill looks warped, because it becomes almost a circle.
+  - He is unsure whether the selected pill should be grey.
+  - Next: give short pills a minimum width, and show the selected state as a one-change comparison (grey vs ink vs outline only) on this same row.
+- **Search results:** no visible difference, which is fine because it is already close.
+- **Separate follow-up rounds:**
+  - category icons (Hair Salon, Barbershop, and so on)
+  - bottom navigation icons (Search, Inspo, Saved, Sign in)
+  - the bottom navigation design itself
+- **His overall goal:** fix the design system and the component system as a whole.
+- **Record in TASTE_LOG and commit** once plan mode ends: buttons are capsule, which supersedes the 12px entry.
+
+### Step A (next, small): re-shoot the look with capsule buttons
+- Re-run `scratchpad/look/shoot.mjs` with primary and secondary buttons set to 9999px and short pills given a 64px minimum width.
+- The last re-run did not change the output, so check that the new PNGs actually differ before sending.
+- Send today vs new for salon screens 1-3.
+- Send the selected-pill comparison (grey / ink / outline) as one image.
+
+### Step B: X.com saved-design research, one phase at a time (the owner's ask)
+The owner has many saved design posts on x.com. He logs in on Chrome, and we work through them phase by phase.
+
+- **B1 Access and collect (read-only):**
+  - Owner answers: the source is the **Bookmarks** tab only, and access is through **Chrome with the Claude extension**.
+  - The owner logs in to x.com in Chrome with the Claude in Chrome extension connected. I use the `mcp__claude-in-chrome__*` tools.
+  - I open his Bookmarks and scroll to the end. I never like, post, reply, follow or change anything.
+  - Each post goes into a ledger `_design-system/research/x-saved-2026-09/ledger.json`: URL, author, date, text, media type (image, video, GIF), and linked site (21st.dev, Dribbble, a live site and so on). Images are saved as stills, and videos as frame strips plus the source link.
+  - Stop check: the ledger count matches the number of bookmarks reached at the end of the scroll.
+  - Show him the count and a contact sheet of thumbnails before going further.
+- **B2 Sort:**
+  - Tag each design post by what it teaches: motion (enter, press, page transition, scroll-linked, micro-interaction), shape and radius, depth and shadow, colour, type, layout, component (button, card, nav, sheet, input, icon), or onboarding and empty states.
+  - Non-design posts are listed and dropped.
+  - A sonnet subagent works from the saved ledger only, not from the live site.
+- **B3 Compare with Solen:**
+  - For each tag, name what the saved posts do repeatedly and what Solen does today, measured on real routes. For example, today's salon page alone uses 9 different corner values: 9999, 24, 22, 20, 16 and 10 px.
+  - Report the **fundamental differences** (for example "they animate every state change and we don't", or "they use one radius family"), each with their clip or still next to our screen.
+  - Deliverable: one visual page plus images sent in chat.
+- **B4 Adopt:**
+  - For each difference worth taking, make a one-change comparison on a real Solen page (ours vs ours plus that one thing).
+  - He picks. The picks feed Phase 2 (design system) and the component system.
+
+### Revised order
+1. Step A: capsule re-shoot and the pill question.
+2. Step B: X research, B1 to B4, one phase per round with his OK between phases.
+3. Phase 2: design system rewrite (tokens, radius family, motion vocabulary) plus a component system audit that maps every button, pill and card variant in code onto a few.
+4. Icons and bottom navigation round.
+5. Phase 3-5 as below.
+
 ## Phase 2: rewrite the rules from the pick (structure shown before any change)
 Proposed structure: 5 live files, everything else archived.
 
