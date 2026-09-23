@@ -997,17 +997,25 @@ export function barberLoyaltyRewardEmail(
   vars: { customerName: string; salonName: string; reward: string; redeemUrl: string },
   locale: EmailLocale = "de"
 ): EmailPayload {
-  const subjects: Record<EmailLocale, string> = {
-    de: `Ihre Treuekarte bei ${vars.salonName} ist voll!`,
-    en: `Your loyalty card at ${vars.salonName} is complete!`,
-    fr: `Votre carte fidélité chez ${vars.salonName} est complète !`,
-    it: `La Sua carta fedeltà da ${vars.salonName} è completa!`,
+  const name = vars.customerName.trim();
+  const greeting: Record<EmailLocale, string> = {
+    de: name ? `Guten Tag ${escapeHtml(name)},` : "Guten Tag,",
+    en: name ? `Hello ${escapeHtml(name)},` : "Hello,",
+    fr: name ? `Bonjour ${escapeHtml(name)},` : "Bonjour,",
+    it: name ? `Buongiorno ${escapeHtml(name)},` : "Buongiorno,",
   };
+  const subjects: Record<EmailLocale, string> = {
+    de: `Ihre Treuekarte bei ${vars.salonName} ist voll`,
+    en: `Your loyalty card at ${vars.salonName} is complete`,
+    fr: `Votre carte fidélité chez ${vars.salonName} est complète`,
+    it: `La Sua carta fedeltà da ${vars.salonName} è completa`,
+  };
+  const rewardBox = `<p style="background:${EMAIL_COLORS.bgSunken};padding:16px;border-radius:8px;text-align:center;font-size:18px;font-weight:600;color:#0A0A0A">${escapeHtml(vars.reward)}</p>`;
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Hey ${escapeHtml(vars.customerName)},</p><p>Glückwunsch! Ihre Treuekarte bei <strong>${escapeHtml(vars.salonName)}</strong> ist voll. Sie haben sich folgende Belohnung verdient:</p><p style="background:${EMAIL_COLORS.bgSunken};padding:16px;border-radius:8px;text-align:center;font-size:18px;font-weight:600;color:#0A0A0A">${escapeHtml(vars.reward)}</p><p><a href="${vars.redeemUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Belohnung einlösen →</a></p><p style="color:${EMAIL_COLORS.ink2};font-size:12px;margin-top:24px">Ihr Solen Team</p>`,
-    en: `<p>Hey ${escapeHtml(vars.customerName)},</p><p>Congrats! Your loyalty card at <strong>${escapeHtml(vars.salonName)}</strong> is complete. You've earned:</p><p style="background:${EMAIL_COLORS.bgSunken};padding:16px;border-radius:8px;text-align:center;font-size:18px;font-weight:600;color:#0A0A0A">${escapeHtml(vars.reward)}</p><p><a href="${vars.redeemUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Redeem reward →</a></p><p style="color:${EMAIL_COLORS.ink2};font-size:12px;margin-top:24px">Your Solen Team</p>`,
-    fr: `<p>Bonjour ${escapeHtml(vars.customerName)},</p><p>Félicitations ! Votre carte fidélité chez <strong>${escapeHtml(vars.salonName)}</strong> est complète. Vous avez gagné :</p><p style="background:${EMAIL_COLORS.bgSunken};padding:16px;border-radius:8px;text-align:center;font-size:18px;font-weight:600;color:#0A0A0A">${escapeHtml(vars.reward)}</p><p><a href="${vars.redeemUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Utiliser la récompense →</a></p><p style="color:${EMAIL_COLORS.ink2};font-size:12px;margin-top:24px">Votre équipe Solen</p>`,
-    it: `<p>Ciao ${escapeHtml(vars.customerName)},</p><p>Complimenti! La Sua carta fedeltà da <strong>${escapeHtml(vars.salonName)}</strong> è completa. Ha guadagnato:</p><p style="background:${EMAIL_COLORS.bgSunken};padding:16px;border-radius:8px;text-align:center;font-size:18px;font-weight:600;color:#0A0A0A">${escapeHtml(vars.reward)}</p><p><a href="${vars.redeemUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Riscatta il premio →</a></p><p style="color:${EMAIL_COLORS.ink2};font-size:12px;margin-top:24px">Il team Solen</p>`,
+    de: `<p>${greeting.de}</p><p>Ihre Treuekarte bei <strong>${escapeHtml(vars.salonName)}</strong> ist voll. Ihre Belohnung:</p>${rewardBox}<p>Sie lösen sie bei Ihrem nächsten Besuch direkt im Salon ein.</p><p style="color:${EMAIL_COLORS.ink2};font-size:12px;margin-top:24px">Ihr Solen Team</p>`,
+    en: `<p>${greeting.en}</p><p>Your loyalty card at <strong>${escapeHtml(vars.salonName)}</strong> is complete. Your reward:</p>${rewardBox}<p>You redeem it at the salon on your next visit.</p><p style="color:${EMAIL_COLORS.ink2};font-size:12px;margin-top:24px">Your Solen Team</p>`,
+    fr: `<p>${greeting.fr}</p><p>Votre carte fidélité chez <strong>${escapeHtml(vars.salonName)}</strong> est complète. Votre récompense :</p>${rewardBox}<p>Vous l'utilisez directement au salon lors de votre prochaine visite.</p><p style="color:${EMAIL_COLORS.ink2};font-size:12px;margin-top:24px">Votre équipe Solen</p>`,
+    it: `<p>${greeting.it}</p><p>La Sua carta fedeltà da <strong>${escapeHtml(vars.salonName)}</strong> è completa. Il Suo premio:</p>${rewardBox}<p>Lo riscatta direttamente in salone alla Sua prossima visita.</p><p style="color:${EMAIL_COLORS.ink2};font-size:12px;margin-top:24px">Il team Solen</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }

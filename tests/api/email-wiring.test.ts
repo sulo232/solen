@@ -247,9 +247,10 @@ describe("POST /api/loyalty/stamp reward email", () => {
     expect(sendEmailMock).toHaveBeenCalledTimes(1);
     const p = sendEmailMock.mock.calls[0][0] as { to: string; subject: string; html: string };
     expect(p.to).toBe("cust@example.com");
-    expect(p.subject).toBe("Votre carte fidélité chez Salon Coiffure est complète !");
+    expect(p.subject).toBe("Votre carte fidélité chez Salon Coiffure est complète");
     expect(p.html).toContain("Remise de CHF 20");
-    expect(p.html).toContain("https://solen.ch/fr/profile");
+    expect(p.html).toContain("directement au salon");
+    expect(p.html).not.toContain("href=");
   });
 
   it("does not send for a stamp that does not complete the card", async () => {
@@ -281,7 +282,7 @@ describe("POST /api/loyalty/stamp reward email", () => {
   it("uses German for a null locale and the real reward wording per type", async () => {
     await runStamp({ profile: ok({ locale: null, notification_email: true, display_name: "Mia" }), program: { stamps_required: 10, reward_type: "free_service", reward_value: null } });
     const p = sendEmailMock.mock.calls[0][0] as { subject: string; html: string };
-    expect(p.subject).toBe("Ihre Treuekarte bei Salon Coiffure ist voll!");
+    expect(p.subject).toBe("Ihre Treuekarte bei Salon Coiffure ist voll");
     expect(p.html).toContain("Gratis Service");
   });
 
