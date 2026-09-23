@@ -7,3 +7,6 @@ The real dev site with one script (`system2.js`) layered on top by `proxy.mjs` (
 - The rules come from the X saves comparison: `public/_research/x-components/`.
 
 Status: mockup for the owner's eye check. Product code follows only after approval.
+
+Update: the live overlay preview is retired (the owner wants mockups, not the live site with a layer on top).
+`snapshot.mjs` froze the 12 pages into standalone static pages at `public/_research/site-mockup/` (no scripts, own copies of CSS, fonts and images). Open `/_research/site-mockup/index.html`.

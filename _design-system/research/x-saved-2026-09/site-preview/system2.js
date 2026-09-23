@@ -46,6 +46,7 @@
     const chipEls = new Set();
     for (const [, list] of groups) {
       if (list.length < 2) continue;
+      if (list.some((c) => c.e.querySelector('img'))) continue; // owner-protected category pill row (icon images) stays as is
       const bgs = list.map((c) => c.s.backgroundColor); const common = bgs.sort((a, b) => bgs.filter((x) => x === a).length - bgs.filter((x) => x === b).length).pop();
       const strong = (c) => ['aria-pressed', 'aria-selected', 'aria-checked'].some((a) => c.e.getAttribute(a) === 'true') || !!c.e.getAttribute('aria-current') || c.e.getAttribute('data-state') === 'active' || isInk(c.s.backgroundColor) || isBlue(c.s.backgroundColor) || /39, 110, 241, 0\.1/.test(c.s.backgroundColor);
       const anyStrong = list.some(strong);
