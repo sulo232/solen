@@ -443,7 +443,7 @@ export default function DashboardLayout({
       </AnimatePresence>
 
       {/* ── Main content ── */}
-      <div className="flex-1 md:ml-[64px] flex flex-col min-h-screen">
+      <div className="flex-1 min-w-0 md:ml-[64px] flex flex-col min-h-screen">
         {/* Desktop top bar */}
         <div className="hidden md:flex sticky top-0 z-20 bg-white/85 backdrop-blur-md border-b border-s-border h-[56px] items-center gap-3 px-6">
           <div className="px-3 py-1.5 rounded-full border border-s-border hover:bg-s-bg-sunken transition-colors">

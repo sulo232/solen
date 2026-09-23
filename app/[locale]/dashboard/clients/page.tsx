@@ -3,16 +3,18 @@
 import { useEffect, useState, useMemo } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
-import { Search, Tag, StickyNote, ChevronLeft, Calendar, Beaker, Camera, ClipboardList } from "lucide-react";
+import { Search, Users, Tag, StickyNote, ChevronLeft, Calendar, Beaker, Camera, ClipboardList } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import { DashStatusPill } from "@/app/[locale]/_components/dashboard/DashboardUI";
 import Spinner from "@/components-legacy/ui/Spinner";
 import ErrorState from "@/components-legacy/ui/ErrorState";
+import { Skeleton } from "@/app/[locale]/_components/primitives";
 import FormulaTab from "@/components-legacy/dashboard/FormulaTab";
 import ClientPhotosTab from "@/components-legacy/dashboard/ClientPhotosTab";
 import IntakeFormTab from "@/components-legacy/dashboard/IntakeFormTab";
 import { resolveSwissLocale } from "@/lib/format";
 import { avGrad } from "@/lib/avatar-gradients";
+import { localizedField } from "@/lib/i18n/localized-field";
 
 // ─────────────────────────────────────────
 // Types
@@ -34,6 +36,7 @@ interface Booking {
   starts_at: string;
   status: string;
   service_name: string | null;
+  services?: { name_de: string | null; name_en: string | null; name_fr?: string | null; name_it?: string | null } | null;
   price_paid: number | null;
 }
 
@@ -149,7 +152,17 @@ export default function ClientsPage() {
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-10"><Spinner size="md" /></div>
+        <div className="rounded-[16px] border border-s-border bg-white overflow-hidden" aria-busy="true">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="border-b border-s-border last:border-b-0 px-3.5 py-3 flex flex-col gap-2">
+              <div className="flex items-center gap-3">
+                <Skeleton rounded="full" width={40} height={40} />
+                <Skeleton height={14} width="40%" />
+              </div>
+              <Skeleton height={12} width="60%" />
+            </div>
+          ))}
+        </div>
       ) : loadError ? (
         <ErrorState title={tCommon("errorLoading")} retryLabel={tCommon("retry")} onRetry={() => setLoadAttempt((attempt) => attempt + 1)} />
       ) : (
@@ -161,9 +174,11 @@ export default function ClientsPage() {
           const active = segmentFilter === s.key;
           return (
             <button key={s.key} onClick={() => setSegmentFilter(s.key)}
+              // mockup-ok: restores the locked filter-pill selected recipe (CLAUDE.md design
+              // contract "filter pill", owner 2026-06-29, supersedes V3-D450); replaces drift.
               className={`shrink-0 rounded-full text-[12.5px] font-semibold px-3.5 py-2 whitespace-nowrap transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide ${
                 active
-                  ? "bg-s-accent-bright/10 text-s-accent-bright border border-transparent"
+                  ? "bg-s-bg-sunken text-s-ink font-semibold border border-s-bg-sunken"
                   : "bg-white border border-s-border text-s-ink-2"
               }`}>
               {s.label}
@@ -229,10 +244,10 @@ export default function ClientsPage() {
                   )}
                 </div>
                 {/* meta row */}
-                <div className="text-[12.5px] text-s-ink-2 flex gap-1.5 flex-wrap">
+                <div className="text-[12.5px] text-s-ink-2 flex flex-wrap gap-x-3 gap-y-1.5">
                   <span><b className="font-heading font-semibold text-s-ink">{c.total_bookings}</b> {t("appointments")}</span>
-                  {c.last_visit && <span>| {t("lastVisit", { date: new Date(c.last_visit).toLocaleDateString(resolveSwissLocale(locale)) })}</span>}
-                  {c.total_spent != null && <span>| <b className="font-heading font-semibold text-s-ink">CHF {c.total_spent}</b></span>}
+                  {c.last_visit && <span>{t("lastVisit", { date: new Date(c.last_visit).toLocaleDateString(resolveSwissLocale(locale)) })}</span>}
+                  {c.total_spent != null && <span><b className="font-heading font-semibold text-s-ink">CHF {c.total_spent}</b></span>}
                 </div>
                 {/* tags row */}
                 {c.tags?.length > 0 && (
@@ -407,7 +422,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
               {bookings.map((b) => (
                 <div key={b.id} className="bg-white rounded-2xl border border-s-border p-3 flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-s-ink">{b.service_name || t("serviceFallback")}</p>
+                    <p className="text-sm font-medium text-s-ink">{localizedField(b.services, "name", locale) || b.service_name || t("serviceFallback")}</p>
                     <p className="text-xs text-s-ink/40">
                       {new Date(b.starts_at).toLocaleDateString(resolveSwissLocale(locale))} {new Date(b.starts_at).toLocaleTimeString(resolveSwissLocale(locale), { hour: "2-digit", minute: "2-digit" })}
                     </p>

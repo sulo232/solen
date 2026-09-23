@@ -1001,3 +1001,11 @@ Bindings: `app/api/reviews/route.ts` (existing writer), `lib/salon-detail.ts`, `
 Observed: source c88 adds a link directly from reviews.staff_member_id, but the current write route accepts that value from the client and checks booking owner/Store without checking the stylist. A mismatched or foreign stored ID would become a false attribution. Browser RLS also hides other customers' bookings, so a direct browser join cannot prove it.
 
 Prevention applied: verify the attached booking and joined active stylist both belong to the review's Store and both IDs equal the stored attribution. On mismatch or absent data omit the attribution, preserve the review, and never substitute the booking's different stylist. Strip booking relations and private staff fields before serialization. The PDP fallback reuses the server API. Actual handler/loader/page and mounted consumer controls cover this boundary. The existing writer is unchanged; this recovery does not claim to correct its historical write contract.
+
+### A pending request cannot be declined through the cancel route
+
+Bindings: `app/api/bookings/[id]/cancel/route.ts` (status guard), `app/api/bookings/[id]/decline/route.ts`, `lib/bookings/release-pending-approval.ts`, `app/api/cron/pending-timeout/route.ts`, `app/[locale]/dashboard/bookings/page.tsx`.
+
+Observed (2026-09-23): the archived approve/decline UI (aa0861cb5) wired Decline to the salon cancel modal, but the cancel route returns 400 INVALID_STATUS for anything not `confirmed`, so every real decline of a `pending_approval` request would fail, and the old modal closed and marked the row cancelled on any resolved fetch.
+
+Prevention applied: declining a request uses its own salon-only route that runs the same release as the 24h timeout cron (shared helper: CAS on `pending_approval`, free slot, email, void an uncaptured hold or refund a captured one through `issueRefund`, retry once on CONCURRENT_RETRY, `alertAdmin` on any remaining money error). UI state changes only on `res.ok`; failures show the locked Toast with Retry. When adding a booking action, check the target route's status guard against every status the button can appear on.

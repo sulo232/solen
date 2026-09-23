@@ -2179,7 +2179,12 @@
       "statusConfirmed": "Bestätigt",
       "statusCancelled": "Storniert",
       "statusCompleted": "Abgeschlossen",
-      "statusNoShow": "Nicht erschienen"
+      "statusNoShow": "Nicht erschienen",
+      "approve": "Genehmigen",
+      "decline": "Ablehnen",
+      "approveFailed": "Die Anfrage konnte nicht angenommen werden.",
+      "declineFailed": "Die Anfrage konnte nicht abgelehnt werden.",
+      "declinePaymentPending": "Anfrage abgelehnt. Die Zahlung konnte noch nicht freigegeben werden; wir wurden benachrichtigt und geben sie frei."
     },
     "calendarPage": {
       "createSlotTitle": "Slot erstellen",

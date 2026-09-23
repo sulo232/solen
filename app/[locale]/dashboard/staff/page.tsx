@@ -7,6 +7,7 @@ import { Plus, Pencil, Trash2, X, ToggleLeft, ToggleRight, Mail, Check, Clock as
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import { DashStatusPill } from "@/app/[locale]/_components/dashboard/DashboardUI";
 import Spinner from "@/components-legacy/ui/Spinner";
+import { Skeleton } from "@/app/[locale]/_components/primitives";
 import { avGrad } from "@/lib/avatar-gradients";
 import {
   PERMISSION_AREAS,
@@ -529,7 +530,18 @@ function PendingInvites({ salonId }: { salonId: string }) {
       .finally(() => setLoading(false));
   }, [salonId]);
 
-  if (loading) return <Spinner size="sm" />;
+  if (loading) {
+    return (
+      // mockup-ok: restores, same rounded-2xl/border/p-3/flex layout as the shipped invite row below
+      <div className="mb-6 bg-white rounded-2xl border border-s-border p-3 flex items-center justify-between">
+        <div className="space-y-1.5">
+          <Skeleton height={14} width={120} />
+          <Skeleton height={12} width={160} />
+        </div>
+        <Skeleton height={20} width={70} rounded="full" />
+      </div>
+    );
+  }
   if (invites.length === 0) return null;
 
   return (
@@ -657,7 +669,18 @@ export default function StaffPage() {
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-12"><Spinner size="lg" /></div>
+        // mockup-ok: restores, each card copies the shipped staff-card layout below verbatim
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="bg-white rounded-2xl border border-s-border p-4 flex items-start gap-3">
+              <Skeleton rounded="full" width={44} height={44} />
+              <div className="flex-1 min-w-0 space-y-2">
+                <Skeleton height={14} width="60%" />
+                <Skeleton height={12} width="40%" />
+              </div>
+            </div>
+          ))}
+        </div>
       ) : staff.length === 0 ? (
         <div className="text-center py-12 text-s-ink/30">
           <p className="text-sm">{t("emptyState")}</p>

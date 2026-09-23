@@ -2179,7 +2179,12 @@
       "statusConfirmed": "Confirmé",
       "statusCancelled": "Annulé",
       "statusCompleted": "Terminé",
-      "statusNoShow": "Absent"
+      "statusNoShow": "Absent",
+      "approve": "Approuver",
+      "decline": "Refuser",
+      "approveFailed": "La demande n'a pas pu être acceptée.",
+      "declineFailed": "La demande n'a pas pu être refusée.",
+      "declinePaymentPending": "Demande refusée. Le paiement n'a pas encore pu être libéré ; nous avons été informés et le libérerons."
     },
     "calendarPage": {
       "createSlotTitle": "Créer un créneau",

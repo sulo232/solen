@@ -2179,7 +2179,12 @@
       "statusConfirmed": "Confirmed",
       "statusCancelled": "Cancelled",
       "statusCompleted": "Completed",
-      "statusNoShow": "No-show"
+      "statusNoShow": "No-show",
+      "approve": "Approve",
+      "decline": "Decline",
+      "approveFailed": "The request could not be approved.",
+      "declineFailed": "The request could not be declined.",
+      "declinePaymentPending": "Request declined. The payment could not be released yet; we have been notified and will release it."
     },
     "calendarPage": {
       "createSlotTitle": "Create slot",

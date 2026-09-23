@@ -2161,7 +2161,12 @@
       "statusConfirmed": "Confermato",
       "statusCancelled": "Annullato",
       "statusCompleted": "Completato",
-      "statusNoShow": "Assente"
+      "statusNoShow": "Assente",
+      "approve": "Approva",
+      "decline": "Rifiuta",
+      "approveFailed": "Non è stato possibile approvare la richiesta.",
+      "declineFailed": "Non è stato possibile rifiutare la richiesta.",
+      "declinePaymentPending": "Richiesta rifiutata. Non è stato ancora possibile sbloccare il pagamento; siamo stati informati e lo sbloccheremo."
     },
     "calendarPage": {
       "createSlotTitle": "Crea slot",
