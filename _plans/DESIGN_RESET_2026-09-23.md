@@ -148,7 +148,7 @@ Each round ends with a short visual summary sent in chat: findings, and what eac
 
 ### Revised order
 1. Done: capsule buttons everywhere, and selected pill = black fill.
-2. Step R: research rounds R1-R5. R4 is the X bookmarks and waits for Chrome.
+2. Step R, in the owner's order (2026-09-23): R4 X bookmarks first (collect + sort), then R1-R3, then R5. Their X taste decides which products R2 measures. Caveat: many saved design posts are concept shots, not shipped products, so R2 and R3 check each one before anything is adopted.
 3. Phase 2: the design system spec from R5, plus a component system audit mapping every button, pill and card variant in code onto a few.
 4. Icons and bottom navigation, researched the same way.
 5. Phase 3-5 as below.
