@@ -101,11 +101,56 @@ The owner has many saved design posts on x.com. He logs in on Chrome, and we wor
   - For each difference worth taking, make a one-change comparison on a real Solen page (ours vs ours plus that one thing).
   - He picks. The picks feed Phase 2 (design system) and the component system.
 
+### Owner direction, 2026-09-23 (latest): research first, science over guessing
+- **Selected pill:** option 2, black fill with white text.
+- **Shadows:** "straight, really deep shadows ... looks like an amateur". Depth must be subtle.
+- **The method change, in his words:** "make research rounds first on the UI UX and then after that do it ... we need to have discipline on the science ... I don't even know about design that well. I can just say what looks bad, what doesn't."
+  - Every design value comes from research: measurements of top products, published design guidance and studies. It never comes from asking him to pick.
+  - His role is the final eye check on the result: looks good or looks bad.
+  - When he says "bad", I diagnose the cause from the research. He never has to name a principle.
+- **Being realistic about it:**
+  - **Research doesn't replace his eye.** Research gives the defaults and rules out amateur mistakes. Whether the result feels premium is still judged by looking at real screens.
+  - **Past research is part of the clutter.** About 60 research files and 120 docs came out of earlier rounds. This time every research round feeds exactly one output, the design system spec (Phase 2). No new standalone docs.
+  - **Existing research is reused, not redone.** PRINCIPLES.md, RATIONALE.md, `research/`, the 41 reference captures and DRAFT_DIAGNOSIS already hold measured Airbnb and Fresha values. The rounds below only fill gaps.
+  - **Cost:** R1-R3 are about 3 working sessions. They run with sonnet research helpers (web and sources), and I own the synthesis. R4 (X bookmarks) depends on him connecting Chrome.
+
+### Step R: research rounds (before any further design choice)
+Each round ends with a short visual summary sent in chat: findings, and what each one means for Solen.
+
+- **R1 Measure Solen today, all of it.**
+  - Scope: about 12 real customer routes and 4 dashboard routes, at 402px and desktop.
+  - Automated (reuse `scratchpad/look/shoot.mjs`'s audit and the existing `scripts/check-geometry.mjs`): every distinct font size and weight, spacing gap, corner radius, shadow, colour, animation duration and easing, and icon set.
+  - Output: counts per category (for example "the salon page alone has 9 corner values"). This is the evidence for "why it looks inconsistent".
+- **R2 Measure the best products the same way.**
+  - Products:
+    - Airbnb and Fresha (the direction; existing captures reused)
+    - 3-4 widely praised products for extra evidence: Apple (web and HIG screenshots), Stripe, Linear, Revolut or Booksy/Treatwell as a same-category check
+  - Same measurements as R1: sizes, radii, shadow layers (offset, blur, opacity), motion durations and easing, spacing rhythm.
+  - Output: what they share (for example "shadows: two layers, under 12% opacity, large blur") versus what varies.
+- **R3 Principles and science, with sources.**
+  - Topics:
+    - Visual hierarchy and type scales (modular scale, size ratios)
+    - Spacing systems (4/8pt)
+    - Elevation and shadow: Material 3 elevation, Apple, and why deep single shadows read as amateur
+    - Corner-radius families and nested radius
+    - Motion: NN/g and Material durations, easing, what motion is for
+    - Colour and contrast (WCAG 2.2)
+    - Touch targets (WCAG 2.5.8, Apple 44pt)
+    - Gestalt grouping
+    - Consistency and component reuse
+  - Sources: Material 3 and Apple HIG specs, NN/g articles, WCAG. Each rule gets its source link and a one-line reason.
+  - Only rules that change a Solen decision are kept.
+- **R4 His taste corpus: X bookmarks.** Step B above, B1 to B3, runs here once Chrome is connected. It shows what he is drawn to, and R2 and R3 explain why those work.
+- **R5 Synthesis into one spec.**
+  - The design system values (type, spacing, radius, elevation, colour, motion, components), each value citing R1-R4.
+  - Applied to 3 real pages (salon, search, booking) as today-vs-new images.
+  - He gives the final eye check. Any "bad" goes back through diagnosis against R2/R3, not through guessing.
+
 ### Revised order
-1. Step A: capsule re-shoot and the pill question.
-2. Step B: X research, B1 to B4, one phase per round with his OK between phases.
-3. Phase 2: design system rewrite (tokens, radius family, motion vocabulary) plus a component system audit that maps every button, pill and card variant in code onto a few.
-4. Icons and bottom navigation round.
+1. Done: capsule buttons everywhere, and selected pill = black fill.
+2. Step R: research rounds R1-R5. R4 is the X bookmarks and waits for Chrome.
+3. Phase 2: the design system spec from R5, plus a component system audit mapping every button, pill and card variant in code onto a few.
+4. Icons and bottom navigation, researched the same way.
 5. Phase 3-5 as below.
 
 ## Phase 2: rewrite the rules from the pick (structure shown before any change)

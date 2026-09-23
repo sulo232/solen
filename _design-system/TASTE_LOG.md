@@ -1398,3 +1398,9 @@ Shown one image of only the parts he picked (B's search bar; C's bookings button
 ## 2026-09-23: Buttons are capsules everywhere (owner, on the real salon page with the picked look)
 
 On "today vs picked look" for the real salon page: he wants the fully round pill shape for Book appointment, View all "and everywhere, most of all". This supersedes the 12px rounded-rectangle button in the entry above; the 20px shadowed boxes stay ("salon page 2 and 3 look good"). The short "All" category pill looked warped as a near-circle in grey; short pills get a minimum width and the selected state (grey / ink / outline) is shown as a one-change comparison. Parked as their own rounds: category icons, bottom-nav icons, and the bottom-nav design. Next: research his X.com bookmarks phase by phase (plan: `_plans/DESIGN_RESET_2026-09-23.md`, Step B).
+
+## 2026-09-23: Selected pill is ink; deep shadows read amateur; research before design
+
+- Selected category pill: option 2 of a one-change comparison on the real salon page, black fill with white text (grey fill and outline-only were the others). This supersedes the calm-grey selected lock by recency.
+- Shadows: "straight really deep shadows ... looks like an amateur is doing that." Depth stays subtle; the elevation values come from research (plan Step R), not from eye-balled strength.
+- Method: he asked for research rounds on UI/UX principles and measured references first, then design, "discipline on the science", because he judges looks, not principles. His role is the final eye check.
