@@ -100,6 +100,7 @@ The owner has many saved design posts on x.com. He logs in on Chrome, and we wor
 - **B4 Adopt:**
   - For each difference worth taking, make a one-change comparison on a real Solen page (ours vs ours plus that one thing).
   - He picks. The picks feed Phase 2 (design system) and the component system.
+- **B3/B4 status (2026-09-23):** 12 one-change mockups sent, gallery at `public/_research/x-mockups/index.html` (served at `/_research/x-mockups/index.html`). Awaiting his good/bad per mockup. Measured B3 counts at 402px: salon page 12 font sizes, 8 corner values; home 9 corner values, 7 duration/easing pairs. Dropped as not a real difference: heart pop (already pops with a burst), search card stagger (invisible on phone), walk-in band (owner-locked 07-31 and 09-04), empty states (directions rejected 09-06), availability dots (closed days already greyed). Bugs found: German hair pills on /en booking (hardcoded in `app/[locale]/onboarding/beautyFields.tsx`), German date-step strings on /en, missing key `booking.serviceSelection.items`, tapping "Reviews" on the salon page lands on "Team" (scroll-spy at page end), settings label spacing (`first:mt-0` cancels `mt-4`, `app/[locale]/dashboard/settings/page.tsx:1402`), dashboard "Setup" label contrast 1.6:1, walk-in green 3.3:1.
 
 ### Owner direction, 2026-09-23 (latest): research first, science over guessing
 - **Selected pill:** option 2, black fill with white text.
