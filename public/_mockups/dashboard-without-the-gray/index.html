@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Your dashboard without the gray</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+  Scale is full-page because the thing being decided IS the page background. There is no smaller
+  unit that can answer it. Both panels below are the REAL running dashboard loaded in place, same
+  route, same live data, same session. Nothing is redrawn and nothing is faked. The only difference
+  between the two panels is one background colour, set on the page wrapper after the page loads.
+
+  Grounded-in: app/[locale]/dashboard/page.tsx
+  Grounded-in: the running dev server, both panels load /de/dashboard from it directly
+
+  Depicts: the salon dashboard, before -> /de/dashboard, unmodified
+  Depicts: the salon dashboard, after -> /de/dashboard with its page wrapper's background set to white, nothing else touched
+
+  Diagnosis: the dashboard's page background is a gray wash | measured 44.3% of the first phone screen painted #F4F4F5, all of it from ONE `min-h-screen bg-s-bg-sunken` wrapper, by hit-testing 5,500 points at 402x880 on the live signed-in page, against 0% to 4.2% on every screen a customer browses | violates CLAUDE.md taste rule 3, which puts the sunken gray in a ~80% surfaces budget alongside white rather than under a whole page, and it is the largest single instance the owner can reach of the thing he named on 2026-07-20, "overall i dont like ths background gray sh everywhere" | target 0% on this screen
+  Diagnosis: the cards on this one screen use four different corner radii | measured 12px, 16px, 20px, 20px, 20px, 20px and 16px across the seven content cards at 402 wide | violates the design contract's radius row, which locks 16 for a form or summary card and 24 for a grouped list card, so 12 and 20 are neither | target 2 radii, 16 and 24. NOT changed in this mockup, named here only so it is not mistaken for something this change caused.
+
+  WHY THIS SCREEN AND NOT SETTINGS. The plan said to probe this on the settings page. That was
+  written before anything was measured, and the measurement moved it. Painted-gray share of the
+  first phone screen, live: this dashboard 44.3%, the Why Solen page 73.5%, settings 12.8%, and
+  every screen a customer actually browses between 0% and 4.2%. A probe on settings would have
+  been a probe on 12.8%, too small a difference to judge. The owner also called this same screen
+  "looks ass" in the very message that raised the gray, so it is one complaint, not two.
+
+  WHY NOTHING NEEDS ADDING, and this corrects a mistake made while building this page. The first
+  measurement read only borderTopWidth and reported that the 402x57 top bar had no border, so an
+  earlier draft of this file injected a hairline into the after panel to compensate. Re-measured on
+  all four sides: the top bar carries 0/0/1/0, a bottom hairline, and all 12 of the 12 white blocks
+  over 120x40 carry a border on at least one side. ZERO of them depend on the gray tray for their
+  edge, so FLOORS LAW 4 is satisfied with no compensating change at all, and the after panel adds
+  nothing.
+
+  HONEST SCOPE. This changes one colour. It does not touch the layout, the
+  numbers, the cards, the sidebar, the type or the icons. The dashboard has separate measured
+  problems, already recorded: 10 distinct font sizes against a ceiling of 4, four weights against a
+  ceiling of 2, 43.1% of its text at weight 600 or above against a ceiling of about 30%, and body
+  text at 12px where the contract says 14. None of those are addressed here and none of them are
+  caused here. Its 34px anchor already passes both anchor floors and must not be "fixed".
+
+  Exists-check: `npm run exists dashboard` run this turn. It HIT, heavily: the route
+  app/[locale]/dashboard/page.tsx plus dozens of dashboard components and two lib modules. Per the
+  protocol a hit means reuse, and that is exactly what this does, it loads the real route rather
+  than rebuilding any part of it. No component is created. `_design-system/REMOVED.md` has no entry
+  for the dashboard background or for the sunken tray.
+
+  Treatment-only: one background colour. Single light theme, no dark mode. Every
+  label here is English; the dashboard inside the panels renders its own German through the
+  product's own translations, which is the real page and is exempt.
+-->
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 402px; margin: 0 auto; padding: 0 0 56px; }
+
+  .lede { padding: 28px 16px 6px; }
+  .lede h1 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 28px; font-weight: 600; line-height: 1.15; letter-spacing: -0.02em;
+  }
+  .lede p { margin-top: 10px; font-size: 14px; line-height: 1.5; color: #6B6B6B; }
+
+  .panel { margin-top: 26px; }
+  .cap { padding: 0 16px 8px; }
+  .cap h2 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 18px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em;
+  }
+  .cap p { margin-top: 3px; font-size: 13px; line-height: 1.45; color: #6B6B6B; }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  /* the real page, held at its real phone width so nothing is scaled or distorted */
+  .frame {
+    position: relative; width: 100%; height: 560px;
+    border-top: 1px solid #E4E4E7; border-bottom: 1px solid #E4E4E7;
+    overflow: hidden;
+  }
+  .frame iframe { width: 402px; height: 560px; border: 0; display: block; }
+  .frame .badge {
+    position: absolute; top: 10px; right: 10px; z-index: 2;
+    padding: 5px 10px; border-radius: 40px;
+    background: rgba(255,255,255,0.92); border: 1px solid #E4E4E7;
+    font-size: 11px; font-weight: 600; color: #0A0A0A;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .note { padding: 22px 16px 0; font-size: 13px; line-height: 1.55; color: #6B6B6B; }
+  .note strong { color: #0A0A0A; font-weight: 600; }
+  .note + .note { padding-top: 12px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <h1>Your dashboard without the gray</h1>
+    <p>Both panels below are your real dashboard, live, with your real numbers in it. One colour is
+       different between them. Nothing else.</p>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>Now</h2>
+      <p>The page sits on a gray sheet and the cards sit on top of it.</p>
+    </div>
+    <div class="frame">
+      <div class="badge nums">44% gray</div>
+      <iframe id="before" src="/de/dashboard" scrolling="no" title="The dashboard as it is today"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>Without it</h2>
+      <p>The sheet goes white. Every card keeps its own thin outline.</p>
+    </div>
+    <div class="frame">
+      <div class="badge nums">0% gray</div>
+      <iframe id="after" src="/de/dashboard" scrolling="no" title="The dashboard with the gray sheet turned white"></iframe>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>Why nothing disappears.</strong> The worry with taking gray away is that white cards on a
+    white page lose their edge and the screen turns to soup. I measured it before building this:
+    all <span class="nums">12</span> of the <span class="nums">12</span> white blocks on this screen
+    already draw their own <span class="nums">1px</span> line. Not one of them was relying on the
+    gray behind it, so the second panel adds nothing. It only takes the gray away.
+  </div>
+  <div class="note">
+    <strong>This is the biggest one you own.</strong> Of every screen I measured, this is where the
+    gray actually is. Your dashboard is <span class="nums">44%</span> gray and the Why Solen page is
+    <span class="nums">74%</span>. Every screen a customer browses, the home page, the category
+    pages, a salon page, your profile, is between <span class="nums">0</span> and
+    <span class="nums">4%</span>. So the feeling of gray everywhere is coming from the two screens
+    you look at most, not from the shop.
+  </div>
+  <div class="note">
+    <strong>What this does not touch.</strong> The layout, the cards, the numbers, the sidebar, the
+    type. The dashboard has its own separate problems that I have measured and written down, and
+    this change neither fixes nor causes any of them.
+  </div>
+
+</div>
+
+<script>
+  // The "after" panel is the SAME page as the "before" panel. It is not a redrawing and not a
+  // second implementation. After it loads, exactly ONE rule is added inside it: the page wrapper
+  // that carries the gray sheet is painted white. Nothing is added to compensate, because all 12
+  // white blocks on this screen were measured to carry their own border already. Everything else
+  // in that document is untouched, which is what makes this a fair comparison rather than a
+  // picture of an idea.
+  var after = document.getElementById("after");
+  after.addEventListener("load", function () {
+    try {
+      var doc = after.contentDocument;
+      if (!doc) { return; }
+      var style = doc.createElement("style");
+      style.textContent = ".min-h-screen.bg-s-bg-sunken { background-color: #FFFFFF !important; }";
+      doc.head.appendChild(style);
+    } catch (err) {
+      console.error("[dashboard-without-the-gray] could not restyle the after panel:", err);
+    }
+  });
+</script>
+</body>
+</html>

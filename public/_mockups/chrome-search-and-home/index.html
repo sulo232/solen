@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Search bar and home button, one control per job</title>
+<!-- Base: elicitation -->
+<!-- Scale: component -->
+<!--
+  Scale is component because the decision being asked is component-scale: the height of one search
+  control. This page rebuilds NO existing surface. It is a specimen sheet, one control with its two
+  shipped builds stacked at real size so the difference is visible in one glance.
+
+  Grounded-in: app/[locale]/_components/homepage/HomeSearchPill.tsx
+  Grounded-in: app/[locale]/_components/search/SearchTemplate.tsx
+
+  Depicts: the home search bar -> app/[locale]/_components/homepage/HomeSearchPill.tsx:224-236, rendered on app/[locale]/page.tsx:258
+  Depicts: the category and city search bar -> app/[locale]/_components/search/SearchTemplate.tsx:1334-1338 (the `bigSearchRef` pill)
+  Depicts: the Inspo search bar -> app/[locale]/inspo/page.tsx:474 (the SAME HomeSearchPill component passed its own `onActivate`)
+  Depicts: the home pill in the scrolling row -> app/[locale]/_components/layout/CategoryPillRow.tsx:248 (h-10, rounded-[40px], px-3.5, bg-transparent)
+  Depicts: the round home button -> app/[locale]/_components/layout/Header.tsx:749, styled at :757, `grid h-11 w-11 rounded-full shadow-elevation-2`, carrying the go-home aria-label
+  Depicts: the round back button -> app/[locale]/_components/layout/Header.tsx:788, the SAME `h-11 w-11 rounded-full shadow-elevation-2` recipe with an arrow instead of a house
+  Depicts: the frosted back button over the salon photo -> app/[locale]/_components/salon/SalonHero.tsx:122 (FROST_GLASS, 38px inner span inside a 40px control)
+
+  Every one of those seven traces to a shipping file, and there is no eighth. This page draws
+  nothing net-new: no new surface and no new component are proposed, only that two existing builds
+  of one control become one, and that the category screens reuse the Header round button they
+  already own.
+
+  Every label on this page is written in English. The product's own copy is not translated and not
+  reproduced here; where a real aria-label mattered it is described rather than quoted, so the two
+  languages never mix in one picture.
+
+  Diagnosis: one search control built twice, heights diverged | measured 64px on /de (HomeSearchPill.tsx:236) vs 54px on /de/coiffeur, /de/barbershop, /de/spa and /de/basel/coiffeur (SearchTemplate.tsx:1334), live getBoundingClientRect at 390 wide | violates CLAUDE.md FLOORS LAW 8 (:75) "an entity that appears on more than one screen renders through the SAME component with the same anatomy ... a documented VARIANT of one component, never a second implementation" | target 1 height across all 6 screens, either 54px or 64px, owner picks
+  Diagnosis: the same search control is not pinned on one screen | measured its top edge at 19px at rest and -581px after 600px of scroll on /de/inspo, a travel of 600px that takes it fully off screen, against 4px at rest and 12px after the same 600px on /de/coiffeur, a travel of 8px | violates CLAUDE.md FLOORS LAW 8 (:75), same clause | target top edge within 0px to 12px at every scroll offset on all 6 screens
+  Diagnosis: the same search control loses width on one screen | measured 341px on /de, 343px on the 4 category routes, 289px on /de/inspo, a 52px shortfall | violates CLAUDE.md FLOORS LAW 8 (:75), same clause | target 1 width on all 6 screens, the 680px max-width wrapper with 16px side padding that both builds already share
+  Diagnosis: the go-home control leaves the screen on 5 screens and is fixed on the rest | measured 76x40px on /de and the 4 category routes with its left edge travelling 16px to -184px when the category row scrolls 200px sideways, against a 44x44px control held at x16 y20 on /de/basel/coiffeur, profile, appointments, notifications and saved (Header.tsx:749/:788) | violates CLAUDE.md FLOORS LAW 8 (:75) | target 44x44px at x16 y20 on all screens, since the category screens already mount that same Header and only hide its controls below 768px
+  Diagnosis: the over-photo back control misses the touch-target floor | measured 40x40px on the salon page (SalonHero.tsx:122) against 44x44px on every other screen | violates the design contract's touch-target row, "interactive controls >= 44px (h-11), the a11y floor" | target 44x44px, keeping the frosted treatment
+
+  HONEST NOTE ON SCOPE, per the diagnosis gate's own wording. Four of the five diagnoses are CODE
+  DRIFT, not a design question: the stickiness, the width, the scrolling-pill case and the 40px
+  touch target each have one correct answer already written in the law, so they are a sweep to the
+  lock and need no approval. Only the HEIGHT is a genuine fork, because the owner picked 54 on
+  2026-08-10 and then changed home to 64 on 2026-08-11 (commit 7bc5c23ee, which touched
+  HomeSearchPill.tsx alone and left its sibling behind). That one value is what this mockup asks him.
+
+  CORRECTION MADE WHILE BUILDING THIS, recorded rather than quietly fixed: an earlier draft called
+  the go-home control "four different objects". It is three. The round home button and the round
+  back button are already ONE recipe in Header.tsx, differing only in which icon they carry, which
+  is correct. Overcounting the defect would have made the fix look bigger than it is.
+
+  Scope: SINGLE ELEMENT, stacked, and this is the one thing the owner asked for by name on
+  2026-08-15: "Stop, like, doing this, like, a whole page mock up. Make you, like, one section of
+  it. If we're talking about one, like, element or, like, one section, the fuck." One control is
+  under discussion, so both existing builds are stacked at real size for a one-glance comparison
+  rather than hidden behind a Before/After toggle that costs a tap and a memory, which is the thing
+  he described as "I can't even see a difference".
+
+  Exists-check: `npm run exists searchpill` run this turn. It HIT, and the hit is the finding:
+  HomeSearchPill.tsx (registered in COMPONENT_REGISTRY.md) plus three page sections that render it.
+  Per the protocol a hit means REUSE or EXTEND, which is exactly what is proposed. Nothing is
+  hand-faked and no component is created. Nothing in _design-system/REMOVED.md covers the search bar
+  or the home button. TASTE_LOG "Inspo home chrome" (2026-06-20) settles that page's category pills,
+  filter model, feed and selected-pill state; it does not cover the search bar's width or
+  stickiness, and the owner raised the moving bar himself, so it appears here.
+
+  Values read off the running site or the source, never invented:
+    home bar        HomeSearchPill.tsx:224-236   h-[64px], inline shadow 0 6px 20px rgba(0,0,0,.10)
+    category bar    SearchTemplate.tsx:1334-1338 h-[54px], shadow-elevation-3
+    elevation-3     tailwind.config.js:280       0 6px 16px rgba(50,47,44,0.12)
+    hairline s-border #E4E4E7   ink #0A0A0A   ink-2 #6B6B6B   sunken #F4F4F5
+  Icons are real Lucide markup (class="lucide lucide-*", path data from node_modules/lucide-react).
+
+  Treatment-only: geometry, nothing structural. Single light theme, no dark mode.
+-->
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #F4F4F5;
+    color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 402px; margin: 0 auto; padding: 0 0 56px; }
+
+  .lede { padding: 28px 16px 4px; }
+  .lede h1 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 28px; font-weight: 600; line-height: 1.15; letter-spacing: -0.02em;
+  }
+  .lede p { margin-top: 10px; font-size: 14px; line-height: 1.5; color: #6B6B6B; }
+
+  .block { margin-top: 28px; }
+  .blockhead { padding: 0 16px 10px; }
+  .blockhead h2 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 18px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em;
+  }
+  .blockhead p { margin-top: 4px; font-size: 13px; line-height: 1.45; color: #6B6B6B; }
+
+  /* a specimen is a white stage the real control sits on, so the control keeps its own edge */
+  .stage { background: #fff; padding: 16px; }
+  .stage + .stage { border-top: 1px solid #E4E4E7; }
+  /* where: quiet grey, the screens this build appears on. what: ink, the measured fact.
+     Two lines, so no separator character is needed between them. */
+  .where { font-size: 12px; line-height: 1.4; color: #6B6B6B; }
+  .what  { font-size: 12px; line-height: 1.4; font-weight: 600; margin-bottom: 10px; }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  /* ---------- THE REAL CONTROL, both existing builds, geometry copied exactly ---------- */
+  .pill {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; padding: 0 19px;
+    border-radius: 40px; border: 1px solid #E4E4E7; background: #fff;
+    cursor: pointer;
+  }
+  .pill span {
+    font-size: 14px; font-weight: 500; color: #0A0A0A;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .pill--home { height: 64px; box-shadow: 0 6px 20px rgba(0,0,0,0.10); }
+  .pill--cat  { height: 54px; box-shadow: 0 6px 16px rgba(50,47,44,0.12); }
+
+  /* both heights adjacent, so the 10px is seen rather than described */
+  .stack { display: grid; row-gap: 6px; }
+  .tag { font-size: 11px; color: #6B6B6B; padding-bottom: 10px; }
+
+  /* ---------- the home / back control, the three objects that do this one job ---------- */
+  .navrow { display: flex; align-items: center; gap: 14px; }
+  .navpill {
+    display: inline-flex; align-items: center; gap: 8px;
+    height: 40px; padding: 0 14px; border-radius: 40px;
+    font-size: 14px; font-weight: 400; color: #0A0A0A; background: transparent;
+  }
+  .navpill.is-on { background: #F4F4F5; font-weight: 600; }
+  .navbtn {
+    display: grid; place-items: center; width: 44px; height: 44px;
+    border-radius: 9999px; background: #fff; box-shadow: 0 6px 16px rgba(50,47,44,0.12);
+  }
+  .navbtn--frost {
+    width: 40px; height: 40px;
+    background: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.6);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  .pair { display: flex; align-items: center; gap: 12px; }
+  .photo { background: linear-gradient(135deg, #3f3a36 0%, #6b625b 55%, #8d8179 100%); padding: 16px; }
+  .photo .where, .photo .what { color: #fff; }
+
+  .pickrow { display: flex; gap: 8px; padding: 12px 16px 0; }
+  .pick {
+    flex: 1; text-align: center; padding: 10px 8px; border-radius: 12px;
+    border: 1px solid #E4E4E7; background: #fff;
+    font-size: 13px; font-weight: 500; color: #0A0A0A;
+  }
+  .pick em { display: block; font-style: normal; font-size: 11px; font-weight: 400; color: #6B6B6B; margin-top: 2px; }
+  .pick.is-rec { background: #F4F4F5; font-weight: 600; }
+
+  .foot { padding: 22px 16px 0; font-size: 12px; line-height: 1.55; color: #6B6B6B; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <h1>One search bar, one home button</h1>
+    <p>The search bar is built twice on this site and the two copies drifted, which is why the top of
+       the screen shifts as you move around. Everything below is the real control at its real size.</p>
+  </div>
+
+  <!-- ============ 1. THE SEARCH BAR, AS IT IS TODAY ============ -->
+  <div class="block">
+    <div class="blockhead">
+      <h2>Your search bar today</h2>
+      <p>Two separate builds. Tap between the top row and the bar changes height under your thumb.</p>
+    </div>
+
+    <div class="stage">
+      <div class="where">Home only</div>
+      <div class="what nums">64 tall</div>
+      <div class="pill pill--home">
+        <svg class="lucide lucide-search" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <span>Search</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="where">Hair, Barber, Nails, Spa, and every city result</div>
+      <div class="what nums">54 tall</div>
+      <div class="pill pill--cat">
+        <svg class="lucide lucide-search" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <span>Hair, nationwide</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="where">Inspo</div>
+      <div class="what nums">Same build as home, 52px narrower, and it scrolls a full 600px off the top instead of staying</div>
+      <div class="pill pill--home" style="width: 289px;">
+        <svg class="lucide lucide-search" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <span>Search styles</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 2. THE FIX, PICK A HEIGHT ============ -->
+  <div class="block">
+    <div class="blockhead">
+      <h2>One bar, same everywhere</h2>
+      <p>Same width, same corner, always pinned to the top. Only the height is yours to pick, because
+         you chose both of these on different days.</p>
+    </div>
+
+    <div class="stage">
+      <div class="where">A is your 10 August pick, measured off Airbnb, live on every category and city screen. B is the next day, when you said the bar should stop shrinking as you scroll, and only home changed.</div>
+      <div class="what nums">The whole difference, one under the other</div>
+      <div class="stack">
+        <div class="pill pill--cat">
+          <svg class="lucide lucide-search" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <span>Search</span>
+        </div>
+        <div class="tag nums">A, 54</div>
+        <div class="pill pill--home">
+          <svg class="lucide lucide-search" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <span>Search</span>
+        </div>
+        <div class="tag nums">B, 64</div>
+      </div>
+    </div>
+
+    <div class="pickrow">
+      <div class="pick is-rec">A, 54<em>recommended</em></div>
+      <div class="pick">B, 64<em>thicker</em></div>
+    </div>
+    <div class="foot">
+      54 is the recommendation because it is the one you actually measured and picked, it is live on
+      five screens against home&rsquo;s one, and what you objected to on 11 August was the bar
+      shrinking as you scrolled, not its resting height. Either way it stops moving.
+    </div>
+  </div>
+
+  <!-- ============ 3. THE HOME BUTTON ============ -->
+  <div class="block">
+    <div class="blockhead">
+      <h2>Your home button today</h2>
+      <p>One job, three objects. Two of them are already the same control, which is the good news.</p>
+    </div>
+
+    <div class="stage">
+      <div class="where">City results, profile, appointments, notifications, saved</div>
+      <div class="what nums">Already one control, 44 round, two icons. This is the right one.</div>
+      <div class="pair">
+        <div class="navbtn">
+          <svg class="lucide lucide-house" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        </div>
+        <div class="navbtn">
+          <svg class="lucide lucide-arrow-left" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="where">Home, Hair, Barber, Nails, Spa</div>
+      <div class="what nums">Here the same job is a 76x40 word in a sideways-scrolling row, and it slides right off the screen as you browse</div>
+      <div class="navrow">
+        <div class="navpill is-on">
+          <svg class="lucide lucide-house" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          All
+        </div>
+        <div class="navpill">Hair</div>
+        <div class="navpill">Barber</div>
+      </div>
+    </div>
+
+    <div class="stage photo">
+      <div class="where">A salon page</div>
+      <div class="what nums">Frosted, and 40 wide where every other one is 44</div>
+      <div class="navbtn navbtn--frost">
+        <svg class="lucide lucide-arrow-left" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+      </div>
+    </div>
+
+    <div class="foot">
+      The frosted look over a photo is correct and should stay, a dark photo needs it. Two things
+      change: it grows to <span class="nums">44</span> like the others, which is the minimum size a
+      thumb needs, and the category screens use the round button they already have instead of a word
+      that scrolls away.
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

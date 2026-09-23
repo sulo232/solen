@@ -1,12 +1,21 @@
 # Everything, as a loop, then move it all to Codex (owner 2026-09-04)
 
-## Current consolidation run, 2026-09-07
+## Current state, 2026-09-08
+
+- **Objective:** Approved context and handoff guidance cleanup completed and directly verified.
+- **Latest scope/decisions:** Direct instruction maintenance only. Keep native compaction, logs, model/reasoning, seven hooks, accepted review/approval boundaries and app coordinator routing. Product, branch and worktree work remain paused in this task.
+- **Accepted evidence and identity:** [Installed policy and exact identities](/Users/sulo/Documents/Codex/solen-consolidation/2026-09-08/efficiency/APPROVED_POLICY_RESULT.md), [completed helper reconciliation](/Users/sulo/Documents/Codex/2026-09-08/realtime-voice-chat/outputs/harness-follow-up-review.md), and [current outcome with exact source/config identity checks](/Users/sulo/Documents/Codex/2026-09-08/realtime-voice-chat/outputs/context-compaction-and-handoffs-review.md). Reuse unchanged accepted evidence.
+- **Remaining work:** None in this approved maintenance task.
+- **Blocker:** None.
+- **Next action:** Receive the owner's next instruction in this existing project task; do not resume paused product or branch work without that direction.
+
+## Historical consolidation record, 2026-09-07
 
 Status: APPROVED REVIEW-POLICY SIMPLIFICATION INSTALLED AND VERIFIED; PRODUCT AND BRANCH WORK PAUSED. This section extends workstream 113. The Live context below owns the current scope; older sections remain dated history, not permission to resume old jobs. Integrations and cleanup use concrete reviewed candidates and existing authorization. Before any harness removal, explain cost, benefit, retained or lost coverage and the recommendation as the owner requested on September 8; do not add generic confirmation for already authorized routine work.
 
 Recommended outcome: one everyday Solen checkout at `/Users/sulo/Documents/solen`, one integrated local `main`, recoverable history, and a Codex setup whose retained rules and automatic checks have been demonstrated to work. The owner chose "Codex primary, preserve Claude as backup" in this task. A temporary integration checkout is proposed for rehearsing each combination. On 2026-09-07 the owner released the historical animation and harness review restrictions: "All finished; include both protected worktrees". Existing servers and tunnels remain in use and have not been stopped.
 
-## Live context
+### Dated consolidation outcomes
 
 September 8 approved policy close: [installed result and exact evidence](/Users/sulo/Documents/Codex/solen-consolidation/2026-09-08/efficiency/APPROVED_POLICY_RESULT.md). One independent contract reviewer passed the final latest-scope candidate with no blocking findings. All 49 policy files match accepted bytes; the four-file Gemini entrypoint is reversibly archived outside the active skill root. Fresh native prompt input loads the changed global/local instructions in main and one older checkout; discovery finds zero active Gemini entries, one each of the four Fable skills, and seven trusted enabled hooks with no errors. All hook hashes are unchanged, and the installation preserves current configuration bytes and the settled main model/reasoning. Routine behavioral and visual work now use focused direct checks; consequential boundaries retain one appropriately scoped independent review, and owner taste approval remains. This is installed and loaded guidance, not automatic semantic enforcement or measured future savings. Product/administration/branch work remains paused; this batch has no unfinished implementation or new audit queued.
 
