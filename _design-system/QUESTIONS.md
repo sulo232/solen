@@ -2,8 +2,8 @@
 
 **Purpose.** Accumulating decision log. Every drift / unresolved choice /
 deferred call gets a numbered entry here. The user reviews in batch (not
-mid-build) and picks an option per entry. Resolution flows back into
-[SOURCE.md](SOURCE.md) — that doc is the truth, this file is the queue.
+mid-build) and picks an option per entry. Resolution flows back into the owning file (LOCKFILE for literals, TASTE_LOG for dated
+decisions); precedence is owned by the project CLAUDE.md. This file is the queue.
 
 **Entry shape (all entries follow this):**
 

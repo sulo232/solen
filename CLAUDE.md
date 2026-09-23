@@ -13,7 +13,7 @@ An explicit owner commission for multiple genuinely different directions or net-
 
 The current focus decision is also settled. Pointer click and tap cause no visible focus change. Keyboard navigation keeps a visible ink focus indicator on every interactive element, including inputs. This decision governs even where its implementation has not merged; repeating the instruction does not prove the code is present. The filled-ink empty-state CTA remains locked.
 
-Two September 6 rejections remain settled: keep code sign-in as it is, and keep the entire home page as it is without visual changes. These do not prohibit a separately authorized functional bug fix, and a later explicit owner instruction can supersede either decision. The source records are [D, code sign-in](/Users/sulo/Documents/solen/_plans/R2_FEEDBACK_2026-09-06.md:21) and [J, home page](/Users/sulo/Documents/solen/_plans/R2_FEEDBACK_2026-09-06.md:64). Both decisions are preserved in the integrated dated record; its historical implementation claims still require current-source verification.
+One September 6 rejection remains settled: keep code sign-in as it is. It does not prohibit a separately authorized functional bug fix. The source record is [D, code sign-in](/Users/sulo/Documents/solen/_plans/R2_FEEDBACK_2026-09-06.md:21). The home-page freeze ([J](/Users/sulo/Documents/solen/_plans/R2_FEEDBACK_2026-09-06.md:64)) was lifted by the owner on 2026-09-23: home is in scope for the design reset, mockup first. Both records are preserved in the integrated dated record; its historical implementation claims still require current-source verification.
 
 One radius choice remains open. The general button and chip lock is 16px, while the approved payment lift screen uses a capsule CTA. Do not change radii while inferring a resolution. The owner must decide whether that payment CTA is a named exception or the 16px lock governs it.
 
@@ -166,7 +166,7 @@ Use `fable-frontend` for Solen UI, visuals, interaction and mockups; `fable-back
 
 ## Solen precedence
 
-Within Solen documents, higher items win. None outranks system/developer instructions or tool policy. A later explicit owner decision supersedes an older one.
+Within Solen documents, higher items win. None outranks system/developer instructions or tool policy. **Recency beats tier below the floors (owner, 2026-09-23):** a newer dated owner decision beats an older literal in any tier from 3 down, including LOCKFILE; it never overrides tier 2 floors. Whoever applies the newer decision updates the file holding the older literal in the same turn.
 
 1. The owner's current literal instruction.
 2. Statutory and safety floors: WCAG 2.2 A and AA on published customer surfaces; Swiss nFADP; GDPR for EU data subjects, including special-category allergy and treatment notes; Swiss PBV total-price rules; and claims made by the Terms of Service. When taste conflicts with a floor, surface both and propose a treatment that preserves the taste intent while satisfying the floor.

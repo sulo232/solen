@@ -6,7 +6,7 @@
 
 **What this is.** The WHY layer: the perceptual, mathematical, and empirical mechanics that ground the decisions locked elsewhere. LOCKFILE/CANON hold the WHAT (frozen literals), TASTE_LOG holds the WHEN/WHO (dated owner calls), PSYCHOLOGY.md holds the behavioral laws. This file holds the MECHANISMS (formulas, thresholds, named studies) those decisions can cite, so a rule can be defended instead of asserted.
 
-**What this is NOT.** Never a lever to reopen a lock. When a mechanic here argues against a LOCKFILE literal, that is a QUESTIONS.md entry for the owner, not a change. Precedence stays: owner's live ask > hooks > LOCKFILE > CLAUDE.md pinned blocks > TASTE_LOG > memory > this file's general mechanics. A dated owner decision beats a study every time; this file's job is to make the tradeoff visible, not to win it.
+**What this is NOT.** Never a lever to reopen a lock. When a mechanic here argues against a LOCKFILE literal, that is a QUESTIONS.md entry for the owner, not a change. Precedence is owned by the Solen precedence section of the project CLAUDE.md; this file's general mechanics rank below all of it. A dated owner decision beats a study every time; this file's job is to make the tradeoff visible, not to win it.
 
 **Source basis.** Owner-supplied research digest (2026-07-15, 8-domain design-decision framework survey) + the 2026-07-15 inventory of the existing stack (LOCKFILE 1431 lines: 51 percent of locked rules carry no recorded why, mechanics-class rationale is 4 percent; SOURCE.md: zero named perception/aesthetics citations; full audit in _plans/TASTE_RATIONALE.md).
 

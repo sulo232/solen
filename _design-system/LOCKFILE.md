@@ -2034,10 +2034,8 @@ Source + evidence: `research/UNFINISHED_AUDIT_2026-07-21.md`. Co-equal with ever
   this one said nothing, so it applied to everything. On an OPERATOR screen (dashboard, terminal,
   queue display) there is no tray: content sits on white and the boundary is a hairline, per the
   dated merchant round in TASTE_LOG (2026-07-15) and THE CONTAINER TEST at §10.9 below.
-  **Why the fix belongs in this file:** the same scope note was written into CLAUDE.md on 2026-08-16,
-  and that alone does not hold, because the precedence chain ranks this LOCKFILE at tier 4 and
-  CLAUDE.md's pinned blocks at tier 5. An agent resolving the conflict BY THE DOCUMENTED CHAIN would
-  have re-applied the grey canvas and been obeying the law while doing it. Measured against the
+  (Since 2026-09-23 a newer dated owner decision beats an older LOCKFILE literal; see the Solen
+  precedence section of CLAUDE.md.) Measured against the
   reference the owner named as source of truth: four independent captures of Airbnb's operator estate
   found ZERO grey page canvases, and their host Insights screen measures 92.4% of pixels in the
   248-255 bucket (https://mobbin.com/screens/ec1e902b-2557-4657-913c-9d29c531a542).

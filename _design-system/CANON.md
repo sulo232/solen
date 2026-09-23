@@ -2,7 +2,7 @@
 
 This file was the 2026-06-01 single-value truth resolved from the contradiction audit. Every live value now lives in **`_design-system/LOCKFILE.md`**, which had grown FRESHER than this file on every conflicting row. This tombstone exists so historical citations ("CANON §N") still resolve.
 
-**Precedence note:** CANON's old header claimed `CANON > LOCKFILE > SOURCE`. That claim is retired. Current law: **code reality + LOCKFILE > SOURCE-as-prose**, per the project CLAUDE.md precedence chain.
+**Precedence note:** CANON's old header claimed `CANON > LOCKFILE > SOURCE`. That claim is retired. Current law: the Solen precedence section of the project CLAUDE.md.
 
 ## 1. Color tokens
 

@@ -1367,3 +1367,13 @@ Calendar selection under that delegation: A is the default staff-column day view
 CTA label: 15px on phone and desktop. Asked directly (14px working default vs 15px), the owner chose 15px. This closes the C6 re-open in LOCKFILE; where a screen would exceed four sizes, the other sizes yield.
 
 The September 8 customer-journey directions stay dropped (owner confirmed "drop it"); source is only in `archive/codex-customer-journeys-0908`.
+
+## 2026-09-23: Design reset, precedence and home unlock
+
+Owner answers in the design-reset planning round (popup, this date):
+- Precedence: a newer dated owner decision beats an older literal in any tier below the legal and safety floors, LOCKFILE included. The older file is updated in the same turn. Recorded in the Solen precedence section of CLAUDE.md.
+- Direction: one direction, Fresha for structure and placement, Airbnb for look and motion. Offered "Airbnb everywhere", "Fresha everywhere" and "something new", he picked only this one. This supersedes the 2026-08-12 "Airbnb on both axes" wording still present in PRINCIPLES.md and LOCKFILE.
+- Home page: the 2026-09-06 J freeze is lifted. Home is in scope for the reset, mockup first.
+- Scope: customer website and salon dashboard. The iOS app is out of this reset.
+- Rules structure: delegated to the working assistant, to be shown to him before anything is archived.
+- Plan: `/Users/sulo/.claude/plans/non-te-okay-can-harmonic-thunder.md`.
