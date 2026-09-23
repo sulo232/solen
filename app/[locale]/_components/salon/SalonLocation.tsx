@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { Bus, Footprints, MapPin, Navigation, TrainFront, TramFront, type LucideIcon } from "lucide-react";
-import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import type { Marker as MapboxMarker } from "mapbox-gl";
 import type { SalonDetail } from "./_shared";
@@ -615,177 +614,195 @@ function LocationMapCanvas({
   React.useEffect(() => {
     const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
     if (!token || !holder.current) return;
-    mapboxgl.accessToken = token;
+    const el = holder.current;
+    // mapbox-gl (the heaviest dependency on the salon page) loads on demand here instead of
+    // shipping in the route's first-load JS. The address and the rest of the section still
+    // render on the server; only the live map waits for this chunk (2026-09-23, replaces the
+    // archived 23c21d55a ssr:false split, which dropped the address from the server HTML).
+    let disposed = false;
+    let teardown: (() => void) | undefined;
+    import("mapbox-gl")
+      .then(({ default: mapboxgl }) => {
+        if (disposed) return;
+        teardown = (() => {
+          mapboxgl.accessToken = token;
 
-    const centre: [number, number] = [longitude, latitude];
+          const centre: [number, number] = [longitude, latitude];
 
-    const map = new mapboxgl.Map({
-      config: { basemap: SOLEN_BASEMAP_CONFIG }, // deterministic basemap config at init (avoids the on-load race)
-      container: holder.current,
-      style: `mapbox://styles/${stylePath}`,
-      center: centre,
-      zoom: STREET_ZOOM,
-      interactive: false,
-      attributionControl: false,
-    });
+          const map = new mapboxgl.Map({
+            config: { basemap: SOLEN_BASEMAP_CONFIG }, // deterministic basemap config at init (avoids the on-load race)
+            container: el,
+            style: `mapbox://styles/${stylePath}`,
+            center: centre,
+            zoom: STREET_ZOOM,
+            interactive: false,
+            attributionControl: false,
+          });
 
-    // Round 3 (2026-07-24): every non-"current" direction gets a PIN-shaped store
-    // marker (storePinMarkerEl) instead of round 2's circle — "the owner likes the
-    // store glyph but wants a PIN shape, not a full circle". Reuses pinMarkerEl's own
-    // teardrop geometry (same anchor:"bottom", tip on the coordinate), white or sunken
-    // fill, ink glyph, still never black / never ringed. "current" keeps the original
-    // plain ink teardrop, untouched.
-    const marker = new mapboxgl.Marker({
-      element: mapDesign === "current" ? pinMarkerEl() : storePinMarkerEl({ fill: markerFillFor(mapDesign) }),
-      anchor: "bottom",
-    })
-      .setLngLat(centre)
-      .addTo(map);
+          // Round 3 (2026-07-24): every non-"current" direction gets a PIN-shaped store
+          // marker (storePinMarkerEl) instead of round 2's circle — "the owner likes the
+          // store glyph but wants a PIN shape, not a full circle". Reuses pinMarkerEl's own
+          // teardrop geometry (same anchor:"bottom", tip on the coordinate), white or sunken
+          // fill, ink glyph, still never black / never ringed. "current" keeps the original
+          // plain ink teardrop, untouched.
+          const marker = new mapboxgl.Marker({
+            element: mapDesign === "current" ? pinMarkerEl() : storePinMarkerEl({ fill: markerFillFor(mapDesign) }),
+            anchor: "bottom",
+          })
+            .setLngLat(centre)
+            .addTo(map);
 
-    // Round 3: the station becomes a CIRCLE with an always-blue transit glyph (the
-    // shapes literally swap with the store pin above), and the station name moves
-    // into ONE pill shape attached to the circle instead of round 2's bare
-    // glyph-above-name text (owner: "the bare text label is rejected... put the
-    // station name inside one pill/shape"). `pillAttachmentFor` picks where that pill
-    // attaches ("under" the circle, centred, vs "beside" it) — the anchor/offset pair
-    // below is chosen per attachment so the CIRCLE's own centre (not the pill, not the
-    // element's full bounding box) sits exactly on the stop's coordinate, same
-    // precision goal as round 2's glyph-centring math. "current" keeps the original
-    // dot-badge transitMarkerEl, untouched.
-    let transitMarker: MapboxMarker | null = null;
-    if (transitLat != null && transitLng != null && transitType != null) {
-      const stopName = transitName ? stripCityPrefix(transitName) : undefined;
-      if (mapDesign === "current") {
-        transitMarker = new mapboxgl.Marker({ element: transitMarkerEl(transitType, stopName) })
-          .setLngLat([transitLng, transitLat])
-          .addTo(map);
-      } else {
-        const attachment = pillAttachmentFor(mapDesign);
-        const element = transitCircleMarkerEl({ type: transitType, name: stopName, fill: markerFillFor(mapDesign), attachment });
-        const radius = TRANSIT_CIRCLE_DIAMETER / 2;
-        transitMarker =
-          attachment === "under"
-            ? new mapboxgl.Marker({ element, anchor: "top", offset: [0, -radius] })
-                .setLngLat([transitLng, transitLat])
-                .addTo(map)
-            : new mapboxgl.Marker({ element, anchor: "left", offset: [-radius, 0] })
+          // Round 3: the station becomes a CIRCLE with an always-blue transit glyph (the
+          // shapes literally swap with the store pin above), and the station name moves
+          // into ONE pill shape attached to the circle instead of round 2's bare
+          // glyph-above-name text (owner: "the bare text label is rejected... put the
+          // station name inside one pill/shape"). `pillAttachmentFor` picks where that pill
+          // attaches ("under" the circle, centred, vs "beside" it) — the anchor/offset pair
+          // below is chosen per attachment so the CIRCLE's own centre (not the pill, not the
+          // element's full bounding box) sits exactly on the stop's coordinate, same
+          // precision goal as round 2's glyph-centring math. "current" keeps the original
+          // dot-badge transitMarkerEl, untouched.
+          let transitMarker: MapboxMarker | null = null;
+          if (transitLat != null && transitLng != null && transitType != null) {
+            const stopName = transitName ? stripCityPrefix(transitName) : undefined;
+            if (mapDesign === "current") {
+              transitMarker = new mapboxgl.Marker({ element: transitMarkerEl(transitType, stopName) })
                 .setLngLat([transitLng, transitLat])
                 .addTo(map);
-      }
-    }
+            } else {
+              const attachment = pillAttachmentFor(mapDesign);
+              const element = transitCircleMarkerEl({ type: transitType, name: stopName, fill: markerFillFor(mapDesign), attachment });
+              const radius = TRANSIT_CIRCLE_DIAMETER / 2;
+              transitMarker =
+                attachment === "under"
+                  ? new mapboxgl.Marker({ element, anchor: "top", offset: [0, -radius] })
+                      .setLngLat([transitLng, transitLat])
+                      .addTo(map)
+                  : new mapboxgl.Marker({ element, anchor: "left", offset: [-radius, 0] })
+                      .setLngLat([transitLng, transitLat])
+                      .addTo(map);
+            }
+          }
 
-    // Same below-the-fold 0px-container guard as NearbyMap.tsx: on first mount the
-    // section can measure 0px high before layout settles, which mapbox then bakes
-    // into a degenerate viewport. Re-fit after resize, and keep resizing while the
-    // element settles.
-    const fit = () => {
-      map.resize();
-      // With a nearest stop, frame BOTH points. Measured: a fixed setZoom(STREET_ZOOM)
-      // put the Spalentor stop (189 m away) outside the viewport entirely, and it also
-      // clobbered any earlier fitBounds because this runs on every load/resize.
-      // Zoomed out further (2026-07-24, owner: "zoom out 30-40%") — maxZoom 17 -> a flat
-      // 15.5 (the low end of the owner-given 15.5-16 range) and padding raised ~33% on
-      // every side (48->64, 104->140) so the salon+stop pair reads with real margin
-      // instead of nearly filling the frame. ROUND 3 (2026-07-24, same day): the owner
-      // wants zoom CALIBRATED TO DISTANCE instead of that one flat number — closer stop
-      // -> tighter zoom, farther stop -> wider. `maxZoomForStopDistance` (below) replaces
-      // the hardcoded 15.5; the Spalentor fixture (189m) lands in that function's own
-      // 151-250m band, which is pinned to 15.5 specifically so the owner-reviewed round-2
-      // framing doesn't shift under the one stop they already approved. Padding logic is
-      // unchanged. Applies to every direction, including "current" (production) —
-      // reported against the whole map, not one mockup direction.
-      if (transitLng != null && transitLat != null) {
-        const maxZoom = transitDistanceMeters != null ? maxZoomForStopDistance(transitDistanceMeters) : 15.5;
-        map.fitBounds(
-          [
-            [Math.min(longitude, transitLng), Math.min(latitude, transitLat)],
-            [Math.max(longitude, transitLng), Math.max(latitude, transitLat)],
-          ],
-          { padding: { top: 64, bottom: 140, left: 64, right: 64 }, maxZoom, duration: 0 },
-        );
-        return;
-      }
-      map.setCenter(centre);
-      map.setZoom(STREET_ZOOM);
-    };
-    map.on("load", fit);
-    // Owner reference (2026-07-24): POI icons + labels, street names, place labels, grey
-    // buildings — this style ships those flags off by default (lib/map-style.ts). Must run
-    // after "load" (style is ready by then), never before.
-    map.on("load", () => applySolenBasemapConfig(map));
+          // Same below-the-fold 0px-container guard as NearbyMap.tsx: on first mount the
+          // section can measure 0px high before layout settles, which mapbox then bakes
+          // into a degenerate viewport. Re-fit after resize, and keep resizing while the
+          // element settles.
+          const fit = () => {
+            map.resize();
+            // With a nearest stop, frame BOTH points. Measured: a fixed setZoom(STREET_ZOOM)
+            // put the Spalentor stop (189 m away) outside the viewport entirely, and it also
+            // clobbered any earlier fitBounds because this runs on every load/resize.
+            // Zoomed out further (2026-07-24, owner: "zoom out 30-40%") — maxZoom 17 -> a flat
+            // 15.5 (the low end of the owner-given 15.5-16 range) and padding raised ~33% on
+            // every side (48->64, 104->140) so the salon+stop pair reads with real margin
+            // instead of nearly filling the frame. ROUND 3 (2026-07-24, same day): the owner
+            // wants zoom CALIBRATED TO DISTANCE instead of that one flat number — closer stop
+            // -> tighter zoom, farther stop -> wider. `maxZoomForStopDistance` (below) replaces
+            // the hardcoded 15.5; the Spalentor fixture (189m) lands in that function's own
+            // 151-250m band, which is pinned to 15.5 specifically so the owner-reviewed round-2
+            // framing doesn't shift under the one stop they already approved. Padding logic is
+            // unchanged. Applies to every direction, including "current" (production) —
+            // reported against the whole map, not one mockup direction.
+            if (transitLng != null && transitLat != null) {
+              const maxZoom = transitDistanceMeters != null ? maxZoomForStopDistance(transitDistanceMeters) : 15.5;
+              map.fitBounds(
+                [
+                  [Math.min(longitude, transitLng), Math.min(latitude, transitLat)],
+                  [Math.max(longitude, transitLng), Math.max(latitude, transitLat)],
+                ],
+                { padding: { top: 64, bottom: 140, left: 64, right: 64 }, maxZoom, duration: 0 },
+              );
+              return;
+            }
+            map.setCenter(centre);
+            map.setZoom(STREET_ZOOM);
+          };
+          map.on("load", fit);
+          // Owner reference (2026-07-24): POI icons + labels, street names, place labels, grey
+          // buildings — this style ships those flags off by default (lib/map-style.ts). Must run
+          // after "load" (style is ready by then), never before.
+          map.on("load", () => applySolenBasemapConfig(map));
 
-    // Round 2 (2026-07-24): the owner questioned whether a manually-fetched route line
-    // "holds up when scaled" — treated as a genuine per-direction choice, not a given.
-    // Only "ink-glyph" (Direction B) drew one at first, for direct comparison against
-    // "clean-white" (no route at all) and "sunken" (also none). ROUND 3 (2026-07-24,
-    // same day): that route line became a bold, near-full-opacity blue dotted trail
-    // (see addRouteFeatures's paint block below) instead of round 2's thin/low-opacity
-    // version — same per-direction choice of whether to draw one at all, just louder
-    // where it does render. ROUND 4 (2026-07-24, same day): "clean-white" is now the
-    // PRODUCTION default AND draws this same route ("Direction A, but with dots" —
-    // the owner's decision) — "sunken" is the only direction left with none. The
-    // on-map walking-time pill from round 1 stays deleted outright — no direction
-    // renders it (owner: "he does not want it on the map at all"). Fetched live from
-    // Mapbox Directions using the same public token the map itself already renders
-    // with — never a fabricated straight line; degrades to no route on any fetch
-    // failure, the same graceful-degrade contract as the transit-stop fetch above
-    // this component.
-    let cancelled = false;
+          // Round 2 (2026-07-24): the owner questioned whether a manually-fetched route line
+          // "holds up when scaled" — treated as a genuine per-direction choice, not a given.
+          // Only "ink-glyph" (Direction B) drew one at first, for direct comparison against
+          // "clean-white" (no route at all) and "sunken" (also none). ROUND 3 (2026-07-24,
+          // same day): that route line became a bold, near-full-opacity blue dotted trail
+          // (see addRouteFeatures's paint block below) instead of round 2's thin/low-opacity
+          // version — same per-direction choice of whether to draw one at all, just louder
+          // where it does render. ROUND 4 (2026-07-24, same day): "clean-white" is now the
+          // PRODUCTION default AND draws this same route ("Direction A, but with dots" —
+          // the owner's decision) — "sunken" is the only direction left with none. The
+          // on-map walking-time pill from round 1 stays deleted outright — no direction
+          // renders it (owner: "he does not want it on the map at all"). Fetched live from
+          // Mapbox Directions using the same public token the map itself already renders
+          // with — never a fabricated straight line; degrades to no route on any fetch
+          // failure, the same graceful-degrade contract as the transit-stop fetch above
+          // this component.
+          let cancelled = false;
 
-    async function addRouteFeatures() {
-      if (mapDesign !== "ink-glyph" && mapDesign !== "clean-white") return;
-      if (transitLat == null || transitLng == null) return;
-      try {
-        const url =
-          `https://api.mapbox.com/directions/v5/mapbox/walking/${longitude},${latitude};${transitLng},${transitLat}` +
-          `?geometries=geojson&overview=full&access_token=${token}`;
-        // 8000ms: matches this codebase's existing timeout for reading a third-party
-        // API response (lib/ai-vision.ts). Degrades to no route on timeout, same as
-        // any other fetch failure per the graceful-degrade contract noted above.
-        const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
-        if (!res.ok || cancelled) return;
-        const json = (await res.json()) as MapboxDirectionsResponse;
-        const route = json.routes?.[0];
-        if (!route?.geometry || cancelled) return;
-        if (map.getSource(ROUTE_SOURCE_ID)) return;
+          async function addRouteFeatures() {
+            if (mapDesign !== "ink-glyph" && mapDesign !== "clean-white") return;
+            if (transitLat == null || transitLng == null) return;
+            try {
+              const url =
+                `https://api.mapbox.com/directions/v5/mapbox/walking/${longitude},${latitude};${transitLng},${transitLat}` +
+                `?geometries=geojson&overview=full&access_token=${token}`;
+              // 8000ms: matches this codebase's existing timeout for reading a third-party
+              // API response (lib/ai-vision.ts). Degrades to no route on timeout, same as
+              // any other fetch failure per the graceful-degrade contract noted above.
+              const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
+              if (!res.ok || cancelled) return;
+              const json = (await res.json()) as MapboxDirectionsResponse;
+              const route = json.routes?.[0];
+              if (!route?.geometry || cancelled) return;
+              if (map.getSource(ROUTE_SOURCE_ID)) return;
 
-        map.addSource(ROUTE_SOURCE_ID, {
-          type: "geojson",
-          data: { type: "Feature", properties: {}, geometry: route.geometry },
-        });
-        map.addLayer({
-          id: ROUTE_LAYER_ID,
-          type: "line",
-          source: ROUTE_SOURCE_ID,
-          layout: { "line-cap": "round", "line-join": "round" },
-          paint: {
-            "line-color": "#276EF1", // drift-ok: token s-accent, inline for Mapbox GL paint (not a Tailwind/JSX context)
-            "line-width": 2.5, // round 3: a touch bolder than round 2's 2px thin line
-            "line-dasharray": [0, 2.2], // round 3: denser dots than round 2's [0, 2.8] — reads as a clearer trail
-            // round 3 (2026-07-24, owner: "increase the dotted route's saturation/opacity toward full s-accent —
-            // currently low-opacity on some directions") — up from round 2's 0.45, near-full strength blue
-            "line-opacity": 0.9,
-          },
-        });
-      } catch {
-        // Degrade gracefully: no route line, never a fabricated straight-line fallback.
-      }
-    }
-    map.on("load", () => {
-      void addRouteFeatures();
-    });
+              map.addSource(ROUTE_SOURCE_ID, {
+                type: "geojson",
+                data: { type: "Feature", properties: {}, geometry: route.geometry },
+              });
+              map.addLayer({
+                id: ROUTE_LAYER_ID,
+                type: "line",
+                source: ROUTE_SOURCE_ID,
+                layout: { "line-cap": "round", "line-join": "round" },
+                paint: {
+                  "line-color": "#276EF1", // drift-ok: token s-accent, inline for Mapbox GL paint (not a Tailwind/JSX context)
+                  "line-width": 2.5, // round 3: a touch bolder than round 2's 2px thin line
+                  "line-dasharray": [0, 2.2], // round 3: denser dots than round 2's [0, 2.8] — reads as a clearer trail
+                  // round 3 (2026-07-24, owner: "increase the dotted route's saturation/opacity toward full s-accent —
+                  // currently low-opacity on some directions") — up from round 2's 0.45, near-full strength blue
+                  "line-opacity": 0.9,
+                },
+              });
+            } catch {
+              // Degrade gracefully: no route line, never a fabricated straight-line fallback.
+            }
+          }
+          map.on("load", () => {
+            void addRouteFeatures();
+          });
 
-    const ro = new ResizeObserver(fit);
-    ro.observe(holder.current);
+          const ro = new ResizeObserver(fit);
+          ro.observe(el);
 
+          return () => {
+            cancelled = true;
+            ro.disconnect();
+            marker.remove();
+            transitMarker?.remove();
+            if (map.getLayer(ROUTE_LAYER_ID)) map.removeLayer(ROUTE_LAYER_ID);
+            if (map.getSource(ROUTE_SOURCE_ID)) map.removeSource(ROUTE_SOURCE_ID);
+            map.remove();
+          };
+        })();
+      })
+      .catch((err) => console.error("[SalonLocation] map chunk failed to load", err));
     return () => {
-      cancelled = true;
-      ro.disconnect();
-      marker.remove();
-      transitMarker?.remove();
-      if (map.getLayer(ROUTE_LAYER_ID)) map.removeLayer(ROUTE_LAYER_ID);
-      if (map.getSource(ROUTE_SOURCE_ID)) map.removeSource(ROUTE_SOURCE_ID);
-      map.remove();
+      disposed = true;
+      teardown?.();
     };
   }, [longitude, latitude, stylePath, transitLat, transitLng, transitType, transitName, transitWalkMinutes, transitDistanceMeters, mapDesign]);
 
