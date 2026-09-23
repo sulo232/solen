@@ -1,10 +1,8 @@
 // scripts/lib/type-scale-allowed.mjs
 //
 // Shared allowed-type-scale source of truth for the type-scale consistency work. Both the
-// report-mode detector (scripts/detect-type-scale-outliers.mjs) and the blocking gate
-// (scripts/hooks/type-scale-gate.mjs) import ONLY this module for the allowed/off-scale
-// decision, so the report and the gate can never diverge, per the owner's "wire gates for
-// what's decided" instruction (same pattern as scripts/lib/icon-blessed-context.mjs).
+// report-mode detector (scripts/detect-type-scale-outliers.mjs) imports ONLY this module for
+// the allowed/off-scale decision (same pattern as scripts/lib/icon-blessed-context.mjs).
 //
 // ALLOWED_PX (the authoritative locked type scale, TUNABLE, assembled by reading, not
 // guessing): every px value the locked scale sanctions, sourced from

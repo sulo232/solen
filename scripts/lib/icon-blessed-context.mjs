@@ -8,11 +8,8 @@
 // it was MIXING two icon systems (3D illustration + Lucide line icon) as the icon for the
 // SAME kind of list item / picker (the onboarding category-pill grid).
 //
-// Both the report-mode detector (scripts/detect-icon-system-mismatch.mjs) and the blocking
-// gate (scripts/hooks/icon-blessed-context-gate.mjs) import ONLY this module for the
-// blessed/flagged decision, so the two can never diverge, since a consistency system that
-// itself drifts between its own checker and its own gate would be the exact failure mode it
-// exists to catch.
+// The report-mode detector (scripts/detect-icon-system-mismatch.mjs) imports ONLY this
+// module for the blessed/flagged decision.
 //
 // BLESSED CONTEXTS (owner-enumerated, tunable, extend here if the owner blesses a new one):
 //   1. Homepage: app/[locale]/page.tsx + app/[locale]/_components/homepage/**.

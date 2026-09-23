@@ -18,8 +18,7 @@
 // NOT matched by design, since the regex requires a digit immediately after the opening bracket;
 // clamp-based type is how the locked roles themselves are written, so it is not the drift this
 // detector targets. The ALLOWED_PX set + the off-scale scanner live in scripts/lib/type-scale-
-// allowed.mjs, shared with scripts/hooks/type-scale-gate.mjs, so the report and the blocking
-// gate can never diverge (same pattern as scripts/lib/icon-blessed-context.mjs).
+// allowed.mjs (same pattern as scripts/lib/icon-blessed-context.mjs).
 
 import { readFileSync, writeFileSync, readdirSync } from "node:fs";
 import { join, relative, sep } from "node:path";

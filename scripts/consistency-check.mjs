@@ -10,10 +10,7 @@
 //   Run:  npm run consistency
 //   Out:  a stdout dashboard only (no report file of its own, nothing new to keep in sync)
 //
-// The 2 live gates (scripts/hooks/icon-blessed-context-gate.mjs, scripts/hooks/type-scale-
-// gate.mjs) are NOT run here, they are PreToolUse hooks wired in .claude/settings.json and
-// already enforce at edit time. This script only NAMES them, in the "ENFORCED" section below,
-// so the dashboard shows the whole system (report-mode + live-gate) in one place.
+// All detectors are report-only; no write-time gate enforces them.
 //
 // Robustness: each detector runs in its own try/catch. A single detector erroring (bad exit
 // code, thrown exception, missing script) prints a FAILED line for that detector only and the
@@ -49,8 +46,7 @@ const DETECTORS = [
     catches: "3D-icon / Lucide mixing (illustrated category icons used outside their blessed contexts)",
     scriptPath: "scripts/detect-icon-system-mismatch.mjs",
     npmScript: "icon-check",
-    gated: true,
-    gatePath: "scripts/hooks/icon-blessed-context-gate.mjs",
+    gated: false,
     reportPath: "_design-system/_icon-system-report.md",
     parseHeadline: (stdout) => {
       const m = /Violations \(non-blessed 3D-icon usage\):\s*\d+ files?,\s*(\d+) reference/.exec(stdout);
@@ -63,8 +59,7 @@ const DETECTORS = [
     catches: "off-scale font sizes (a text-[Npx] utility outside the locked LOCKFILE type scale)",
     scriptPath: "scripts/detect-type-scale-outliers.mjs",
     npmScript: "type-check-scale",
-    gated: true,
-    gatePath: "scripts/hooks/type-scale-gate.mjs",
+    gated: false,
     reportPath: "_design-system/_type-scale-report.md",
     parseHeadline: (stdout) => {
       const m = /Total off-scale usages:\s*(\d+)/.exec(stdout);
@@ -109,19 +104,6 @@ const DETECTORS = [
       const m = /Total dead classes \(bucket A[^)]*\):\s*(\d+)/.exec(stdout);
       return m ? { count: Number(m[1]), label: "dead classes (bucket A, near-miss)" } : null;
     },
-  },
-];
-
-// The 2 live gates, named only (never executed here). Both import their shared classifier
-// module from the matching detector so the two can never diverge, see each gate's own header.
-const GATES = [
-  {
-    path: "scripts/hooks/icon-blessed-context-gate.mjs",
-    blocks: "a net-new 3D-icon reference outside the enumerated blessed contexts (PreToolUse Edit/Write)",
-  },
-  {
-    path: "scripts/hooks/type-scale-gate.mjs",
-    blocks: "a net-new off-scale text-[Npx] utility (PreToolUse Edit/Write)",
   },
 ];
 
@@ -206,15 +188,6 @@ for (const r of results) {
   }
   console.log("");
 }
-
-console.log(SUB_RULE);
-console.log("ENFORCED (write-time gates, always live, not run by this script)");
-console.log("");
-for (const g of GATES) {
-  console.log(`  - ${g.path}`);
-  console.log(`      blocks: ${g.blocks}`);
-}
-console.log("");
 
 console.log(SUB_RULE);
 const parsedCounts = results.filter((r) => r.ok && r.headline).map((r) => r.headline.count);
