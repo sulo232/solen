@@ -109,3 +109,9 @@ _tmp_*.mjs
 
 # measurement outputs from scripts/measure (screenshots, json), re-generated on every run
 scripts/measure/out/
+
+# curl cookie jars from local API checks (session cookies, never commit)
+/jar
+/*.jar
+/pjar*
+/*jar

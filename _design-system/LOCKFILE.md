@@ -218,7 +218,7 @@ same component, or 3+ blues line up vertically ("blue staircase"), demote the we
 | "Zur Startseite" / "Stattdessen anmelden" under CTAs (404/success/auth) | **INK-2** semibold, NO underline (v3.1) | weight + position carry it; hover → `text-s-ink` |
 | Secondary / ghost buttons | **INK** outline (never blue-filled, never blue-ghost) | CONTROL_ELEVATION B |
 | Feature-row icon tints (gift, voucher, …) | **INK** on `bg-s-bg-sunken` | icons are content, not actions |
-| `:focus-visible` ring / `<Spinner>` arc / form-input focus | **BLUE** (locked system states) | unchanged |
+| `:focus-visible` ring / `<Spinner>` arc / form-input focus | **`<Spinner>` arc stays BLUE. The focus indicator is INK, keyboard only (TASTE_LOG 2026-09-06 THE FOCUS RULE): 2px `#0A0A0A` outline, 2px offset, scoped under `html[data-input="keyboard"]`; a pointer shows nothing, on inputs too.** | changed 2026-09-06 |
 | Stepper discs (§13.2) / walk-in LIVE pill | **BLUE** (locked progress language) | unchanged |
 
 **GUARDRAIL:** blue stays OFF non-interactive text (eyebrows, body, prices, headings) AND off

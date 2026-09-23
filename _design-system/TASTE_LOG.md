@@ -1319,6 +1319,39 @@ recommendation and shows the same screen three times, stacked, one plain line of
 turn), `_plans/R3_ONE_SYSTEM.md` (the one system, once written).
 
 
+## 2026-09-06 , the round-2 mockup walk (owner dictated, twelve links, verdict by verdict)
+
+He opened the twelve round-2 mockups and dictated. Recorded here so none of these is re-asked or re-mocked.
+
+- **Booking actions (decision 19): variant B APPROVED.** Directions, Add to calendar and Receipt join the same overflow menu on the booking card. Two riders in his words: the overflow icon is the HORIZONTAL three dots, "not from top to bottom" (Lucide MoreHorizontal, never MoreVertical), and "the font and everything ... so bland and basic, not smooth, no animation" is a system complaint, filed under the look diagnosis below, not a card-only fix.
+- **Failed fee (decision 3): APPROVED** ("that's good, I approved that"). Customer email with a pay button when the no-show or late-cancel fee fails to charge, and a warning chip on the dashboard booking row. The dashboard half of the mockup carried a builder-drawn tray; he approved the idea, the tray is not part of it.
+- **Reviews per stylist (decision 22): APPROVED with three riders.** The stylist name is clickable (to the stylist page). He asked how the name gets attached; answer given in chat (from the booking's staff member, both for the review written right after the visit and for the one the automatic review email leads to). "Translated from German" becomes a small icon plus the word "Translated", no source language; checked against how Airbnb, Booking.com and Google mark it before it ships.
+- **Code sign-in (decision 20): REJECTED.** "This is not at all how it is. This is not good. No. Keep how it is right now. Stop." Graveyard line added the same turn. Sign-in stays as it is.
+- **City cards (decision 14): REJECTED.** "Keep how it is. Don't change anything on the home page." Graveyard line added. City pages and the home page keep their cards.
+- **Dashboard home (decision 12): the traced.html workspace layout is the direction** ("I like the workspace a lot"), with two conditions: a calendar view is required ("we need a calendar view too", Fresha is the structure reference), and the mixed design systems and colours in the dashboard are a defect he named ("so many other design systems and colours all mixed up"). Nothing applied yet; research first.
+- **Input focus (decision 11): NOT decided, research first.** His words: "when you click in, it all becomes black the surrounding, kinda ass ... I think mostly when you click with keyboard and stuff, then it's gonna focus. Go research that before you implement and make a rule about it." Measured the same hour on /en/auth/login: a mouse click turns the field from grey fill with no line to white with the #E4E4E7 hairline, no outline, no shadow; buttons show nothing on click. The rule lands after the reference measurement, in this file and the LOCKFILE focus row.
+- **Not understood, no verdict:** staff per service (17), email quick action (21), distance filter (25a). Explained in chat; they wait for his word. Promo code box (4) was not mentioned.
+- **The standing complaint, his words:** "other companies do it more differently and more premium, more welcoming, not only on sign up, overall, every other part of the system. Everywhere it looks so ass. I don't know why. Can you tell me?" A measured teardown against Fresha, Treatwell and Airbnb was commissioned the same hour; its answer is filed in _design-system/research/ when it lands, and nothing in the system changes on its strength without a mockup he has seen.
+
+## 2026-09-06 , THE FOCUS RULE (owner: "go research that before you implement and make a rule about it")
+
+His words on the input-focus mockup: "when you click in, it all becomes black the surrounding, kinda ass ... I think mostly when you click with keyboard and stuff, then it's gonna focus. Right? Can you actually go research that before you actually implement and make a rule about it?" He also said the legal side stays: "we need to really fix that ... because it's about legality."
+
+**Measured live the same hour, seven reference sites, fourteen element rows (Playwright, computed styles read before and after a real mouse click and again after a keyboard Tab, separate browser contexts per test):**
+- Buttons and links: five of seven draw NOTHING on a mouse click and an outline only on keyboard focus. Treatwell: native 1px blue. Linear: 1px violet. Apple: 2px system blue, 1px offset. Airbnb: a 2px black plus 2px white double ring. Fresha: the browser's native blue. GOV.UK and Stripe draw the same ring in both modes (GOV.UK 3px yellow plus black inset, Stripe a violet double ring).
+- Text inputs: no site distinguishes click from keyboard on the field itself. Airbnb and Fresha draw nothing on the field in either mode. Treatwell, Stripe, Linear and GOV.UK draw the same thin ring in both.
+- Ours before this rule (login and lookup inputs, desktop and phone): a click turned the field white with the resting hairline, no outline, no shadow, and a button click showed nothing. Keyboard focus on buttons drew the 3px inset ink left edge (D1, 2026-07-27), a shape no reference uses.
+- Standards, read at the source: WCAG 2.2 2.4.7 (AA) binds keyboard operation only; the W3C Understanding text calls a pointer-visible indicator a best practice, not a requirement; 1.4.11 asks 3:1 for the indicator (ink on white is 19.8:1); 2.4.13 (AAA) asks a 2px-perimeter area.
+
+**THE RULE, effective now:**
+1. A pointer (mouse click, tap) changes nothing visible on any control: no outline, no shadow, no darker line. Inputs keep the 2026-08-09 state (white fill, resting hairline).
+2. Keyboard focus draws one indicator, everywhere, inputs included: a 2px ink (#0A0A0A) outline with a 2px offset, following the control's radius, on every device.
+3. Because a text input matches :focus-visible on a click as well, keyboard-ness is detected once, in one place: a modality flag on the html element (data-input="keyboard" after Tab or an arrow key, data-input="pointer" after any pointer down), and every focus indicator is scoped under it. This is the script-based heuristic the W3C text allows by name.
+4. The D1 inset left edge is retired. It existed to satisfy a gate, not a person.
+5. The mockup variants that darkened the field's line on click (r2-input-focus A and B) are not applied; his reading of them is the reason for rule 1.
+
+What it costs, once: a phone or iPad driven by an external keyboard shows the ring, which is correct; a mouse user never sees where focus is, which the references accept too.
+
 ## 2026-09-08: Branch consolidation signup and calendar decisions
 
 Owner: "Sign up. I want it to be B. And then calendar. Probably you can choose."
