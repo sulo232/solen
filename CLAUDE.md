@@ -17,7 +17,7 @@ Two September 6 rejections remain settled: keep code sign-in as it is, and keep 
 
 One radius choice remains open. The general button and chip lock is 16px, while the approved payment lift screen uses a capsule CTA. Do not change radii while inferring a resolution. The owner must decide whether that payment CTA is a named exception or the 16px lock governs it.
 
-The phone CTA label size is also open in `_design-system/LOCKFILE.md`. Use its current working default of 14px on phone and 15px on desktop until the owner resolves 14px against the four-size screen budget; do not present either value as a final new lock.
+The CTA label size is settled at 15px on phone and desktop (owner, 2026-09-23; recorded in `_design-system/LOCKFILE.md`).
 
 ## Check what exists before creating
 

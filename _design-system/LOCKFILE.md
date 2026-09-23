@@ -317,6 +317,8 @@ Two rules travel with it, both measured off the reference the owner named as sou
 
 **UPDATE 2026-09-06:** the round-2 kit (`app/[locale]/dev/directions-0905-r2/_kit`) renders every CTA at 14px on mobile, not 15, because 15 pushes any button-bearing screen to a fifth distinct font size (28/18/15/14/12) against the NEVER-AGAIN floor-2 four-size ceiling. That collides with the DECIDE above (15, dated 2026-09-05), so the row is not decidable by TASTE_AUTHORITY step 6 and is re-opened under C6 (`_plans/R2_LOOK_SYSTEMS.md`) as his call, with 14 standing as the working default until he answers.
 
+**RESOLVED 2026-09-23 (owner):** 15px on phone and desktop. The owner chose 15 over the 14px working default when asked directly during branch cleanup; the CTA row above (15) stands as the lock. Where 15 would make a fifth size on one screen, fix the other sizes, not the CTA.
+
 **Common clamp() patterns (use these literal values for new code):**
 
 ```

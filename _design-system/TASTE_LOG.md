@@ -1361,3 +1361,9 @@ Signup B, the email-first proposal preserved at `.claude/worktrees/design-system
 Calendar selection is delegated to the working assistant. Choose from the reviewed existing proposals using actual operator usability, preserve useful day/week and staff views where they coexist, and provide the chosen rendered result through the live comparison tunnel. No repeat A/B/C approval question is required. Selection, implementation and verification remain tracked in `_plans/BRANCH_RECONCILIATION_2026-08-14.md`.
 
 Calendar selection under that delegation: A is the default staff-column day view; retain one-person week, existing month, and existing mobile views as useful modes. Reason: compare staff availability directly and avoid hiding team capacity behind a single-person default. Current source already has separate mobile day/week/month state, so preserve it. Measured static A preview:928px desktop canvas,three279px staff columns,30-minute appointment28px high. This is not acceptable proof of phone tap behavior; verify short appointments and real responsive selection before acceptance. Source snapshots remain historical June data, not live bookings.
+
+## 2026-09-23: CTA label size and customer-journeys disposition
+
+CTA label: 15px on phone and desktop. Asked directly (14px working default vs 15px), the owner chose 15px. This closes the C6 re-open in LOCKFILE; where a screen would exceed four sizes, the other sizes yield.
+
+The September 8 customer-journey directions stay dropped (owner confirmed "drop it"); source is only in `archive/codex-customer-journeys-0908`.
