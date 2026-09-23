@@ -994,7 +994,7 @@ export async function POST(request: NextRequest) {
     // owner just performed (salon created), so it follows the confirmations opt-out
     // profiles.notification_email; it is not a promotional offer (deals_enabled). Fails closed
     // when the preference cannot be read. A failed send is logged and never fails creation.
-    const ownerEmail = email || user.email;
+    const ownerEmail = user.email || email;
     if (profileError || !profile) {
       console.error("[SalonsRoute] owner preference lookup failed, welcome email skipped", { salonId, profileError });
     } else if (ownerEmail && profile.notification_email !== false) {

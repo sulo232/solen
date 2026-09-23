@@ -372,7 +372,7 @@ describe("POST /api/salons owner welcome email", () => {
     expect(Object.keys(body).sort()).toEqual(["id", "slug"]);
     expect(body.id).toBe(SALON_ID);
     expect(sendEmailMock).toHaveBeenCalledTimes(1);
-    expect(sendEmailMock.mock.calls[0][0]).toEqual(onboardingWelcome("contact@atelier.example", { salonName: "Atelier Nord" }, "it"));
+    expect(sendEmailMock.mock.calls[0][0]).toEqual(onboardingWelcome("owner@example.com", { salonName: "Atelier Nord" }, "it"));
   });
 
   it("sends nothing when the owner opted out", async () => {
@@ -397,6 +397,6 @@ describe("POST /api/salons owner welcome email", () => {
 
   it("falls back to German for an unsupported stored locale", async () => {
     await runCreateSalon(ok({ role: "customer", locale: "es", notification_email: null }));
-    expect(sendEmailMock.mock.calls[0][0]).toEqual(onboardingWelcome("contact@atelier.example", { salonName: "Atelier Nord" }, "de"));
+    expect(sendEmailMock.mock.calls[0][0]).toEqual(onboardingWelcome("owner@example.com", { salonName: "Atelier Nord" }, "de"));
   });
 });

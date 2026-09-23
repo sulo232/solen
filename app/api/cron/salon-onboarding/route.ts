@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail } from "@/lib/email";
 import {
-  onboardingWelcome,
   onboardingCompleteProfile,
   onboardingAddServices,
   onboardingAddPhoto,
@@ -42,8 +41,9 @@ export async function GET(request: NextRequest) {
   type Task = { ownerId: string; salonId: string; notifType: string; payload: EmailPayload };
   const tasks: Task[] = [];
 
-  // Process each day offset: 0, 2, 4, 6, 8
-  for (const daysAgo of [0, 2, 4, 6, 8]) {
+  // Process each day offset: 2, 4, 6, 8. The day-0 welcome is sent by POST /api/salons at
+  // creation (owner locale, notification_email gate), so the cron no longer repeats it.
+  for (const daysAgo of [2, 4, 6, 8]) {
     const targetDate = new Date(now);
     targetDate.setDate(targetDate.getDate() - daysAgo);
     const dateStr = targetDate.toISOString().split("T")[0];
@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
     // and, day 4/8 only, the active-services count) into ONE IN-list query
     // each for the whole day-group instead of one query per salon.
     const [{ data: profiles }, { data: alreadySentRows }] = await Promise.all([
-      admin.from("profiles").select("id, email, locale").in("id", ownerIds),
+      admin.from("profiles").select("id, email, locale, notification_email").in("id", ownerIds),
       admin.from("notifications").select("user_id, data").eq("type", notifType).in("user_id", ownerIds),
     ]);
 
@@ -91,6 +91,8 @@ export async function GET(request: NextRequest) {
       const profile = profileById.get(salon.owner_id);
       const email = profile?.email;
       if (!email) { skipped++; continue; }
+      // Owner opted out of email notifications (profiles.notification_email, same gate as the welcome).
+      if (profile?.notification_email === false) { skipped++; continue; }
 
       // Idempotency guard: mirrors the notifications-table sent-log pattern (query
       // before send, insert after send) so a re-run/overlapping tick doesn't
@@ -100,10 +102,7 @@ export async function GET(request: NextRequest) {
       const locale: EmailLocale = (profile?.locale as EmailLocale) ?? "de";
       let payload: EmailPayload | null = null;
 
-      if (daysAgo === 0) {
-        // Day 0: Welcome
-        payload = onboardingWelcome(email, { salonName: salon.name }, locale);
-      } else if (daysAgo === 2) {
+      if (daysAgo === 2) {
         // Day 2: Complete profile (only if profile < 80%, check description)
         if (!salon.description_de) payload = onboardingCompleteProfile(email, { salonName: salon.name }, locale);
         else skipped++;
