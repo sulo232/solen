@@ -1390,3 +1390,7 @@ Shown: the seven round-3 screens as A (thin outlines), B (soft-shadow boxes), C 
 - Category pills: not understood; no pick.
 - Corners: there must be one consistent rule, not one value picked in isolation.
 - Format verdict: each comparison changed several things at once (shadow, radius, photo, copy, status colour), which is what confused him. A comparison changes ONE thing; everything else is identical.
+
+## 2026-09-23: The picked look, confirmed ("yes")
+
+Shown one image of only the parts he picked (B's search bar; C's bookings buttons, pay button and booking box) with the corner rule they imply, he answered "yes". The look: search bar and filter pills fully round with a soft shadow on the search bar; buttons are 12px rounded rectangles (primary ink, secondary grey fill, no outline); boxes that hold content are 20px with a soft ambient shadow (`rgba(0,0,0,.02) 0 0 0 1px, rgba(0,0,0,.10) 0 8px 24px`); photos 20px inside a page, edge to edge at the top. This supersedes "button/chip 16px" and the capsule CTA for buttons (pills stay round). Mockup-level approval only: production still needs the applied screens approved.
