@@ -1,0 +1,308 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>X saves vs Solen</title><style>@font-face{font-family:'Inter Tight';src:url(img/intertight.woff2) format('woff2');font-weight:100 900}
+@font-face{font-family:'Inter';src:url(img/inter.woff2) format('woff2');font-weight:100 900}
+:root{--ink:#0A0A0A;--ink2:#6B6B6B;--line:#E4E4E7;--sunk:#F4F4F5;--blue:#276EF1;--shadow:rgba(0,0,0,.02) 0 0 0 1px,rgba(0,0,0,.10) 0 8px 24px}
+*{box-sizing:border-box;margin:0}
+body{background:#fff;color:var(--ink);font:400 14px/1.45 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+svg{display:block;flex:none}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+button:focus{outline:none}button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.hero,section,footer{max-width:1240px;margin:0 auto;padding:0 16px}
+.hero{padding-top:32px;padding-bottom:8px}
+h1{font:600 30px/1.15 'Inter Tight',sans-serif;letter-spacing:-.02em;margin-bottom:10px}
+.hero>p{color:var(--ink2);max-width:640px;font-size:15px}
+.rules{margin:20px 0 0;padding-left:20px;max-width:820px;display:grid;gap:8px;font-size:14px}
+.rules b{font-weight:600}
+.toc{display:flex;gap:8px;overflow-x:auto;margin:24px -16px 0;padding:0 16px 8px;scrollbar-width:none}
+.toc a{flex:none;height:40px;padding:0 16px;border-radius:9999px;background:var(--sunk);display:inline-flex;align-items:center;font-weight:500}
+section{padding-top:48px;padding-bottom:16px;border-top:1px solid var(--line);margin-top:40px}
+h2{font:600 22px/1.2 'Inter Tight',sans-serif;letter-spacing:-.01em}
+.change{color:var(--ink2);margin:6px 0 20px;max-width:720px;font-size:15px}
+h3{font-size:13px;font-weight:600;margin-bottom:10px;color:var(--ink2)}
+.cols{display:grid;gap:24px;grid-template-columns:minmax(0,1fr)}
+.col{min-width:0}
+@media(min-width:1000px){.cols{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr) 402px;align-items:start}}
+.strip{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin}
+.xf{flex:none;width:180px}
+.xf img{width:180px;height:240px;object-fit:contain;border-radius:12px;background:var(--sunk);display:block}
+.xf figcaption,.tf figcaption{font-size:12px;color:var(--ink2);margin-top:6px}
+.xf b{color:var(--ink);font-weight:600}
+.today{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start}
+.tf{max-width:100%}
+.tf img{display:block;max-width:100%;border-radius:12px;box-shadow:0 0 0 1px var(--line)}
+.col.new{background:#fff}
+.demo{width:100%;max-width:402px;padding:16px;border-radius:20px;box-shadow:var(--shadow);background:#fff}
+.lbl{font-size:13px;font-weight:600;color:var(--ink2);margin:18px 0 8px}
+.lbl:first-child{margin-top:0}
+.note{font-size:13px;color:var(--ink2);margin-top:12px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.row.two>*{flex:1}
+.row.mid{gap:14px}
+.grow{flex:1}
+
+/* buttons */
+.btn{height:44px;border-radius:9999px;padding:0 20px;font-size:15px;font-weight:500;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap}
+.btn.p{background:var(--ink);color:#fff}
+.btn.s{background:var(--sunk)}
+.btn.t{padding:0 8px;text-decoration:underline;text-underline-offset:3px}
+.btn.full{width:100%;height:52px}
+.btn.off{background:var(--sunk);color:#A1A1AA}
+.link{color:var(--blue);font-weight:500}
+.ib{width:44px;height:44px;border-radius:9999px;background:var(--sunk);display:grid;place-items:center;flex:none}
+.ib.glass{background:rgba(255,255,255,.85);backdrop-filter:blur(8px);box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.ib.x{width:38px;height:38px;position:relative}.ib.x::after{content:'';position:absolute;inset:-3px}
+.fab{width:56px;height:56px;border-radius:9999px;background:var(--ink);color:#fff;display:grid;place-items:center;box-shadow:var(--shadow);margin-left:auto}
+
+/* cards */
+.cards2{display:flex;gap:12px;overflow-x:auto;margin:-12px -16px;padding:12px 16px 20px;scrollbar-width:none}.cards2 .scard{flex:none;width:240px}
+.scard{border-radius:20px;box-shadow:var(--shadow);overflow:hidden;display:block;background:#fff}
+.scard .ph{position:relative;aspect-ratio:1/1}
+.scard .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.heart{position:absolute;top:8px;right:8px;width:36px;height:36px;border-radius:9999px;background:rgba(255,255,255,.9);display:grid;place-items:center}
+.sb{padding:10px 12px 12px}
+.t1{display:flex;justify-content:space-between;gap:6px;align-items:baseline}
+.t1 b{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rt{display:inline-flex;align-items:center;gap:3px;font-size:13px;font-weight:600;flex:none}
+.rt svg{fill:var(--ink)}.rt i{font-style:normal;color:var(--ink2);font-weight:400}
+.t2{font-size:13px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.t3{font-size:13px;margin-top:6px;display:flex;justify-content:space-between;align-items:center}.t3 b{font-weight:600}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stat{border-radius:20px;box-shadow:var(--shadow);padding:14px}
+.stat .sh{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}
+.sq{width:32px;height:32px;border-radius:12px;background:var(--sunk);display:grid;place-items:center}
+.sv{font:600 22px/1.2 'Inter Tight',sans-serif;margin:12px 0 6px;font-variant-numeric:tabular-nums}
+.sd{display:flex;flex-direction:column;gap:6px;font-size:12px}
+.dl{color:var(--ink2)}.up{display:inline-flex;align-items:center;gap:1px;color:#15803D;font-weight:600;white-space:nowrap}
+.sd a{color:var(--blue);font-weight:500;font-size:13px}
+
+/* radius */
+.rbox{border-radius:20px;box-shadow:var(--shadow);padding:16px;display:flex;align-items:center;gap:14px}
+.rin{width:64px;height:64px;border-radius:12px;background:var(--sunk);display:grid;place-items:center;font-weight:600}
+.rbox span{font-size:13px;color:var(--ink2)}
+.rrow{display:flex;gap:8px;margin-top:14px;align-items:center;flex-wrap:wrap}
+.pillx{height:44px;padding:0 16px;border-radius:9999px;background:var(--sunk);display:inline-flex;align-items:center;font-weight:500}
+.pillx.ink{background:var(--ink);color:#fff}
+.dot44{width:44px;height:44px;border-radius:9999px;background:var(--sunk);display:grid;place-items:center}
+
+/* pills */
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.chip{flex:none;height:40px;min-width:64px;padding:0 16px;border-radius:9999px;background:var(--sunk);display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:500}
+.chip.on,.dt.on,.sl.on{background:var(--ink);color:#fff}
+.seg{display:flex;background:var(--sunk);border-radius:9999px;padding:4px}
+.seg span{flex:1;height:36px;border-radius:9999px;display:grid;place-items:center;font-weight:500;color:var(--ink2)}
+.seg .on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.utabs{display:flex;gap:20px;border-bottom:1px solid var(--line)}
+.utabs span{padding:10px 0;font-weight:500;color:var(--ink2);margin-bottom:-1px}
+.utabs .on{color:var(--ink);border-bottom:2px solid var(--ink)}
+.dates{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.dt{height:60px;border-radius:9999px;background:var(--sunk);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.dt i{font-style:normal;font-size:12px;opacity:.7}.dt b{font-weight:600;font-size:15px}
+.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.sl{height:44px;border-radius:9999px;background:var(--sunk);display:grid;place-items:center;font-weight:500;font-variant-numeric:tabular-nums}
+
+/* lists */
+.grp-t{font-size:13px;font-weight:600;margin:0 0 8px}
+.list{border-radius:20px;box-shadow:var(--shadow);overflow:hidden}
+.lr{display:flex;align-items:center;gap:12px;min-height:60px;padding:10px 16px;position:relative}
+.lr+.lr::before{content:'';position:absolute;top:0;left:56px;right:0;height:1px;background:var(--line)}
+.li{width:32px;height:32px;border-radius:12px;background:var(--sunk);display:grid;place-items:center}
+.lt{flex:1;min-width:0;display:flex;flex-direction:column}
+.lt b{font-weight:600;font-size:14px}.lt i{font-style:normal;font-size:13px;color:var(--ink2)}
+.av{width:32px;height:32px;border-radius:9999px;object-fit:cover}
+.st{height:26px;padding:0 10px;border-radius:9999px;font-size:12px;font-weight:600;display:inline-flex;align-items:center}
+.st.ok{background:#E8F5EC;color:#15803D}.st.off{background:var(--sunk);color:var(--ink2)}
+
+/* inputs */
+.inp{height:48px;border-radius:9999px;background:var(--sunk);display:flex;align-items:center;gap:10px;padding:0 18px;color:var(--ink2)}
+.inp .val{color:var(--ink)}
+.inp.sel{justify-content:space-between;color:var(--ink)}
+.fl{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+.sw{width:50px;height:30px;border-radius:9999px;background:#E4E4E7;position:relative;display:inline-block}
+.sw i{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:9999px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.sw.on{background:var(--ink)}.sw.on i{left:23px}
+.cb{width:22px;height:22px;border-radius:6px;border:1.5px solid #D4D4D8;display:grid;place-items:center}
+.cb.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.stp{height:44px;border-radius:9999px;background:var(--sunk);display:inline-flex;align-items:center}
+.stp span{width:44px;height:44px;display:grid;place-items:center}.stp b{min-width:20px;text-align:center;font-weight:600}
+
+/* nav */
+.bar{display:flex;align-items:center;gap:8px;height:64px;padding:0 4px}
+.bar b{font:600 18px/1 'Inter Tight',sans-serif;margin-left:4px}
+.bar b.c{flex:1;text-align:center;font-size:16px}
+.bar.photo{background-size:cover;background-position:center;border-radius:20px;padding:0 10px;height:120px;align-items:flex-start;padding-top:12px}
+
+/* sheet */
+.sheetwrap{position:relative;height:360px;border-radius:20px;overflow:hidden;background:url(img/atelier.jpg) center/cover}
+.scrim{position:absolute;inset:0;background:rgba(0,0,0,.35)}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:20px 20px 0 0;padding:16px}
+.shd{display:flex;justify-content:space-between;align-items:center}
+.shd b{font:600 18px/1.2 'Inter Tight',sans-serif}
+.sm{color:var(--ink2);font-size:13px;margin:2px 0 4px}
+.lbl.in{margin-top:12px}
+.sheet .btn.full{margin-top:16px}
+.calimg{width:100%;border-radius:12px;box-shadow:0 0 0 1px var(--line)}
+footer{padding:40px 16px 64px;color:var(--ink2);font-size:12px;border-top:1px solid var(--line);margin-top:40px}
+@media(min-width:1000px){.strip{display:grid;grid-template-columns:1fr 1fr;overflow:visible}.xf{width:auto}.xf img{width:100%;height:auto;max-height:420px}}
+</style></head><body>
+<header class="hero"><h1>Your X saves vs Solen</h1>
+<p>I went through 280 of your saved posts, component by component, and put what they do next to what we do today. Each section ends with our version, built in Solen's colours. Their colours and dark mode are left out.</p>
+
+<ol class="rules">
+<li><b>White page everywhere</b>, dashboard included. Boxes float on one soft shadow, no outline. (11 of 12 posts that show it separate cards with a shadow; 12 of our 13 card styles use an outline instead.)</li>
+<li><b>Three corner sizes.</b> 20 for boxes, photos and sheets. 12 for things inside a box. Fully round for anything you tap. (We use 12, 13, 14, 16, 20, 22, 24 and 40 today.)</li>
+<li><b>Ink means main action or selected. Grey means every other control. Blue is only link text.</b> (Today the selected state has four looks: ink, grey, blue tint, bold text only, and switches and time slots are blue.)</li>
+<li><b>Hairlines only inside a box</b>, between rows. Never around it.</li>
+<li><b>One circle button.</b> Grey circle on plain pages, glass circle on photos. Same for back, menu, share and close.</li>
+<li><b>Colour only when it means something:</b> staff colour in the calendar, green or grey for booking status, green for going up.</li>
+</ol>
+<nav class="toc"><a href="#a">Cards and page</a><a href="#b">Corners</a><a href="#c">Buttons</a><a href="#d">Pills and tabs</a><a href="#e">Lists</a><a href="#f">Inputs</a><a href="#g">Top bars</a><a href="#h">Sheets</a><a href="#i">Calendar</a></nav>
+</header>
+
+<section id="a">
+  <h2>Cards and page</h2>
+  <p class="change">The whole salon card becomes one box: photo, name, rating and price together, lifted by a shadow. Dashboard cards get a coloured change line and a link.</p>
+  <div class="cols">
+    <div class="col"><h3>What your saved posts do</h3><div class="strip"><figure class="xf"><img src="x/560-img0.jpg" alt="" loading="lazy"><figcaption><b>#560</b> white page, soft shadow</figcaption></figure><figure class="xf"><img src="x/404-img0.jpg" alt="" loading="lazy"><figcaption><b>#404</b> photo inside the card</figcaption></figure><figure class="xf"><img src="x/159-img0.jpg" alt="" loading="lazy"><figcaption><b>#159</b> stat card with change line</figcaption></figure><figure class="xf"><img src="x/011-img0.jpg" alt="" loading="lazy"><figcaption><b>#11</b> white stat cards</figcaption></figure></div></div>
+    <div class="col"><h3>Solen today</h3><div class="today"><figure class="tf"><img src="today/home-card.png" alt="" loading="lazy"><figcaption>Home: photo box, text loose below</figcaption></figure><figure class="tf"><img src="today/dash-stats.png" alt="" loading="lazy"><figcaption>Dashboard: outlined cards, grey page</figcaption></figure><figure class="tf"><img src="today/card-4-home.png" alt="" loading="lazy"><figcaption>Outline, 13 corner</figcaption></figure></div></div>
+    <div class="col new"><h3>Solen, adapted</h3><div class="demo">
+<div class="lbl">Salon card (home, search)</div>
+<div class="cards2">
+<a class="scard"><div class="ph"><img src="img/atelier.jpg" alt=""><span class="heart"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg></span></div>
+<div class="sb"><div class="t1"><b>Atelier Haarwerk</b></div><div class="t2">Freie Strasse 12, Basel</div><div class="t3"><span class="rt"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#0A0A0A" stroke="currentColor" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>4.6 <i>(25)</i></span><span>from <b>CHF 35</b></span></div></div></a>
+<a class="scard"><div class="ph"><img src="img/cuts.jpg" alt=""><span class="heart"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg></span></div>
+<div class="sb"><div class="t1"><b>Cuts &amp; Culture</b></div><div class="t2">Elsässerstrasse 10, Basel</div><div class="t3"><span class="rt"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#0A0A0A" stroke="currentColor" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>4.8 <i>(16)</i></span><span>from <b>CHF 15</b></span></div></div></a></div>
+<div class="lbl">Dashboard stat cards (The Fade Factory, week of 10 Aug)</div>
+<div class="stats">
+<div class="stat"><div class="sh"><span class="sq"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wallet" aria-hidden="true"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"></path><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"></path></svg></span>Revenue</div><div class="sv">CHF 373</div><div class="sd"><span class="dl"><span class="up"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg>CHF 373</span> vs last week</span><a>See details</a></div></div>
+<div class="stat"><div class="sh"><span class="sq"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-check" aria-hidden="true"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path><path d="m9 16 2 2 4-4"></path></svg></span>Appointments</div><div class="sv">13</div><div class="sd"><span class="dl"><span class="up"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg>13</span> vs last week</span><a>See details</a></div></div></div></div></div>
+  </div>
+</section>
+
+<section id="b">
+  <h2>Corners</h2>
+  <p class="change">Good screens reuse two or three corner sizes. We use eight.</p>
+  <div class="cols">
+    <div class="col"><h3>What your saved posts do</h3><div class="strip"><figure class="xf"><img src="x/346-img0.jpg" alt="" loading="lazy"><figcaption><b>#346</b> two sizes on one screen</figcaption></figure><figure class="xf"><img src="x/516-img0.jpg" alt="" loading="lazy"><figcaption><b>#516</b> box, photo, field, pill</figcaption></figure><figure class="xf"><img src="x/587-img0.jpg" alt="" loading="lazy"><figcaption><b>#587</b> rounded square nav icons</figcaption></figure></div></div>
+    <div class="col"><h3>Solen today</h3><div class="today"><figure class="tf"><img src="today/card-2-home.png" alt="" loading="lazy"><figcaption>22</figcaption></figure><figure class="tf"><img src="today/card-6-search.png" alt="" loading="lazy"><figcaption>16, grey</figcaption></figure><figure class="tf"><img src="today/card-7-salon.png" alt="" loading="lazy"><figcaption>24</figcaption></figure><figure class="tf"><img src="today/card-10-rewards.png" alt="" loading="lazy"><figcaption>14</figcaption></figure><figure class="tf"><img src="today/card-12-dash-home.png" alt="" loading="lazy"><figcaption>12</figcaption></figure></div></div>
+    <div class="col new"><h3>Solen, adapted</h3><div class="demo">
+<div class="rad">
+  <div class="rbox"><div class="rin">12</div><span>20 · boxes, photos, sheets</span></div>
+  <div class="rrow"><span class="pillx">Fully round</span><span class="pillx ink">Anything you tap</span><span class="dot44"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus" aria-hidden="true"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></span></div>
+  <p class="note">Three sizes only. Today's 13, 14, 16, 22, 24 and 40 fold into these.</p>
+</div></div></div>
+  </div>
+</section>
+
+<section id="c">
+  <h2>Buttons</h2>
+  <p class="change">One black button per screen, one grey button for everything else. Today there are 26 button styles.</p>
+  <div class="cols">
+    <div class="col"><h3>What your saved posts do</h3><div class="strip"><figure class="xf"><img src="x/062-img0.jpg" alt="" loading="lazy"><figcaption><b>#62</b> one ink capsule</figcaption></figure><figure class="xf"><img src="x/233-img0.jpg" alt="" loading="lazy"><figcaption><b>#233</b> primary over secondary</figcaption></figure><figure class="xf"><img src="x/069-img0.jpg" alt="" loading="lazy"><figcaption><b>#69</b> equal pair in a dialog</figcaption></figure><figure class="xf"><img src="x/053-vid0.jpg" alt="" loading="lazy"><figcaption><b>#53</b> black add button</figcaption></figure></div></div>
+    <div class="col"><h3>Solen today</h3><div class="today"><figure class="tf"><img src="today/button-10-salon.png" alt="" loading="lazy"><figcaption>Salon, 51 tall</figcaption></figure><figure class="tf"><img src="today/button-17-dash-home.png" alt="" loading="lazy"><figcaption>Dashboard, 43 tall</figcaption></figure><figure class="tf"><img src="today/button-25-dash-services.png" alt="" loading="lazy"><figcaption>Services, square 12</figcaption></figure><figure class="tf"><img src="today/button-23-dash-calendar.png" alt="" loading="lazy"><figcaption>White outlined</figcaption></figure><figure class="tf"><img src="today/button-26-dash-services.png" alt="" loading="lazy"><figcaption>Clear outlined, 14</figcaption></figure><figure class="tf"><img src="today/button-8-salon.png" alt="" loading="lazy"><figcaption>Grey</figcaption></figure></div></div>
+    <div class="col new"><h3>Solen, adapted</h3><div class="demo">
+<div class="lbl">Primary (one per screen)</div><button class="btn p full">Book appointment</button>
+<div class="lbl">Secondary</div><div class="row"><button class="btn s">View all</button><button class="btn s">Walk-in</button><button class="btn s"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-upload" aria-hidden="true"><path d="M12 3v12"></path><path d="m17 8-5-5-5 5"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path></svg> CSV import</button></div>
+<div class="lbl">Choice pair (dialogs)</div><div class="row two"><button class="btn s">Keep booking</button><button class="btn p">Cancel booking</button></div>
+<div class="lbl">Text action and link</div><div class="row"><button class="btn t">Skip</button><a class="link">See details</a></div>
+<div class="lbl">Icon buttons and floating add</div><div class="row"><span class="ib"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></span><span class="ib"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu" aria-hidden="true"><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg></span><span class="ib"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search" aria-hidden="true"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg></span><span class="ib"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share" aria-hidden="true"><path d="M12 2v13"></path><path d="m16 6-4-4-4 4"></path><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path></svg></span><span class="fab"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus" aria-hidden="true"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></span></div>
+<div class="lbl">Disabled</div><button class="btn p full off" disabled>Continue</button></div></div>
+  </div>
+</section>
+
+<section id="d">
+  <h2>Pills and tabs</h2>
+  <p class="change">Selected is always black with white text. Today it is black, grey, blue tint or just bold, depending on the page.</p>
+  <div class="cols">
+    <div class="col"><h3>What your saved posts do</h3><div class="strip"><figure class="xf"><img src="x/023-vid0.jpg" alt="" loading="lazy"><figcaption><b>#23</b> Apple Fitness+, shipped</figcaption></figure><figure class="xf"><img src="x/546-img0.jpg" alt="" loading="lazy"><figcaption><b>#546</b> selected vs not</figcaption></figure><figure class="xf"><img src="x/701-img0.jpg" alt="" loading="lazy"><figcaption><b>#701</b> date and time picker</figcaption></figure><figure class="xf"><img src="x/316-vid0.jpg" alt="" loading="lazy"><figcaption><b>#316</b> segmented switch</figcaption></figure></div></div>
+    <div class="col"><h3>Solen today</h3><div class="today"><figure class="tf"><img src="today/button-5-salon.png" alt="" loading="lazy"><figcaption>Salon: grey selected</figcaption></figure><figure class="tf"><img src="today/pill-2-dash-services.png" alt="" loading="lazy"><figcaption>Services: blue tint</figcaption></figure><figure class="tf"><img src="today/pill-4-dash-clients.png" alt="" loading="lazy"><figcaption>Clients: grey</figcaption></figure><figure class="tf"><img src="today/button-11-booking.png" alt="" loading="lazy"><figcaption>Booking: black</figcaption></figure><figure class="tf"><img src="today/button-21-dash-calendar.png" alt="" loading="lazy"><figcaption>Calendar: bold only</figcaption></figure></div></div>
+    <div class="col new"><h3>Solen, adapted</h3><div class="demo">
+<div class="lbl">Filter / category chips</div>
+<div class="chips"><span class="chip on">All</span><span class="chip">Hochsteck</span><span class="chip">Styling</span><span class="chip">Farbe</span></div>
+<div class="lbl">Segmented switch</div>
+<div class="seg"><span class="on">Day</span><span>Week</span><span>Month</span></div>
+<div class="lbl">List filter tabs (bookings, clients, reviews)</div>
+<div class="utabs"><span class="on">Upcoming</span><span>Past</span><span>Cancelled</span></div>
+<div class="lbl">Booking date and time</div>
+<div class="dates"><span class="dt"><i>Mon</i><b>21</b></span><span class="dt"><i>Tue</i><b>22</b></span><span class="dt on"><i>Wed</i><b>23</b></span><span class="dt"><i>Thu</i><b>24</b></span><span class="dt"><i>Fri</i><b>25</b></span></div>
+<div class="slots"><span class="sl">09:00</span><span class="sl">09:30</span><span class="sl">10:00</span><span class="sl on">10:30</span><span class="sl">11:00</span><span class="sl">11:30</span></div></div></div>
+  </div>
+</section>
+
+<section id="e">
+  <h2>Lists</h2>
+  <p class="change">Rows sit in one box with hairlines between them, the same on profile and settings. Status shows as a small coloured label.</p>
+  <div class="cols">
+    <div class="col"><h3>What your saved posts do</h3><div class="strip"><figure class="xf"><img src="x/098-img0.jpg" alt="" loading="lazy"><figcaption><b>#98</b> grouped settings rows</figcaption></figure><figure class="xf"><img src="x/121-vid0.jpg" alt="" loading="lazy"><figcaption><b>#121</b> X settings, shipped</figcaption></figure><figure class="xf"><img src="x/306-img0.jpg" alt="" loading="lazy"><figcaption><b>#306</b> appointments list</figcaption></figure><figure class="xf"><img src="x/370-img0.jpg" alt="" loading="lazy"><figcaption><b>#370</b> status label in a row</figcaption></figure></div></div>
+    <div class="col"><h3>Solen today</h3><div class="today"><figure class="tf"><img src="today/profile-list.png" alt="" loading="lazy"><figcaption>Profile: loose rows, no box</figcaption></figure><figure class="tf"><img src="today/dash-settings.png" alt="" loading="lazy"><figcaption>Settings: outlined box</figcaption></figure><figure class="tf"><img src="today/dash-services.png" alt="" loading="lazy"><figcaption>Services: blue switch, blue chip</figcaption></figure></div></div>
+    <div class="col new"><h3>Solen, adapted</h3><div class="demo">
+<div class="lbl">Grouped rows (profile, settings, same recipe)</div>
+<div class="grp-t">Account</div>
+<div class="list"><div class="lr"><span class="li"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span><div class="lt"><b>Personal details</b><i>Name, phone, email</i></div><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></div><div class="lr"><span class="li"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell" aria-hidden="true"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg></span><div class="lt"><b>Notifications</b><i>Reminders and offers</i></div><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></div><div class="lr"><span class="li"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" x2="22" y1="10" y2="10"></line></svg></span><div class="lt"><b>Payment methods</b></div><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></div></div>
+<div class="lbl">Rows with status (dashboard bookings)</div>
+<div class="list">
+  <div class="lr"><img class="av" src="img/nina.jpg" alt=""><div class="lt"><b>Samuel Wyss</b><i>Full Package · 14:30</i></div><span class="st ok">Confirmed</span></div>
+  <div class="lr"><img class="av" src="img/jonas.jpg" alt=""><div class="lt"><b>Bruno Caruso</b><i>Skin Fade · 15:30</i></div><span class="st ok">Confirmed</span></div>
+  <div class="lr"><img class="av" src="img/jonas.jpg" alt=""><div class="lt"><b>Elia</b><i>Beard Styling &amp; Shave · 17:30</i></div><span class="st off">Cancelled</span></div>
+</div></div></div>
+  </div>
+</section>
+
+<section id="f">
+  <h2>Inputs</h2>
+  <p class="change">Search is one grey pill everywhere. Switches turn black when on, not blue.</p>
+  <div class="cols">
+    <div class="col"><h3>What your saved posts do</h3><div class="strip"><figure class="xf"><img src="x/668-img0.jpg" alt="" loading="lazy"><figcaption><b>#668</b> Apple Maps search, shipped</figcaption></figure><figure class="xf"><img src="x/061-img0.jpg" alt="" loading="lazy"><figcaption><b>#61</b> switch shape</figcaption></figure><figure class="xf"><img src="x/374-vid0.jpg" alt="" loading="lazy"><figcaption><b>#374</b> pill stepper</figcaption></figure><figure class="xf"><img src="x/192-vid0.jpg" alt="" loading="lazy"><figcaption><b>#192</b> label above field</figcaption></figure></div></div>
+    <div class="col"><h3>Solen today</h3><div class="today"><figure class="tf"><img src="today/input-1-home.png" alt="" loading="lazy"><figcaption>Home: white, outlined, 12 corner</figcaption></figure><figure class="tf"><img src="today/dash-services.png" alt="" loading="lazy"><figcaption>Dashboard: grey search, blue switch</figcaption></figure></div></div>
+    <div class="col new"><h3>Solen, adapted</h3><div class="demo">
+<div class="lbl">Search (customer and dashboard, one look)</div>
+<div class="inp search"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search" aria-hidden="true"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg><span>Search services</span></div>
+<div class="lbl">Text field with label above</div>
+<label class="fl">Email</label><div class="inp"><span class="val">anna@example.ch</span></div>
+<div class="lbl">Select</div>
+<div class="inp sel"><span class="val">All staff</span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></div>
+<div class="lbl">Switch, checkbox, stepper</div>
+<div class="row mid"><span class="sw on"><i></i></span><span class="sw"><i></i></span><span class="cb on"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></span><span class="cb"></span><span class="stp"><span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minus" aria-hidden="true"><path d="M5 12h14"></path></svg></span><b>2</b><span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus" aria-hidden="true"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></span></span></div></div></div>
+  </div>
+</section>
+
+<section id="g">
+  <h2>Top bars</h2>
+  <p class="change">One circle button everywhere. Glass only when it sits on a photo.</p>
+  <div class="cols">
+    <div class="col"><h3>What your saved posts do</h3><div class="strip"><figure class="xf"><img src="x/072-img0.jpg" alt="" loading="lazy"><figcaption><b>#72</b> glass circle on a photo</figcaption></figure><figure class="xf"><img src="x/173-vid0.jpg" alt="" loading="lazy"><figcaption><b>#173</b> plain page, light chrome</figcaption></figure><figure class="xf"><img src="x/278-img1.jpg" alt="" loading="lazy"><figcaption><b>#278</b> floating tab bar</figcaption></figure><figure class="xf"><img src="x/237-img0.jpg" alt="" loading="lazy"><figcaption><b>#237</b> light sidebar</figcaption></figure></div></div>
+    <div class="col"><h3>Solen today</h3><div class="today"><figure class="tf"><img src="today/profile-top.png" alt="" loading="lazy"><figcaption>Profile: round back, square menu</figcaption></figure><figure class="tf"><img src="today/salon-top.png" alt="" loading="lazy"><figcaption>Salon: glass on photo</figcaption></figure><figure class="tf"><img src="today/booking-top.png" alt="" loading="lazy"><figcaption>Booking: outlined back, bare X</figcaption></figure></div></div>
+    <div class="col new"><h3>Solen, adapted</h3><div class="demo">
+<div class="lbl">Plain page</div>
+<div class="bar"><span class="ib"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></span><b>Rewards</b><span class="grow"></span><span class="ib"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell" aria-hidden="true"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg></span><span class="ib"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu" aria-hidden="true"><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg></span></div>
+<div class="lbl">On a photo</div>
+<div class="bar photo" style="background-image:url(img/atelier.jpg)"><span class="ib glass"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></span><span class="grow"></span><span class="ib glass"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share" aria-hidden="true"><path d="M12 2v13"></path><path d="m16 6-4-4-4 4"></path><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path></svg></span><span class="ib glass"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg></span></div>
+<div class="lbl">Full-screen step (booking)</div>
+<div class="bar"><span class="ib"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></span><b class="c">Select services</b><span class="ib x"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></span></div></div></div>
+  </div>
+</section>
+
+<section id="h">
+  <h2>Sheets</h2>
+  <p class="change">Quick choices open in a sheet from the bottom with a circled close, not a new page.</p>
+  <div class="cols">
+    <div class="col"><h3>What your saved posts do</h3><div class="strip"><figure class="xf"><img src="x/279-img0.jpg" alt="" loading="lazy"><figcaption><b>#279</b> service sheet with book</figcaption></figure><figure class="xf"><img src="x/661-img0.jpg" alt="" loading="lazy"><figcaption><b>#661</b> circled close, CTA at bottom</figcaption></figure><figure class="xf"><img src="x/267-img0.jpg" alt="" loading="lazy"><figcaption><b>#267</b> small dialog</figcaption></figure><figure class="xf"><img src="x/640-vid0.jpg" alt="" loading="lazy"><figcaption><b>#640</b> iOS sheet, shipped</figcaption></figure></div></div>
+    <div class="col"><h3>Solen today</h3><div class="today"><figure class="tf"><img src="today/booking-top.png" alt="" loading="lazy"><figcaption>Booking opens full screen, bare X</figcaption></figure><figure class="tf"><img src="today/booking-foot.png" alt="" loading="lazy"><figcaption>Footer</figcaption></figure></div></div>
+    <div class="col new"><h3>Solen, adapted</h3><div class="demo">
+<div class="sheetwrap"><div class="scrim"></div>
+<div class="sheet"><div class="shd"><b>Balayage</b><span class="ib x"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></span></div>
+<p class="sm">120 min · CHF 180</p>
+<div class="lbl in">Staff</div><div class="chips"><span class="chip on">Any</span><span class="chip">Emma</span><span class="chip">Luca</span><span class="chip">Marco</span></div>
+<button class="btn p full">Add to booking</button></div></div></div></div>
+  </div>
+</section>
+
+<section id="i">
+  <h2>Calendar</h2>
+  <p class="change">From your post #13, the one you sent.</p>
+  <div class="cols">
+    <div class="col"><h3>What your saved posts do</h3><div class="strip"><figure class="xf"><img src="x/013-img0.jpg" alt="" loading="lazy"><figcaption><b>#13</b> the post you sent</figcaption></figure><figure class="xf"><img src="x/701-img2.jpg" alt="" loading="lazy"><figcaption><b>#701</b> booking availability</figcaption></figure><figure class="xf"><img src="x/078-vid0.jpg" alt="" loading="lazy"><figcaption><b>#78</b> now line</figcaption></figure></div></div>
+    <div class="col"><h3>Solen today</h3><div class="today"><figure class="tf"><img src="today/cal-today.png" alt="" loading="lazy"><figcaption>Today: a list, no grid</figcaption></figure></div></div>
+    <div class="col new"><h3>Solen, adapted</h3><div class="demo"><a href="../calendar/index.html"><img class="calimg" src="../calendar/cal-new.png" alt="Calendar mockup"></a><p class="note">Built earlier today from your post #13: staff columns, colour per staff, dashed free slots, one add button.</p></div></div>
+  </div>
+</section>
+<footer><p>Source: four reviews of your saved-posts ledger (280 posts read: cards 75, lists 33, buttons 60, pills 35, icons 25, nav 72, inputs 61, sheets 16, calendar 34, corners 54, shadow 53, with overlap). Salon, booking and dashboard data are real rows from the test database.</p></footer><script>document.querySelectorAll('.tf img').forEach(i=>{const f=()=>{i.style.width=Math.min(i.naturalWidth/2,i.parentElement.parentElement.clientWidth)+'px'};i.complete?f():i.onload=f})</script></body></html>
