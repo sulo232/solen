@@ -942,11 +942,13 @@ Prevention: send the active locale in the booking body, validate it against the 
 
 ## Locale register and punctuation checks must render every touched variant
 
-Bindings: `lib/email.ts`, `lib/email-templates/booking-notifications.ts`, `tests/lib/email-formal-register.test.ts`
+Bindings: `lib/email.ts`, `lib/email-templates/booking-notifications.ts`, `tests/lib/email-formal-register.test.ts`, `app/[locale]/booking/lookup/page.tsx`, `app/[locale]/booking/resend-link/page.tsx`, `messages/fr.json`, `messages/it.json`
 
 Observed failure: a DE/IT source recovery left an informal Italian infinitive in a subject, while source-touched French barber variants and cross-locale punctuation still violated the current copy law. Testing only German and Italian pronoun fragments did not exercise these adjacent outputs.
 
 Prevention: render every locale of each touched builder, assert exact clitics where a generic pronoun regex is ambiguous, and scan the rendered subject plus body for prohibited emoji and long dashes. Keep the assertion limited to the touched builders so it does not silently broaden a recovery into an unrelated catalog rewrite.
+
+Recovery follow-up: a repaired HTTP/network failure path exposed pre-existing genericError leaves that the new-key-only copy check omitted. French resendAccess and Italian resendAccess/bookingLookup contained informal full error sentences. Include existing leaves newly exposed by a changed handler, follow both actual caller namespaces, and distinguish full error sentences from bare-imperative control labels before checking register. Render the affected values through the actual translation owner in all four locales; a mocked key-name translator does not establish the displayed copy.
 
 ### Recovery must preserve current route and consumer contracts
 
@@ -981,6 +983,14 @@ Bindings: `components-legacy/booking/BookingCard.tsx`, `tests/components/booking
 Observed: round2 put each open card at z30, but two adjacent open menus shared that stacking level. The later card's Store overlay could intercept the earlier menu's calendar link. Raising every open container does not impose a single current disclosure.
 
 Applied prevention: reuse current outside pointer/focus dismissal and Escape handling so the previous popup closes as another control receives interaction. Test two actual mounted cards, not only one popup, and verify both neighbor directions with real elementFromPoint while hover/press transforms are active. A small visible pill can retain its geometry inside a transparent44px real button, whose invisible edges need hit testing as well as a DOM height check.
+
+### Reminder copy must use the appointment's timezone and actual timestamp
+
+Bindings: `app/api/cron/sms-reminders/route.ts`, `messages/de.json`, `messages/en.json`, `messages/fr.json`, `messages/it.json`, `tests/api/recovery/sms-reminder-locale.test.ts`.
+
+Observed: appointment SMS was always German and used the server's timezone, although the same job's email already specified Europe/Zurich. The old recovery branch translated the text without correcting the timezone. A local Swiss server can hide that defect. Relative claims such as tomorrow or in one hour also exceed what the job's half-hour windows establish near midnight.
+
+Prevention applied: render the actual booking date and time with Europe/Zurich and a validated supported profile locale, defaulting to German. Keep copy in the existing four message owners, preserve real names and addresses, and omit a missing address. Exercise the actual handler under TZ=UTC across summer, winter and the Swiss date boundary; retain SMS opt-out, email independence, conditional send claims and failed-send retry. Local fixtures establish handler behavior, not live database or provider delivery.
 
 ### A review's stored stylist ID is not proof of booked attribution
 

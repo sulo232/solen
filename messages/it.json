@@ -6147,7 +6147,7 @@
     "navFindBooking": "Trova una prenotazione",
     "navHelp": "Aiuto",
     "rateLimited": "Troppi tentativi. Attendi un momento e riprova.",
-    "genericError": "Qualcosa è andato storto. Riprova."
+    "genericError": "Qualcosa è andato storto. Riprovi."
   },
   "resendAccess": {
     "appBarTitle": "Link di accesso",
@@ -6199,7 +6199,7 @@
     "navFindBooking": "Trova la mia prenotazione",
     "navHelp": "Aiuto",
     "navSignIn": "Accedi",
-    "genericError": "Qualcosa è andato storto. Riprova."
+    "genericError": "Qualcosa è andato storto. Riprovi."
   },
   "refundFlow": {
     "_todo_translate": false,
@@ -6707,6 +6707,11 @@
     "errorDescription": "Non è stato possibile elaborare la richiesta. Riprova più tardi o contatta support@solen.ch."
   },
   "api": {
+    "smsReminder": {
+      "appointment": "Il Suo appuntamento presso {salon}: il {date} alle {time}.",
+      "address": "Indirizzo: {address}",
+      "storeFallback": "il Suo store"
+    },
     "goLive": {
       "frozen": "Questo store è stato sospeso da un amministratore. Contatta il supporto.",
       "pendingApproval": "Lo store è ancora in attesa dell'approvazione di un amministratore.",

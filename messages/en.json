@@ -6707,6 +6707,11 @@
     "errorDescription": "Your unsubscribe request could not be processed. Please try again later or contact support@solen.ch."
   },
   "api": {
+    "smsReminder": {
+      "appointment": "Your appointment at {salon}: {date} at {time}.",
+      "address": "Address: {address}",
+      "storeFallback": "your store"
+    },
     "goLive": {
       "frozen": "This store has been suspended by an administrator. Please contact support.",
       "pendingApproval": "The store is still waiting for administrator approval.",

@@ -6199,7 +6199,7 @@
     "navFindBooking": "Trouver ma réservation",
     "navHelp": "Aide",
     "navSignIn": "Se connecter",
-    "genericError": "Une erreur s'est produite. Réessaie."
+    "genericError": "Une erreur s'est produite. Réessayez."
   },
   "refundFlow": {
     "_todo_translate": false,
@@ -6707,6 +6707,11 @@
     "errorDescription": "Ta demande de désinscription n'a pas pu être traitée. Réessaie plus tard ou contacte support@solen.ch."
   },
   "api": {
+    "smsReminder": {
+      "appointment": "Votre rendez-vous chez {salon} : le {date} à {time}.",
+      "address": "Adresse : {address}",
+      "storeFallback": "votre établissement"
+    },
     "goLive": {
       "frozen": "Ce salon a été suspendu par un administrateur. Veuillez contacter le support.",
       "pendingApproval": "Le salon attend encore la validation d'un administrateur.",

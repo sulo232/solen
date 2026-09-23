@@ -8,6 +8,8 @@ import { resolveSwissLocale } from "@/lib/format";
 import { getServerEnv } from "@/lib/env";
 import { verifyCronSecret } from "@/lib/cron-auth";
 import { withCronRun } from "@/lib/cron-run";
+import { getTranslations } from "next-intl/server";
+import { locales, defaultLocale, type Locale } from "@/lib/locale-constants";
 
 // seo-comms-10 (2026-09-04): locale -> services.name_* column, mirrors the same ternary
 // already used at app/api/bookings/route.ts:643 for the confirmation email, extended to
@@ -102,13 +104,19 @@ export async function GET(req: NextRequest) {
       if (claim24hErr) {
         console.error(`[sms-reminders] booking ${booking.id}: 24h SMS claim update failed:`, claim24hErr);
       } else if (claimed24h && claimed24h.length > 0) {
-        const time = new Date(booking.starts_at).toLocaleTimeString("de-CH", {
+        const locale = locales.includes(profile?.locale) ? profile.locale as Locale : defaultLocale;
+        const t = await getTranslations({ locale, namespace: "api.smsReminder" });
+        const swissLocale = resolveSwissLocale(locale);
+        const date = new Date(booking.starts_at).toLocaleDateString(swissLocale, { timeZone: "Europe/Zurich" });
+        const time = new Date(booking.starts_at).toLocaleTimeString(swissLocale, {
+          timeZone: "Europe/Zurich",
           hour: "2-digit",
           minute: "2-digit",
         });
+        const appointment = t("appointment", { salon: salon?.name || t("storeFallback"), date, time });
         const ok = await sendSMS(
           phone,
-          `Erinnerung: Morgen um ${time} bei ${salon?.name ?? "Ihrem Salon"}. Adresse: ${salon?.address ?? "-"}`
+          salon?.address ? `${appointment} ${t("address", { address: salon.address })}` : appointment
         );
         if (ok) {
           sent24h++;
@@ -196,13 +204,18 @@ export async function GET(req: NextRequest) {
       if (claim1hErr) {
         console.error(`[sms-reminders] booking ${booking.id}: 1h SMS claim update failed:`, claim1hErr);
       } else if (claimed1h && claimed1h.length > 0) {
-        const time = new Date(booking.starts_at).toLocaleTimeString("de-CH", {
+        const locale = locales.includes(profile?.locale) ? profile.locale as Locale : defaultLocale;
+        const t = await getTranslations({ locale, namespace: "api.smsReminder" });
+        const swissLocale = resolveSwissLocale(locale);
+        const date = new Date(booking.starts_at).toLocaleDateString(swissLocale, { timeZone: "Europe/Zurich" });
+        const time = new Date(booking.starts_at).toLocaleTimeString(swissLocale, {
+          timeZone: "Europe/Zurich",
           hour: "2-digit",
           minute: "2-digit",
         });
         const ok = await sendSMS(
           phone,
-          `In 1 Stunde: Termin bei ${salon?.name ?? "Ihrem Salon"} um ${time}.`
+          t("appointment", { salon: salon?.name || t("storeFallback"), date, time })
         );
         if (ok) {
           sent1h++;
