@@ -769,6 +769,7 @@ export const loyaltyProgramSchema = z.object({
   name: z.string().min(1).max(100).default('Treuekarte'),
   stamps_required: z.number().int().min(3).max(20).default(10),
   reward_type: z.enum(['free_service', 'chf_discount', 'percentage_discount']).default('free_service'),
+  // Whole francs for chf_discount, percent for percentage_discount (owner, 2026-09-23).
   reward_value: z.number().int().min(0).optional(),
   reward_service_id: z.string().uuid().optional(),
   is_active: z.boolean().optional(),
