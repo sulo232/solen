@@ -1377,3 +1377,16 @@ Owner answers in the design-reset planning round (popup, this date):
 - Scope: customer website and salon dashboard. The iOS app is out of this reset.
 - Rules structure: delegated to the working assistant, to be shown to him before anything is archived.
 - Plan: `/Users/sulo/.claude/plans/non-te-okay-can-harmonic-thunder.md`.
+
+## 2026-09-23: Round-3 verdicts, screen by screen (owner, dictated on the A/B/C side-by-side images)
+
+Shown: the seven round-3 screens as A (thin outlines), B (soft-shadow boxes), C (rounder, stronger shadow), plus 16px vs capsule corners.
+- Search results: the search bar of B, the soft-shadow box. Nothing else on the screen picked.
+- Booking confirmation: he wants a lot of information on it. The photo inside rounded corners (not bleeding to the edges) "doesn't make any sense": the hero photo runs full-bleed. "What happens next" is liked a lot and stays.
+- Bookings list: C.
+- Review and pay: C. This replaces the 2026-09-06 LIFT (= B) pick for this screen.
+- Profile: none of them. Only A's "Booking wallet" and "Personal details" rows are liked.
+- Empty states: no pick; he does not understand them.
+- Category pills: not understood; no pick.
+- Corners: there must be one consistent rule, not one value picked in isolation.
+- Format verdict: each comparison changed several things at once (shadow, radius, photo, copy, status colour), which is what confused him. A comparison changes ONE thing; everything else is identical.
