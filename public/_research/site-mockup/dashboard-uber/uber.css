@@ -1,0 +1,26 @@
+/* Uber rules on top of the dashboard redo (spec: _design-system/references/uber--app-2026.md).
+   Flat page; content boxes flat with a #ECECEC hairline; shadow only on what floats (sheet, toggle knob, chart tip);
+   ink #111111 primary at radius 8; grey #F6F6F6 controls; colour only with meaning (green paid/live, amber unpaid). */
+:root{--ink:#111111;--ink2:#525252;--line:#ECECEC;--sunk:#F6F6F6;--box:none;
+  --green:#098042;--green-bg:#EAF6ED;--amber:#9F6402;--amber-dot:#9F6402;--amber-bg:#FDF2DC}
+.mu,.cnt,.bar .ax,.thead,.fld,.kv dt,.gl{color:#525252}
+h1{font:700 26px/1.2 'Inter Tight',Inter,sans-serif;letter-spacing:-.02em}
+h2{font:700 21px/1.25 'Inter Tight',Inter,sans-serif;letter-spacing:-.015em}
+.k b,.rev b{font-weight:700}
+.card{border-radius:16px;box-shadow:none;border:1px solid var(--line)}
+.top{border-bottom:0}
+.pill.ink{border-radius:8px}
+.tag{border-radius:4px;height:22px;padding:0 8px}
+.tag.live,.tag.ok{color:#166C3B}.tag.live i{background:var(--green)}
+.tag.due{color:var(--amber)}
+.tgl{background:#E8E8E8}
+.tgl i{box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.fld input{border-radius:8px}
+.sheet{border-radius:16px 16px 0 0;box-shadow:0 -4px 24px rgba(0,0,0,.10)}
+.bar .tip{border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,.14)}
+.track i{background:var(--ink)}
+@media (min-width:900px){
+  .sheet{border-radius:16px 0 0 16px}
+  .ri{border-radius:9999px}
+  .rail{border-right:1px solid var(--line)}
+}
