@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>Dashboard redo</title>
+<style>
+@font-face{font-family:'Inter Tight';src:url(../assets/intertight.woff2) format('woff2');font-weight:100 900}
+@font-face{font-family:Inter;src:url(../assets/inter.woff2) format('woff2');font-weight:100 900}
+:root{--ink:#0A0A0A;--muted:#6B6B6B;--line:#E4E4E7}
+*{box-sizing:border-box}body{margin:0;background:#fff;color:var(--ink);font-family:Inter,system-ui,sans-serif}
+main{max-width:1300px;margin:0 auto;padding:24px 16px 64px}
+a{color:inherit}.back{display:inline-flex;align-items:center;min-height:44px;font-weight:500;text-decoration:none}
+h1{font:600 30px/1.15 'Inter Tight',sans-serif;margin:0 0 8px}
+h2{font:600 22px/1.2 'Inter Tight',sans-serif;margin:48px 0 4px}
+p{margin:0;color:var(--muted);font-size:15px;line-height:1.5;max-width:720px}
+.cols{display:flex;flex-wrap:wrap;gap:24px;margin-top:16px;align-items:flex-start}.col{flex:0 0 402px;max-width:100%}
+.lbl{font-size:13px;font-weight:600;margin:0 0 8px;color:var(--ink)}
+.shot,iframe{display:block;width:402px;max-width:100%;border:1px solid var(--line);border-radius:12px;background:#fff}
+iframe{height:874px}
+.desk{display:block;width:100%;border:1px solid var(--line);border-radius:12px;margin-top:16px}
+.links{display:flex;gap:16px;margin-top:8px;font-size:15px}.links a{min-height:44px;display:inline-flex;align-items:center;font-weight:500}
+ul{margin:8px 0 0;padding-left:20px;color:var(--muted);font-size:15px;line-height:1.6;max-width:720px}
+@media (max-width:440px){.shot,iframe{border-radius:0;border-left:0;border-right:0;margin:0 -16px;width:calc(100% + 32px);max-width:none}}
+</style></head><body><main>
+<a class="back" href="../index.html">All pages</a>
+<h1>Dashboard: 4 pages redone</h1>
+<p>Designed from your reference set only, with none of the earlier dashboard decisions. Every number and name is The Fade Factory's real data. Its test bookings stop on Sunday 16 August, so that day plays "today". Tap things: rows open, toggles switch, search filters, the chart shows values.</p>
+<p style="margin-top:8px">What the references share, and what these pages copy: greys plus one meaning colour, the number as the loudest thing, 4 text sizes, thin lines instead of boxes inside boxes, right-aligned prices, one black button per screen.</p>
+
+<h2>Home</h2>
+<p>Needs attention first (only when something is open), then today's numbers in one strip, today's list, revenue, top services and staff.</p>
+<div class="cols">
+<div class="col"><p class="lbl">Today</p><img class="shot" src="img/today-home.jpg" alt="Today's dashboard home"></div>
+<div class="col"><p class="lbl">New</p><iframe src="home.html" title="New dashboard home"></iframe></div>
+</div>
+<img class="desk" src="img/new-home-desktop.jpg" alt="New dashboard home on a computer">
+<div class="links"><a href="home.html">Open home full size</a></div>
+
+<h2>Services</h2>
+<p>Blue switches become black. The "Barbershop" tag on every row goes (the group title says it once). Tap a service to edit it in a sheet; on a computer it opens as a side panel.</p>
+<div class="cols">
+<div class="col"><p class="lbl">Today</p><img class="shot" src="img/today-services.jpg" alt="Today's services page"></div>
+<div class="col"><p class="lbl">New</p><iframe src="services.html" title="New services page"></iframe></div>
+</div>
+<img class="desk" src="img/new-services-desktop.jpg" alt="New services page on a computer">
+<div class="links"><a href="services.html">Open services full size</a></div>
+
+<h2>Clients</h2>
+<p>Coloured avatars become grey, the red "at risk" pill becomes a small dot, and filters with 0 clients are hidden. Tap a client for their numbers.</p>
+<div class="cols">
+<div class="col"><p class="lbl">Today</p><img class="shot" src="img/today-clients.jpg" alt="Today's clients page"></div>
+<div class="col"><p class="lbl">New</p><iframe src="clients.html" title="New clients page"></iframe></div>
+</div>
+<img class="desk" src="img/new-clients-desktop.jpg" alt="New clients page on a computer">
+<div class="links"><a href="clients.html">Open clients full size</a></div>
+
+<h2>Settings</h2>
+<p>Group titles sit right on top of their own box, rows are lighter, and each row shows what is set now. On a computer the groups become a side menu.</p>
+<div class="cols">
+<div class="col"><p class="lbl">Today</p><img class="shot" src="img/today-settings.jpg" alt="Today's settings page"></div>
+<div class="col"><p class="lbl">New</p><iframe src="settings.html" title="New settings page"></iframe></div>
+</div>
+<img class="desk" src="img/new-settings-desktop.jpg" alt="New settings page on a computer">
+<div class="links"><a href="settings.html">Open settings full size</a></div>
+
+<h2>Notes</h2>
+<ul>
+<li>Prices: many test bookings stored CHF 0, so amounts use the service's list price.</li>
+<li>Client visits count completed and booked visits; today's page also counts the cancelled one ("User" shows 7, here 6).</li>
+<li>"Average per visit" is worked out from visits and spend; it is not stored.</li>
+<li>Client names like "attacker-test-…" are test accounts in the data, not a design choice.</li>
+<li>"Start from a template" moved from the top of Services to the bottom; it was a full-width box above the list.</li>
+</ul>
+</main>
+</body></html>

@@ -1,0 +1,21 @@
+// Exercise each dashboard mockup interaction and print the resulting state.
+import { chromium } from '/Users/sulo/Documents/solen/node_modules/playwright/index.mjs';
+const S = process.argv[2]; const U = 'http://127.0.0.1:3492/dashboard-new/';
+const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: 402, height: 874 }, deviceScaleFactor: 2 });
+const errs = []; p.on('pageerror', (e) => errs.push(e.message));
+await p.goto(U + 'home.html'); console.log('home visible rows', await p.locator('.day:visible').count());
+await p.click('.more'); console.log('after show all', await p.locator('.day:visible').count());
+await p.click('.bar >> nth=0'); console.log('tip shown', await p.locator('.bar.show .tip').innerText());
+await p.goto(U + 'services.html'); await p.click('.sv-open >> nth=2'); await p.waitForTimeout(400);
+console.log('sheet title', await p.locator('#sv-title').innerText(), 'price field', await p.inputValue('#f-p'));
+await p.fill('#f-p', '18'); await p.screenshot({ path: S + '/svc-sheet.png' }); await p.click('#svc-sheet .save'); await p.waitForTimeout(400);
+console.log('row price now', await p.locator('.svc >> nth=2').locator('.meta').innerText(), 'sheet hidden', await p.locator('#svc-sheet').isHidden());
+await p.click('.tgl >> nth=0'); console.log('toggle0 checked', await p.locator('.tgl >> nth=0').getAttribute('aria-checked'));
+await p.fill('input[type=search]', 'bart'); console.log('filter bart rows', await p.locator('.svc:visible').count());
+await p.goto(U + 'clients.html'); await p.click('.cli >> nth=0'); await p.waitForTimeout(400);
+console.log('client', await p.locator('#c-name').innerText(), 'avg', await p.locator('#c-a').innerText()); await p.screenshot({ path: S + '/cli-sheet.png' });
+await p.keyboard.press('Escape'); await p.waitForTimeout(400); console.log('esc closes', await p.locator('#cli-sheet').isHidden());
+await p.setViewportSize({ width: 1280, height: 900 }); await p.goto(U + 'settings.html'); await p.click('.sn[data-g=Finances]');
+console.log('settings pane', await p.locator('.sg.on h2').innerText(), await p.locator('.sg.on .srow').count());
+await p.goto(U + 'services.html'); await p.click('.sv-open >> nth=0'); await p.waitForTimeout(400); await p.screenshot({ path: S + '/svc-panel-d.png' });
+console.log('errors', errs.length ? errs : 'none'); await b.close();
