@@ -1,0 +1,109 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Calendar week view</title><style>@font-face{font-family:'Inter Tight';src:url(intertight.woff2) format('woff2');font-weight:100 900}
+@font-face{font-family:'Inter';src:url(inter.woff2) format('woff2');font-weight:100 900}
+:root{--ink:#0A0A0A;--ink2:#6B6B6B;--line:#E4E4E7;--sunk:#F4F4F5;--shadow:rgba(0,0,0,.02) 0 0 0 1px,rgba(0,0,0,.10) 0 8px 24px}
+*{box-sizing:border-box;margin:0}
+body{background:#fff;color:var(--ink);font:400 13px/1.35 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+button:focus{outline:none}
+button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+svg{display:block;flex:none}
+.grow{flex:1}
+h1{font:600 22px/1.2 'Inter Tight',Inter,sans-serif;letter-spacing:-.01em}
+.ib{width:44px;height:44px;border-radius:9999px;background:var(--sunk);display:grid;place-items:center;flex:none}
+.ib.sm{width:36px;height:36px;position:relative}
+.ib.sm::after{content:'';position:absolute;inset:-4px}
+.pill{height:44px;border-radius:9999px;background:var(--sunk);display:inline-flex;align-items:center;gap:6px;padding:0 16px;font-size:15px;font-weight:500;white-space:nowrap}
+.pill.ink{background:var(--ink);color:#fff;padding:0 20px 0 16px}
+.stack{padding:0 12px 0 6px;gap:0}
+.stack img{width:32px;height:32px;border-radius:9999px;border:2px solid var(--sunk);object-fit:cover;margin-right:-10px}
+.stack img:nth-child(3){margin-right:8px}
+.stack .cnt{margin-right:4px}
+
+/* phone */
+.phone{max-width:402px;margin:0 auto;padding:0 16px 96px}
+.top{display:flex;align-items:center;gap:8px;height:68px}
+.month{display:flex;align-items:center;justify-content:center;gap:16px;margin:8px 0 20px}
+.row{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.rev{font:600 22px/1.2 'Inter Tight',Inter,sans-serif;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.rl{color:var(--ink2);margin-top:2px}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:16px}
+.day{height:64px;border-radius:9999px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.day span{font-size:11px;font-weight:500;color:var(--ink2)}
+.day b{font:600 15px/1 Inter,sans-serif;font-variant-numeric:tabular-nums}
+.day i{width:4px;height:4px;border-radius:9999px;background:var(--ink);margin-top:3px}
+.day i.none{background:transparent}
+.day.on{background:var(--ink);color:#fff}
+.day.on span{color:rgba(255,255,255,.72)}
+.day.on i{background:#fff}
+
+.grid{border-radius:20px;box-shadow:var(--shadow);overflow:hidden;background:#fff}
+.ghead{display:grid;grid-template-columns:var(--gut) repeat(3,1fr);height:52px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff;z-index:3}
+.sh{display:flex;align-items:center;justify-content:center;gap:8px;font-weight:600}
+.sh img{width:28px;height:28px;border-radius:9999px;object-fit:cover}
+.gbody{position:relative;margin-top:12px}
+.hours{position:absolute;left:0;top:0;width:var(--gut)}
+.hr{position:absolute;left:0;width:var(--gut);text-align:center;font-size:11px;font-weight:500;color:var(--ink2);transform:translateY(-50%);font-variant-numeric:tabular-nums}
+.ln{position:absolute;left:var(--gut);right:0;height:1px;background:var(--line)}
+.cols{position:absolute;left:var(--gut);right:0;top:0;bottom:0;display:grid;grid-template-columns:repeat(3,1fr)}
+.col{position:relative;border-left:1px solid var(--line)}
+.ev{position:absolute;left:2px;right:2px;border-radius:12px;background:var(--tint);text-align:left;padding:6px 3px 6px 12px;line-height:1.25;overflow:hidden;display:flex;flex-direction:column;gap:1px}
+.ev::before{content:'';position:absolute;left:4px;top:6px;bottom:6px;width:3px;border-radius:9999px;background:var(--bar)}
+.ev b{font-weight:600;font-size:13px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev i,.ev em{font-style:normal;font-size:11px;font-weight:500;color:var(--ink2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.ev em{color:var(--ink)}
+.ev-s{flex-direction:row;align-items:center;gap:6px;padding-top:0;padding-bottom:0}
+.ev-s b{flex:0 1 auto}
+.ev-m{justify-content:center;padding-top:3px;padding-bottom:3px}
+.ev-m::before{top:5px;bottom:5px}
+.free{position:absolute;left:6px;right:6px;border:1.5px dashed #D4D4D8;border-radius:12px;display:grid;place-items:center}
+.free span{width:28px;height:28px;border-radius:9999px;background:var(--sunk);display:grid;place-items:center;color:var(--ink2)}
+.fab{position:fixed;right:max(16px,calc(50vw - 185px));bottom:24px;width:56px;height:56px;border-radius:9999px;background:var(--ink);color:#fff;display:grid;place-items:center;box-shadow:var(--shadow);z-index:5}
+
+/* desktop */
+.desk{display:none}
+@media (min-width:900px){
+  .phone{display:none}
+  .desk{display:flex;min-height:100vh}
+  .rail{width:64px;border-right:1px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:0;padding:14px 0 16px;position:sticky;top:0;height:100vh}
+  .logo{font:700 22px/1 'Inter Tight',sans-serif;height:44px;display:grid;place-items:center;margin-bottom:8px}
+  .ri{width:44px;height:40px;border-radius:14px;display:grid;place-items:center;color:#52525B;margin:1px 0}
+  .ri.on{background:var(--sunk);color:var(--ink)}
+  .me{width:36px;height:36px;border-radius:9999px;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:600;margin-top:8px}
+  .main{flex:1;min-width:0}
+  .dtop{height:64px;display:flex;align-items:center;gap:8px;padding:0 32px;border-bottom:1px solid var(--line)}
+  .switch{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px;border-radius:9999px;background:var(--sunk);font-size:15px;font-weight:500}
+  .dbody{padding:28px 32px 48px}
+  .drow{display:flex;align-items:flex-end;margin-bottom:24px}
+  .month.dm{justify-content:flex-start;margin:0 0 6px;gap:8px}
+  .month.dm h1{margin-right:8px}
+  .tools{display:flex;gap:8px}
+  .week{max-width:640px}
+  .day{height:56px}
+}
+.ev i{overflow:hidden;text-overflow:ellipsis}
+</style><link rel="stylesheet" href="week.css"><script>window.WEEKS={"10": [[6, "08:15", 20, "Mia", "Yannick Good", "Beard Trim", 28], [6, "09:00", 30, "Jonas", "Marco Blaser", "Men's Haircut", 45], [6, "09:00", 30, "Nina", "Ismail Demir", "Men's Haircut", 45], [6, "10:15", 40, "Nina", "Timo Herzog", "Skin Fade", 55], [6, "10:45", 20, "Jonas", "Pascal Meier", "Buzz Cut", 35], [6, "11:30", 45, "Mia", "Andrin Lehmann", "Cut & Beard", 68], [6, "12:45", 10, "Mia", "Aylin Yildiz", "Eyebrows", 15], [6, "13:00", 30, "Jonas", "Deniz Kaya", "Hot Towel Shave", 42], [6, "14:30", 60, "Nina", "Samuel Wyss", "Full Package", 85], [6, "15:30", 40, "Jonas", "Bruno Caruso", "Skin Fade", 55], [6, "16:00", 30, "Mia", "Nico Brunner", "Men's Haircut", 45], [6, "16:45", 25, "Nina", "Tobias Frei", "Kids Cut", 32], [6, "18:15", 30, "Mia", "Kerem Aslan", "Men's Haircut", 45]], "17": [[0, "20:24", 30, "Jonas", "Andrea Vogt", "Beard Styling & Shave", 38], [0, "21:34", 20, "Mia", "Samuel Keller", "Beard Trim", 28], [0, "22:39", 30, "Mia", "Beatrice Meyer", "Men's Haircut", 45], [0, "22:59", 20, "Nina", "Nadine Huber", "Buzz Cut", 35], [1, "12:48", 20, "Mia", "Andrea Vogt", "Beard Trim", 28], [1, "13:43", 20, "Nina", "Samuel Keller", "Buzz Cut", 35], [1, "14:38", 45, "Jonas", "Nadine Huber", "Cut & Beard", 68], [1, "15:43", 10, "Mia", "Marco Bianchi", "Eyebrows", 15], [1, "16:33", 60, "Nina", "Lea Schmid", "Full Package", 85], [1, "17:28", 30, "Jonas", "Fabio Rossi", "Hot Towel Shave", 42], [1, "18:28", 25, "Mia", "Sarah Widmer", "Kids Cut", 32], [1, "19:23", 30, "Nina", "Ben Graf", "Men's Haircut", 45], [2, "10:30", 10, "Nina", "Reto Baumann", "Eyebrows", 15]]}</script><script src="week.js" defer></script></head><body><div class="phone">
+  <header class="top">
+    <button class="ib" aria-label="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu" aria-hidden="true"><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg></button>
+    <button class="ib" aria-label="Search"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search" aria-hidden="true"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg></button>
+    <div class="grow"></div>
+    <button class="pill stack" aria-label="Staff filter, all 3 staff"><img src="jonas.jpg" alt=""><img src="mia.jpg" alt=""><img src="nina.jpg" alt=""><span class="cnt">All</span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
+    <button class="ib" aria-label="Notifications"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell" aria-hidden="true"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg></button>
+  </header>
+  <div class="month"><button class="ib sm" aria-label="Previous week"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button><h1>August 2026</h1><button class="ib sm" aria-label="Next week"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button></div>
+  <div class="row"><div class="sum"><div class="rev">CHF 595</div><div class="rl">13 appointments this week</div></div><button class="pill" aria-label="View">Week <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button></div>
+  <div class="wk" data-size="m"></div>
+  <button class="fab" aria-label="New booking"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus" aria-hidden="true"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></button>
+</div><div class="desk">
+  <nav class="rail"><div class="logo">S</div><a class="ri"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-grid" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="14" rx="1"></rect><rect width="7" height="7" x="3" y="14" rx="1"></rect></svg></a><a class="ri on"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar" aria-hidden="true"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path></svg></a><a class="ri"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-scissors" aria-hidden="true"><circle cx="6" cy="6" r="3"></circle><path d="M8.12 8.12 12 12"></path><path d="M20 4 8.12 15.88"></path><circle cx="6" cy="18" r="3"></circle><path d="M14.8 14.8 20 20"></path></svg></a><a class="ri"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layers" aria-hidden="true"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"></path><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"></path><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"></path></svg></a><a class="ri"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><path d="M16 3.128a4 4 0 0 1 0 7.744"></path><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><circle cx="9" cy="7" r="4"></circle></svg></a><a class="ri"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-megaphone" aria-hidden="true"><path d="M11 6a13 13 0 0 0 8.4-2.8A1 1 0 0 1 21 4v12a1 1 0 0 1-1.6.8A13 13 0 0 0 11 14H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"></path><path d="M6 14a12 12 0 0 0 2.4 7.2 2 2 0 0 0 3.2-2.4A8 8 0 0 1 10 14"></path><path d="M8 6v8"></path></svg></a><a class="ri"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dollar-sign" aria-hidden="true"><line x1="12" x2="12" y1="2" y2="22"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></a><a class="ri"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-check" aria-hidden="true"><path d="m16 11 2 2 4-4"></path><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg></a><a class="ri"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-column" aria-hidden="true"><path d="M3 3v16a2 2 0 0 0 2 2h16"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg></a><a class="ri"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></a><a class="ri"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up" aria-hidden="true"><path d="M16 7h6v6"></path><path d="m22 7-8.5 8.5-5-5L2 17"></path></svg></a><a class="ri"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings" aria-hidden="true"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"></path><circle cx="12" cy="12" r="3"></circle></svg></a><a class="ri"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package" aria-hidden="true"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path><path d="M12 22V12"></path><polyline points="3.29 7 12 12 20.71 7"></polyline><path d="m7.5 4.27 9 5.15"></path></svg></a><a class="ri"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dollar-sign" aria-hidden="true"><line x1="12" x2="12" y1="2" y2="22"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></a><div class="grow"></div><a class="ri"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left" aria-hidden="true"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg></a><div class="me">T</div></nav>
+  <div class="main">
+    <header class="dtop"><button class="switch">The Fade Factory <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-up-down" aria-hidden="true"><path d="m7 15 5 5 5-5"></path><path d="m7 9 5-5 5 5"></path></svg></button><div class="grow"></div><button class="ib" aria-label="Search"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search" aria-hidden="true"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg></button><button class="ib" aria-label="Notifications"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell" aria-hidden="true"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg></button></header>
+    <div class="dbody">
+      <div class="drow">
+        <div><div class="month dm"><h1>August 2026</h1><button class="ib sm" aria-label="Previous week"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button><button class="ib sm" aria-label="Next week"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button></div><div class="sum"><div class="rev">CHF 595</div><div class="rl">13 appointments this week</div></div></div>
+        <div class="grow"></div>
+        <div class="tools"><button class="pill stack" aria-label="Staff filter, all 3 staff"><img src="jonas.jpg" alt=""><img src="mia.jpg" alt=""><img src="nina.jpg" alt=""><span class="cnt">All</span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button><button class="pill" aria-label="View">Week <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button><button class="pill">Walk-in</button><button class="pill">Plan</button><button class="pill ink"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus" aria-hidden="true"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg> Add</button></div>
+      </div>
+      <div class="wk" data-size="d"></div>
+    </div>
+  </div>
+</div></body></html>

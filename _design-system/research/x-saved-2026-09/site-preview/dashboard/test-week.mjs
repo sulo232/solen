@@ -1,0 +1,23 @@
+// Week view: render at phone and desktop, switch week, open an appointment, filter staff.
+import { chromium } from '/Users/sulo/Documents/solen/node_modules/playwright/index.mjs';
+const S = process.argv[2]; const U = 'http://127.0.0.1:3492/calendar-week/index.html';
+const b = await chromium.launch(); const errs = [];
+const p = await b.newPage({ viewport: { width: 402, height: 874 }, deviceScaleFactor: 2 });
+p.on('pageerror', (e) => errs.push(e.message)); p.on('response', (r) => r.status() >= 400 && errs.push(r.status() + ' ' + r.url()));
+await p.goto(U); await p.waitForTimeout(600);
+console.log('w10 events', await p.locator('.wk[data-size=m] .wev').count(), 'rev', await p.locator('.phone .rev').innerText(), 'scrollW', await p.evaluate(() => document.documentElement.scrollWidth));
+await p.screenshot({ path: S + '/week-m.png', fullPage: true });
+await p.locator('.phone [aria-label="Next week"]').click(); await p.waitForTimeout(300);
+console.log('w17 events', await p.locator('.wk[data-size=m] .wev').count(), 'rev', await p.locator('.phone .rev').innerText(), 'selected', await p.locator('.wk[data-size=m] .wd.on').innerText());
+await p.screenshot({ path: S + '/week17-m.png', fullPage: true });
+await p.locator('.wk[data-size=m] .wev').nth(6).click(); await p.waitForTimeout(450);
+console.log('sheet', (await p.locator('.wsheet').innerText()).replace(/\s+/g, ' '));
+await p.screenshot({ path: S + '/week-sheet-m.png' });
+await p.keyboard.press('Escape'); await p.waitForTimeout(400);
+await p.locator('.phone .pill.stack').click(); await p.waitForTimeout(250); await p.locator('.smenu button[data-n=Mia]').click(); await p.waitForTimeout(200);
+console.log('after hiding Mia', await p.locator('.wk[data-size=m] .wev').count(), await p.locator('.phone .pill.stack .cnt').innerText());
+await p.screenshot({ path: S + '/week-menu-m.png' });
+const d = await b.newPage({ viewport: { width: 1280, height: 900 } }); d.on('pageerror', (e) => errs.push(e.message));
+await d.goto(U); await d.waitForTimeout(600); console.log('desk txt events', await d.locator('.wk[data-size=d] .wev.txt').count(), '/', await d.locator('.wk[data-size=d] .wev').count());
+await d.screenshot({ path: S + '/week-d.png', fullPage: true });
+console.log('errors', errs.length ? errs : 'none'); await b.close();
