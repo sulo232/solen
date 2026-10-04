@@ -206,3 +206,27 @@ Verify on the real routes with screenshots and measured DOM, and run the existin
 ## Open, asked later
 - Phase 1: approval of each screen mockup, and the variant picks where the references don't decide.
 - Phase 2: approval of the DESIGN.md and LOCKFILE drafts.
+
+## Update 2026-10-04: owner verdicts on the 12-page site mockup (`public/_research/site-mockup/`)
+Decisions: selected = **black everywhere** (supersedes V3-D450 blue slots). Build the look only after the items below are fixed in the mockup ("Yes, but fix things first"). Week view: mockup it.
+Atomized checklist (owner's words in quotes):
+- [ ] H1 Home salon cards: "I don't like bringing back the old design for each card". Revert to today's borderless card (photo + text below, REMOVED.md line 59 / 95 context).
+- [ ] H2 Home map block "bugged out" (canvas lost in the frozen copy). Render the real map.
+- [ ] H3 Home bottom navigation bar: "I don't like the bottom navigation bar". Redesign round (mockup options).
+- [ ] H4 Home walk-in band: "improve more design on the walk-in" (owner's own ask; the band stays).
+- [ ] H5 Home popular looks: refine "the cost and the name" area under each look.
+- [ ] H6 Home reviews: "the shadow blur looks really weird" (shadow clipped by the scroller).
+- [ ] S1 Search results card: "I don't like this format at all". Revert to today's card.
+- [ ] S2 Search: "bring back the old version, why did you renew that one" (the search bar and card I changed). Revert.
+- [ ] P1 Salon header dates: "why is it so long". Owner reference (Fresha, Joliz Aeschen): clock icon + "Closed", no "Opens Thursday at 09:00".
+- [ ] P2 Salon review count: no blue; reference shows `4.9 (3,673)` with the count grey.
+- [ ] P3 Salon: "many places are bugged out" (location map blank in the frozen copy).
+- [ ] P4 Salon: "I don't like the blur on the book appointment part" (white fade above the sticky bar).
+- [ ] P5 Salon similar salons: "looks really wrong" (boxed card + clipped shadow). Revert card.
+- [ ] B1 Booking services: "too strong of a shadow".
+- [ ] B2 Mockups: "nothing is pressable". Add press states, selection and step links.
+- [ ] B3 Buttons: "really inconsistent ... sometimes shadow sometimes flat"; likes the flat grey close and grey chips. Make a buttons mockup.
+- [x] B4 Booking date and time: "looks great".
+- [ ] PR1 Profile: "looks really ass", refine.
+- [ ] L1 Loyalty: "I like that a lot but we should refine that even more".
+- [ ] D1 Dashboard: "renew completely", every page except the calendar, from all the owner's references (X bookmarks, HelloDottaa) studied deeply.
