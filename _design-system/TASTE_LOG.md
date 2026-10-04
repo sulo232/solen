@@ -1404,3 +1404,14 @@ On "today vs picked look" for the real salon page: he wants the fully round pill
 - Selected category pill: option 2 of a one-change comparison on the real salon page, black fill with white text (grey fill and outline-only were the others). This supersedes the calm-grey selected lock by recency.
 - Shadows: "straight really deep shadows ... looks like an amateur is doing that." Depth stays subtle; the elevation values come from research (plan Step R), not from eye-balled strength.
 - Method: he asked for research rounds on UI/UX principles and measured references first, then design, "discipline on the science", because he judges looks, not principles. His role is the final eye check.
+
+## 2026-10-04: Site-mockup verdicts (owner, on the 12 frozen pages)
+
+- Selected state is ink everywhere (chips, day tiles, time slots), answering "Black everywhere". This supersedes the V3-D450 blue booking slot and day colour by recency.
+- The boxed salon listing card (photo and text in one shadowed box) was rejected as "the old design". Home and search keep today's card: photo on its own, text below, no box. Recorded in REMOVED.md.
+- Shadows on boxes were "too strong" on booking services. The mockup box shadow is now `rgba(0,0,0,.04) 0 0 0 1px, rgba(0,0,0,.06) 0 2px 10px`, lighter than the 2026-09-23 `.10 0 8px 24px` value. Mockup-level only; the research round still owns the final elevation value.
+- The search page search bar and its card format go back to today's version. He did not ask for them to change.
+- Salon header, per his Fresha reference (Joliz Aeschen): bold rating, review count in grey not blue, a dot, a clock icon and the open state word only ("Closed", no "Opens Monday at 09:00"), and the address in a grey 12px box with a filled pin.
+- The fade or blur above the sticky Book appointment bar is removed.
+- Buttons must look consistent. He likes the flat grey 38px close circle and the flat grey chip; a buttons comparison mockup follows (plan item B3).
+- Liked as is: the booking date and time step. Liked but to refine: loyalty. To redo: profile, and every dashboard page except the calendar, from his reference set.

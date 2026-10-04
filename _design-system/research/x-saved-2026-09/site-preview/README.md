@@ -10,3 +10,10 @@ Status: mockup for the owner's eye check. Product code follows only after approv
 
 Update: the live overlay preview is retired (the owner wants mockups, not the live site with a layer on top).
 `snapshot.mjs` froze the 12 pages into standalone static pages at `public/_research/site-mockup/` (no scripts, own copies of CSS, fonts and images). Open `/_research/site-mockup/index.html`.
+
+## Update 2026-10-04: owner fix round
+
+- `system2.js`: lighter box shadow, today's salon cards and search bar kept, map and cards left alone, shadow room in scrollers, no fade above the sticky Book bar, salon header per the owner's Fresha reference (clock + open word only, grey review count, dot, address in a grey 12px box). `?flat=1` renders the buttons comparison variant.
+- `mock-interact.js`: injected into every frozen page so it can be tapped (press feedback, chips, days, time slots, add with live total, Continue to the date step). Simulated; nothing is booked.
+- `snapshot.mjs`: maps are frozen as screenshots of themselves (overlays hidden during capture); a final system pass runs right before freezing. Do not re-shoot `booking-time` while the slot data is empty: the committed page uses September slots.
+- `buttons-inventory.mjs` lists every button look on the frozen pages; `buttons-pairs.mjs` renders the today-vs-flat pairs in `public/_research/site-mockup/buttons/`.

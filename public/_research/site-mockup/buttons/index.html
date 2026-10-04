@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>Buttons comparison</title>
+<style>
+@font-face{font-family:'Inter Tight';src:url(../assets/intertight.woff2) format('woff2');font-weight:100 900}
+@font-face{font-family:Inter;src:url(../assets/inter.woff2) format('woff2');font-weight:100 900}
+:root{--ink:#0A0A0A;--grey:#F4F4F5;--muted:#71717A;--line:#E4E4E7}
+*{box-sizing:border-box}body{margin:0;background:#fff;color:var(--ink);font-family:Inter,system-ui,sans-serif}
+main{max-width:860px;margin:0 auto;padding:24px 16px 64px}
+h1{font:600 30px/1.15 'Inter Tight',sans-serif;margin:0 0 8px}
+h2{font:600 18px/1.3 'Inter Tight',sans-serif;margin:40px 0 4px}
+p{margin:0;color:var(--muted);font-size:15px;line-height:1.5}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px}
+@media (max-width:640px){.pair{grid-template-columns:1fr}}
+figure{margin:0}figcaption{font-size:13px;font-weight:600;margin:0 0 6px}
+img{display:block;width:100%;max-width:402px;height:auto;border-radius:12px;border:1px solid var(--line)}
+.back{display:inline-flex;align-items:center;min-height:44px;color:var(--ink);font-size:15px;font-weight:500;text-decoration:none}
+.back:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:8px}
+.note{margin-top:8px;font-size:13px}
+</style></head><body><main>
+<a class="back" href="../index.html">All pages</a>
+<h1>Buttons: one flat look</h1>
+<p>You liked the flat grey close button and the flat grey chip. Each pair below is the same real page, with one change: shadow, outline and blur removed so the control matches those two. Pick per pair, or all at once.</p>
+
+<h2>The look you pointed at</h2>
+<p>Booking services: 38px grey close, grey chips, ink when selected.</p>
+<div class="pair"><figure><figcaption>Today, kept as is</figcaption><img src="img/liked.png" alt="Booking services header with flat grey back and close buttons and grey category chips"></figure></div>
+
+<h2>1. Category chips on home</h2>
+<p>Today: white with a shadow. Flat: grey, selected one ink (your "black everywhere").</p>
+<p class="note">This row was owner-locked earlier. It is shown only because you asked for every button to match.</p>
+<div class="pair"><figure><figcaption>Today</figcaption><img src="img/chips-today.png" alt="Home category chips, white with a shadow"></figure>
+<figure><figcaption>Flat</figcaption><img src="img/chips-flat.png" alt="Home category chips, flat grey with the selected one in ink"></figure></div>
+
+<h2>2. Heart on salon photos</h2>
+<p>Today: see-through white with blur and a thin outline. Flat: solid grey circle.</p>
+<div class="pair"><figure><figcaption>Today</figcaption><img src="img/card-heart-today.png" alt="Salon card with a frosted heart button"></figure>
+<figure><figcaption>Flat</figcaption><img src="img/card-heart-flat.png" alt="Salon card with a flat grey heart button"></figure></div>
+
+<h2>3. Add on booking services</h2>
+<p>Today: outline circle. Flat: grey circle, ink with a check once added.</p>
+<div class="pair"><figure><figcaption>Today</figcaption><img src="img/add-today.png" alt="Service row with an outlined plus button"></figure>
+<figure><figcaption>Flat</figcaption><img src="img/add-flat.png" alt="Service row with a flat grey plus button"></figure></div>
+
+<h2>4. Share and heart on the salon photo</h2>
+<p>Already close to flat today (a 1px to 3px shadow and a light blur). The flat version removes those; the difference is small.</p>
+<div class="pair"><figure><figcaption>Today</figcaption><img src="img/salon-top-today.png" alt="Salon photo with back, share and heart buttons"></figure>
+<figure><figcaption>Flat</figcaption><img src="img/salon-top-flat.png" alt="Salon photo with flat back, share and heart buttons"></figure></div>
+
+<h2>5. Map button on search</h2>
+<p>Ink, floating over the list. Flat removes its small shadow; the difference is small.</p>
+<div class="pair"><figure><figcaption>Today</figcaption><img src="img/map-today.png" alt="Floating ink Map button with a shadow"></figure>
+<figure><figcaption>Flat</figcaption><img src="img/map-flat.png" alt="Floating ink Map button without a shadow"></figure></div>
+</main></body></html>

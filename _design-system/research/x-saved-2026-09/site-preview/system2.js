@@ -7,7 +7,7 @@
 (() => {
   if (window.__sysInstalled) return; window.__sysInstalled = true;
   const INK = '#0A0A0A', GREY = '#F4F4F5', WHITE = '#FFFFFF', LINE = '#E4E4E7';
-  const SHADOW = 'rgba(0,0,0,.02) 0 0 0 1px, rgba(0,0,0,.10) 0 8px 24px';
+  const SHADOW = 'rgba(0,0,0,.04) 0 0 0 1px, rgba(0,0,0,.06) 0 2px 10px';
   const touched = new Set();
   const set = (e, o) => { e.__sys = e.__sys || new Set(); for (const [k, v] of Object.entries(o)) { e.style.setProperty(k, v, 'important'); e.__sys.add(k); } touched.add(e); };
   const reset = () => { for (const e of touched) { for (const k of e.__sys || []) e.style.removeProperty(k); e.__sys = null; e.removeAttribute('data-sys-box'); } touched.clear(); };
@@ -26,8 +26,11 @@
   const SLOT = /^\d{1,2}:\d{2}$/;
   const COMMIT = /continue|weiter|book|buchen|add|new|save|speichern|pay|confirm|find|subscribe|slot|sign|log/i;
 
+  const isCard = (a) => a && a.querySelector('img') && a.getBoundingClientRect().width <= 400;
+  const keepAsIs = (e) => !!e.closest('.mapboxgl-map') || !!e.closest('article') || isCard(e.closest('a[href*="/salon/"]')) || [...e.children].some((c) => c.matches('article') || (c.matches('a[href*="/salon/"]') && isCard(c)));
   function apply() {
     reset();
+    if (!document.getElementById('sys-css')) { const st = document.createElement('style'); st.id = 'sys-css'; st.textContent = '[class*="before:bg-gradient-to-t"]::before{display:none!important} .sys-dot{width:auto!important;color:#71717A}.sys-dot::before{content:"\\00B7"}'; document.head.appendChild(st); }
     // 1. white page: any full-width grey surface becomes white
     for (const e of [document.body, ...document.querySelectorAll('body > div, main, main > div, [class*="min-h-screen"], [class*="bg-s-bg"]')]) {
       const r = e.getBoundingClientRect(); if (r.width < 380) continue;
@@ -86,7 +89,7 @@
       for (const k of textKids(e)) set(k, { color: on ? '#fff' : off ? '#A1A1AA' : INK });
     }
     for (const { e, r, s } of ctrls) {
-      if (chipEls.has(e) || e.__sys) continue;
+      if (chipEls.has(e) || e.__sys || e.closest('.mapboxgl-map')) continue;
       const t = txt(e); const bg = s.backgroundColor; const bd = px(s.borderTopWidth) > 0;
       if (e.getAttribute('role') === 'switch' || SLOT.test(t) || DAY.test(t)) continue;
       // 5. circle buttons
@@ -110,7 +113,7 @@
         continue;
       }
       // 3. secondary: grey capsule, no outline
-      if ((isWhite(bg) || isClear(bg) || isGrey(bg)) && (bd || isGrey(bg)) && r.width < 400) {
+      if ((isWhite(bg) || isClear(bg) || isGrey(bg)) && (bd || isGrey(bg)) && r.width < 400 && !e.querySelector('svg.lucide-search')) {
         set(e, { 'background-color': GREY, border: '0', 'box-shadow': 'none', 'border-radius': '9999px', height: '44px', 'min-height': '44px', 'padding-left': '18px', 'padding-right': '18px', color: INK });
         for (const k of textKids(e)) set(k, { 'font-size': '15px', 'font-weight': '500', color: INK });
       }
@@ -128,7 +131,7 @@
     // 1+2. boxes: white, 20, shadow, no outline; nested boxes 12
     const inMain = document.querySelector('main') || document.body;
     for (const e of inMain.querySelectorAll('div, article, section, a, li, ul, ol, form, aside')) {
-      if (e.__sys) continue;
+      if (e.__sys || keepAsIs(e)) continue;
       const r = e.getBoundingClientRect(); if (!vis(e, r) || r.width < 120 || r.height < (r.width >= 300 ? 40 : 56)) continue;
       const s = getComputedStyle(e); const rad = px(s.borderTopLeftRadius);
       if (rad < 6 || rad > 44) continue;
@@ -143,17 +146,44 @@
       e.setAttribute('data-sys-box', '1');
       set(e, { 'border-radius': '20px', border: '0', 'box-shadow': SHADOW, 'background-color': WHITE });
     }
-    // salon listing cards: photo + text become one box
-    for (const a of inMain.querySelectorAll('a[href*="/salon/"]')) {
-      const r = a.getBoundingClientRect(); if (!vis(a, r) || r.width < 140 || r.width > 400 || r.height < 150) continue;
-      const img = a.querySelector('img'); if (!img || !txt(a) || a.closest('[data-sys-box]') && a.closest('[data-sys-box]') !== a) continue;
-      const tile = img.closest('div'); if (!tile || tile === a) continue;
-      a.setAttribute('data-sys-box', '1');
-      set(a, { display: 'block', 'border-radius': '20px', 'box-shadow': SHADOW, 'background-color': WHITE, overflow: 'hidden', 'padding-bottom': '12px' });
-      let t = tile; while (t.parentElement && t.parentElement !== a && t.parentElement.getBoundingClientRect().height - t.getBoundingClientRect().height < 4) t = t.parentElement;
-      set(t, { 'border-radius': '0' });
-      for (const k of a.children) if (!k.contains(img)) set(k, { 'padding-left': '12px', 'padding-right': '12px' });
-      for (const k of [...a.querySelectorAll('*')].filter((x) => x !== t && !x.contains(img) && x.parentElement && x.parentElement.contains(t) && !x.contains(t) && x.parentElement !== a)) { if (k.previousElementSibling === t || k.parentElement === t.parentElement) set(k, { 'padding-left': '12px', 'padding-right': '12px' }); }
+    for (const sc of inMain.querySelectorAll('div, ul')) {
+      const ss = getComputedStyle(sc); if (!/auto|scroll/.test(ss.overflowX) || !sc.querySelector(':scope > [data-sys-box], :scope > * > [data-sys-box]')) continue;
+      set(sc, { 'padding-top': (px(ss.paddingTop) + 6) + 'px', 'margin-top': (px(ss.marginTop) - 6) + 'px', 'padding-bottom': (px(ss.paddingBottom) + 14) + 'px', 'margin-bottom': (px(ss.marginBottom) - 14) + 'px' });
+    }
+    // salon header: short open state with a clock (owner reference: Fresha, "Closed" only), grey review count
+    for (const c of inMain.querySelectorAll('.text-s-closed, .text-s-open, [class*="text-s-success"]')) {
+      const wrap = c.parentElement; if (!wrap || !/Opens|Closes|Öffnet|Schliesst/.test(wrap.textContent)) continue;
+      for (const k of wrap.children) if (k !== c) set(k, { display: 'none' });
+      if (!wrap.querySelector('.sys-clock')) { const ns = 'http://www.w3.org/2000/svg'; const sv = document.createElementNS(ns, 'svg'); sv.setAttribute('class', 'sys-clock'); sv.setAttribute('width', '15'); sv.setAttribute('height', '15'); sv.setAttribute('viewBox', '0 0 24 24'); sv.setAttribute('fill', 'none'); sv.setAttribute('stroke', 'currentColor'); sv.setAttribute('stroke-width', '2'); sv.setAttribute('stroke-linecap', 'round'); sv.innerHTML = '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>'; sv.style.cssText = 'display:inline-block;vertical-align:-2px;margin-right:5px'; c.prepend(sv); }
+    }
+    for (const e of document.body.querySelectorAll('span, button, a')) { if (e.children.length || !/^\(\d[\d',.]*\)$/.test(e.textContent.trim())) continue; if (isBlue(getComputedStyle(e).color) || /\btext-s-accent\b/.test(e.className)) set(e, { color: '#71717A' }); }
+    // salon header address: grey 12px box with a filled pin (owner reference: Fresha salon header)
+    for (const loc of document.querySelectorAll('button[aria-label="Show location"]')) {
+      const sp = loc.previousElementSibling && loc.previousElementSibling.querySelector('span.inline-block.w-\\[14px\\]'); if (sp) sp.classList.add('sys-dot');
+      set(loc, { background: '#F4F4F5', padding: '10px 12px', 'border-radius': '12px', color: '#0A0A0A', gap: '6px', 'margin-top': '12px' });
+      const pin = loc.querySelector('svg'); if (pin) set(pin, { fill: '#0A0A0A', stroke: '#F4F4F5', color: '#F4F4F5', width: '16px', height: '16px' });
+    }
+    // ?flat=1 (buttons comparison only): every icon control and floating button drops shadow, outline and blur,
+    // taking the flat grey circle the owner pointed at (the 38px close)
+    if (/[?&]flat=1/.test(location.search)) {
+      for (const b of document.querySelectorAll('button[aria-label], a[aria-label]')) {
+        if (!/^(save|saved|share|share profile|remove from saved|add|added|back|close)$/i.test(b.getAttribute('aria-label'))) continue;
+        for (const t of [b, ...b.querySelectorAll('span')]) {
+          const cs = getComputedStyle(t); if (cs.borderTopLeftRadius === '0px') continue;
+          if (isClear(cs.backgroundColor) && cs.borderTopWidth === '0px' && cs.boxShadow === 'none' && cs.backdropFilter === 'none') continue;
+          set(t, { 'box-shadow': 'none', 'border-color': 'transparent', 'backdrop-filter': 'none', '-webkit-backdrop-filter': 'none', background: '#F4F4F5' });
+        }
+      }
+      for (const b of document.querySelectorAll('button, a')) if (/^Map$/.test((b.innerText || '').trim())) set(b, { 'box-shadow': 'none' });
+      // the image category chips (white with a shadow today) take the grey chip; selected is ink (owner, 2026-10-04)
+      if (!document.getElementById('sys-flat-css')) { const st = document.createElement('style'); st.id = 'sys-flat-css'; st.textContent = '.sys-flatchip::before,.sys-flatchip::after,.sys-flatchip *::before,.sys-flatchip *::after{box-shadow:none!important;background:transparent!important;border-color:transparent!important}'; document.head.appendChild(st); }
+      for (const a of document.querySelectorAll('a[aria-selected], button[aria-selected]')) {
+        if (!a.querySelector('img, svg') || a.getBoundingClientRect().height > 56) continue;
+        const sel = a.getAttribute('aria-selected') === 'true'; a.classList.add('sys-flatchip');
+        set(a, { background: sel ? '#0A0A0A' : '#F4F4F5', color: sel ? '#FFFFFF' : '#0A0A0A', 'box-shadow': 'none', border: '0' });
+        for (const k of a.querySelectorAll('span, div')) { if (k.querySelector('img') || k.matches('img')) continue; const c = getComputedStyle(k); if (c.boxShadow !== 'none' || !isClear(c.backgroundColor)) set(k, { 'box-shadow': 'none', background: 'transparent', 'border-color': 'transparent' }); if (sel) set(k, { color: '#FFFFFF' }); }
+        if (sel) for (const ic of a.querySelectorAll('svg')) set(ic, { color: '#FFFFFF', stroke: '#FFFFFF' });
+      }
     }
     // headings: LOCKFILE roles, four sizes
     for (const e of inMain.querySelectorAll('h1, h2, h3, h4, p, span, div')) {
