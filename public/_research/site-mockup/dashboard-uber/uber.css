@@ -1,26 +1,27 @@
-/* Uber rules on top of the dashboard redo (spec: _design-system/references/uber--app-2026.md).
-   Flat page; content boxes flat with a #ECECEC hairline; shadow only on what floats (sheet, toggle knob, chart tip);
-   ink #111111 primary at radius 8; grey #F6F6F6 controls; colour only with meaning (green paid/live, amber unpaid). */
-:root{--ink:#111111;--ink2:#525252;--line:#ECECEC;--sunk:#F6F6F6;--box:none;
-  --green:#098042;--green-bg:#EAF6ED;--amber:#9F6402;--amber-dot:#9F6402;--amber-bg:#FDF2DC}
-.mu,.cnt,.bar .ax,.thead,.fld,.kv dt,.gl{color:#525252}
-h1{font:700 26px/1.2 'Inter Tight',Inter,sans-serif;letter-spacing:-.02em}
-h2{font:700 21px/1.25 'Inter Tight',Inter,sans-serif;letter-spacing:-.015em}
+/* Uber rules on top of the dashboard redo. Every value comes from ../uber/tokens.js (set as CSS variables by the
+   loader in each page), the same file the customer pages use, so one change there changes both. */
+:root{--ink:var(--t-ink);--ink2:var(--t-text2);--line:var(--t-line);--sunk:var(--t-fill);--box:none;
+  --green:#098042;--green-bg:var(--t-proofBg);--amber:var(--t-amber);--amber-dot:var(--t-amber);--amber-bg:var(--t-cream)}
+.mu,.cnt,.bar .ax,.thead,.fld,.kv dt,.gl{color:var(--t-text2)}
+h1{font:700 var(--t-titleSize)/1.2 'Inter Tight',Inter,sans-serif;letter-spacing:-.02em}
+h2{font:700 var(--t-sectionSize)/1.25 'Inter Tight',Inter,sans-serif;letter-spacing:-.015em}
 .k b,.rev b{font-weight:700}
-.card{border-radius:16px;box-shadow:none;border:1px solid var(--line)}
+.card{border-radius:var(--t-boxRadius);box-shadow:none;border:1px solid var(--line)}
 .top{border-bottom:0}
-.pill.ink{border-radius:8px}
-.tag{border-radius:4px;height:22px;padding:0 8px}
-.tag.live,.tag.ok{color:#166C3B}.tag.live i{background:var(--green)}
+.pill{border-radius:var(--t-chipRadius)}
+.pill.ink{border-radius:var(--t-buttonRadius)}
+.chip{border-radius:var(--t-chipRadius)}
+.x{width:var(--t-close);height:var(--t-close)}
+.tag{border-radius:var(--t-tagRadius);height:22px;padding:0 8px}
+.tag.live,.tag.ok{color:var(--t-proofText)}.tag.live i{background:var(--green)}
 .tag.due{color:var(--amber)}
 .tgl{background:#E8E8E8}
-.tgl i{box-shadow:0 2px 6px rgba(0,0,0,.2)}
-.fld input{border-radius:8px}
-.sheet{border-radius:16px 16px 0 0;box-shadow:0 -4px 24px rgba(0,0,0,.10)}
-.bar .tip{border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,.14)}
+.tgl i{box-shadow:var(--t-shadowSmall)}
+.fld input{border-radius:var(--t-buttonRadius)}
+.sheet{border-radius:var(--t-boxRadius) var(--t-boxRadius) 0 0;box-shadow:var(--t-shadowBarUp)}
+.bar .tip{border-radius:6px;box-shadow:var(--t-shadowSmall)}
 .track i{background:var(--ink)}
 @media (min-width:900px){
-  .sheet{border-radius:16px 0 0 16px}
-  .ri{border-radius:9999px}
-  .rail{border-right:1px solid var(--line)}
+  .sheet{border-radius:var(--t-boxRadius) 0 0 var(--t-boxRadius)}
+  .ri{border-radius:var(--t-chipRadius)}
 }

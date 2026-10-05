@@ -7,10 +7,9 @@
 // Idempotent: every run first removes what the last run set, then recomputes from the page's own styles.
 (() => {
   if (window.__sysInstalled) return; window.__sysInstalled = true;
-  const INK = '#111111', FILL = '#F6F6F6', TAG = '#F3F3F3', WHITE = '#FFFFFF', LINE = '#ECECEC', EDGE = '#E0E0E0', T2 = '#525252', T3 = '#6B6B6B';
-  const FLOAT = 'rgba(0,0,0,.05) 0 0 0 1px, rgba(0,0,0,.08) 0 4px 16px';
-  const FLOAT_SM = 'rgba(0,0,0,.14) 0 2px 8px';
-  const BAR_UP = 'rgba(0,0,0,.06) 0 -4px 16px';
+  const T = window.SOLEN_UI || {}; // tokens.js: the one place for every shared decision
+  const INK = T.ink, FILL = T.fill, TAG = T.tag, WHITE = '#FFFFFF', LINE = T.line, EDGE = T.edge, T2 = T.text2, T3 = T.text3;
+  const FLOAT = T.shadowFloat, FLOAT_SM = T.shadowSmall, BAR_UP = T.shadowBarUp;
   const touched = new Set();
   const set = (e, o) => { e.__sys = e.__sys || new Set(); for (const [k, v] of Object.entries(o)) { e.style.setProperty(k, v, 'important'); e.__sys.add(k); } touched.add(e); };
   const reset = () => { for (const e of touched) { for (const k of e.__sys || []) e.style.removeProperty(k); e.__sys = null; e.removeAttribute('data-sys-box'); } touched.clear(); };
@@ -63,6 +62,7 @@
       const tabs = e.matches('nav') || e.querySelector(':scope > nav, :scope > div > nav');
       const links = [...e.querySelectorAll('a, button')].filter((a) => a.getBoundingClientRect().width < W / 3);
       if (tabs && links.length >= 3 && !/book|buchen|continue|weiter|pay/i.test(txt(e))) {
+        if (T.bottomBar !== 'float') continue;
         set(e, { left: '16px', right: '16px', width: 'auto', bottom: 'calc(10px + env(safe-area-inset-bottom))', 'border-radius': '9999px', 'background-color': WHITE, 'box-shadow': FLOAT, border: '0', 'border-top': '0', 'padding-bottom': '0', 'backdrop-filter': 'none', '-webkit-backdrop-filter': 'none' });
         for (const k of e.querySelectorAll('*')) { const ks = getComputedStyle(k); if (px(ks.borderTopWidth) > 0 && k.getBoundingClientRect().width > W / 2) set(k, { 'border-top-width': '0', 'padding-bottom': '0' }); if (!isClear(ks.backgroundColor) && k.getBoundingClientRect().width > W / 2) set(k, { 'background-color': 'transparent', 'box-shadow': 'none' }); }
         // active tab: grey capsule behind it
@@ -94,7 +94,7 @@
         const aria = e.getAttribute('aria-pressed') === 'true' || e.getAttribute('aria-selected') === 'true' || !!e.getAttribute('aria-current') || e.getAttribute('data-state') === 'active' || e.getAttribute('aria-checked') === 'true';
         const on = ariaDriven ? aria : (aria || isInk(s.backgroundColor) || isBlue(s.backgroundColor) || (!anyStrong && s.backgroundColor !== common && !isClear(s.backgroundColor) && list.length > 2));
         const day = DAY.test(txt(e));
-        set(e, { 'border-radius': day ? '12px' : '9999px', border: '0', 'box-shadow': 'none', 'min-height': '40px', ...(day ? {} : { height: '40px', 'padding-left': '16px', 'padding-right': '16px', 'min-width': '64px', 'justify-content': 'center' }), 'background-color': on ? INK : FILL, color: on ? '#fff' : INK });
+        set(e, { 'border-radius': day ? T.dayRadius : T.chipRadius, border: '0', 'box-shadow': 'none', 'min-height': T.chipHeight, ...(day ? {} : { height: T.chipHeight, 'padding-left': '16px', 'padding-right': '16px', 'min-width': '64px', 'justify-content': 'center' }), 'background-color': on ? INK : FILL, color: on ? '#fff' : INK });
         for (const t of textKids(e)) set(t, { color: on ? '#fff' : INK, ...(day ? {} : { 'font-size': '15px', 'font-weight': '500' }) });
         for (const k of e.querySelectorAll('span, div')) { if (k.querySelector('img') || k.matches('img')) continue; const ks = getComputedStyle(k); if (ks.boxShadow !== 'none' || (!isClear(ks.backgroundColor) && !textKids(k).length)) set(k, { 'box-shadow': 'none', background: 'transparent', 'border-color': 'transparent' }); }
         for (const ic of e.querySelectorAll('svg')) set(ic, { color: on ? '#fff' : INK });
@@ -122,8 +122,8 @@
       const t = txt(e); if (!SLOT.test(t) && !DAY.test(t)) continue; if (chipEls.has(e)) continue;
       const on = isBlue(s.backgroundColor) || isInk(s.backgroundColor) || e.getAttribute('aria-pressed') === 'true' || e.getAttribute('aria-selected') === 'true' || e.getAttribute('aria-checked') === 'true';
       const off = e.disabled || e.getAttribute('aria-disabled') === 'true' || (!on && textKids(e).some((k) => { const c = rgb(getComputedStyle(k).color); return c[0] > 140; }));
-      set(e, { 'border-radius': e.getBoundingClientRect().height > 60 ? '12px' : '9999px', border: '0', 'box-shadow': 'none', 'background-color': on ? INK : FILL, color: on ? '#fff' : off ? '#A6A6A6' : INK });
-      for (const k of textKids(e)) set(k, { color: on ? '#fff' : off ? '#A6A6A6' : INK });
+      set(e, { 'border-radius': e.getBoundingClientRect().height > 60 ? T.dayRadius : T.chipRadius, border: '0', 'box-shadow': 'none', 'background-color': on ? INK : FILL, color: on ? '#fff' : off ? T.disabledText : INK });
+      for (const k of textKids(e)) set(k, { color: on ? '#fff' : off ? T.disabledText : INK });
     }
     for (const { e, r, s } of ctrls) {
       if (chipEls.has(e) || e.__sys || e.closest('.mapboxgl-map')) continue;
@@ -132,20 +132,25 @@
       // circle buttons: grey on white; white with a small shadow on a photo (Uber item sheet). The listing-card heart keeps today's look (owner question).
       if (!t || (t.length <= 2 && r.width <= 48)) {
         if (r.height < 24 || r.height > 56 || Math.abs(r.width - r.height) > 8) continue;
-        if (inListingCard(e)) continue;
+        if (inListingCard(e)) {
+          if (T.heartOnCard === 'today') continue;
+          const w = T.heartOnCard === 'white-shadow';
+          for (const t of [e, ...e.querySelectorAll('span')]) { const cs = getComputedStyle(t); if (cs.borderTopLeftRadius === '0px' && t !== e) continue; set(t, { 'box-shadow': w && t === e ? FLOAT_SM : 'none', 'border-color': 'transparent', 'backdrop-filter': 'none', '-webkit-backdrop-filter': 'none', background: t === e ? (w ? WHITE : FILL) : 'transparent', 'border-radius': '9999px' }); }
+          continue;
+        }
         const label = (e.getAttribute('aria-label') || '').toLowerCase();
         if (onPhoto(e) || overImg(e)) {
-          set(e, { 'border-radius': '9999px', 'background-color': WHITE, border: '0', 'box-shadow': FLOAT_SM, 'backdrop-filter': 'none', '-webkit-backdrop-filter': 'none', color: INK });
+          set(e, { 'border-radius': '9999px', 'background-color': T.backOnPhoto === 'flat-grey' ? FILL : WHITE, border: '0', 'box-shadow': T.backOnPhoto === 'flat-grey' ? 'none' : FLOAT_SM, 'backdrop-filter': 'none', '-webkit-backdrop-filter': 'none', color: INK });
           for (const k of e.querySelectorAll('span, div')) { const ks = getComputedStyle(k); if (!isClear(ks.backgroundColor) || ks.backdropFilter !== 'none') set(k, { background: 'transparent', 'backdrop-filter': 'none', '-webkit-backdrop-filter': 'none', 'box-shadow': 'none', border: '0' }); }
           for (const ic of e.querySelectorAll('svg')) set(ic, { color: INK, stroke: INK });
           continue;
         }
-        if (/close|schlie|cancel|abbrechen|fermer|chiudi/.test(label)) { set(e, { width: '38px', height: '38px', 'min-width': '38px', 'border-radius': '9999px', 'background-color': FILL, border: '0', 'box-shadow': 'none' }); continue; }
+        if (/close|schlie|cancel|abbrechen|fermer|chiudi/.test(label)) { set(e, { width: T.close, height: T.close, 'min-width': T.close, 'border-radius': '9999px', 'background-color': FILL, border: '0', 'box-shadow': 'none' }); continue; }
         if (isInk(bg)) { set(e, { 'border-radius': '9999px', 'background-color': INK }); continue; }
         if (e.closest('nav') && e.closest('nav').getBoundingClientRect().height > 300) continue; // dashboard rail
         const inner = e.children.length === 1 && e.firstElementChild.matches('span, div') ? e.firstElementChild : null;
         if (inner && isClear(bg) && !bd) { const is = getComputedStyle(inner); if (px(is.borderTopWidth) > 0 || !isClear(is.backgroundColor)) { set(inner, { 'background-color': isInk(is.backgroundColor) ? INK : FILL, border: '0', 'box-shadow': 'none' }); continue; } }
-        if (!isClear(bg) || bd || e.closest('header')) set(e, { width: '40px', height: '40px', 'min-width': '40px', 'border-radius': '9999px', 'background-color': FILL, border: '0', 'box-shadow': 'none' });
+        if (!isClear(bg) || bd || e.closest('header')) set(e, { width: T.circle, height: T.circle, 'min-width': T.circle, 'border-radius': '9999px', 'background-color': FILL, border: '0', 'box-shadow': 'none' });
         continue;
       }
       if (r.height < 30 || r.height > 64) continue;
@@ -153,13 +158,13 @@
       // primary: ink, radius 8; 56 tall when it spans the screen
       if (isInk(bg) || isBlue(bg)) {
         const big = r.width > 250;
-        set(e, { 'background-color': INK, 'border-color': INK, 'border-radius': '8px', 'box-shadow': 'none', height: big ? '56px' : '40px', 'min-height': big ? '56px' : '40px', 'padding-left': big ? '20px' : '16px', 'padding-right': big ? '20px' : '16px' });
-        for (const k of textKids(e)) set(k, { 'font-size': big ? '17px' : '15px', 'font-weight': '500', color: '#fff' });
+        set(e, { 'background-color': INK, 'border-color': INK, 'border-radius': T.buttonRadius, 'box-shadow': 'none', height: big ? T.buttonBig : T.buttonSmall, 'min-height': big ? T.buttonBig : T.buttonSmall, 'padding-left': big ? '20px' : '16px', 'padding-right': big ? '20px' : '16px' });
+        for (const k of textKids(e)) set(k, { 'font-size': big ? T.buttonLabelBig : T.buttonLabel, 'font-weight': '500', color: '#fff' });
         continue;
       }
       // secondary: grey capsule, no outline
       if ((isWhite(bg) || isClear(bg) || isGrey(bg)) && (bd || isGrey(bg) || s.boxShadow !== 'none') && r.width < 400 && !e.querySelector('svg.lucide-search')) {
-        set(e, { 'background-color': FILL, border: '0', 'box-shadow': 'none', 'border-radius': '9999px', height: '40px', 'min-height': '40px', 'padding-left': '16px', 'padding-right': '16px', color: INK });
+        set(e, { 'background-color': FILL, border: '0', 'box-shadow': 'none', 'border-radius': T.chipRadius, height: T.buttonSmall, 'min-height': T.buttonSmall, 'padding-left': '16px', 'padding-right': '16px', color: INK });
         for (const k of textKids(e)) set(k, { 'font-size': '15px', 'font-weight': '500', color: INK });
       }
     }
@@ -193,25 +198,25 @@
       const shadowed = s.boxShadow !== 'none';
       const bg = s.backgroundColor;
       const photoTile = !!e.querySelector(':scope > img, :scope > picture, :scope > span > img') || (isGrey(bg) && e.querySelector('img') && !txt(e));
-      if (photoTile) { set(e, { 'border-radius': (e.closest('[data-sys-box]') ? 12 : 16) + 'px', 'box-shadow': 'none' }); continue; }
+      if (photoTile) { set(e, { 'border-radius': e.closest('[data-sys-box]') ? T.innerRadius : T.photoRadius, 'box-shadow': 'none' }); continue; }
       if (!bordered && !shadowed && !isGrey(bg) && !isWhite(bg)) {
         // a pale green tag or banner: Uber's proof tint
-        if (isPaleGreen(bg) && r.height < 120) { set(e, { 'background-color': '#EAF6ED', border: '0' }); for (const k of textKids(e)) set(k, { color: '#166C3B' }); }
+        if (isPaleGreen(bg) && r.height < 120) { set(e, { 'background-color': T.proofBg, border: '0' }); for (const k of textKids(e)) set(k, { color: T.proofText }); }
         continue;
       }
       if (isClear(bg) && !bordered && !shadowed) continue;
-      if (e.parentElement && e.parentElement.closest('[data-sys-box]')) { set(e, { 'border-radius': '12px', 'box-shadow': 'none', ...(bordered || shadowed ? { border: '0', 'background-color': FILL } : {}) }); continue; }
+      if (e.parentElement && e.parentElement.closest('[data-sys-box]')) { set(e, { 'border-radius': T.innerRadius, 'box-shadow': 'none', ...(bordered || shadowed ? { border: '0', 'background-color': FILL } : {}) }); continue; }
       if (r.width >= 390 && r.height > 500) continue; // full-width page panels and sheets
       e.setAttribute('data-sys-box', '1');
-      set(e, { 'border-radius': '16px', border: `1px solid ${LINE}`, 'box-shadow': 'none', 'background-color': WHITE });
+      set(e, { 'border-radius': T.boxRadius, border: `1px solid ${LINE}`, 'box-shadow': 'none', 'background-color': WHITE });
     }
     // meaning colour: discounts red, small grey tags squared to 4
     for (const e of document.body.querySelectorAll('span, div, p')) {
       const t = txt(e); if (!t || t.length > 24 || e.closest('button.sys-chip')) continue;
       const r = e.getBoundingClientRect(); if (r.height > 30 || r.height < 14 || r.width > 200) continue;
       const s = getComputedStyle(e); if (isClear(s.backgroundColor)) continue;
-      if (/^[-−–]\s?\d{1,2}\s?%$/.test(t)) { set(e, { 'background-color': '#D13B20', color: '#fff', 'border-radius': '4px', border: '0' }); for (const k of textKids(e)) set(k, { color: '#fff' }); continue; }
-      if (isGrey(s.backgroundColor) && px(s.borderTopLeftRadius) >= 4 && !e.querySelector('svg') && e.children.length <= 1) { set(e, { 'background-color': TAG, 'border-radius': '4px', color: '#5E5E5E' }); for (const k of textKids(e)) set(k, { color: '#5E5E5E' }); }
+      if (/^[-−–]\s?\d{1,2}\s?%$/.test(t)) { set(e, { 'background-color': T.promo, color: '#fff', 'border-radius': T.tagRadius, border: '0' }); for (const k of textKids(e)) set(k, { color: '#fff' }); continue; }
+      if (isGrey(s.backgroundColor) && px(s.borderTopLeftRadius) >= 4 && !e.querySelector('svg') && e.children.length <= 1) { set(e, { 'background-color': TAG, 'border-radius': T.tagRadius, color: T.tagText }); for (const k of textKids(e)) set(k, { color: T.tagText }); }
     }
     // links: blue text becomes ink, underlined (Uber keeps blue for the live-location dot only)
     for (const e of document.body.querySelectorAll('a, button, span')) {
@@ -225,7 +230,7 @@
       for (const k of wrap.children) if (k !== c) set(k, { display: 'none' });
       if (!wrap.querySelector('.sys-clock')) { const ns = 'http://www.w3.org/2000/svg'; const sv = document.createElementNS(ns, 'svg'); sv.setAttribute('class', 'sys-clock'); sv.setAttribute('width', '15'); sv.setAttribute('height', '15'); sv.setAttribute('viewBox', '0 0 24 24'); sv.setAttribute('fill', 'none'); sv.setAttribute('stroke', 'currentColor'); sv.setAttribute('stroke-width', '2'); sv.setAttribute('stroke-linecap', 'round'); sv.innerHTML = '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>'; sv.style.cssText = 'display:inline-block;vertical-align:-2px;margin-right:5px'; c.prepend(sv); }
     }
-    for (const c of inMain.querySelectorAll('.text-s-open, [class*="text-s-success"]')) set(c, { color: '#166C3B' });
+    for (const c of inMain.querySelectorAll('.text-s-open, [class*="text-s-success"]')) set(c, { color: T.proofText });
     for (const loc of document.querySelectorAll('button[aria-label="Show location"]')) {
       const sp = loc.previousElementSibling && loc.previousElementSibling.querySelector('span.inline-block.w-\\[14px\\]'); if (sp) sp.classList.add('sys-dot');
       set(loc, { background: FILL, padding: '10px 12px', 'border-radius': '12px', color: INK, gap: '6px', 'margin-top': '12px' });
@@ -240,10 +245,10 @@
       const disp = "'Inter Tight', Inter, system-ui, sans-serif";
       const c0 = rgb(s.color); const coloured = Math.max(c0[0], c0[1], c0[2]) - Math.min(c0[0], c0[1], c0[2]) > 30; // keep a meaning colour (green "Free now")
       const INKC = coloured ? s.color : INK;
-      if (f >= 24) set(e, { 'font-size': '26px', 'font-weight': '700', 'letter-spacing': '-0.02em', 'font-family': disp, color: INKC });
-      else if (f >= 19 || (f >= 17 && /^H[1-3]$/.test(e.tagName))) set(e, { 'font-size': '21px', 'font-weight': '700', 'letter-spacing': '-0.015em', 'font-family': disp, color: INKC });
-      else if (f >= 17) set(e, { 'font-size': '18px', 'font-weight': '600', 'letter-spacing': '-0.01em', 'font-family': disp, color: INKC });
-      else set(e, { 'font-size': '16px', 'font-weight': '500', color: INKC });
+      if (f >= 24) set(e, { 'font-size': T.titleSize, 'font-weight': '700', 'letter-spacing': '-0.02em', 'font-family': disp, color: INKC });
+      else if (f >= 19 || (f >= 17 && /^H[1-3]$/.test(e.tagName))) set(e, { 'font-size': T.sectionSize, 'font-weight': '700', 'letter-spacing': '-0.015em', 'font-family': disp, color: INKC });
+      else if (f >= 17) set(e, { 'font-size': T.subSize, 'font-weight': '600', 'letter-spacing': '-0.01em', 'font-family': disp, color: INKC });
+      else set(e, { 'font-size': T.rowSize, 'font-weight': '500', color: INKC });
     }
     // uppercase labels: normal case 13/600
     for (const e of inMain.querySelectorAll('p, span, div, h2, h3, h4, label')) { if (e.children.length) continue; const s = getComputedStyle(e); const t = e.textContent.trim(); if (s.textTransform === 'uppercase' && t.length > 3 && !/^[A-Z]{2,3}$/.test(t)) set(e, { 'text-transform': 'none', 'letter-spacing': '0', 'font-size': '13px', 'font-weight': '600' }); }
@@ -259,17 +264,17 @@
       if (isInk(getComputedStyle(e).color)) set(e, { color: INK });
     }
     // notification counts: Uber's red dot, not blue
-    for (const e of document.body.querySelectorAll('span, div')) { const r = e.getBoundingClientRect(); if (r.width > 24 || r.height > 24 || r.width < 6) continue; if (isBlue(getComputedStyle(e).backgroundColor)) set(e, { 'background-color': '#DE1135' }); }
+    for (const e of document.body.querySelectorAll('span, div')) { const r = e.getBoundingClientRect(); if (r.width > 24 || r.height > 24 || r.width < 6) continue; if (isBlue(getComputedStyle(e).backgroundColor)) set(e, { 'background-color': T.notify }); }
     // membership (Solen Status): Uber One's cream tint, amber accents
-    const AMBER = '#9F6402', CREAM = '#FDF2DC';
+    const AMBER = T.amber, CREAM = T.cream;
     for (const lab of inMain.querySelectorAll('p, span, div, h2, h3')) {
       if (lab.children.length || !/^(your status|dein status|ton statut|il tuo stato|solen status)$/i.test(lab.textContent.trim())) continue;
       const card = lab.closest('[data-sys-box]'); if (!card) continue;
-      set(card, { 'background-color': CREAM, border: '1px solid #E9DFCA' });
+      set(card, { 'background-color': CREAM, border: `1px solid ${T.creamEdge}` });
       for (const k of card.querySelectorAll('*')) {
         const ks = getComputedStyle(k); const kr = k.getBoundingClientRect();
         if ((isInk(ks.backgroundColor) || /gradient/.test(ks.backgroundImage)) && kr.height <= 30) set(k, { 'background-color': AMBER, 'background-image': 'none', 'border-color': AMBER });
-        else if (!isClear(ks.backgroundColor) && (isGrey(ks.backgroundColor) || isWhite(ks.backgroundColor)) && kr.height <= 12) set(k, { 'background-color': '#F3E3C1' });
+        else if (!isClear(ks.backgroundColor) && (isGrey(ks.backgroundColor) || isWhite(ks.backgroundColor)) && kr.height <= 12) set(k, { 'background-color': T.amberTrack });
         else if (isWhite(ks.backgroundColor) && k !== card && kr.height > 12) set(k, { 'background-color': 'transparent' });
       }
     }
@@ -278,8 +283,9 @@
     for (const e of inMain.querySelectorAll('hr, div')) {
       const r = e.getBoundingClientRect(); if (r.width < W - 2 || r.height > 2 || r.height < 0.5) continue;
       if (e.children.length || txt(e)) continue;
-      set(e, { height: '4px', 'background-color': TAG, border: '0' });
+      set(e, { height: T.band, 'background-color': TAG, border: '0' });
     }
+    const hide = document.getElementById('u-hide'); if (hide) hide.remove(); // first paint waits for the rules, so no old-look flash
     return true;
   }
   let timer = null, busy = false;
