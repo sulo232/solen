@@ -91,3 +91,17 @@ His words: "start making the app using swiftui native comp new i want alot of li
   - Type: the app uses Apple text styles (28/22/17/15), the ledger says 26/21/18/16.
   - Tab bar: Search moved to Apple's separate round button at the end of the bar. The four destinations are unchanged, but the order differs from the website.
   - Grouped grey form pages (booking, profile) are the native look; this touches his earlier "grey vs white pages" complaint.
+
+## Round 3 (2026-10-05): components redone from his X saves ("so basic … nth clean")
+
+- **Source:** 43 stills from the 58 high-relevance app saves in `_design-system/research/x-saved-2026-09/tags.json` (#23, #30, #279, #346, #370, #404, #414, #432, #475, #614, #666, #72 and others), plus the earlier comparison page `public/_research/x-components/`.
+- **What the saves do that we didn't:** everything sits in a white box on a soft shadow; photos are inset inside the card; every meta value has an icon; status shows as a dot badge; numbers sit in grey stat tiles; add is a round button; selected is ink.
+- **Built on branch `components-v2` in `solen-ios` (not merged; main stays at round 2 until he approves):**
+  - `card()`, `MetaItem`, `StatusBadge`, `StatTile`, `RoundAddButton`, `PressScale` in `Theme.swift`;
+  - salon card and search row; salon header sheet over the photo with 3 stat tiles; boxed service groups with active chip; review card rail; hours box with Today; Good to know icon tiles;
+  - booking: boxed services and team, slots split Morning / Afternoon / Evening, review and pay as cards with labels above fields and capsule pay buttons.
+- **Clashes with the site ledger (`UBER_RENEWAL_2026-10-04.md`), raised to him:**
+  - box radius 16 -> 20 (with 12 inside, capsule for taps; the X-saves rule);
+  - Uber's flat look -> white cards on a soft two-layer shadow;
+  - section breaks: hairline (round 2) -> space only, hairlines only inside a box.
+- **Screens:** `_audits/screenshots/ios-2026-10-05/v3/`.
