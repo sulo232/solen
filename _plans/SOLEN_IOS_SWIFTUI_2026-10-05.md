@@ -67,3 +67,27 @@ His words: "start making the app using swiftui native comp new i want alot of li
 
 1. Done: screenshots sent.
 2. Page-by-page rounds. Shared changes go in `Theme.swift` and the site ledger together.
+
+## Round 2 (2026-10-05): owner said "all of them looks really ass"; research then rebuild
+
+- **Measured cause:**
+  - the glass search bar was invisible (fill 253 on a 255 white page);
+  - a slogan took 30% of Home;
+  - 16 hard-coded type sizes;
+  - website parts transplanted: grey pill fields, boxed payment, a fake Apple Pay row;
+  - a colourless page;
+  - Inspo stacked text on text.
+- **Research:** `_design-system/research/ios-swiftui-liquid-glass-2026-10.md` (Apple HIG and WWDC25, app teardowns, his X saves).
+- **Changed:**
+  - Apple text styles only.
+  - Search is Apple's search tab: a round glass button at the end of the bar that turns into the search field. Its page has photo category tiles and rails of about 2.2 cards. Typing shows compact rows.
+  - Glass only on bars and on controls over photos. Hearts on cards use a plain material.
+  - Services, person and review steps are native grouped lists and forms.
+  - The real Apple Pay button comes first, with card below.
+  - Hairlines between salon sections.
+  - On the salon page, the title fades in once the photo scrolls away.
+- **Contradictions with the site ledger (`UBER_RENEWAL_2026-10-04.md`), raised to him:**
+  - Section breaks: the app uses hairlines, the ledger says 4px grey bands.
+  - Type: the app uses Apple text styles (28/22/17/15), the ledger says 26/21/18/16.
+  - Tab bar: Search moved to Apple's separate round button at the end of the bar. The four destinations are unchanged, but the order differs from the website.
+  - Grouped grey form pages (booking, profile) are the native look; this touches his earlier "grey vs white pages" complaint.
