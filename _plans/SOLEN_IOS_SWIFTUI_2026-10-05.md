@@ -50,9 +50,20 @@ His words: "start making the app using swiftui native comp new i want alot of li
 - **Live times:** `availability_slots` has 0 future rows (nightly jobs off since 07-20), so every salon shows sample times.
 - **Walk-in, tips, vouchers, loyalty, notifications:** later rounds.
 - **German, French and Italian strings.**
-- **Simulator check:** blocked until he grants device access in the simulator panel ("Let Claude use it").
+- **Simulator check:** done 2026-10-05 with Xcode's command-line tools (he said "u do that" from his phone).
+  - 12 screens saved in `_audits/screenshots/ios-2026-10-05/` (a folder git ignores).
+  - Fixed in that pass:
+    - Inspo failing to load;
+    - times shown in 12-hour format;
+    - results cards spilling off the screen;
+    - hidden search field;
+    - tab bar showing under the Book bar;
+    - near-invisible disabled buttons, which now show a hint instead;
+    - grey profile page.
+  - Still open: on the salon page, scrolled text slides under the top glass buttons with no fade.
+  - Debug builds take `-route <screen>` to open any screen directly for checks.
 
 ## Next
 
-1. Run it in the simulator, screenshot each screen and send them.
+1. Done: screenshots sent.
 2. Page-by-page rounds. Shared changes go in `Theme.swift` and the site ledger together.
