@@ -112,7 +112,7 @@
     "eslint": "^9.0.0",
     "eslint-config-next": "^15.2.4",
     "eslint-plugin-jsx-a11y": "^6.10.2",
-    "globals": "^15.15.0",
+    "globals": "^17.13.0",
     "jscpd": "^5.0.12",
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17",
