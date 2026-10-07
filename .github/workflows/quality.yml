@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: "npm"
@@ -43,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: "npm"
@@ -133,7 +133,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: "npm"
@@ -154,7 +154,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: "npm"
@@ -179,7 +179,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: "npm"
@@ -191,7 +191,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: "npm"
@@ -224,7 +224,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: "npm"
@@ -241,7 +241,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: "npm"
@@ -276,7 +276,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: "npm"
@@ -305,7 +305,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: "npm"
@@ -339,7 +339,7 @@ jobs:
             echo "has-secrets=false" >> "$GITHUB_OUTPUT"
             echo "::warning::Supabase secrets not set on this repo, skipping the smoke job (stays green). See .github/workflows/quality.yml's e2e job comment for the gh secret set one-liners."
           fi
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         if: steps.secrets-check.outputs.has-secrets == 'true'
         with:
           node-version: "22"
@@ -393,7 +393,7 @@ jobs:
             fi
             echo "::warning::Live-DB/Stripe secrets not set on this repo, skipping the e2e job (stays green until $GRACE_PERIOD_END). See the job comment in .github/workflows/quality.yml for the gh secret set one-liners."
           fi
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         if: steps.secrets-check.outputs.has-secrets == 'true'
         with:
           node-version: "22"
@@ -429,7 +429,7 @@ jobs:
             echo "has-secrets=false" >> "$GITHUB_OUTPUT"
             echo "::warning::Supabase secrets not set on this repo, skipping the visual job (stays green)."
           fi
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         if: steps.secrets-check.outputs.has-secrets == 'true'
         with:
           node-version: "22"
@@ -486,7 +486,7 @@ jobs:
             echo "has-secrets=false" >> "$GITHUB_OUTPUT"
             echo "::warning::Supabase secrets not set on this repo, skipping the lighthouse job (stays green)."
           fi
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         if: steps.secrets-check.outputs.has-secrets == 'true'
         with:
           node-version: "22"
@@ -539,7 +539,7 @@ jobs:
             echo "has-secrets=false" >> "$GITHUB_OUTPUT"
             echo "::warning::Supabase secrets not set on this repo, skipping the motion job (stays green)."
           fi
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         if: steps.secrets-check.outputs.has-secrets == 'true'
         with:
           node-version: "22"
@@ -601,7 +601,7 @@ jobs:
             echo "has-secrets=false" >> "$GITHUB_OUTPUT"
             echo "::warning::Supabase secrets not set on this repo, skipping the floors job (stays green)."
           fi
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         if: steps.secrets-check.outputs.has-secrets == 'true'
         with:
           node-version: "22"
