@@ -9,6 +9,8 @@
 [build.environment]
   # 22 because the @supabase/* 2.110 packages declare engines >= 22
   NODE_VERSION = "22"
+  # The default Node heap ran out of memory on Netlify (2026-10-07 deploy d79175b).
+  NODE_OPTIONS = "--max-old-space-size=6144"
 
 # Next.js Runtime — handles SSR / ISR / middleware / image optimization.
 # Netlify auto-installs this for Next.js projects, but pinning it is safer.
