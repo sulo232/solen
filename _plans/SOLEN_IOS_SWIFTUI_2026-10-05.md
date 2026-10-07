@@ -105,3 +105,38 @@ His words: "start making the app using swiftui native comp new i want alot of li
   - Uber's flat look -> white cards on a soft two-layer shadow;
   - section breaks: hairline (round 2) -> space only, hairlines only inside a box.
 - **Screens:** `_audits/screenshots/ios-2026-10-05/v3/`.
+
+## Round 4 (2026-10-07): owner "so basic", wants a home page, Pinterest Inspo, the Uber look, full-page booking
+
+- **His asks:**
+  - a real home page with a search bar and categories;
+  - no big gap above the titles;
+  - Inspo like Pinterest, with mixed tile heights;
+  - the Uber *look* (his screenshots `~/Downloads/IMG_9373-9376`: Uber Home and Account);
+  - Saved and Profile rich again, like before;
+  - the calendar from x.com/justvasi/status/2107489305857782047;
+  - booking as a full page, not a half sheet.
+- **Built on `components-v2` (commit `2705676`):**
+  - Tabs are now Home, Inspo, Saved, Profile. Search is a floating pill on Home that opens a full search page. Apple's separate search tab is gone.
+  - Home: wordmark, the pill with an "Open now" shortcut, a recents box, round category tiles, one walk-in banner, rails with arrow circles.
+  - Root screens have no navigation bar. The title sits right under the status bar, with a white scrim behind the clock.
+  - Inspo:
+    - search field and the categories that hold looks (All, Hair, Beard, Nails);
+    - a two-column masonry grid;
+    - each look opens as a full page with save, "More like this", and Find salons.
+    - All feed covers are 9:16 TikTok frames, so the mixed heights come from five fixed crops per look.
+  - Saved:
+    - Uber segmented control for Salons and Looks;
+    - collage tiles, the way the Expo app and the website do them;
+    - empty states made of real photos;
+    - a "New for you" rail.
+  - Profile, in the Uber Account layout:
+    - sign-in box;
+    - 2x2 grey tiles: Bookings, Saved, Help, Contact;
+    - two promo cards: Invite friends (CHF 10 each, the real website copy) and Solen Status;
+    - icon rows.
+    - Account pages open on solen.ch until sign-in exists in the app.
+  - Booking is a full-screen cover. Its time step has the reference's month row (neighbouring months peek in grey), a day strip that snaps day by day, and a handle that opens the month grid.
+  - Content cards are flat with a 1px #ECECEC edge and radius 16 (Uber spec). Shadows only on floating things.
+- **Ledger effect:** this reverses round 3's soft-shadow cards and radius 20 in favour of the measured Uber values. That matches the site ledger again.
+- **Screens:** `_audits/screenshots/ios-2026-10-07/`.
