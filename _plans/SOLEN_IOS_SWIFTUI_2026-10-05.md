@@ -140,3 +140,11 @@ His words: "start making the app using swiftui native comp new i want alot of li
   - Content cards are flat with a 1px #ECECEC edge and radius 16 (Uber spec). Shadows only on floating things.
 - **Ledger effect:** this reverses round 3's soft-shadow cards and radius 20 in favour of the measured Uber values. That matches the site ledger again.
 - **Screens:** `_audits/screenshots/ios-2026-10-07/`.
+
+## Round 5 (2026-10-07): owner "bring the web into here", round 4 rejected as generic
+- Reference: the local main checkout served on localhost:3458 at 402px (never solen.ch, which runs the old build). Captures and measurements in the session scratchpad (`web/local/*.png`); values recorded at the top of `solen-ios/Solen/Design/Web.swift`.
+- Branch `web-port` in solen-ios, commits 2c1c51a (home, Inspo, Saved, Profile, tab bar), d99824d (salon page, booking), 1276cc2 (search results, search page pills, dead round-4 components removed).
+- Ported: floating search pill, 3D category pills, salon cards (22 radius), rails, map teaser, walk-ins, reviews rail; Pinterest Inspo with chip terms and category tiles; Saved list; Profile groups; salon page sections in web order; booking "Select services" with sticky group chips, + circles, total bar and dark Continue capsule; time pills; review page in web boxes; results with the dark Map capsule.
+- Verified in the simulator: add a service updates the total and enables Continue; a group chip jumps to its group with the title visible; salon title readable after scroll; map card leaves the Apple Maps legal mark visible.
+- Local web needed `npm ci` because iCloud had evicted node_modules; the old copy is kept as `node_modules.icloud-evicted` for the owner to delete.
+- Parked: Inspo progressive filter drawer; web service packages ("Verwöhn-Paket") not in the app; merging `web-port` into main is the owner's call.
