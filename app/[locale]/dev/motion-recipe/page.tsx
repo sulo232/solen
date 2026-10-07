@@ -22,9 +22,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Plus, RotateCcw, Star, MapPin, Scissors } from "lucide-react";
-import { notFound } from "next/navigation";
 
-if (process.env.NODE_ENV === "production") notFound();
 
 // Locked ease token, from tailwind.config.js , do not invent new curves.
 const GLIDE: [number, number, number, number] = [0.16, 1, 0.3, 1];
