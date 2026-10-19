@@ -79,7 +79,7 @@
     "motion-utils": "12.6.3",
     "nanoid": "^5.1.7",
     "next": "15.3.8",
-    "next-intl": "^3.26.5",
+    "next-intl": "^4.14.9",
     "next-view-transitions": "^0.3.5",
     "posthog-js": "^1.360.2",
     "posthog-node": "^5.28.5",
